@@ -5,7 +5,7 @@ services:
     image: 'bitnami/redis:5.0'
     networks:
       - hmpps
-    container_name: redis 
+    container_name: redis
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
@@ -15,7 +15,7 @@ services:
     image: quay.io/hmpps/hmpps-auth:latest
     networks:
       - hmpps
-    container_name: hmpps-auth 
+    container_name: hmpps-auth
     ports:
       - "9090:8080"
     healthcheck:
@@ -23,6 +23,21 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
+
+  hmpps-prison-api:
+    image: quay.io/hmpps/prison-api:latest
+    networks:
+      - hmpps
+    container_name: hmpps-prison-api
+    depends_on:
+      - hmpps-auth
+    ports:
+      - '8080:8080'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=nomis-hsqldb
 
   app:
     build: .

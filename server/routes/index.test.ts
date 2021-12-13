@@ -1,11 +1,26 @@
 import type { Express } from 'express'
 import request from 'supertest'
+
 import appWithAllRoutes from './testutils/appSetup'
+import BehaviourService from '../services/behaviourService'
+
+jest.mock('../services/behaviourService')
+const behaviorService = BehaviourService.prototype as jest.Mocked<BehaviourService>
 
 let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({})
+
+  behaviorService.getBehaviourEntries.mockResolvedValue({
+    name: 'C',
+    Basic: [
+      {
+        fullName: 'Doe, Jane',
+        offenderNo: 'A1234AB',
+      },
+    ],
+  })
 })
 
 afterEach(() => {
@@ -18,7 +33,8 @@ describe('GET /', () => {
       .get('/')
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('This site is under construction...')
+        expect(res.text).toContain('Behaviour entries since last review')
+        expect(res.text).toContain('Doe, Jane (A1234AB)')
       })
   })
 })

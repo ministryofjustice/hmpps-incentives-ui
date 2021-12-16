@@ -3,7 +3,10 @@ import request from 'supertest'
 
 import appWithAllRoutes from './testutils/appSetup'
 import BehaviourService from '../services/behaviourService'
+import { PrisonApi } from '../data/prisonApi'
 
+jest.mock('../data/prisonApi')
+const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
 jest.mock('../services/behaviourService')
 const behaviorService = BehaviourService.prototype as jest.Mocked<BehaviourService>
 
@@ -12,6 +15,14 @@ let app: Express
 beforeEach(() => {
   app = appWithAllRoutes({})
 
+  prisonApi.getUserCaseLoads.mockResolvedValue([
+    {
+      caseLoadId: 'MDI',
+      description: 'Moorland (HMP & YOI)',
+      currentlyActive: true,
+      type: 'INST',
+    },
+  ])
   behaviorService.getBehaviourEntries.mockResolvedValue({
     name: 'C',
     Basic: [

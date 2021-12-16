@@ -1,0 +1,37 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+        text: "Back",
+        href: backUrl
+    }) }}
+{% endblock %}
+{% block content %}
+<h1 class="govuk-heading-l">{{title}}</h1>
+<form method="POST" id="changeCaseLoad">
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+  {{ govukSelect({
+          id: "changeCaseLoadSelect",
+          name: "caseLoadId",
+          label: {
+              text: "Select active case load"
+          },
+          items: options
+      }) }}
+  {{ govukButton({
+      text: "Submit",
+      preventDoubleClick: true
+    }) }}
+
+  {{ govukButton({
+      text: "Cancel",
+      element: 'a',
+      href: backUrl,
+      classes: "govuk-button--secondary"
+    }) }}
+</form>
+{% endblock %}

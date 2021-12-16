@@ -4,6 +4,13 @@ import RestClient from './restClient'
 
 const IEP_LEVELS = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
 
+interface CaseLoad {
+  caseLoadId: string
+  description: string
+  currentlyActive: boolean
+  type: string
+}
+
 type AgencyIepReviewResponse = {
   firstName: string
   lastName: string
@@ -51,6 +58,14 @@ class PrisonApi extends RestClient {
 
     return response
   }
+
+  async getUserCaseLoads(): Promise<Array<CaseLoad>> {
+    return this.get({ path: '/users/me/caseLoads' }) as Promise<Array<CaseLoad>>
+  }
+
+  async setActiveCaseLoad(caseLoadId: string): Promise<unknown> {
+    return this.put({ path: '/users/me/activeCaseLoad', data: { caseLoadId } })
+  }
 }
 
 function sortByLastReviewTime(a: AgencyIepReview, b: AgencyIepReview) {
@@ -71,4 +86,4 @@ function addDaysOnCurrentLevel(prisoner: AgencyIepReview) {
   }
 }
 
-export { PrisonApi, IEP_LEVELS }
+export { PrisonApi, IEP_LEVELS, CaseLoad }

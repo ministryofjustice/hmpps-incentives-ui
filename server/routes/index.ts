@@ -7,11 +7,19 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', async (req, res, next) => {
+    const { activeLocation } = req.session
+
+    if (!activeLocation) {
+      res.redirect('/select-another-location')
+      return
+    }
+
     const behaviorService = new BehaviourService()
+    // const entries = await behaviorService.getBehaviourEntries(agencyId, activeLocation)
     const entries = await behaviorService.getBehaviourEntries()
 
     const wing = {
-      name: 'Houseblock 1',
+      name: activeLocation.userDescription || activeLocation.description,
       entries,
     }
 

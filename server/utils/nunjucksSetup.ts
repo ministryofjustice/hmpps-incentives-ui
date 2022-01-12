@@ -3,6 +3,8 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import * as pathModule from 'path'
 
+import config from '../config'
+
 const production = process.env.NODE_ENV === 'production'
 
 export default function nunjucksSetup(app: express.Express, path: pathModule.PlatformPath): void {
@@ -10,6 +12,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'HMPPS Incentives UI'
+  app.locals.dpsHome = config.dpsUrl
 
   // Cachebusting version string
   if (production) {

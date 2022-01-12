@@ -1,0 +1,110 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+
+{% set pageTitle = applicationName + " - Home" %}
+
+{% block content %}
+
+  <main class="app-container govuk-body">
+    <h1>{{ wing.name }} Wing incentive levels and behaviours</h1>
+
+    <p>
+        <a href="select-another-location" class="govuk-link">Select another location</a>
+    </p>
+    <div class="govuk-grid-row govuk-!-margin-top-8 govuk-grid-row">
+        {% for level in ['Basic', 'Standard', 'Enhanced', 'Enhanced 2'] %}
+            <div class="govuk-grid-column-one-quarter">
+                <p class="govuk-body govuk-!-margin-bottom-2">{{ level }}</p>
+                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="unaccountedfor">
+                    {{ wing.entries[level].length | default(0) }}
+                </span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <p class="govuk-!-margin-top-9"></p>
+    <h2 class="govuk-heading-l govuk-!-margin-top-9">Behaviour entries since last review</h2>
+
+    {% macro table(level) %}
+        {% set commonHeader = [
+            {
+                text: ""
+            },
+            {
+                text: "Name and prison number"
+            },
+            {
+                text: "Days on level"
+            },
+            {
+                text: "Days since last review"
+            },
+            {
+                text: "All positive behaviours"
+            },
+            {
+                text: "Incentive encouragements"
+            },
+            {
+                text: "All negative behaviours"
+            },
+            {
+                text: "Incentive warnings"
+            },
+            {
+                text: "Proven adjudications"
+            }
+        ] %}
+
+        {% set rows = [] %}
+        {% for prisoner in wing.entries[level] %}
+            {% set rows = (rows.push([
+            { html: '<img src="/assets/images/prisoner.jpeg" alt="{{ prisoner.fullName }}" width="90" />' },
+            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.offenderNo + '" class="govuk-link">' + prisoner.fullName + ' (' + prisoner.offenderNo + ') </a>' },
+            { text: prisoner.daysOnLevel },
+            { text: prisoner.daysSinceReview },
+            { text: prisoner.positivesCaseNotes },
+            { text: prisoner.iepEncouragements },
+            { text: prisoner.negativesCaseNotes },
+            { text: prisoner.iepWarnings },
+            { text: prisoner.provenAdjudications }
+            ]), rows) %}
+        {% endfor %}
+
+        <h2 class="govuk-heading-l">{{ level }}</h2>
+        {{ govukTable({
+            head: commonHeader,
+            rows: rows
+        }) }}
+    {% endmacro %}
+
+    {{ govukTabs({
+      items: [
+        {
+          label: "Basic",
+          id: "basic",
+          panel: { html: table('Basic') }
+        },
+        {
+          label: "Standard",
+          id: "standard",
+          panel: { html: table('Standard') }
+        },
+        {
+          label: "Enhanced",
+          id: "enhanced",
+          panel: { html: table('Enhanced') }
+        },
+        {
+          label: "Enhanced 2",
+          id: "enhanced-2",
+          panel: { html: table("Enhanced 2") }
+        }
+      ]
+    }) }}
+
+  </main>
+
+{% endblock %}

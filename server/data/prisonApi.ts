@@ -18,4 +18,4 @@ class PrisonApi extends RestClient {
   }
 }
 
-export default PrisonApi
+export { PrisonApi, CaseLoad }

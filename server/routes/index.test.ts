@@ -3,7 +3,7 @@ import request from 'supertest'
 
 import appWithAllRoutes from './testutils/appSetup'
 import BehaviourService from '../services/behaviourService'
-import { PrisonApi } from '../data/prisonApi'
+import PrisonApi from '../data/prisonApi'
 
 jest.mock('../data/prisonApi')
 const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>

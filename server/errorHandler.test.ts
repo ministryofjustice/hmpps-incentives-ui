@@ -2,25 +2,11 @@ import type { Express } from 'express'
 import request from 'supertest'
 
 import appWithAllRoutes from './routes/testutils/appSetup'
-import { PrisonApi } from './data/prisonApi'
-
-jest.mock('./data/prisonApi')
-const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
 
 let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({})
-
-  prisonApi.getAgencyIepReviews.mockResolvedValue([])
-  prisonApi.getUserCaseLoads.mockResolvedValue([
-    {
-      caseLoadId: 'MDI',
-      description: 'Moorland (HMP & YOI)',
-      currentlyActive: true,
-      type: 'INST',
-    },
-  ])
 })
 
 afterEach(() => {

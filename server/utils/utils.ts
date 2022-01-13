@@ -14,18 +14,4 @@ const properCaseName = (name: string): string => (isBlank(name) ? '' : name.spli
 const convertToTitleCase = (sentence: string): string =>
   isBlank(sentence) ? '' : sentence.split(' ').map(properCaseName).join(' ')
 
-/**
- * Returns the number of days from date
- *
- * @param date date or string representing a date.
- * @returns number of whole days from date.
- */
-function daysFrom(date: Date | string): number {
-  const from = new Date(date)
-  const now = new Date()
-  const msElapsed = now.getTime() - from.getTime()
-
-  return Math.trunc(msElapsed / 1_000 / 60 / 60 / 24)
-}
-
-export { convertToTitleCase, daysFrom }
+export default convertToTitleCase

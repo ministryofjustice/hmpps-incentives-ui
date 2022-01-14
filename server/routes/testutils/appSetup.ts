@@ -18,6 +18,13 @@ const user = {
   displayName: 'John Smith',
 }
 
+const activeCaseLoad = {
+  caseLoadId: 'MDI',
+  description: 'Moorland (HMP & YOI)',
+  currentlyActive: true,
+  type: 'INST',
+}
+
 class MockUserService extends UserService {
   constructor() {
     super(undefined)
@@ -27,6 +34,8 @@ class MockUserService extends UserService {
     return {
       token,
       ...user,
+      activeCaseLoad,
+      activeCaseLoads: [activeCaseLoad],
     }
   }
 }

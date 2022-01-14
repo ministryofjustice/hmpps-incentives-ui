@@ -3,7 +3,7 @@ import express from 'express'
 import path from 'path'
 import createError from 'http-errors'
 
-import indexRoutes from './routes'
+import indexRoutes from './routes/index'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
 import standardRouter from './routes/standardRouter'

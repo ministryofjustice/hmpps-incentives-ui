@@ -5,13 +5,13 @@ import appWithAllRoutes from './testutils/appSetup'
 import BehaviourService from '../services/behaviourService'
 
 jest.mock('../services/behaviourService')
-const behaviorService = BehaviourService.prototype as jest.Mocked<BehaviourService>
 
 let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({})
 
+  const behaviorService = BehaviourService.prototype as jest.Mocked<BehaviourService>
   behaviorService.getBehaviourEntries.mockResolvedValue({
     name: 'C',
     Basic: [

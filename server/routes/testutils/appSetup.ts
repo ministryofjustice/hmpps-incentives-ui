@@ -10,7 +10,9 @@ import errorHandler from '../../errorHandler'
 import standardRouter from '../standardRouter'
 import UserService from '../../services/userService'
 import * as auth from '../../authentication/auth'
-import { Location } from '../../data/prisonApi'
+import { Location, PrisonApi } from '../../data/prisonApi'
+
+jest.mock('../../data/prisonApi')
 
 const user = {
   name: 'john smith',
@@ -55,6 +57,9 @@ class MockUserService extends UserService {
 
 function appSetup(production: boolean): Express {
   const app = express()
+
+  const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
+  prisonApi.getAgencyLocations.mockResolvedValue([activeLocation])
 
   app.set('view engine', 'njk')
 

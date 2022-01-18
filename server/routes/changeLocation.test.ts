@@ -1,15 +1,18 @@
 import type { Express } from 'express'
+import { Session, SessionData } from 'express-session'
 import request from 'supertest'
 
-import appWithAllRoutes from './testutils/appSetup'
+import { appWithAllRoutes, makeTestSession } from './testutils/appSetup'
 import { PrisonApi } from '../data/prisonApi'
 
 jest.mock('../data/prisonApi')
 
 let app: Express
+let testSession: Session & Partial<SessionData>
 
 beforeEach(() => {
-  app = appWithAllRoutes({})
+  testSession = makeTestSession()
+  app = appWithAllRoutes({ testSession })
 
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
   prisonApi.getAgencyLocations.mockResolvedValue([
@@ -60,7 +63,7 @@ describe('POST /select-another-location', () => {
       return request(app)
         .post('/select-another-location')
         .expect(res => {
-          expect(res.redirects).toBeTruthy()
+          expect(res.redirect).toBeTruthy()
           expect(res.headers.location).toBe('/select-another-location')
         })
     })
@@ -72,12 +75,10 @@ describe('POST /select-another-location', () => {
         .post('/select-another-location')
         .send({ locationPrefix: 'MDI-42' })
         .expect(res => {
-          expect(res.redirects).toBeTruthy()
+          expect(res.redirect).toBeTruthy()
           expect(res.headers.location).toBe('/')
+          expect(testSession.activeLocation.locationPrefix).toEqual('MDI-42')
         })
-
-      // TODO: Check session was updated
-      // expect(app._router.session.activeLocation.locationPrefix).toEqual('MDI-42')
     })
   })
 })

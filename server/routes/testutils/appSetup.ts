@@ -1,5 +1,5 @@
 import express, { Express } from 'express'
-import cookieSession from 'cookie-session'
+import { Cookie, Session, SessionData } from 'express-session'
 import createError from 'http-errors'
 import path from 'path'
 
@@ -30,7 +30,7 @@ const activeCaseLoad = {
 }
 
 const activeLocation: Location = {
-  locationId: 42,
+  locationId: 2,
   locationType: 'WING',
   description: '2',
   agencyId: 'MDI',
@@ -55,7 +55,21 @@ class MockUserService extends UserService {
   }
 }
 
-function appSetup(production: boolean): Express {
+function makeTestSession(sessionData: Partial<SessionData> = { activeLocation }): Session & Partial<SessionData> {
+  return {
+    ...sessionData,
+    cookie: new Cookie(),
+    regenerate: jest.fn(),
+    destroy: jest.fn(),
+    reload: jest.fn(),
+    id: 'sessionId',
+    resetMaxAge: jest.fn(),
+    save: jest.fn(),
+    touch: jest.fn(),
+  }
+}
+
+function appSetup(production: boolean, testSession: Session): Express {
   const app = express()
 
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
@@ -65,13 +79,11 @@ function appSetup(production: boolean): Express {
 
   nunjucksSetup(app, path)
 
-  app.use(cookieSession({ keys: [''] }))
-
   app.use((req, res, next) => {
+    req.session = testSession
+
     res.locals = {}
     res.locals.user = user
-
-    req.session.activeLocation = activeLocation
 
     next()
   })
@@ -90,7 +102,15 @@ function appSetup(production: boolean): Express {
   return app
 }
 
-export default function appWithAllRoutes({ production = false }: { production?: boolean }): Express {
+function appWithAllRoutes({
+  production = false,
+  testSession = makeTestSession(),
+}: {
+  production?: boolean
+  testSession?: Session
+}): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(production)
+  return appSetup(production, testSession)
 }
+
+export { appWithAllRoutes, makeTestSession }

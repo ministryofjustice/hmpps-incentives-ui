@@ -30,7 +30,7 @@ export default function routes(router: Router): Router {
     return res.render('pages/changeLocation.njk', {
       title: 'View by residential location',
       options,
-      backUrl: req.headers.referer,
+      backUrl: '/',
     })
   })
 

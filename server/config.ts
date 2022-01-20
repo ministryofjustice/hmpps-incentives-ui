@@ -59,8 +59,8 @@ export default {
       systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
     },
     hmppsPrisonApi: {
-      url: get('HMPPS_PRISON_API_URL', 'http://localhost:8080/api', requiredInProduction),
-      externalUrl: get('HMPPS_PRISON_API_EXTERNAL_URL', get('HMPPS_PRISON_API_URL', 'http://localhost:8080/api')),
+      url: get('HMPPS_PRISON_API_URL', 'http://localhost:8080', requiredInProduction),
+      externalUrl: get('HMPPS_PRISON_API_EXTERNAL_URL', get('HMPPS_PRISON_API_URL', 'http://localhost:8080')),
       timeout: {
         response: Number(get('HMPPS_PRISON_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('HMPPS_PRISON_API_TIMEOUT_DEADLINE', 10000)),

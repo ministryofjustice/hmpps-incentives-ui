@@ -19,7 +19,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/prisonApi/users/me/caseLoads',
+        urlPattern: '/prisonApi/api/users/me/caseLoads',
       },
       response: {
         status: 200,
@@ -41,7 +41,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/prisonApi/agencies/MDI/locations',
+        urlPattern: '/prisonApi/api/agencies/MDI/locations',
       },
       response: {
         status: 200,

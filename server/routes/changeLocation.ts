@@ -18,7 +18,7 @@ export default function routes(router: Router): Router {
     const { user } = res.locals
     const { activeLocation } = req.session
 
-    const prisonApi = new PrisonApi(res.locals.user.token)
+    const prisonApi = new PrisonApi(user.token)
     const locations: Array<Location> = await prisonApi.getAgencyLocations(user.activeCaseLoad.caseLoadId)
 
     const options = locations.map((location: Location) => ({
@@ -35,12 +35,13 @@ export default function routes(router: Router): Router {
   })
 
   post('/', async (req, res) => {
+    const { user } = res.locals
     const { locationPrefix } = req.body
 
     // Don't call API if data is missing
     if (locationPrefix) {
-      const prisonApi = new PrisonApi(res.locals.user.token)
-      const agencyId = res.locals.user.activeCaseLoad.caseLoadId
+      const prisonApi = new PrisonApi(user.token)
+      const agencyId = user.activeCaseLoad.caseLoadId
       const allLocations: Array<Location> = await prisonApi.getAgencyLocations(agencyId)
       const activeLocation = allLocations.find(location => location.locationPrefix === locationPrefix)
 

@@ -9,12 +9,13 @@ import { PrisonApi, Location } from '../data/prisonApi'
  */
 export default function checkActiveLocation(): RequestHandler {
   return async (req, res, next) => {
+    const { user } = res.locals
     const { activeLocation } = req.session
 
     if (activeLocation) {
-      const prisonApi = new PrisonApi(res.locals.user.token)
+      const prisonApi = new PrisonApi(user.token)
 
-      const agencyId = res.locals.user.activeCaseLoad.caseLoadId
+      const agencyId = user.activeCaseLoad.caseLoadId
       const allLocations: Array<Location> = await prisonApi.getAgencyLocations(agencyId)
 
       const foundAtActivePrison = allLocations.some(

@@ -3,6 +3,7 @@ import { resetStubs } from '../mockApis/wiremock'
 import auth from '../mockApis/auth'
 import tokenVerification from '../mockApis/tokenVerification'
 import prisonApi from '../mockApis/prisonApi'
+import incentivesApi from '../mockApis/incentivesApi'
 
 export default (on: (string, Record) => void): void => {
   on('task', {
@@ -13,6 +14,8 @@ export default (on: (string, Record) => void): void => {
 
     stubAuthUser: auth.stubUser,
     stubAuthPing: auth.stubPing,
+
+    stubIncentivesApiPing: incentivesApi.stubPing,
 
     stubPrisonApiPing: prisonApi.stubPing,
     stubPrisonApiLocations: prisonApi.stubGetAgencyLocations,

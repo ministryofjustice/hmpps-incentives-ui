@@ -51,8 +51,8 @@ services:
       - REDIS_HOST=redis
       - HMPPS_AUTH_EXTERNAL_URL=http://localhost:9090/auth
       - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
-      - HMPPS_PRISON_API_EXTERNAL_URL=http://localhost:8080/api
-      - HMPPS_PRISON_API_URL=http://hmpps-prison-api:8080/api
+      - HMPPS_PRISON_API_EXTERNAL_URL=http://localhost:8080
+      - HMPPS_PRISON_API_URL=http://hmpps-prison-api:8080
       # These will need to match new creds in the seed auth service auth
       - API_CLIENT_ID=client-id
       - API_CLIENT_SECRET=client-secret

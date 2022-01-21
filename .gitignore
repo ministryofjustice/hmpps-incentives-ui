@@ -120,6 +120,7 @@ dist
 assets/stylesheets/*.css
 .idea
 .vscode
+.DS_Store
 build-info.json
 dist/
 test_results/

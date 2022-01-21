@@ -28,8 +28,8 @@ class PrisonApi extends RestClient {
     return this.get({ path: '/api/users/me/caseLoads' }) as Promise<Array<CaseLoad>>
   }
 
-  async getAgencyLocations(agencyId: string): Promise<Array<Location>> {
-    const locations = (await this.get({ path: `/api/agencies/${agencyId}/locations` })) as Array<Location>
+  async getUserLocations(): Promise<Array<Location>> {
+    const locations = (await this.get({ path: `/api/users/me/locations` })) as Array<Location>
 
     // Only return occupied wings
     return locations.filter(location => {

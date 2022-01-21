@@ -18,7 +18,7 @@ export default (on: (string, Record) => void): void => {
     stubIncentivesApiPing: incentivesApi.stubPing,
 
     stubPrisonApiPing: prisonApi.stubPing,
-    stubPrisonApiLocations: prisonApi.stubGetAgencyLocations,
+    stubPrisonApiLocations: prisonApi.stubGetUserLocations,
 
     stubTokenVerificationPing: tokenVerification.stubPing,
   })

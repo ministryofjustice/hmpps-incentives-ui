@@ -73,7 +73,7 @@ function appSetup(production: boolean, testSession: Session): Express {
   const app = express()
 
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getAgencyLocations.mockResolvedValue([activeLocation])
+  prisonApi.getUserLocations.mockResolvedValue([activeLocation])
 
   app.set('view engine', 'njk')
 

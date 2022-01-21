@@ -15,7 +15,7 @@ beforeEach(() => {
   app = appWithAllRoutes({ testSession })
 
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getAgencyLocations.mockResolvedValue([
+  prisonApi.getUserLocations.mockResolvedValue([
     {
       locationId: 2,
       locationType: 'WING',

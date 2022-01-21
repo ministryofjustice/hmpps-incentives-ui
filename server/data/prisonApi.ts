@@ -8,35 +8,9 @@ interface CaseLoad {
   type: string
 }
 
-// Possibly not an exhaustive list
-type LocationType =
-  | 'AREA'
-  | 'ADJU'
-  | 'ASSO'
-  | 'SPOR'
-  | 'LOCA'
-  | 'STOR'
-  | 'CLAS'
-  | 'WORK'
-  | 'EXER'
-  | 'IGRO'
-  | 'RESI'
-  | 'ROOM'
-  | 'WING'
-  | 'MEDI'
-  | 'CELL'
-  | 'INTE'
-  | 'BOX'
-  | 'RTU'
-  | 'VIDE'
-  | 'TRAI'
-  | 'LAND'
-  | 'SPUR'
-  | 'HOLD'
-
 interface Location {
   locationId: number
-  locationType: LocationType
+  locationType: string
   description: string
   agencyId: string
   currentOccupancy: number

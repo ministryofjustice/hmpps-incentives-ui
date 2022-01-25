@@ -4,6 +4,7 @@ import request from 'supertest'
 
 import { appWithAllRoutes, makeTestSession } from './testutils/appSetup'
 import { PrisonApi } from '../data/prisonApi'
+import { getTestLocation } from '../testData/prisonApi'
 
 jest.mock('../data/prisonApi')
 
@@ -16,26 +17,16 @@ beforeEach(() => {
 
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
   prisonApi.getUserLocations.mockResolvedValue([
-    {
-      locationId: 2,
-      locationType: 'WING',
-      description: '2',
+    getTestLocation({
       agencyId: 'MDI',
-      currentOccupancy: 199,
       locationPrefix: 'MDI-2',
-      operationalCapacity: 200,
       userDescription: 'Houseblock 2',
-    },
-    {
-      locationId: 42,
-      locationType: 'WING',
-      description: '42',
+    }),
+    getTestLocation({
       agencyId: 'MDI',
-      currentOccupancy: 199,
       locationPrefix: 'MDI-42',
-      operationalCapacity: 200,
       userDescription: 'Houseblock 42',
-    },
+    }),
   ])
 })
 

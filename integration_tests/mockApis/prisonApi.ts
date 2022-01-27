@@ -37,11 +37,11 @@ export default {
       },
     })
   },
-  stubGetAgencyLocations: (): SuperAgentRequest => {
+  stubGetUserLocations: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/prisonApi/api/agencies/MDI/locations',
+        urlPattern: '/prisonApi/api/users/me/locations',
       },
       response: {
         status: 200,

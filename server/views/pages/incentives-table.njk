@@ -8,17 +8,17 @@
 {% block content %}
 
   <main class="app-container govuk-body">
-    <h1>{{ wing.name }} incentive levels and behaviours</h1>
+    <h1>{{ entries.locationDescription }} incentive levels and behaviours</h1>
 
     <p>
         <a href="/select-another-location" class="govuk-link">Select another location</a>
     </p>
     <div class="govuk-grid-row govuk-!-margin-top-8 govuk-grid-row">
-        {% for level in ['Basic', 'Standard', 'Enhanced', 'Enhanced 2'] %}
-            <div class="govuk-grid-column-one-quarter">
-                <p class="govuk-body govuk-!-margin-bottom-2">{{ level }}</p>
-                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="unaccountedfor">
-                    {{ wing.entries[level].length | default(0) }}
+        {% for level in entries.incentiveLevelSummary %}
+            <div class="govuk-grid-column-one-quarter" data-qa="number-at-level-{{ level.level }}">
+                <p class="govuk-body govuk-!-margin-bottom-2">{{ level.levelDescription }}</p>
+                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold">
+                    {{ level.numberAtThisLevel | default(0) }}
                 </span>
             </div>
         {% endfor %}
@@ -59,50 +59,40 @@
         ] %}
 
         {% set rows = [] %}
-        {% for prisoner in wing.entries[level] %}
-            {% set rows = (rows.push([
+        {% for prisoner in level.prisonerBehaviours %}
+            {% set _ = rows.push([
             { html: '<img src="/assets/images/prisoner.jpeg" alt="{{ prisoner.fullName }}" width="90" />' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.offenderNo + '" class="govuk-link">' + prisoner.fullName + ' (' + prisoner.offenderNo + ') </a>' },
+            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '" class="govuk-link">' + prisoner.lastName + ', ' + prisoner.firstName + ' (' + prisoner.prisonerNumber + ')</a>' },
             { text: prisoner.daysOnLevel },
-            { text: prisoner.daysSinceReview },
-            { text: prisoner.positivesCaseNotes },
-            { text: prisoner.iepEncouragements },
-            { text: prisoner.negativesCaseNotes },
-            { text: prisoner.iepWarnings },
+            { text: prisoner.daysSinceLastReview },
+            { text: prisoner.positiveBehaviours },
+            { text: prisoner.incentiveEncouragements },
+            { text: prisoner.negativeBehaviours },
+            { text: prisoner.incentiveWarnings },
             { text: prisoner.provenAdjudications }
-            ]), rows) %}
+            ]) %}
         {% endfor %}
 
-        <h2 class="govuk-heading-l">{{ level }}</h2>
+        <h2 class="govuk-heading-l">{{ level.levelDescription }}</h2>
         {{ govukTable({
             head: commonHeader,
             rows: rows
         }) }}
     {% endmacro %}
 
+    {% set tabsItems = [] %}
+    {% for level in entries.incentiveLevelSummary %}
+        {% set _ = tabsItems.push(
+            {
+                label: level.levelDescription,
+                id: level.level,
+                panel: { html: table(level) }
+            }
+        ) %}
+    {% endfor %}
+
     {{ govukTabs({
-      items: [
-        {
-          label: "Basic",
-          id: "basic",
-          panel: { html: table('Basic') }
-        },
-        {
-          label: "Standard",
-          id: "standard",
-          panel: { html: table('Standard') }
-        },
-        {
-          label: "Enhanced",
-          id: "enhanced",
-          panel: { html: table('Enhanced') }
-        },
-        {
-          label: "Enhanced 2",
-          id: "enhanced-2",
-          panel: { html: table("Enhanced 2") }
-        }
-      ]
+        items: tabsItems
     }) }}
 
   </main>

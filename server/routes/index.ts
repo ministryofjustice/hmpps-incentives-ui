@@ -1,5 +1,8 @@
 import type { RequestHandler, Router } from 'express'
 
+import HmppsAuthClient from '../data/hmppsAuthClient'
+import { createRedisClient } from '../data/redisClient'
+import TokenStore from '../data/tokenStore'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import BehaviourService from '../services/behaviourService'
 
@@ -7,6 +10,7 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', async (req, res, next) => {
+    const { user } = res.locals
     const { activeLocation } = req.session
 
     if (!activeLocation) {
@@ -14,16 +18,14 @@ export default function routes(router: Router): Router {
       return
     }
 
-    const behaviorService = new BehaviourService()
-    // const entries = await behaviorService.getBehaviourEntries(agencyId, activeLocation)
-    const entries = await behaviorService.getBehaviourEntries()
+    // TODO: Move somewhere else? Where? In Service?
+    const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient()))
+    const systemToken = await hmppsAuthClient.getSystemClientToken(user.username)
 
-    const wing = {
-      name: activeLocation.userDescription || activeLocation.description,
-      entries,
-    }
+    const behaviorService = new BehaviourService(systemToken)
+    const entries = await behaviorService.getLocationSummary(user.activeCaseLoadId, activeLocation.locationPrefix)
 
-    res.render('pages/incentives-table', { wing })
+    res.render('pages/incentives-table', { entries })
   })
 
   return router

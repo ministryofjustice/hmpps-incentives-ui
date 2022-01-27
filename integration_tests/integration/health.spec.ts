@@ -2,6 +2,7 @@ context('Healthcheck', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubAuthPing')
+    cy.task('stubIncentivesApiPing')
     cy.task('stubPrisonApiPing')
     cy.task('stubTokenVerificationPing')
   })

@@ -8,35 +8,9 @@ interface CaseLoad {
   type: string
 }
 
-// Possibly not an exhaustive list
-type LocationType =
-  | 'AREA'
-  | 'ADJU'
-  | 'ASSO'
-  | 'SPOR'
-  | 'LOCA'
-  | 'STOR'
-  | 'CLAS'
-  | 'WORK'
-  | 'EXER'
-  | 'IGRO'
-  | 'RESI'
-  | 'ROOM'
-  | 'WING'
-  | 'MEDI'
-  | 'CELL'
-  | 'INTE'
-  | 'BOX'
-  | 'RTU'
-  | 'VIDE'
-  | 'TRAI'
-  | 'LAND'
-  | 'SPUR'
-  | 'HOLD'
-
 interface Location {
   locationId: number
-  locationType: LocationType
+  locationType: string
   description: string
   agencyId: string
   currentOccupancy: number
@@ -54,8 +28,8 @@ class PrisonApi extends RestClient {
     return this.get({ path: '/api/users/me/caseLoads' }) as Promise<Array<CaseLoad>>
   }
 
-  async getAgencyLocations(agencyId: string): Promise<Array<Location>> {
-    const locations = (await this.get({ path: `/api/agencies/${agencyId}/locations` })) as Array<Location>
+  async getUserLocations(): Promise<Array<Location>> {
+    const locations = (await this.get({ path: `/api/users/me/locations` })) as Array<Location>
 
     // Only return occupied wings
     return locations.filter(location => {

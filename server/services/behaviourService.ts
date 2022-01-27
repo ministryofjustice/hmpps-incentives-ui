@@ -1,26 +1,13 @@
+import { IncentivesApi, IncentivesLocationSummary } from '../data/incentivesApi'
+
 export default class BehaviourService {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  constructor() {}
+  private readonly incentivesApi: IncentivesApi
 
-  // async getBehaviourEntries(agencyId: string, location: Location): Promise<unknown> {
-  async getBehaviourEntries(): Promise<unknown> {
-    const testEntry = {
-      fullName: 'Doe, John',
-      offenderNo: 'A1234AB',
-      daysOnLevel: 123,
-      daysSinceReview: 456,
-      provenAdjudications: 0,
-      positivesCaseNotes: 2,
-      negativesCaseNotes: 0,
-      iepEncouragements: 1,
-      iepWarnings: 0,
-    }
+  constructor(systemToken: string) {
+    this.incentivesApi = new IncentivesApi(systemToken)
+  }
 
-    return {
-      Basic: [testEntry, testEntry, testEntry],
-      Standard: [testEntry, testEntry],
-      Enhanced: [testEntry],
-      'Enhanced 2': [testEntry],
-    }
+  async getLocationSummary(agencyId: string, locationPrefix: string): Promise<IncentivesLocationSummary> {
+    return this.incentivesApi.getLocationSummary(agencyId, locationPrefix)
   }
 }

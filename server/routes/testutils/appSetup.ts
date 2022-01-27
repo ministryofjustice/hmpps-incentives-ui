@@ -11,6 +11,7 @@ import standardRouter from '../standardRouter'
 import UserService from '../../services/userService'
 import * as auth from '../../authentication/auth'
 import { Location, PrisonApi } from '../../data/prisonApi'
+import { getTestLocation } from '../../testData/prisonApi'
 
 jest.mock('../../data/prisonApi')
 
@@ -29,17 +30,11 @@ const activeCaseLoad = {
   type: 'INST',
 }
 
-const activeLocation: Location = {
-  locationId: 2,
-  locationType: 'WING',
-  description: '2',
+const activeLocation: Location = getTestLocation({
   agencyId: 'MDI',
-  currentOccupancy: 199,
   locationPrefix: 'MDI-2',
-  operationalCapacity: 200,
   userDescription: 'Houseblock 2',
-}
-
+})
 class MockUserService extends UserService {
   constructor() {
     super(undefined)
@@ -73,7 +68,7 @@ function appSetup(production: boolean, testSession: Session): Express {
   const app = express()
 
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getAgencyLocations.mockResolvedValue([activeLocation])
+  prisonApi.getUserLocations.mockResolvedValue([activeLocation])
 
   app.set('view engine', 'njk')
 

@@ -4,7 +4,10 @@ import request from 'supertest'
 
 import { appWithAllRoutes, makeTestSession } from './testutils/appSetup'
 import BehaviourService from '../services/behaviourService'
+import HmppsAuthClient from '../data/hmppsAuthClient'
+import { getTestIncentivesLocationSummary } from '../testData/incentivesApi'
 
+jest.mock('../data/hmppsAuthClient')
 jest.mock('../services/behaviourService')
 
 let app: Express
@@ -14,16 +17,17 @@ beforeEach(() => {
   testSession = makeTestSession()
   app = appWithAllRoutes({ testSession })
 
+  const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>
+  hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
+
   const behaviorService = BehaviourService.prototype as jest.Mocked<BehaviourService>
-  behaviorService.getBehaviourEntries.mockResolvedValue({
-    name: 'C',
-    Basic: [
-      {
-        fullName: 'Doe, Jane',
-        offenderNo: 'A1234AB',
-      },
-    ],
-  })
+  behaviorService.getLocationSummary.mockResolvedValue(
+    getTestIncentivesLocationSummary({
+      prisonId: 'MDI',
+      locationId: 'MDI-2',
+      locationDescription: 'Houseblock 2',
+    })
+  )
 })
 
 afterEach(() => {
@@ -36,6 +40,7 @@ describe('GET /', () => {
       .get('/')
       .expect('Content-Type', /html/)
       .expect(res => {
+        expect(res.text).toContain('Houseblock 2 incentive levels and behaviour')
         expect(res.text).toContain('Behaviour entries since last review')
         expect(res.text).toContain('Doe, Jane (A1234AB)')
       })

@@ -15,9 +15,9 @@
     </p>
     <div class="govuk-grid-row govuk-!-margin-top-8 govuk-grid-row">
         {% for level in entries.incentiveLevelSummary %}
-            <div class="govuk-grid-column-one-quarter">
+            <div class="govuk-grid-column-one-quarter" data-qa="number-at-level-{{ level.level }}">
                 <p class="govuk-body govuk-!-margin-bottom-2">{{ level.levelDescription }}</p>
-                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold" data-qa="unaccountedfor">
+                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold">
                     {{ level.numberAtThisLevel | default(0) }}
                 </span>
             </div>
@@ -62,7 +62,7 @@
         {% for prisoner in level.prisonerBehaviours %}
             {% set _ = rows.push([
             { html: '<img src="/assets/images/prisoner.jpeg" alt="{{ prisoner.fullName }}" width="90" />' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '" class="govuk-link">' + prisoner.lastName + ', ' + prisoner.firstName + ' (' + prisoner.prisonerNumber + ') </a>' },
+            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '" class="govuk-link">' + prisoner.lastName + ', ' + prisoner.firstName + ' (' + prisoner.prisonerNumber + ')</a>' },
             { text: prisoner.daysOnLevel },
             { text: prisoner.daysSinceLastReview },
             { text: prisoner.positiveBehaviours },

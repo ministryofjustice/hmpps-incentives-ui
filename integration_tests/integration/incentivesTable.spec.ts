@@ -11,6 +11,7 @@ context('Wing incentives table page', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubPrisonApiImages')
     cy.task('stubPrisonApiLocations')
     cy.task('stubIncentivesApiGetLocationSummary')
 
@@ -49,7 +50,7 @@ context('Wing incentives table page', () => {
         expect(entries.length).equal(1)
 
         expect(entries[0]).to.deep.equal({
-          imageSrc: '/assets/images/prisoner.jpeg',
+          imageSrc: '/prisoner-images/222222.jpeg',
           name: 'Doe, Jane (A1234AB)',
           nameLink: `${config.dpsUrl}/prisoner/A1234AB`,
           daysOnLevel: '50',
@@ -75,7 +76,7 @@ context('Wing incentives table page', () => {
         expect(entries.length).equal(2)
 
         expect(entries[0]).to.deep.equal({
-          imageSrc: '/assets/images/prisoner.jpeg',
+          imageSrc: '/prisoner-images/333333.jpeg',
           name: 'Dean, James (B1234CD)',
           nameLink: 'http://localhost:3000/prisoner/B1234CD',
           daysOnLevel: '100',
@@ -87,7 +88,7 @@ context('Wing incentives table page', () => {
           provenAdjudications: '0',
         })
         expect(entries[1]).to.deep.equal({
-          imageSrc: '/assets/images/prisoner.jpeg',
+          imageSrc: '/prisoner-images/444444.jpeg',
           name: 'Doe, John (C1234EF)',
           nameLink: 'http://localhost:3000/prisoner/C1234EF',
           daysOnLevel: '10',

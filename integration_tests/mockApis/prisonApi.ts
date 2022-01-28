@@ -1,4 +1,8 @@
+import * as fs from 'fs'
+import * as path from 'path'
+
 import { SuperAgentRequest } from 'superagent'
+
 import { stubFor } from './wiremock'
 
 export default {
@@ -12,6 +16,24 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: { status: 'UP' },
+      },
+    })
+  },
+  stubGetImage: (): SuperAgentRequest => {
+    const imagePath = path.join(__dirname, '..', '..', 'assets', 'images', 'prisoner.jpeg')
+    const imageContents = fs.readFileSync(imagePath, { encoding: 'base64' })
+
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/prisonApi/api/images/([0-9]+)/data',
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'images/jpeg',
+        },
+        base64Body: imageContents,
       },
     })
   },

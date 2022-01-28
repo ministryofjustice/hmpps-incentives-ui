@@ -5,6 +5,7 @@ import createError from 'http-errors'
 
 import indexRoutes from './routes/index'
 import changeLocationRoutes from './routes/changeLocation'
+import prisonerImagesRoutes from './routes/prisonerImages'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
 import standardRouter from './routes/standardRouter'
@@ -37,6 +38,7 @@ export default function createApp(userService: UserService): express.Application
   // App routes
   app.use('/', indexRoutes(standardRouter(userService)))
   app.use('/select-another-location', changeLocationRoutes(standardRouter(userService)))
+  app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(userService)))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))

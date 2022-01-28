@@ -60,8 +60,14 @@
 
         {% set rows = [] %}
         {% for prisoner in level.prisonerBehaviours %}
+            {% if prisoner.imageId > 0 %}
+                {% set imageUrl = '/prisoner-images/' + prisoner.imageId + '.jpeg' %}
+            {% else %}
+                {% set imageUrl = '/assets/images/prisoner.jpeg' %}
+            {% endif %}
+
             {% set _ = rows.push([
-            { html: '<img src="/assets/images/prisoner.jpeg" alt="{{ prisoner.fullName }}" width="90" />' },
+            { html: '<img src="' + imageUrl + '" alt="' + prisoner.lastName + ', ' + prisoner.firstName + '\'s photo" width="90" />' },
             { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '" class="govuk-link">' + prisoner.lastName + ', ' + prisoner.firstName + ' (' + prisoner.prisonerNumber + ')</a>' },
             { text: prisoner.daysOnLevel },
             { text: prisoner.daysSinceLastReview },

@@ -3,6 +3,11 @@ import LocationSelectionPage from '../pages/locationSelection'
 import BehaviourEntriesPage from '../pages/behaviourEntriesPage'
 import config from '../../server/config'
 
+const threeMonthsAgo = new Date()
+threeMonthsAgo.setDate(threeMonthsAgo.getDate() - 90)
+
+const fromDate = `${threeMonthsAgo.getDate()}/${threeMonthsAgo.getMonth() + 1}/${threeMonthsAgo.getFullYear()}`
+
 context('Wing incentives table page', () => {
   let locationSelectionPage: LocationSelectionPage
   let behaviourEntriesPage: BehaviourEntriesPage
@@ -56,10 +61,15 @@ context('Wing incentives table page', () => {
           daysOnLevel: '50',
           daysSinceLastReview: '10',
           positiveBehaviours: '100',
+          positiveBehavioursLink: caseNotesLink('A1234AB', 'POS'),
           incentiveEncouragements: '99',
+          incentiveEncouragementsLink: caseNotesLink('A1234AB', 'POS', 'IEP_ENC'),
           negativeBehaviours: '10',
+          negativeBehavioursLink: caseNotesLink('A1234AB', 'NEG'),
           incentiveWarnings: '9',
+          incentiveWarningsLink: caseNotesLink('A1234AB', 'NEG', 'IEP_WARN'),
           provenAdjudications: '1',
+          provenAdjudicationsLink: provenAdjudicationsLink('A1234AB'),
         })
       })
     })
@@ -82,10 +92,15 @@ context('Wing incentives table page', () => {
           daysOnLevel: '100',
           daysSinceLastReview: '10',
           positiveBehaviours: '123',
+          positiveBehavioursLink: caseNotesLink('B1234CD', 'POS'),
           incentiveEncouragements: '100',
+          incentiveEncouragementsLink: caseNotesLink('B1234CD', 'POS', 'IEP_ENC'),
           negativeBehaviours: '1',
+          negativeBehavioursLink: caseNotesLink('B1234CD', 'NEG'),
           incentiveWarnings: '0',
+          incentiveWarningsLink: caseNotesLink('B1234CD', 'NEG', 'IEP_WARN'),
           provenAdjudications: '0',
+          provenAdjudicationsLink: provenAdjudicationsLink('B1234CD'),
         })
         expect(entries[1]).to.deep.equal({
           imageSrc: '/prisoner-images/444444.jpeg',
@@ -94,12 +109,33 @@ context('Wing incentives table page', () => {
           daysOnLevel: '10',
           daysSinceLastReview: '10',
           positiveBehaviours: '80',
+          positiveBehavioursLink: caseNotesLink('C1234EF', 'POS'),
           incentiveEncouragements: '79',
+          incentiveEncouragementsLink: caseNotesLink('C1234EF', 'POS', 'IEP_ENC'),
           negativeBehaviours: '0',
+          negativeBehavioursLink: caseNotesLink('C1234EF', 'NEG'),
           incentiveWarnings: '0',
+          incentiveWarningsLink: caseNotesLink('C1234EF', 'NEG', 'IEP_WARN'),
           provenAdjudications: '0',
+          provenAdjudicationsLink: provenAdjudicationsLink('C1234EF'),
         })
       })
     })
   })
 })
+
+function caseNotesLink(prisonerNumber: string, type: string, subType: string = null) {
+  let link = `${config.dpsUrl}/prisoner/${prisonerNumber}/case-notes?type=${type}`
+
+  if (subType) {
+    link += `&subType=${subType}`
+  }
+
+  link += `&fromDate=${fromDate}`
+
+  return link
+}
+
+function provenAdjudicationsLink(prisonerNumber: string) {
+  return `${config.dpsUrl}/prisoner/${prisonerNumber}/adjudications?finding=PROVED&fromDate=${fromDate}`
+}

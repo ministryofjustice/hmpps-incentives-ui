@@ -24,6 +24,10 @@ class PrisonApi extends RestClient {
     super('HMPPS Prison API', config.apis.hmppsPrisonApi, token)
   }
 
+  async getImage(imageId: string): Promise<unknown> {
+    return this.get({ path: `/api/images/${imageId}/data` })
+  }
+
   async getUserCaseLoads(): Promise<Array<CaseLoad>> {
     return this.get({ path: '/api/users/me/caseLoads' }) as Promise<Array<CaseLoad>>
   }

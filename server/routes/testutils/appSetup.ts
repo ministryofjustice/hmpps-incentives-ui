@@ -5,6 +5,7 @@ import path from 'path'
 
 import indexRoutes from '../index'
 import changeLocationRoutes from '../changeLocation'
+import prisonerImagesRoutes from '../prisonerImages'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import standardRouter from '../standardRouter'
@@ -90,6 +91,7 @@ function appSetup(production: boolean, testSession: Session): Express {
   const mockUserService = new MockUserService()
   app.use('/', indexRoutes(standardRouter(mockUserService)))
   app.use('/select-another-location', changeLocationRoutes(standardRouter(mockUserService)))
+  app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(mockUserService)))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))

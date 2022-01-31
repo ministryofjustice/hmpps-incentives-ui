@@ -6,6 +6,7 @@ generic-service:
 
   ingress:
     host: incentives-ui-dev.hmpps.service.justice.gov.uk
+    enable_whitelist: false
 
   env:
     INGRESS_URL: "https://incentives-ui-dev.hmpps.service.justice.gov.uk"

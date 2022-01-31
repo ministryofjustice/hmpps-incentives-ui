@@ -41,7 +41,7 @@ class IncentivesApi extends RestClient {
 
   async getLocationSummary(agencyId: string, locationPrefix: string): Promise<IncentivesLocationSummary> {
     return this.get({
-      path: `/incentives-summary/prison/${agencyId}/location/${locationPrefix}?sortBy=DAYS_SINCE_LAST_REVIEW&sortDirection=DESC`,
+      path: `/incentives-summary/prison/${agencyId}/location/${locationPrefix}?sortBy=NAME&sortDirection=ASC`,
     }) as Promise<IncentivesLocationSummary>
   }
 }

@@ -21,8 +21,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern:
-          '/incentivesApi/incentives-summary/prison/MDI/location/MDI-42\\?sortBy=DAYS_SINCE_LAST_REVIEW&sortDirection=DESC',
+        urlPattern: '/incentivesApi/incentives-summary/prison/MDI/location/MDI-42\\?sortBy=NAME&sortDirection=ASC',
       },
       response: {
         status: 200,

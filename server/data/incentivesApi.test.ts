@@ -26,7 +26,7 @@ describe('IncentiveApi', () => {
       const locationId = 'ABC-1'
       const apiResponse = getTestIncentivesLocationSummary({ prisonId, locationId })
       incentivesApi
-        .get(`/incentives-summary/prison/${prisonId}/location/${locationId}`)
+        .get(`/incentives-summary/prison/${prisonId}/location/${locationId}?sortBy=NAME&sortDirection=ASC`)
         .matchHeader('authorization', `Bearer ${accessToken}`)
         .reply(200, apiResponse)
 

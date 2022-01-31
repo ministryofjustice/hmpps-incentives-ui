@@ -25,8 +25,17 @@ export default function routes(router: Router): Router {
     const behaviorService = new BehaviourService(systemToken)
     const entries = await behaviorService.getLocationSummary(user.activeCaseLoadId, activeLocation.locationPrefix)
 
-    res.render('pages/incentives-table', { entries })
+    const threeMonthsAgo = daysAgo(90)
+
+    res.render('pages/incentives-table', { entries, threeMonthsAgo })
   })
 
   return router
+}
+
+function daysAgo(days: number): Date {
+  const result = new Date()
+  result.setDate(result.getDate() - days)
+
+  return result
 }

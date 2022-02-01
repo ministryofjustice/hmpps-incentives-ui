@@ -14,7 +14,7 @@ export default class BehaviourEntriesPage extends Page {
           const tds = Cypress.$(element).find('td.govuk-table__cell')
           return {
             imageSrc: Cypress.$(tds[0]).find('img').attr('src'),
-            name: Cypress.$(tds[1]).text(),
+            name: Cypress.$(tds[1]).find('a').html(),
             nameLink: Cypress.$(tds[1]).find('a').attr('href'),
             daysOnLevel: Cypress.$(tds[2]).text(),
             daysSinceLastReview: Cypress.$(tds[3]).text(),

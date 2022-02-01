@@ -3,11 +3,6 @@ import LocationSelectionPage from '../pages/locationSelection'
 import BehaviourEntriesPage from '../pages/behaviourEntriesPage'
 import config from '../../server/config'
 
-const threeMonthsAgo = new Date()
-threeMonthsAgo.setDate(threeMonthsAgo.getDate() - 90)
-
-const fromDate = `${threeMonthsAgo.getDate()}/${threeMonthsAgo.getMonth() + 1}/${threeMonthsAgo.getFullYear()}`
-
 context('Wing incentives table page', () => {
   let locationSelectionPage: LocationSelectionPage
   let behaviourEntriesPage: BehaviourEntriesPage
@@ -56,18 +51,18 @@ context('Wing incentives table page', () => {
 
         expect(entries[0]).to.deep.equal({
           imageSrc: '/prisoner-images/222222.jpeg',
-          name: 'Doe, Jane (A1234AB)',
-          nameLink: `${config.dpsUrl}/prisoner/A1234AB`,
+          name: 'Doe, Jane<br>A1234AB',
+          nameLink: caseNotesLink('A1234AB'),
           daysOnLevel: '50',
           daysSinceLastReview: '10',
           positiveBehaviours: '100',
-          positiveBehavioursLink: caseNotesLink('A1234AB', 'POS'),
+          positiveBehavioursLink: caseNotesLink('A1234AB', { type: 'POS' }),
           incentiveEncouragements: '99',
-          incentiveEncouragementsLink: caseNotesLink('A1234AB', 'POS', 'IEP_ENC'),
+          incentiveEncouragementsLink: caseNotesLink('A1234AB', { type: 'POS', subType: 'IEP_ENC' }),
           negativeBehaviours: '10',
-          negativeBehavioursLink: caseNotesLink('A1234AB', 'NEG'),
+          negativeBehavioursLink: caseNotesLink('A1234AB', { type: 'NEG' }),
           incentiveWarnings: '9',
-          incentiveWarningsLink: caseNotesLink('A1234AB', 'NEG', 'IEP_WARN'),
+          incentiveWarningsLink: caseNotesLink('A1234AB', { type: 'NEG', subType: 'IEP_WARN' }),
           provenAdjudications: '1',
           provenAdjudicationsLink: provenAdjudicationsLink('A1234AB'),
         })
@@ -87,35 +82,35 @@ context('Wing incentives table page', () => {
 
         expect(entries[0]).to.deep.equal({
           imageSrc: '/prisoner-images/333333.jpeg',
-          name: 'Dean, James (B1234CD)',
-          nameLink: 'http://localhost:3000/prisoner/B1234CD',
+          name: 'Dean, James<br>B1234CD',
+          nameLink: caseNotesLink('B1234CD'),
           daysOnLevel: '100',
           daysSinceLastReview: '10',
           positiveBehaviours: '123',
-          positiveBehavioursLink: caseNotesLink('B1234CD', 'POS'),
+          positiveBehavioursLink: caseNotesLink('B1234CD', { type: 'POS' }),
           incentiveEncouragements: '100',
-          incentiveEncouragementsLink: caseNotesLink('B1234CD', 'POS', 'IEP_ENC'),
+          incentiveEncouragementsLink: caseNotesLink('B1234CD', { type: 'POS', subType: 'IEP_ENC' }),
           negativeBehaviours: '1',
-          negativeBehavioursLink: caseNotesLink('B1234CD', 'NEG'),
+          negativeBehavioursLink: caseNotesLink('B1234CD', { type: 'NEG' }),
           incentiveWarnings: '0',
-          incentiveWarningsLink: caseNotesLink('B1234CD', 'NEG', 'IEP_WARN'),
+          incentiveWarningsLink: caseNotesLink('B1234CD', { type: 'NEG', subType: 'IEP_WARN' }),
           provenAdjudications: '0',
           provenAdjudicationsLink: provenAdjudicationsLink('B1234CD'),
         })
         expect(entries[1]).to.deep.equal({
           imageSrc: '/prisoner-images/444444.jpeg',
-          name: 'Doe, John (C1234EF)',
-          nameLink: 'http://localhost:3000/prisoner/C1234EF',
+          name: 'Doe, John<br>C1234EF',
+          nameLink: caseNotesLink('C1234EF'),
           daysOnLevel: '10',
           daysSinceLastReview: '10',
           positiveBehaviours: '80',
-          positiveBehavioursLink: caseNotesLink('C1234EF', 'POS'),
+          positiveBehavioursLink: caseNotesLink('C1234EF', { type: 'POS' }),
           incentiveEncouragements: '79',
-          incentiveEncouragementsLink: caseNotesLink('C1234EF', 'POS', 'IEP_ENC'),
+          incentiveEncouragementsLink: caseNotesLink('C1234EF', { type: 'POS', subType: 'IEP_ENC' }),
           negativeBehaviours: '0',
-          negativeBehavioursLink: caseNotesLink('C1234EF', 'NEG'),
+          negativeBehavioursLink: caseNotesLink('C1234EF', { type: 'NEG' }),
           incentiveWarnings: '0',
-          incentiveWarningsLink: caseNotesLink('C1234EF', 'NEG', 'IEP_WARN'),
+          incentiveWarningsLink: caseNotesLink('C1234EF', { type: 'NEG', subType: 'IEP_WARN' }),
           provenAdjudications: '0',
           provenAdjudicationsLink: provenAdjudicationsLink('C1234EF'),
         })
@@ -124,18 +119,27 @@ context('Wing incentives table page', () => {
   })
 })
 
-function caseNotesLink(prisonerNumber: string, type: string, subType: string = null) {
-  let link = `${config.dpsUrl}/prisoner/${prisonerNumber}/case-notes?type=${type}`
+function caseNotesLink(prisonerNumber: string, params: Record<string, string> = {}) {
+  let link = `${config.dpsUrl}/prisoner/${prisonerNumber}/case-notes?`
 
-  if (subType) {
-    link += `&subType=${subType}`
+  const parts = []
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, value] of Object.entries(params)) {
+    parts.push(`${key}=${value}`)
   }
 
-  link += `&fromDate=${fromDate}`
+  const threeMonthsAgo = new Date()
+  threeMonthsAgo.setDate(threeMonthsAgo.getDate() - 90)
+
+  const fromDate = `${threeMonthsAgo.getDate()}/${threeMonthsAgo.getMonth() + 1}/${threeMonthsAgo.getFullYear()}`
+
+  parts.push(`fromDate=${fromDate}`)
+
+  link += parts.join('&')
 
   return link
 }
 
 function provenAdjudicationsLink(prisonerNumber: string) {
-  return `${config.dpsUrl}/prisoner/${prisonerNumber}/adjudications?finding=PROVED&fromDate=${fromDate}`
+  return `${config.dpsUrl}/prisoner/${prisonerNumber}/adjudications?finding=PROVED`
 }

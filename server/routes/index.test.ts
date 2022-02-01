@@ -42,7 +42,7 @@ describe('GET /', () => {
       .expect(res => {
         expect(res.text).toContain('Houseblock 2 incentive levels and behaviour')
         expect(res.text).toContain('Behaviour entries since last review')
-        expect(res.text).toContain('Doe, Jane (A1234AB)')
+        expect(res.text).toContain('Doe, Jane<br>A1234AB')
       })
   })
 

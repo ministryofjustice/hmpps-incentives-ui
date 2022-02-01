@@ -68,7 +68,7 @@
 
             {% set _ = rows.push([
             { html: '<img src="' + imageUrl + '" alt="' + prisoner.lastName + ', ' + prisoner.firstName + '\'s photo" width="90" />' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.lastName + ', ' + prisoner.firstName + ' (' + prisoner.prisonerNumber + ')</a>' },
+            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.lastName + ', ' + prisoner.firstName + '<br>' + prisoner.prisonerNumber + '</a>' },
             { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details?agencyId=' + entries.prisonId + '" class="govuk-link">' + prisoner.daysOnLevel + '</a>' },
             { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details?agencyId=' + entries.prisonId + '" class="govuk-link">' + prisoner.daysSinceLastReview + '</a>' },
             { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.positiveBehaviours + '</a>' },

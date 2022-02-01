@@ -51,7 +51,7 @@ context('Wing incentives table page', () => {
 
         expect(entries[0]).to.deep.equal({
           imageSrc: '/prisoner-images/222222.jpeg',
-          name: 'Doe, Jane (A1234AB)',
+          name: 'Doe, Jane<br>A1234AB',
           nameLink: caseNotesLink('A1234AB'),
           daysOnLevel: '50',
           daysSinceLastReview: '10',
@@ -82,7 +82,7 @@ context('Wing incentives table page', () => {
 
         expect(entries[0]).to.deep.equal({
           imageSrc: '/prisoner-images/333333.jpeg',
-          name: 'Dean, James (B1234CD)',
+          name: 'Dean, James<br>B1234CD',
           nameLink: caseNotesLink('B1234CD'),
           daysOnLevel: '100',
           daysSinceLastReview: '10',
@@ -99,7 +99,7 @@ context('Wing incentives table page', () => {
         })
         expect(entries[1]).to.deep.equal({
           imageSrc: '/prisoner-images/444444.jpeg',
-          name: 'Doe, John (C1234EF)',
+          name: 'Doe, John<br>C1234EF',
           nameLink: caseNotesLink('C1234EF'),
           daysOnLevel: '10',
           daysSinceLastReview: '10',

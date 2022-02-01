@@ -3,7 +3,7 @@ import express from 'express'
 import path from 'path'
 import createError from 'http-errors'
 
-import indexRoutes from './routes/index'
+import incentivesTableRoutes from './routes/incentivesTable'
 import changeLocationRoutes from './routes/changeLocation'
 import prisonerImagesRoutes from './routes/prisonerImages'
 import nunjucksSetup from './utils/nunjucksSetup'
@@ -36,7 +36,7 @@ export default function createApp(userService: UserService): express.Application
   app.use(authorisationMiddleware())
 
   // App routes
-  app.use('/', indexRoutes(standardRouter(userService)))
+  app.use('/', incentivesTableRoutes(standardRouter(userService)))
   app.use('/select-another-location', changeLocationRoutes(standardRouter(userService)))
   app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(userService)))
 

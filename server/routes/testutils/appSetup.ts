@@ -3,7 +3,7 @@ import { Cookie, Session, SessionData } from 'express-session'
 import createError from 'http-errors'
 import path from 'path'
 
-import indexRoutes from '../index'
+import incentivesTableRoutes from '../incentivesTable'
 import changeLocationRoutes from '../changeLocation'
 import prisonerImagesRoutes from '../prisonerImages'
 import nunjucksSetup from '../../utils/nunjucksSetup'
@@ -89,7 +89,7 @@ function appSetup(production: boolean, testSession: Session): Express {
 
   // App routes
   const mockUserService = new MockUserService()
-  app.use('/', indexRoutes(standardRouter(mockUserService)))
+  app.use('/', incentivesTableRoutes(standardRouter(mockUserService)))
   app.use('/select-another-location', changeLocationRoutes(standardRouter(mockUserService)))
   app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(mockUserService)))
 

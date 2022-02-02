@@ -1,7 +1,7 @@
 import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
 import AuthManageDetailsPage from '../pages/authManageDetails'
-import LocationSelectionPage from '../pages/locationSelection'
+import HomePage from '../pages/home'
 
 context('SignIn', () => {
   beforeEach(() => {
@@ -18,23 +18,23 @@ context('SignIn', () => {
 
   it('User name visible in header', () => {
     cy.signIn()
-    const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
-    locationSelectionPage.headerUserName().should('contain.text', 'J. Smith')
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.headerUserName().should('contain.text', 'J. Smith')
   })
 
   it('User can log out', () => {
     cy.signIn()
-    const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
-    locationSelectionPage.signOut().click()
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.signOut().click()
     Page.verifyOnPage(AuthSignInPage)
   })
 
   it('User can manage their details', () => {
     cy.signIn()
-    const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
+    const homePage = Page.verifyOnPage(HomePage)
 
-    locationSelectionPage.manageDetails().get('a').invoke('removeAttr', 'target')
-    locationSelectionPage.manageDetails().click()
+    homePage.manageDetails().get('a').invoke('removeAttr', 'target')
+    homePage.manageDetails().click()
     Page.verifyOnPage(AuthManageDetailsPage)
   })
 })

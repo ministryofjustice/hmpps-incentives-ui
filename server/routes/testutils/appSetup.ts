@@ -32,7 +32,7 @@ const activeCaseLoad = {
   type: 'INST',
 }
 
-const activeLocation: Location = getTestLocation({
+const testLocation: Location = getTestLocation({
   agencyId: 'MDI',
   locationPrefix: 'MDI-2',
   userDescription: 'Houseblock 2',
@@ -52,7 +52,7 @@ class MockUserService extends UserService {
   }
 }
 
-function makeTestSession(sessionData: Partial<SessionData> = { activeLocation }): Session & Partial<SessionData> {
+function makeTestSession(sessionData: Partial<SessionData> = {}): Session & Partial<SessionData> {
   return {
     ...sessionData,
     cookie: new Cookie(),
@@ -70,7 +70,7 @@ function appSetup(production: boolean, testSession: Session): Express {
   const app = express()
 
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getUserLocations.mockResolvedValue([activeLocation])
+  prisonApi.getUserLocations.mockResolvedValue([testLocation])
 
   app.set('view engine', 'njk')
 

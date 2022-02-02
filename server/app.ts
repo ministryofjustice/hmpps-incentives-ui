@@ -3,6 +3,7 @@ import express from 'express'
 import path from 'path'
 import createError from 'http-errors'
 
+import homeRoutes from './routes/home'
 import incentivesTableRoutes from './routes/incentivesTable'
 import changeLocationRoutes from './routes/changeLocation'
 import prisonerImagesRoutes from './routes/prisonerImages'
@@ -36,7 +37,8 @@ export default function createApp(userService: UserService): express.Application
   app.use(authorisationMiddleware())
 
   // App routes
-  app.use('/', incentivesTableRoutes(standardRouter(userService)))
+  app.use('/', homeRoutes(standardRouter(userService)))
+  app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
   app.use('/select-another-location', changeLocationRoutes(standardRouter(userService)))
   app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(userService)))
 

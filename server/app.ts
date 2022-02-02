@@ -38,8 +38,8 @@ export default function createApp(userService: UserService): express.Application
 
   // App routes
   app.use('/', homeRoutes(standardRouter(userService)))
-  app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
   app.use('/select-another-location', changeLocationRoutes(standardRouter(userService)))
+  app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
   app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(userService)))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))

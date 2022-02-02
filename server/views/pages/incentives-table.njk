@@ -7,13 +7,19 @@
 
 {% block content %}
 
-  <main class="app-container govuk-body">
-    <h1>{{ entries.locationDescription }} incentive levels and behaviours</h1>
+  <main class="app-container govuk-body govuk-width-container">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
+        {{ entries.locationDescription }} incentive information
+    </h1>
 
     <p>
         <a href="/select-location" class="govuk-link">Select another location</a>
     </p>
+
     <div class="govuk-grid-row govuk-!-margin-top-8 govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h2 class="govuk-heading-l">Incentive levels</h2>
+        </div>
         {% for level in entries.incentiveLevelSummary %}
             <div class="govuk-grid-column-one-quarter" data-qa="number-at-level-{{ level.level }}">
                 <p class="govuk-body govuk-!-margin-bottom-2">{{ level.levelDescription }}</p>
@@ -25,7 +31,9 @@
     </div>
 
     <p class="govuk-!-margin-top-9"></p>
-    <h2 class="govuk-heading-l govuk-!-margin-top-9">Behaviour entries since last review</h2>
+    <h2 class="govuk-heading-l govuk-!-margin-top-9">
+        Review dates and behaviour entries in the last 3 months
+    </h2>
 
     {% macro table(level) %}
         {% set commonHeader = [
@@ -42,13 +50,13 @@
                 text: "Days since last review"
             },
             {
-                text: "All positive behaviours"
+                text: "Positive behaviours"
             },
             {
                 text: "Incentive encouragements"
             },
             {
-                text: "All negative behaviours"
+                text: "Negative behaviours"
             },
             {
                 text: "Incentive warnings"

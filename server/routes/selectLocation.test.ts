@@ -34,10 +34,10 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /select-another-location', () => {
+describe('GET /select-location', () => {
   it('renders location selection page', () => {
     return request(app)
-      .get('/select-another-location')
+      .get('/select-location')
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('View by residential location')
@@ -48,14 +48,14 @@ describe('GET /select-another-location', () => {
   })
 })
 
-describe('POST /select-another-location', () => {
+describe('POST /select-location', () => {
   describe('when locationPrefix is missing', () => {
     it('redirects to location selection page', () => {
       return request(app)
-        .post('/select-another-location')
+        .post('/select-location')
         .expect(res => {
           expect(res.redirect).toBeTruthy()
-          expect(res.headers.location).toBe('/select-another-location')
+          expect(res.headers.location).toBe('/select-location')
         })
     })
   })
@@ -63,7 +63,7 @@ describe('POST /select-another-location', () => {
   describe('when locationPrefix is provided', () => {
     it('redirects to home page', () => {
       return request(app)
-        .post('/select-another-location')
+        .post('/select-location')
         .send({ locationPrefix: 'MDI-42' })
         .expect(res => {
           expect(res.redirect).toBeTruthy()

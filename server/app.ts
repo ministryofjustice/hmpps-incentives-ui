@@ -5,7 +5,7 @@ import createError from 'http-errors'
 
 import homeRoutes from './routes/home'
 import incentivesTableRoutes from './routes/incentivesTable'
-import changeLocationRoutes from './routes/changeLocation'
+import selectLocationRoutes from './routes/selectLocation'
 import prisonerImagesRoutes from './routes/prisonerImages'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
@@ -38,7 +38,7 @@ export default function createApp(userService: UserService): express.Application
 
   // App routes
   app.use('/', homeRoutes(standardRouter(userService)))
-  app.use('/select-another-location', changeLocationRoutes(standardRouter(userService)))
+  app.use('/select-location', selectLocationRoutes(standardRouter(userService)))
   app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
   app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(userService)))
 

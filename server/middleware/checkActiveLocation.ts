@@ -21,7 +21,7 @@ export default function checkActiveLocation(): RequestHandler {
       )
       if (!foundAtActivePrison) {
         delete req.session.activeLocation
-        return res.redirect('/select-another-location')
+        return res.redirect('/select-location')
       }
     }
 

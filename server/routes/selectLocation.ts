@@ -47,7 +47,7 @@ export default function routes(router: Router): Router {
       res.redirect('/')
     } else {
       logger.error(req.originalUrl, 'locationPrefix is missing')
-      res.redirect('/select-another-location')
+      res.redirect('/select-location')
     }
   })
 

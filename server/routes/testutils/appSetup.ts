@@ -5,7 +5,7 @@ import path from 'path'
 
 import homeRoutes from '../home'
 import incentivesTableRoutes from '../incentivesTable'
-import changeLocationRoutes from '../changeLocation'
+import selectLocationRoutes from '../selectLocation'
 import prisonerImagesRoutes from '../prisonerImages'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
@@ -91,7 +91,7 @@ function appSetup(production: boolean, testSession: Session): Express {
   // App routes
   const mockUserService = new MockUserService()
   app.use('/', homeRoutes(standardRouter(mockUserService)))
-  app.use('/select-another-location', changeLocationRoutes(standardRouter(mockUserService)))
+  app.use('/select-location', selectLocationRoutes(standardRouter(mockUserService)))
   app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(mockUserService)))
   app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(mockUserService)))
 

@@ -4,7 +4,6 @@ import auth from '../authentication/auth'
 import tokenVerifier from '../data/tokenVerification'
 import populateCurrentUser from '../middleware/populateCurrentUser'
 import type UserService from '../services/userService'
-import checkActiveLocation from '../middleware/checkActiveLocation'
 
 const testMode = process.env.NODE_ENV === 'test'
 
@@ -13,7 +12,6 @@ export default function standardRouter(userService: UserService): Router {
 
   router.use(auth.authenticationMiddleware(tokenVerifier))
   router.use(populateCurrentUser(userService))
-  router.use(checkActiveLocation())
 
   // CSRF protection
   if (!testMode) {

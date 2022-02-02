@@ -11,19 +11,14 @@ export default function routes(router: Router): Router {
 
   get('/', async (req, res, next) => {
     const { user } = res.locals
-    const { activeLocation } = req.session
+    const { locationPrefix } = req.params
+    const agencyId = locationPrefix.split('-')[0]
 
-    if (!activeLocation) {
-      res.redirect('/select-another-location')
-      return
-    }
-
-    // TODO: Move somewhere else? Where? In Service?
     const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient()))
     const systemToken = await hmppsAuthClient.getSystemClientToken(user.username)
 
     const behaviorService = new BehaviourService(systemToken)
-    const entries = await behaviorService.getLocationSummary(user.activeCaseLoadId, activeLocation.locationPrefix)
+    const entries = await behaviorService.getLocationSummary(agencyId, locationPrefix)
 
     const threeMonthsAgo = daysAgo(90)
 

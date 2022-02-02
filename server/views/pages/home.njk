@@ -1,0 +1,29 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "../components/card/card.njk" import card %}
+
+{% set pageTitle = applicationName + " - Home" %}
+
+{% block content %}
+
+  <main class="app-container govuk-body">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
+      Manage incentives
+    </h1>
+
+    <div class="govuk-width-container">
+      <ul class="govuk-grid-row card-group">
+        <li class="govuk-grid-column-one-third card-group__item">
+          {{ card({
+            "href": "/select-location",
+            "clickable": "true",
+            "heading": "View review dates and incentive information",
+            "description": "See review dates, incentive levels and behaviour entries by residential location.",
+            "id": "incentive-information"
+          }) }}
+        </li>
+      </ul>
+    </div>
+  </main>
+
+{% endblock %}

@@ -3,8 +3,9 @@ import express from 'express'
 import path from 'path'
 import createError from 'http-errors'
 
-import indexRoutes from './routes/index'
-import changeLocationRoutes from './routes/changeLocation'
+import homeRoutes from './routes/home'
+import incentivesTableRoutes from './routes/incentivesTable'
+import selectLocationRoutes from './routes/selectLocation'
 import prisonerImagesRoutes from './routes/prisonerImages'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
@@ -36,8 +37,9 @@ export default function createApp(userService: UserService): express.Application
   app.use(authorisationMiddleware())
 
   // App routes
-  app.use('/', indexRoutes(standardRouter(userService)))
-  app.use('/select-another-location', changeLocationRoutes(standardRouter(userService)))
+  app.use('/', homeRoutes(standardRouter(userService)))
+  app.use('/select-location', selectLocationRoutes(standardRouter(userService)))
+  app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
   app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(userService)))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))

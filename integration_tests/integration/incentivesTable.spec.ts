@@ -1,10 +1,10 @@
 import Page from '../pages/page'
+import HomePage from '../pages/home'
 import LocationSelectionPage from '../pages/locationSelection'
 import BehaviourEntriesPage from '../pages/behaviourEntriesPage'
 import config from '../../server/config'
 
 context('Wing incentives table page', () => {
-  let locationSelectionPage: LocationSelectionPage
   let behaviourEntriesPage: BehaviourEntriesPage
 
   beforeEach(() => {
@@ -16,8 +16,11 @@ context('Wing incentives table page', () => {
     cy.task('stubIncentivesApiGetLocationSummary')
 
     cy.signIn()
-    locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
 
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.viewIncentivesLevelsLink().click()
+
+    const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
     locationSelectionPage.locationSelect().select('MDI-42')
     locationSelectionPage.continueButton().click()
   })

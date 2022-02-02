@@ -3,8 +3,9 @@ import { Cookie, Session, SessionData } from 'express-session'
 import createError from 'http-errors'
 import path from 'path'
 
-import indexRoutes from '../index'
-import changeLocationRoutes from '../changeLocation'
+import homeRoutes from '../home'
+import incentivesTableRoutes from '../incentivesTable'
+import selectLocationRoutes from '../selectLocation'
 import prisonerImagesRoutes from '../prisonerImages'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
@@ -31,7 +32,7 @@ const activeCaseLoad = {
   type: 'INST',
 }
 
-const activeLocation: Location = getTestLocation({
+const testLocation: Location = getTestLocation({
   agencyId: 'MDI',
   locationPrefix: 'MDI-2',
   userDescription: 'Houseblock 2',
@@ -51,7 +52,7 @@ class MockUserService extends UserService {
   }
 }
 
-function makeTestSession(sessionData: Partial<SessionData> = { activeLocation }): Session & Partial<SessionData> {
+function makeTestSession(sessionData: Partial<SessionData> = {}): Session & Partial<SessionData> {
   return {
     ...sessionData,
     cookie: new Cookie(),
@@ -69,7 +70,7 @@ function appSetup(production: boolean, testSession: Session): Express {
   const app = express()
 
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getUserLocations.mockResolvedValue([activeLocation])
+  prisonApi.getUserLocations.mockResolvedValue([testLocation])
 
   app.set('view engine', 'njk')
 
@@ -89,8 +90,9 @@ function appSetup(production: boolean, testSession: Session): Express {
 
   // App routes
   const mockUserService = new MockUserService()
-  app.use('/', indexRoutes(standardRouter(mockUserService)))
-  app.use('/select-another-location', changeLocationRoutes(standardRouter(mockUserService)))
+  app.use('/', homeRoutes(standardRouter(mockUserService)))
+  app.use('/select-location', selectLocationRoutes(standardRouter(mockUserService)))
+  app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(mockUserService)))
   app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(mockUserService)))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))

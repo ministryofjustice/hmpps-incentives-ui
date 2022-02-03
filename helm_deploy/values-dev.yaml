@@ -6,7 +6,7 @@ generic-service:
 
   ingress:
     host: incentives-ui-dev.hmpps.service.justice.gov.uk
-    enable_whitelist: false
+  allowlist: null
 
   env:
     INGRESS_URL: "https://incentives-ui-dev.hmpps.service.justice.gov.uk"
@@ -15,9 +15,6 @@ generic-service:
     HMPPS_INCENTIVES_API_URL: "https://incentives-api-dev.hmpps.service.justice.gov.uk"
     HMPPS_PRISON_API_URL: "https://api-dev.prison.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
-
-  allowlist:
-    all: "0.0.0.0/0"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

@@ -29,7 +29,7 @@ class PrisonApi extends RestClient {
   }
 
   async getUserCaseLoads(): Promise<Array<CaseLoad>> {
-    return this.get({ path: '/api/users/me/caseLoads' }) as Promise<Array<CaseLoad>>
+    return (await this.get({ path: '/api/users/me/caseLoads' })) as Promise<Array<CaseLoad>>
   }
 
   async getUserLocations(): Promise<Array<Location>> {
@@ -37,7 +37,7 @@ class PrisonApi extends RestClient {
 
     // Only return occupied wings
     return locations.filter(location => {
-      return location.locationType === 'WING' && location.currentOccupancy > 0
+      return location.currentOccupancy > 0
     })
   }
 }

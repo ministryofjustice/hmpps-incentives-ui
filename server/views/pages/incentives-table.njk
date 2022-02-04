@@ -98,7 +98,7 @@
     {% for level in entries.incentiveLevelSummary %}
         {% set _ = tabsItems.push(
             {
-                label: level.levelDescription,
+                label: level.levelDescription + ' (' + level.numberAtThisLevel + ')',
                 id: level.level,
                 panel: { html: table(level) }
             }

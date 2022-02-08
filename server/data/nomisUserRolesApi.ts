@@ -19,9 +19,12 @@ class NomisUserRolesApi extends RestClient {
   async getUserCaseloads(): Promise<UserCaseload> {
     const userCaseload = (await this.get({ path: '/me/caseloads' })) as UserCaseload
 
-    const caseloads = userCaseload.caseloads.filter(caseload => {
-      return caseload.id !== 'NWEB'
-    })
+    const caseloads =
+      userCaseload.caseloads != null
+        ? userCaseload.caseloads.filter(caseload => {
+            return caseload.id !== 'NWEB'
+          })
+        : null
     return {
       activeCaseload: userCaseload.activeCaseload,
       caseloads,

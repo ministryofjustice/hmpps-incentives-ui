@@ -11,7 +11,7 @@ import { NomisUserRolesApi } from './nomisUserRolesApi'
 
 const accessToken = 'test token'
 
-describe('NomisUserRolesA[o', () => {
+describe('NomisUserRolesApi', () => {
   let nomisUserRolesApi: nock.Scope
   let nomisUserRolesApiClient: NomisUserRolesApi
 

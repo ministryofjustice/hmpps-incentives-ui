@@ -159,5 +159,5 @@ export default {
   stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
   stubUser: (): Promise<[Response, Response, Response]> =>
-    Promise.all([stubUser(), stubUserRoles(), prisonApi.stubGetUserCaseLoads()]),
+    Promise.all([stubUser(), stubUserRoles(), prisonApi.stubGetUserCaseloads()]),
 }

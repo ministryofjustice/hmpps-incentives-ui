@@ -15,9 +15,7 @@ function get<T>(name: string, fallback: T, options = { requireInProduction: fals
 const requiredInProduction = { requireInProduction: true }
 
 export class AgentConfig {
-  timeout: number
-
-  constructor(timeout = 8000) {
+  constructor(readonly timeout = 8000) {
     this.timeout = timeout
   }
 }
@@ -75,6 +73,15 @@ export default {
         deadline: Number(get('HMPPS_PRISON_API_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('HMPPS_PRISON_API_TIMEOUT_RESPONSE', 10000))),
+    },
+    nomisUserRolesApi: {
+      url: get('NOMIS_USER_ROLES_API_URL', 'http://localhost:8081', requiredInProduction),
+      externalUrl: get('NOMIS_USER_ROLES_API_EXTERNAL_URL', get('NOMIS_USER_ROLES_API_URL', 'http://localhost:8081')),
+      timeout: {
+        response: Number(get('NOMIS_USER_ROLES_API_TIMEOUT_RESPONSE', 8000)),
+        deadline: Number(get('NOMIS_USER_ROLES_API_TIMEOUT_DEADLINE', 8000)),
+      },
+      agent: new AgentConfig(Number(get('NOMIS_USER_ROLES_API_TIMEOUT_RESPONSE', 8000))),
     },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),

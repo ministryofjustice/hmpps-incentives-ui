@@ -1,13 +1,6 @@
 import config from '../config'
 import RestClient from './restClient'
 
-interface CaseLoad {
-  caseLoadId: string
-  description: string
-  currentlyActive: boolean
-  type: string
-}
-
 interface Location {
   locationId: number
   locationType: string
@@ -28,18 +21,14 @@ class PrisonApi extends RestClient {
     return this.get({ path: `/api/images/${imageId}/data` })
   }
 
-  async getUserCaseLoads(): Promise<Array<CaseLoad>> {
-    return (await this.get({ path: '/api/users/me/caseLoads' })) as Promise<Array<CaseLoad>>
-  }
-
   async getUserLocations(): Promise<Array<Location>> {
     const locations = (await this.get({ path: `/api/users/me/locations` })) as Array<Location>
 
-    // Only return occupied wings
+    // Only return occupied locations
     return locations.filter(location => {
       return location.currentOccupancy > 0
     })
   }
 }
 
-export { PrisonApi, CaseLoad, Location }
+export { PrisonApi, Location }

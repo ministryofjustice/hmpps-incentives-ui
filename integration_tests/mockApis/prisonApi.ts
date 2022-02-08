@@ -37,11 +37,11 @@ export default {
       },
     })
   },
-  stubGetUserCaseLoads: (): SuperAgentRequest => {
+  stubGetUserCaseloads: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/prisonApi/api/users/me/caseLoads',
+        urlPattern: '/prisonApi/api/users/me/caseloads',
       },
       response: {
         status: 200,

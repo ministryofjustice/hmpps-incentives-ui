@@ -14,6 +14,7 @@ import UserService from '../../services/userService'
 import * as auth from '../../authentication/auth'
 import { Location, PrisonApi } from '../../data/prisonApi'
 import { getTestLocation } from '../../testData/prisonApi'
+import imageRouter from '../imageRouter'
 
 jest.mock('../../data/prisonApi')
 
@@ -25,11 +26,9 @@ const user = {
   displayName: 'John Smith',
 }
 
-const activeCaseLoad = {
-  caseLoadId: 'MDI',
-  description: 'Moorland (HMP & YOI)',
-  currentlyActive: true,
-  type: 'INST',
+const activeCaseload = {
+  id: 'MDI',
+  name: 'Moorland (HMP & YOI)',
 }
 
 const testLocation: Location = getTestLocation({
@@ -44,10 +43,10 @@ class MockUserService extends UserService {
 
   async getUser(token: string) {
     return {
-      token,
-      ...user,
-      activeCaseLoad,
-      activeCaseLoads: [activeCaseLoad],
+      name: user.name,
+      displayName: user.displayName,
+      caseloads: [activeCaseload],
+      activeCaseload,
     }
   }
 }
@@ -93,7 +92,7 @@ function appSetup(production: boolean, testSession: Session): Express {
   app.use('/', homeRoutes(standardRouter(mockUserService)))
   app.use('/select-location', selectLocationRoutes(standardRouter(mockUserService)))
   app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(mockUserService)))
-  app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(standardRouter(mockUserService)))
+  app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(imageRouter()))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))

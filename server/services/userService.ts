@@ -1,12 +1,12 @@
 import convertToTitleCase from '../utils/utils'
 import type HmppsAuthClient from '../data/hmppsAuthClient'
-import { PrisonApi, CaseLoad } from '../data/prisonApi'
+import { NomisUserRolesApi, UserCaseload, Caseload } from '../data/nomisUserRolesApi'
 
 interface UserDetails {
   name: string
   displayName: string
-  activeCaseLoads: Array<CaseLoad>
-  activeCaseLoad: CaseLoad
+  caseloads: Array<Caseload>
+  activeCaseload: Caseload
 }
 
 export default class UserService {
@@ -15,16 +15,15 @@ export default class UserService {
   async getUser(token: string): Promise<UserDetails> {
     const user = await this.hmppsAuthClient.getUser(token)
 
-    const prisonApi = new PrisonApi(token)
+    const nomisUserRolesApi = new NomisUserRolesApi(token)
 
-    const activeCaseLoads = user.activeCaseLoadId ? await prisonApi.getUserCaseLoads() : []
-    const activeCaseLoad = activeCaseLoads.find(caseLoad => caseLoad.caseLoadId === user.activeCaseLoadId)
+    const userCaseloads = await nomisUserRolesApi.getUserCaseloads()
 
     return {
       ...user,
       displayName: convertToTitleCase(user.name as string),
-      activeCaseLoads,
-      activeCaseLoad,
+      caseloads: userCaseloads.caseloads,
+      activeCaseload: userCaseloads.activeCaseload,
     }
   }
 }

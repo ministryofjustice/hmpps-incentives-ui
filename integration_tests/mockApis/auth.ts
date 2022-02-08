@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken'
 import { Response } from 'superagent'
 
 import { stubFor, getRequests } from './wiremock'
-import prisonApi from './prisonApi'
 import tokenVerification from './tokenVerification'
+import nomisUserRolesApi from './nomisUserRolesApi'
 
 const createToken = () => {
   const payload = {
@@ -159,5 +159,5 @@ export default {
   stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
   stubUser: (): Promise<[Response, Response, Response]> =>
-    Promise.all([stubUser(), stubUserRoles(), prisonApi.stubGetUserCaseloads()]),
+    Promise.all([stubUser(), stubUserRoles(), nomisUserRolesApi.stubGetUserCaseloads()]),
 }

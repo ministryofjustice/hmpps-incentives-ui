@@ -43,10 +43,10 @@ class MockUserService extends UserService {
 
   async getUser(token: string) {
     return {
-      name: user.name,
-      displayName: user.displayName,
-      caseloads: [activeCaseload],
+      token,
+      ...user,
       activeCaseload,
+      caseloads: [activeCaseload],
     }
   }
 }

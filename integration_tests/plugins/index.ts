@@ -20,7 +20,7 @@ export default (on: (string, Record) => void): void => {
     stubIncentivesApiGetLocationSummary: incentivesApi.stubGetLocationSummary,
 
     stubNomisUserRolesApiPing: nomisUserRolesApi.stubPing,
-    stubNomisUserRolesApiImages: nomisUserRolesApi.stubGetUserCaseloads,
+    stubNomisUserRolesApiUserCaseloads: nomisUserRolesApi.stubGetUserCaseloads,
 
     stubPrisonApiPing: prisonApi.stubPing,
     stubPrisonApiImages: prisonApi.stubGetImage,

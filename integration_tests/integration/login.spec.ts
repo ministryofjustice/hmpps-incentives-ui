@@ -8,6 +8,7 @@ context('SignIn', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubPrisonApiLocations')
   })
 

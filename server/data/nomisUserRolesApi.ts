@@ -16,19 +16,13 @@ class NomisUserRolesApi extends RestClient {
     super('NOMIS User Roles API', config.apis.nomisUserRolesApi, token)
   }
 
-  async getUserCaseloads(): Promise<UserCaseload> {
-    const userCaseload = (await this.get({ path: '/me/caseloads' })) as UserCaseload
-
-    const caseloads =
-      userCaseload.caseloads != null
-        ? userCaseload.caseloads.filter(caseload => {
-            return caseload.id !== 'NWEB'
-          })
-        : null
-    return {
-      activeCaseload: userCaseload.activeCaseload,
-      caseloads,
-    }
+  getUserCaseloads(): Promise<UserCaseload> {
+    return (this.get({ path: '/me/caseloads' }) as Promise<UserCaseload>).then(t => {
+      return {
+        activeCaseload: t.activeCaseload,
+        caseloads: t.caseloads,
+      }
+    })
   }
 }
 

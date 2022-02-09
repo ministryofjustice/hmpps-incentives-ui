@@ -13,17 +13,17 @@ export default class UserService {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
   async getUser(token: string): Promise<UserDetails> {
-    const user = await this.hmppsAuthClient.getUser(token)
+    return this.hmppsAuthClient.getUser(token).then(user => {
+      const nomisUserRolesApi = new NomisUserRolesApi(token)
 
-    const nomisUserRolesApi = new NomisUserRolesApi(token)
-
-    const userCaseloads = await nomisUserRolesApi.getUserCaseloads()
-
-    return {
-      ...user,
-      displayName: convertToTitleCase(user.name as string),
-      caseloads: userCaseloads.caseloads,
-      activeCaseload: userCaseloads.activeCaseload,
-    }
+      return nomisUserRolesApi.getUserCaseloads().then(uc => {
+        return {
+          ...user,
+          displayName: convertToTitleCase(user.name as string),
+          caseloads: uc.caseloads,
+          activeCaseload: uc.activeCaseload,
+        }
+      })
+    })
   }
 }

@@ -7,7 +7,7 @@ export default class BehaviourService {
     this.incentivesApi = new IncentivesApi(systemToken)
   }
 
-  async getLocationSummary(agencyId: string, locationPrefix: string): Promise<IncentivesLocationSummary> {
+  getLocationSummary(agencyId: string, locationPrefix: string): Promise<IncentivesLocationSummary> {
     return this.incentivesApi.getLocationSummary(agencyId, locationPrefix)
   }
 }

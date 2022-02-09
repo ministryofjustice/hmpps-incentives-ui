@@ -38,10 +38,6 @@ export default {
                 id: 'MDI',
                 name: 'Moorland (HMP & YOI)',
               },
-              {
-                id: 'NWEB',
-                name: 'Application Caseload',
-              },
             ],
           },
         ],

@@ -1,12 +1,7 @@
 import nock from 'nock'
 
 import config from '../config'
-import {
-  getSingleCaseload,
-  getMultipleCaseload,
-  getSingleCaseloadResult,
-  getMultipleCaseloadResult,
-} from '../testData/nomisIUserRolesApi'
+import { getSingleCaseload, getMultipleCaseload } from '../testData/nomisIUserRolesApi'
 import { NomisUserRolesApi } from './nomisUserRolesApi'
 
 const accessToken = 'test token'
@@ -35,7 +30,7 @@ describe('NomisUserRolesApi', () => {
 
       const result = await nomisUserRolesApiClient.getUserCaseloads()
 
-      expect(result).toEqual(getSingleCaseloadResult())
+      expect(result).toEqual(apiResponse)
     })
   })
 
@@ -49,7 +44,7 @@ describe('NomisUserRolesApi', () => {
 
       const result = await nomisUserRolesApiClient.getUserCaseloads()
 
-      expect(result).toEqual(getMultipleCaseloadResult())
+      expect(result).toEqual(apiResponse)
     })
   })
 })

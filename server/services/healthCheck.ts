@@ -52,6 +52,11 @@ const apiChecks = [
   service('hmppsAuth', `${config.apis.hmppsAuth.url}/health/ping`, config.apis.hmppsAuth.agent),
   service('hmppsPrisonApi', `${config.apis.hmppsPrisonApi.url}/health/ping`, config.apis.hmppsPrisonApi.agent),
   service(
+    'hmppsNomisUserRolesApi',
+    `${config.apis.nomisUserRolesApi.url}/health/ping`,
+    config.apis.nomisUserRolesApi.agent
+  ),
+  service(
     'hmppsIncentivesApi',
     `${config.apis.hmppsIncentivesApi.url}/health/ping`,
     config.apis.hmppsIncentivesApi.agent

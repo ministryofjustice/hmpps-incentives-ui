@@ -4,6 +4,7 @@ import auth from '../mockApis/auth'
 import tokenVerification from '../mockApis/tokenVerification'
 import prisonApi from '../mockApis/prisonApi'
 import incentivesApi from '../mockApis/incentivesApi'
+import nomisUserRolesApi from '../mockApis/nomisUserRolesApi'
 
 export default (on: (string, Record) => void): void => {
   on('task', {
@@ -17,6 +18,9 @@ export default (on: (string, Record) => void): void => {
 
     stubIncentivesApiPing: incentivesApi.stubPing,
     stubIncentivesApiGetLocationSummary: incentivesApi.stubGetLocationSummary,
+
+    stubNomisUserRolesApiPing: nomisUserRolesApi.stubPing,
+    stubNomisUserRolesApiUserCaseloads: nomisUserRolesApi.stubGetUserCaseloads,
 
     stubPrisonApiPing: prisonApi.stubPing,
     stubPrisonApiImages: prisonApi.stubGetImage,

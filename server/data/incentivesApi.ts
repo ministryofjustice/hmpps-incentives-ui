@@ -39,7 +39,7 @@ class IncentivesApi extends RestClient {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
   }
 
-  async getLocationSummary(agencyId: string, locationPrefix: string): Promise<IncentivesLocationSummary> {
+  getLocationSummary(agencyId: string, locationPrefix: string): Promise<IncentivesLocationSummary> {
     return this.get({
       path: `/incentives-summary/prison/${agencyId}/location/${locationPrefix}?sortBy=NAME&sortDirection=ASC`,
     }) as Promise<IncentivesLocationSummary>

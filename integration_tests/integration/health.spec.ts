@@ -4,6 +4,7 @@ context('Healthcheck', () => {
     cy.task('stubAuthPing')
     cy.task('stubIncentivesApiPing')
     cy.task('stubPrisonApiPing')
+    cy.task('stubNomisUserRolesApiPing')
     cy.task('stubTokenVerificationPing')
   })
 

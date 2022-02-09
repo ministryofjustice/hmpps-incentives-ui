@@ -37,28 +37,6 @@ export default {
       },
     })
   },
-  stubGetUserCaseLoads: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/prisonApi/api/users/me/caseLoads',
-      },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: [
-          {
-            caseLoadId: 'MDI',
-            description: 'Moorland (HMP & YOI)',
-            currentlyActive: true,
-            type: 'INST',
-          },
-        ],
-      },
-    })
-  },
   stubGetUserLocations: (): SuperAgentRequest => {
     return stubFor({
       request: {

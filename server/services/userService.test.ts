@@ -1,60 +1,72 @@
 import UserService from './userService'
 import HmppsAuthClient, { User } from '../data/hmppsAuthClient'
-import { PrisonApi } from '../data/prisonApi'
+import { NomisUserRolesApi } from '../data/nomisUserRolesApi'
 
 jest.mock('../data/hmppsAuthClient')
-jest.mock('../data/prisonApi')
+jest.mock('../data/nomisUserRolesApi')
 
 const token = 'some token'
 
 describe('UserService', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
-  let prisonApi: jest.Mocked<PrisonApi>
+  let nomisUserRolesApi: jest.Mocked<NomisUserRolesApi>
   let userService: UserService
 
   describe('getUser()', () => {
     beforeEach(() => {
       hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-      prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
+      nomisUserRolesApi = NomisUserRolesApi.prototype as jest.Mocked<NomisUserRolesApi>
       userService = new UserService(hmppsAuthClient)
     })
 
     it('retrieves and formats user name', async () => {
       hmppsAuthClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
 
+      nomisUserRolesApi.getUserCaseloads.mockResolvedValue({
+        activeCaseload: {
+          id: 'MDI',
+          name: 'Moorland (HMP & YOI)',
+        },
+        caseloads: [
+          {
+            id: 'MDI',
+            name: 'Moorland (HMP & YOI)',
+          },
+        ],
+      })
+
       const result = await userService.getUser(token)
 
       expect(result.displayName).toEqual('John Smith')
     })
 
-    it('returns activeCaseLoad and activeCaseLoads', async () => {
+    it('returns activeCaseload and activeCaseloads', async () => {
       const authUser = {
         name: 'john smith',
-        activeCaseLoadId: 'MDI',
       }
       hmppsAuthClient.getUser.mockResolvedValue(authUser as User)
 
-      const activeCaseLoad = {
-        caseLoadId: 'MDI',
-        description: 'Moorland (HMP & YOI)',
-        currentlyActive: true,
-        type: 'INST',
+      const activeCaseload = {
+        id: 'MDI',
+        name: 'Moorland (HMP & YOI)',
       }
-      const allCaseLoads = [
+      const allCaseloads = [
         {
-          caseLoadId: 'TEST',
-          description: 'Test Prison',
-          currentlyActive: false,
-          type: 'INST',
+          id: 'TEST',
+          name: 'Test Prison',
         },
-        activeCaseLoad,
       ]
-      prisonApi.getUserCaseLoads.mockResolvedValue(allCaseLoads)
+      const userCaseloads = {
+        activeCaseload,
+        caseloads: allCaseloads,
+      }
+
+      nomisUserRolesApi.getUserCaseloads.mockResolvedValue(userCaseloads)
 
       const result = await userService.getUser(token)
 
-      expect(result.activeCaseLoad).toEqual(activeCaseLoad)
-      expect(result.activeCaseLoads).toEqual(allCaseLoads)
+      expect(result.activeCaseload).toEqual(activeCaseload)
+      expect(result.caseloads).toEqual(allCaseloads)
     })
 
     it('propagates error', async () => {

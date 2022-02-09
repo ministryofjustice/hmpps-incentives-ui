@@ -8,6 +8,7 @@ context('Location selection', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubPrisonApiImages')
     cy.task('stubPrisonApiLocations')
     cy.task('stubIncentivesApiGetLocationSummary')

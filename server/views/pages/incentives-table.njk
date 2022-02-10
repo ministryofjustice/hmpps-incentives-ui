@@ -41,28 +41,52 @@
                 text: ""
             },
             {
-                text: "Name and prison number"
+                text: "Name and prison number",
+                attributes: {
+                    "aria-sort": "ascending"
+                }
             },
             {
-                text: "Days on level"
+                text: "Days on level",
+                attributes: {
+                    "aria-sort": "none"
+                }
             },
             {
-                text: "Days since last review"
+                text: "Days since last review",
+                attributes: {
+                    "aria-sort": "none"
+                }
             },
             {
-                text: "Positive behaviours"
+                text: "Positive behaviours",
+                attributes: {
+                    "aria-sort": "none"
+                }
             },
             {
-                text: "Incentive encouragements"
+                text: "Incentive encouragements",
+                attributes: {
+                    "aria-sort": "none"
+                }
             },
             {
-                text: "Negative behaviours"
+                text: "Negative behaviours",
+                attributes: {
+                    "aria-sort": "none"
+                }
             },
             {
-                text: "Incentive warnings"
+                text: "Incentive warnings",
+                attributes: {
+                    "aria-sort": "none"
+                }
             },
             {
-                text: "Proven adjudications"
+                text: "Proven adjudications",
+                attributes: {
+                    "aria-sort": "none"
+                }
             }
         ] %}
 
@@ -75,20 +99,65 @@
             {% endif %}
 
             {% set _ = rows.push([
-            { html: '<img src="' + imageUrl + '" alt="' + prisoner.lastName + ', ' + prisoner.firstName + '\'s photo" width="90" />' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.lastName + ', ' + prisoner.firstName + '<br>' + prisoner.prisonerNumber + '</a>' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link">' + prisoner.daysOnLevel + '</a>' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link">' + prisoner.daysSinceLastReview + '</a>' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.positiveBehaviours + '</a>' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&subType=IEP_ENC&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.incentiveEncouragements + '</a>' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.negativeBehaviours + '</a>' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&subType=IEP_WARN&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.incentiveWarnings + '</a>' },
-            { html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/adjudications?finding=PROVED" class="govuk-link">' + prisoner.provenAdjudications + '</a>' }
+            {
+                html: '<img src="' + imageUrl + '" alt="' + prisoner.lastName + ', ' + prisoner.firstName + '\'s photo" width="90" />'
+            },
+            {
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.lastName + ', ' + prisoner.firstName + '<br>' + prisoner.prisonerNumber + '</a>',
+                attributes: {
+                    "data-sort-value": prisoner.lastName + prisoner.firstName
+                }
+            },
+            {
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link">' + prisoner.daysOnLevel + '</a>',
+                attributes: {
+                    "data-sort-value": prisoner.daysOnLevel
+                }
+            },
+            {
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link">' + prisoner.daysSinceLastReview + '</a>',
+                attributes: {
+                    "data-sort-value": prisoner.daysSinceLastReview
+                }
+            },
+            {
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.positiveBehaviours + '</a>',
+                attributes: {
+                    "data-sort-value": prisoner.positiveBehaviours
+                }
+            },
+            {
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&subType=IEP_ENC&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.incentiveEncouragements + '</a>',
+                attributes: {
+                    "data-sort-value": prisoner.incentiveEncouragements
+                }
+            },
+            {
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.negativeBehaviours + '</a>',
+                attributes: {
+                    "data-sort-value": prisoner.negativeBehaviours
+                }
+            },
+            {
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&subType=IEP_WARN&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.incentiveWarnings + '</a>',
+                attributes: {
+                    "data-sort-value": prisoner.incentiveWarnings
+                }
+            },
+            {
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/adjudications?finding=PROVED" class="govuk-link">' + prisoner.provenAdjudications + '</a>',
+                attributes: {
+                    "data-sort-value": prisoner.provenAdjudications
+                }
+            }
             ]) %}
         {% endfor %}
 
         <h2 class="govuk-heading-l">{{ level.levelDescription }}</h2>
         {{ govukTable({
+            attributes: {
+                'data-module': 'moj-sortable-table'
+            },
             head: commonHeader,
             rows: rows
         }) }}

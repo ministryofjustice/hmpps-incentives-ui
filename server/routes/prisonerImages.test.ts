@@ -3,17 +3,22 @@ import request from 'supertest'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 import { PrisonApi } from '../data/prisonApi'
+import UserService from '../services/userService'
 
 jest.mock('../data/prisonApi')
+jest.mock('../services/userService')
 
 let app: Express
 let prisonApi: jest.Mocked<PrisonApi>
+let userService: jest.Mocked<UserService>
 
 beforeEach(() => {
-  app = appWithAllRoutes({})
-
   prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
   prisonApi.getImage.mockResolvedValue('image 123 data')
+
+  userService = UserService.prototype as jest.Mocked<UserService>
+
+  app = appWithAllRoutes({ mockUserService: userService })
 })
 
 afterEach(() => {
@@ -34,6 +39,15 @@ describe('GET /prisoner-images/:imageId.jpeg', () => {
         expect(res.statusCode).toBe(200)
         expect(res.headers['cache-control']).toEqual(`private, max-age=${secondsInWeek}`)
         expect(res.text).toEqual('image 123 data')
+      })
+  })
+
+  it('does not trigger getUser()', () => {
+    return request(app)
+      .get(`/prisoner-images/123.jpeg`)
+      .expect('Content-Type', /images\/jpeg/)
+      .expect(res => {
+        expect(userService.getUser).toBeCalledTimes(0)
       })
   })
 })

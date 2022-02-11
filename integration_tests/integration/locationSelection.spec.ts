@@ -30,6 +30,6 @@ context('Location selection', () => {
     locationSelectionPage.continueButton().click()
 
     Page.verifyOnPage(BehaviourEntriesPage)
-    cy.get('h1').contains('Houseblock 42')
+    cy.get('p').contains('Houseblock 42')
   })
 })

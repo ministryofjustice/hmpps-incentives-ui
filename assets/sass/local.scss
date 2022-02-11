@@ -1,3 +1,19 @@
 .govuk-main-wrapper {
   min-height: 600px
 }
+
+.govuk-table {
+  .govuk-table__body {
+    .govuk-table__cell {
+      vertical-align: middle;
+    }
+  }
+}
+
+.govuk-table--striped {
+  .govuk-table__body {
+    tr:nth-child(even) {
+      background-color: govuk-colour("light-grey");
+    }
+  }
+}

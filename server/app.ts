@@ -38,10 +38,10 @@ export default function createApp(userService: UserService): express.Application
   app.use(authorisationMiddleware())
 
   // App routes
-  app.use('/', homeRoutes(standardRouter(userService)))
   app.use('/select-location', selectLocationRoutes(standardRouter(userService)))
   app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
   app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(imageRouter()))
+  app.use('/', homeRoutes(standardRouter(userService)))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))

@@ -65,7 +65,7 @@ function makeTestSession(sessionData: Partial<SessionData> = {}): Session & Part
   }
 }
 
-function appSetup(production: boolean, testSession: Session): Express {
+function appSetup(production: boolean, testSession: Session, mockUserService: UserService): Express {
   const app = express()
 
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
@@ -88,11 +88,10 @@ function appSetup(production: boolean, testSession: Session): Express {
   app.use(express.urlencoded({ extended: true }))
 
   // App routes
-  const mockUserService = new MockUserService()
-  app.use('/', homeRoutes(standardRouter(mockUserService)))
   app.use('/select-location', selectLocationRoutes(standardRouter(mockUserService)))
   app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(mockUserService)))
   app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(imageRouter()))
+  app.use('/', homeRoutes(standardRouter(mockUserService)))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))
@@ -103,12 +102,14 @@ function appSetup(production: boolean, testSession: Session): Express {
 function appWithAllRoutes({
   production = false,
   testSession = makeTestSession(),
+  mockUserService = new MockUserService(),
 }: {
   production?: boolean
   testSession?: Session
+  mockUserService?: UserService
 }): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(production, testSession)
+  return appSetup(production, testSession, mockUserService)
 }
 
 export { appWithAllRoutes, makeTestSession }

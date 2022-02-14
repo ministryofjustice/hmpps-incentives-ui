@@ -2,7 +2,7 @@ import Page from './page'
 
 export default class BehaviourEntriesPage extends Page {
   constructor() {
-    super(`incentive information`)
+    super(`Incentive information`)
   }
 
   entries(levelId: string) {

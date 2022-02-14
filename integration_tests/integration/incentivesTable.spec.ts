@@ -28,7 +28,7 @@ context('Wing incentives table page', () => {
 
   it('has correct numbers of people at each level', () => {
     Page.verifyOnPage(BehaviourEntriesPage)
-    cy.get('h1').contains('Houseblock 42')
+    cy.get('p').contains('Houseblock 42')
 
     cy.get('[data-qa=number-at-level-BAS] p').contains('Basic')
     cy.get('[data-qa=number-at-level-BAS] span').contains('1')

@@ -51,6 +51,7 @@ generic-service:
       REDIS_AUTH_TOKEN: "auth_token"
 
   allowlist:
+    global-protect: "35.176.93.186/32"
     office: "217.33.148.210/32"
     quantum: "62.25.109.197/32"
     quantum_alt: "212.137.36.230/32"

@@ -22,10 +22,13 @@ export default function setUpWebSecurity(): Router {
             "'self'",
             'code.jquery.com',
             "'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='",
+            'https://www.google-analytics.com',
             (req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
           ],
           styleSrc: ["'self'", 'code.jquery.com'],
           fontSrc: ["'self'"],
+          connectSrc: ['https://www.google-analytics.com'],
+          imgSrc: ["'self'", 'https://www.google-analytics.com'],
         },
       },
     })

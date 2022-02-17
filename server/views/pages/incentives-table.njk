@@ -171,6 +171,10 @@
             {
                 label: level.levelDescription + ' (' + level.numberAtThisLevel + ')',
                 id: level.level,
+                attributes: {
+                    "data-ga-category": "Incentives information > Clicked on incentive level tab",
+                    "data-ga-action": level.levelDescription
+                },
                 panel: { html: table(level) }
             }
         ) %}
@@ -188,20 +192,23 @@
     {{ super() }}
 
     <script nonce="{{ cspNonce }}">
-        const gaEnabled = typeof ga === typeof Function
+        function gaSendEvent() {
+            const el = $(this)
 
-        if (gaEnabled) {
-            $('[data-ga-category]').on('click', function () {
-                const el = $(this)
+            const gaCategory = el.data('ga-category')
+            const gaAction = el.data('ga-action')
 
-                const gaCategory = el.data('ga-category')
-                const gaAction = el.data('ga-action')
+            console.log('ga-category:', gaCategory)
+            console.log('ga-action:', gaAction)
 
-                console.log('ga-category:', gaCategory)
-                console.log('ga-action:', gaAction)
+            ga('send', 'event', gaCategory, gaAction, '{{ locationPrefix }}')
+        }
 
-                ga('send', 'event', gaCategory, gaAction, '{{ locationPrefix }}')
-            })
+        const gaAvailable = typeof ga === typeof Function
+
+        if (gaAvailable) {
+            $('.govuk-tabs__tab[data-ga-category]').on('focus', gaSendEvent)
+            $('.govuk-table a[data-ga-category]').on('click', gaSendEvent)
         }
     </script>
 {% endblock bodyEnd %}

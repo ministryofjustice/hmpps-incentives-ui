@@ -24,6 +24,8 @@ context('Wing incentives table page', () => {
     const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
     locationSelectionPage.locationSelect().select('MDI-42')
     locationSelectionPage.continueButton().click()
+
+    behaviourEntriesPage = Page.verifyOnPage(BehaviourEntriesPage)
   })
 
   it('has feedback banner', () => {
@@ -33,7 +35,6 @@ context('Wing incentives table page', () => {
   })
 
   it('has correct numbers of people at each level', () => {
-    Page.verifyOnPage(BehaviourEntriesPage)
     cy.get('p').contains('Houseblock 42')
 
     cy.get('[data-qa=number-at-level-BAS] p').contains('Basic')
@@ -43,15 +44,12 @@ context('Wing incentives table page', () => {
   })
 
   it('has tabs for each level', () => {
-    Page.verifyOnPage(BehaviourEntriesPage)
-
     cy.get('a#tab_BAS').contains('Basic')
     cy.get('a#tab_STD').contains('Standard')
   })
 
   context(`the 'Basic' level table`, () => {
     beforeEach(() => {
-      behaviourEntriesPage = Page.verifyOnPage(BehaviourEntriesPage)
       cy.get('a#tab_BAS').click()
     })
 
@@ -82,7 +80,6 @@ context('Wing incentives table page', () => {
 
   context(`the 'Standard' level table`, () => {
     beforeEach(() => {
-      Page.verifyOnPage(BehaviourEntriesPage)
       cy.get('a#tab_STD').click()
     })
 

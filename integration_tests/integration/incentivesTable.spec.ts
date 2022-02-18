@@ -118,6 +118,40 @@ context('Wing incentives table page', () => {
       })
     })
   })
+
+  it('allows sorting by clicking column headers', () => {
+    // use standard tab since it has more than 1 row
+    cy.get('a#tab_STD').click()
+
+    cy.get('.govuk-table--striped:visible').then(table => {
+      table.find('.govuk-table__header').each((columnIndex, th) => {
+        const buttons = th.getElementsByTagName('button')
+        if (buttons.length) {
+          const button = buttons[0]
+          const columnTitle = button.textContent.trim()
+
+          // sort ascending, then descending
+          for (let i = 0; i < 2; i += 1) {
+            button.click()
+            const order = th.getAttribute('aria-sort')
+            const reversed = order === 'descending'
+            const columnValues = table
+              .find('.govuk-table__body tr')
+              .map((rowIndex, tr) => {
+                const td = tr.getElementsByTagName('td')[columnIndex]
+                return td.dataset.sortValue ?? td.textContent.trim()
+              })
+              .toArray()
+            // eslint-disable-next-line no-unused-expressions
+            expect(
+              isSorted(columnValues, reversed),
+              `Column "${columnTitle}" should be ${reversed ? 'reverse-' : ''}sorted`
+            ).to.be.true
+          }
+        }
+      })
+    })
+  })
 })
 
 function caseNotesLink(prisonerNumber: string, params: Record<string, string> = {}) {
@@ -143,4 +177,25 @@ function caseNotesLink(prisonerNumber: string, params: Record<string, string> = 
 
 function provenAdjudicationsLink(prisonerNumber: string) {
   return `${config.dpsUrl}/prisoner/${prisonerNumber}/adjudications?finding=PROVED`
+}
+
+function isSorted(arr: unknown[], reversed: boolean): boolean {
+  if (arr.length < 2) return true
+  const castToNumber = v => {
+    // eslint-disable-next-line no-restricted-globals
+    if (!isNaN(v)) {
+      const n = parseInt(v, 10)
+      // eslint-disable-next-line no-restricted-globals
+      return isNaN(n) ? v : n
+    }
+    return v
+  }
+  for (let i = 0; i < arr.length - 1; i += 1) {
+    const current = castToNumber(arr[i])
+    const next = castToNumber(arr[i + 1])
+    if ((reversed && next > current) || (!reversed && next < current)) {
+      return false
+    }
+  }
+  return true
 }

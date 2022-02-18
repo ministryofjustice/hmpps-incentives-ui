@@ -3,7 +3,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 
-{% set pageTitle = applicationName + " - Home" %}
+{% set pageTitle = applicationName + " - Incentives information" %}
 
 {% block content %}
 
@@ -44,49 +44,65 @@
             {
                 text: "Name and prison number",
                 attributes: {
-                    "aria-sort": "ascending"
+                    "aria-sort": "ascending",
+                    "data-ga-category": "Incentives information > Sorted table",
+                    "data-ga-action": "by name"
                 }
             },
             {
                 text: "Days on level",
                 attributes: {
-                    "aria-sort": "none"
+                    "aria-sort": "none",
+                    "data-ga-category": "Incentives information > Sorted table",
+                    "data-ga-action": "by days on level"
                 }
             },
             {
                 text: "Days since last review",
                 attributes: {
-                    "aria-sort": "none"
+                    "aria-sort": "none",
+                    "data-ga-category": "Incentives information > Sorted table",
+                    "data-ga-action": "by days since last review"
                 }
             },
             {
                 text: "Positive behaviours",
                 attributes: {
-                    "aria-sort": "none"
+                    "aria-sort": "none",
+                    "data-ga-category": "Incentives information > Sorted table",
+                    "data-ga-action": "by positive behaviours"
                 }
             },
             {
                 text: "Incentive encouragements",
                 attributes: {
-                    "aria-sort": "none"
+                    "aria-sort": "none",
+                    "data-ga-category": "Incentives information > Sorted table",
+                    "data-ga-action": "by incentive encouragements"
                 }
             },
             {
                 text: "Negative behaviours",
                 attributes: {
-                    "aria-sort": "none"
+                    "aria-sort": "none",
+                    "data-ga-category": "Incentives information > Sorted table",
+                    "data-ga-action": "by negative behaviours"
                 }
             },
             {
                 text: "Incentive warnings",
                 attributes: {
-                    "aria-sort": "none"
+                    "aria-sort": "none",
+                    "data-ga-category": "Incentives information > Sorted table",
+                    "data-ga-action": "by incentive warnings"
                 }
             },
             {
                 text: "Proven adjudications",
                 attributes: {
-                    "aria-sort": "none"
+                    "aria-sort": "none",
+                    "data-ga-category": "Incentives information > Sorted table",
+                    "data-ga-action": "by proven adjudications"
                 }
             }
         ] %}
@@ -104,49 +120,49 @@
                 html: '<img src="' + imageUrl + '" alt="' + prisoner.lastName + ', ' + prisoner.firstName + '\'s photo" width="90" />'
             },
             {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.lastName + ', ' + prisoner.firstName + '<br>' + prisoner.prisonerNumber + '</a>',
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="prisoner name">' + prisoner.lastName + ', ' + prisoner.firstName + '<br>' + prisoner.prisonerNumber + '</a>',
                 attributes: {
                     "data-sort-value": prisoner.lastName + prisoner.firstName
                 }
             },
             {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link">' + prisoner.daysOnLevel + '</a>',
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days on level">' + prisoner.daysOnLevel + '</a>',
                 attributes: {
                     "data-sort-value": prisoner.daysOnLevel
                 }
             },
             {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link">' + prisoner.daysSinceLastReview + '</a>',
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days since last review">' + prisoner.daysSinceLastReview + '</a>',
                 attributes: {
                     "data-sort-value": prisoner.daysSinceLastReview
                 }
             },
             {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.positiveBehaviours + '</a>',
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="positive behaviours">' + prisoner.positiveBehaviours + '</a>',
                 attributes: {
                     "data-sort-value": prisoner.positiveBehaviours
                 }
             },
             {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&subType=IEP_ENC&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.incentiveEncouragements + '</a>',
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&subType=IEP_ENC&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive encouragements">' + prisoner.incentiveEncouragements + '</a>',
                 attributes: {
                     "data-sort-value": prisoner.incentiveEncouragements
                 }
             },
             {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.negativeBehaviours + '</a>',
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="negative behaviours">' + prisoner.negativeBehaviours + '</a>',
                 attributes: {
                     "data-sort-value": prisoner.negativeBehaviours
                 }
             },
             {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&subType=IEP_WARN&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link">' + prisoner.incentiveWarnings + '</a>',
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&subType=IEP_WARN&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive warnings">' + prisoner.incentiveWarnings + '</a>',
                 attributes: {
                     "data-sort-value": prisoner.incentiveWarnings
                 }
             },
             {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/adjudications?finding=PROVED" class="govuk-link">' + prisoner.provenAdjudications + '</a>',
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/adjudications?finding=PROVED" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="proven adjudications">' + prisoner.provenAdjudications + '</a>',
                 attributes: {
                     "data-sort-value": prisoner.provenAdjudications
                 }
@@ -171,6 +187,10 @@
             {
                 label: level.levelDescription + ' (' + level.numberAtThisLevel + ')',
                 id: level.level,
+                attributes: {
+                    "data-ga-category": "Incentives information > Clicked on incentive level tab",
+                    "data-ga-action": level.levelDescription
+                },
                 panel: { html: table(level) }
             }
         ) %}
@@ -183,3 +203,35 @@
   </main>
 
 {% endblock %}
+
+{% block bodyEnd %}
+    {{ super() }}
+
+    <script nonce="{{ cspNonce }}">
+        function gaSendEvent() {
+            const elem = $(this)
+
+            const gaCategory = elem.data('ga-category')
+            let gaAction = elem.data('ga-action')
+
+            // for sorting events, add sort order to GA action
+            const previousSortOrder = elem.attr('aria-sort')
+            if (previousSortOrder) {
+                if (previousSortOrder === 'ascending') {
+                    gaAction += ' (descending)'
+                } else {
+                    gaAction += ' (ascending)'
+                }
+            }
+
+            ga('send', 'event', gaCategory, gaAction, '{{ locationPrefix }}')
+        }
+
+        const gaAvailable = typeof ga === typeof Function
+        if (gaAvailable) {
+            $('.govuk-tabs__tab[data-ga-category]').on('focus', gaSendEvent)
+            $('.govuk-table a[data-ga-category]').on('click', gaSendEvent)
+            $('.govuk-table .govuk-table__header[data-ga-category]').on('click', gaSendEvent)
+        }
+    </script>
+{% endblock bodyEnd %}

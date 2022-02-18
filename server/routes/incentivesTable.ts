@@ -22,7 +22,7 @@ export default function routes(router: Router): Router {
 
     const threeMonthsAgo = daysAgo(90)
 
-    res.render('pages/incentives-table', { entries, threeMonthsAgo })
+    res.render('pages/incentives-table', { entries, threeMonthsAgo, locationPrefix })
   })
 
   return router

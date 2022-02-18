@@ -1,6 +1,17 @@
 {% extends "govuk/template.njk" %}
 
 {% block head %}
+  {% if googleAnalyticsId %}
+    <!-- Google Analytics -->
+    <script nonce="{{ cspNonce }}">
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', '{{ googleAnalyticsId }}', 'auto');
+    ga('send', 'pageview');
+    </script>
+    <script async src='https://www.google-analytics.com/analytics.js'></script>
+    <!-- End Google Analytics -->
+  {% endif %}
+
   <!--[if !IE 8]><!-->
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
   <!--<![endif]-->
@@ -10,7 +21,7 @@
   <script src="/assets/js/html5shiv-3.7.3.min.js"></script>
   <![endif]-->
 
-  <script src="/assets/js/jquery.min.js"></script> 
+  <script src="/assets/js/jquery.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
           integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
           crossorigin="anonymous"></script>

@@ -11,8 +11,9 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
-  app.locals.applicationName = 'HMPPS Incentives UI'
+  app.locals.applicationName = 'HMPPS Incentives'
   app.locals.dpsHome = config.dpsUrl
+  app.locals.googleAnalyticsId = config.analytics.googleAnalyticsId
 
   // Cachebusting version string
   if (production) {

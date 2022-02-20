@@ -7,4 +7,12 @@ declare namespace Cypress {
      */
     signIn(options?: { failOnStatusCode: boolean }): Chainable<Subject>
   }
+
+  /**
+   * Declare globals
+   */
+  interface ApplicationWindow {
+    // Google Analytics function
+    ga?: (...args: string[]) => void
+  }
 }

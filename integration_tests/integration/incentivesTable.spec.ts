@@ -2,6 +2,7 @@ import Page from '../pages/page'
 import HomePage from '../pages/home'
 import LocationSelectionPage from '../pages/locationSelection'
 import BehaviourEntriesPage from '../pages/behaviourEntriesPage'
+import GoogleAnalyticsSpy from '../plugins/googleAnalyticsSpy'
 import config from '../../server/config'
 
 context('Wing incentives table page', () => {
@@ -151,6 +152,56 @@ context('Wing incentives table page', () => {
         }
       })
     })
+  })
+
+  it('sends Google Analytics events', function test() {
+    const gaSpy = new GoogleAnalyticsSpy()
+    gaSpy.install()
+
+    // clicks and arrow presses on level tabs send events
+    cy.get('a#tab_BAS')
+      .click()
+      .then(() => {
+        gaSpy.shouldHaveSentEvent('Incentives information > Clicked on incentive level tab', 'Basic', 'MDI-42')
+      })
+    cy.get('a#tab_STD')
+      .click()
+      .then(() => {
+        gaSpy.shouldHaveSentEvent('Incentives information > Clicked on incentive level tab', 'Standard', 'MDI-42')
+      })
+      .type('{leftarrow}')
+      .then(() => {
+        gaSpy.shouldHaveSentEvent('Incentives information > Clicked on incentive level tab', 'Basic', 'MDI-42')
+        gaSpy.clear()
+      })
+
+    // sorting table send events
+    cy.get('.govuk-table--striped:visible .govuk-table__header')
+      .each($th => cy.wrap($th).click())
+      .then(() => {
+        gaSpy.shouldHaveSentEvents(
+          ['Incentives information > Sorted table', 'by name (descending)', 'MDI-42'],
+          ['Incentives information > Sorted table', 'by days on level (ascending)', 'MDI-42'],
+          ['Incentives information > Sorted table', 'by days since last review (ascending)', 'MDI-42'],
+          ['Incentives information > Sorted table', 'by positive behaviours (ascending)', 'MDI-42'],
+          ['Incentives information > Sorted table', 'by incentive encouragements (ascending)', 'MDI-42'],
+          ['Incentives information > Sorted table', 'by negative behaviours (ascending)', 'MDI-42'],
+          ['Incentives information > Sorted table', 'by incentive warnings (ascending)', 'MDI-42'],
+          ['Incentives information > Sorted table', 'by proven adjudications (ascending)', 'MDI-42']
+        )
+        gaSpy.clear()
+      })
+
+    // links in table send events
+    cy.get('.govuk-table--striped:visible .govuk-table__body tr:first-child a[data-ga-category]')
+      .first()
+      .then($th => {
+        cy.wrap($th)
+          .click()
+          .then(() => {
+            gaSpy.shouldHaveSentEvent('Incentives information > Clicked on link', 'prisoner name', 'MDI-42')
+          })
+      })
   })
 })
 

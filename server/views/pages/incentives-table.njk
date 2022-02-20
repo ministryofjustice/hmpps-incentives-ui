@@ -224,14 +224,11 @@
                 }
             }
 
-            ga('send', 'event', gaCategory, gaAction, '{{ locationPrefix }}')
+            if (typeof ga === typeof Function) ga('send', 'event', gaCategory, gaAction, '{{ locationPrefix }}')
         }
 
-        const gaAvailable = typeof ga === typeof Function
-        if (gaAvailable) {
-            $('.govuk-tabs__tab[data-ga-category]').on('focus', gaSendEvent)
-            $('.govuk-table a[data-ga-category]').on('click', gaSendEvent)
-            $('.govuk-table .govuk-table__header[data-ga-category]').on('click', gaSendEvent)
-        }
+        $('.govuk-tabs__tab[data-ga-category]').on('focus', gaSendEvent)
+        $('.govuk-table a[data-ga-category]').on('click', gaSendEvent)
+        $('.govuk-table .govuk-table__header[data-ga-category]').on('click', gaSendEvent)
     </script>
 {% endblock bodyEnd %}

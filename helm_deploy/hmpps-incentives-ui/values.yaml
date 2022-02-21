@@ -32,6 +32,7 @@ generic-service:
     NODE_ENV: "production"
     REDIS_TLS_ENABLED: "true"
     TOKEN_VERIFICATION_ENABLED: "true"
+    PHASE_NAME: ""
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -47,6 +48,7 @@ generic-service:
       SYSTEM_CLIENT_SECRET: "SYSTEM_CLIENT_SECRET"
       SESSION_SECRET: "SESSION_SECRET"
       GOOGLE_ANALYTICS_ID: "GOOGLE_ANALYTICS_ID"
+      FEEDBACK_URL: "FEEDBACK_URL"
     elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"

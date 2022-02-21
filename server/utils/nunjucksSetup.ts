@@ -13,6 +13,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'HMPPS Incentives'
   app.locals.dpsHome = config.dpsUrl
+  app.locals.feedbackUrl = config.feedbackUrl
   app.locals.googleAnalyticsId = config.analytics.googleAnalyticsId
 
   // Cachebusting version string

@@ -1,13 +1,10 @@
 import type { RequestHandler, Router } from 'express'
-import config from '../config'
 
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import { createRedisClient } from '../data/redisClient'
 import TokenStore from '../data/tokenStore'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import BehaviourService from '../services/behaviourService'
-
-const { feedbackUrl } = config
 
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
@@ -25,7 +22,7 @@ export default function routes(router: Router): Router {
 
     const threeMonthsAgo = daysAgo(90)
 
-    res.render('pages/incentives-table', { entries, threeMonthsAgo, locationPrefix, feedbackUrl })
+    res.render('pages/incentives-table', { entries, threeMonthsAgo, locationPrefix })
   })
 
   return router

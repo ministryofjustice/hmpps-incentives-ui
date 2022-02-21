@@ -1,26 +1,9 @@
 {% extends "../partials/layout.njk" %}
 
-{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 
 {% set pageTitle = applicationName + " - Incentives information" %}
-
-{% block feedbackBanner %}
-  {% if feedbackUrl %}
-    <div class="govuk-width-container">
-      {{
-        govukPhaseBanner({
-          classes: 'feedback-banner',
-          tag: {
-            text: "give feedback"
-          },
-          html: 'This is a new service – <a class="govuk-link" target="_blank" href="' + feedbackUrl + '"> help us to improve it</a> (opens in a new tab)'
-        })
-      }}
-    </div>
-  {% endif %}
-{% endblock feedbackBanner %}
 
 {% block content %}
   <main class="app-container govuk-body govuk-width-container">

@@ -1,8 +1,16 @@
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+
 <div class="location-bar">
-  <span class="location-bar__location govuk-!-padding-top-2" data-test="active-location">
+  <span class="location-bar__location" data-test="active-location">
+    {% if phaseName %}
+      {{ govukTag({
+        text: phaseName,
+        classes: 'govuk-!-margin-right-1 ' + phaseNameColour
+      }) }}
+    {% endif %}
     <span>{{ user.activeCaseload.name }}</span>
   </span>
   {% if user.caseloads.length > 1 %}
-    <a class="location-bar__link govuk-!-padding-top-2" href="{{ dpsHome }}/change-caseload" data-test="change-location-link">Change your location</a>
+    <a class="location-bar__link" href="{{ dpsHome }}/change-caseload" data-test="change-location-link">Change your location</a>
   {% endif %}
 </div>

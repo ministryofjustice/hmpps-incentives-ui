@@ -99,4 +99,5 @@ export default {
     googleAnalyticsId: get('GOOGLE_ANALYTICS_ID', ''),
   },
   feedbackUrl: get('FEEDBACK_URL', ''),
+  phaseName: get('PHASE_NAME', ''),
 }

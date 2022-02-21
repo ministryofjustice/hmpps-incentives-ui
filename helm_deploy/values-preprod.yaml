@@ -14,6 +14,7 @@ generic-service:
     HMPPS_PRISON_API_URL: "https://api-preprod.prison.service.justice.gov.uk"
     NOMIS_USER_ROLES_API_URL: "https://nomis-user-pp.aks-live-1.studio-hosting.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
+    PHASE_NAME: "PRE-PRODUCTION"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

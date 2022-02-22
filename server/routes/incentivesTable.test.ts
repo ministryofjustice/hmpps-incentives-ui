@@ -28,6 +28,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  app.locals.googleAnalyticsId = undefined
   jest.resetAllMocks()
 })
 
@@ -42,5 +43,12 @@ describe('GET /incentive-summary/:locationPrefix', () => {
         expect(res.text).toContain('Review dates and behaviour entries in the last 3 months')
         expect(res.text).toContain('Doe, Jane<br>A1234AB')
       })
+  })
+
+  it('sets Google Analytics custom dimension for active case load', () => {
+    app.locals.googleAnalyticsId = 'UA-000000-0'
+    return request(app)
+      .get('/incentive-summary/MDI-2')
+      .expect(res => expect(res.text).toContain(`ga('set', 'dimension1', 'MDI')`))
   })
 })

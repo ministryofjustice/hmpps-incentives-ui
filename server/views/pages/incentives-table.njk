@@ -172,6 +172,7 @@
         <h2 class="govuk-heading-l">{{ level.levelDescription }}</h2>
         {{ govukTable({
             attributes: {
+                'id': 'incentive-table-' + level.level,
                 'data-module': 'moj-sortable-table'
             },
             classes: 'govuk-table--striped',

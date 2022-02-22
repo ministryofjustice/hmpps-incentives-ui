@@ -14,23 +14,23 @@ export default class GoogleAnalyticsSpy {
       win.ga = (...args: string[]) => {
         this.calls.push(args)
       }
+      return cy.wrap(null)
     })
   }
 
   clear() {
     while (this.calls.length) this.calls.pop()
+    return cy.wrap(null)
   }
 
   shouldHaveSentEvent(...call: string[]) {
-    expect(this.calls[this.calls.length - 1], 'Last call to Google Analytics should be an event').to.deep.equal([
-      'send',
-      'event',
-      ...call,
-    ])
+    return cy.wrap(this.calls[this.calls.length - 1]).should('be.deep.equal', ['send', 'event', ...call])
   }
 
   shouldHaveSentEvents(...calls: string[][]) {
-    const expectedEventCalls = calls.map(call => ['send', 'event', ...call])
-    expect(this.calls, 'Google Analytics should have been called with events').to.deep.equal(expectedEventCalls)
+    return cy.wrap(this.calls).should(
+      'be.deep.equal',
+      calls.map(call => ['send', 'event', ...call])
+    )
   }
 }

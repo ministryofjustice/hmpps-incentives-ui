@@ -1,0 +1,12 @@
+.app-data-source {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: govuk-spacing(4);
+  margin: govuk-spacing(4) 0;
+
+  dt, dd {
+    margin: 0;
+    padding: 0;
+    @include govuk-font($size: 19);
+  }
+}

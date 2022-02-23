@@ -1,5 +1,7 @@
 {% extends "../partials/layout.njk" %}
 
+{% from "../components/dataSource.njk" import dataSource %}
+
 {% set graphTitle = "Behaviour entries in the last 28 days" %}
 {% set pageTitle = applicationName + " – " + graphTitle %}
 
@@ -15,6 +17,8 @@
         Comparison of positive and negative behaviour entries by wing
       </h2>
 
+      {{ dataSource("NOMIS", lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
+
       CHART
 
     </section>
@@ -23,6 +27,8 @@
       <h2 class="govuk-heading-m">
         Percentage and number of prisoners by behaviour entry on each wing
       </h2>
+
+      {{ dataSource("NOMIS", lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 
       HEATMAP
 

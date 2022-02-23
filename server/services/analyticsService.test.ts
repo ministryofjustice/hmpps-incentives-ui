@@ -1,0 +1,50 @@
+import AnalyticsService from './analyticsService'
+
+describe('AnalyticsService', () => {
+  let analyticsService: AnalyticsService
+
+  beforeEach(() => {
+    analyticsService = new AnalyticsService()
+    // TODO: move fake data from service into mock here
+  })
+
+  describe('getBehaviourEntriesByLocation()', () => {
+    it('has a totals row', async () => {
+      const entries = await analyticsService.getBehaviourEntriesByLocation('MDI')
+      expect(entries).toHaveLength(9)
+
+      const prisonTotal = entries.shift()
+      expect(prisonTotal.location).toEqual('Prison total')
+
+      let [sumPositive, sumNegative] = [0, 0]
+      entries.forEach(({ entriesPositive, entriesNegative }) => {
+        sumPositive += entriesPositive
+        sumNegative += entriesNegative
+      })
+      expect(prisonTotal.entriesPositive).toEqual(sumPositive)
+      expect(prisonTotal.entriesNegative).toEqual(sumNegative)
+    })
+  })
+
+  describe('getPrisonersWithEntriesByLocation()', () => {
+    it('has a totals row', async () => {
+      const prisoners = await analyticsService.getPrisonersWithEntriesByLocation('MDI')
+      expect(prisoners).toHaveLength(9)
+
+      const prisonTotal = prisoners.shift()
+      expect(prisonTotal.location).toEqual('Prison total')
+
+      let [sumPositive, sumNegative, sumBoth, sumNeither] = [0, 0, 0, 0]
+      prisoners.forEach(({ prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither }) => {
+        sumPositive += prisonersWithPositive
+        sumNegative += prisonersWithNegative
+        sumBoth += prisonersWithBoth
+        sumNeither += prisonersWithNeither
+      })
+      expect(prisonTotal.prisonersWithPositive).toEqual(sumPositive)
+      expect(prisonTotal.prisonersWithNegative).toEqual(sumNegative)
+      expect(prisonTotal.prisonersWithBoth).toEqual(sumBoth)
+      expect(prisonTotal.prisonersWithNeither).toEqual(sumNeither)
+    })
+  })
+})

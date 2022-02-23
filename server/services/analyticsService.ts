@@ -37,7 +37,7 @@ export default class AnalyticsService {
       totalNegative += negative
       return {
         location,
-        href: '#',
+        href: '#', // TODO: add link to DPS case notes
         entriesPositive: positive,
         entriesNegative: negative,
       }
@@ -75,7 +75,7 @@ export default class AnalyticsService {
         totalNeither += neither
         return {
           location,
-          href: '#',
+          href: '#', // TODO: add link to DPS case notes
           prisonersWithPositive: positive,
           prisonersWithNegative: negative,
           prisonersWithBoth: both,

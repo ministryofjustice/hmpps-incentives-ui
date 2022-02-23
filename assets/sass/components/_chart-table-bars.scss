@@ -1,0 +1,62 @@
+.app-chart-table--bars {
+  td {
+    width: 13%;
+
+    &:last-child {
+      width: 61%;
+    }
+
+    &:first-child {
+      font-weight: bold;
+    }
+  }
+}
+
+td.app-chart-table__percentage-cell {
+  position: relative;
+  padding-right: 0;
+  border-left: 1px solid $govuk-border-colour;
+  border-right: 1px solid $govuk-border-colour;
+}
+
+.app-chart-table__percentage-cell-bar {
+  position: relative;
+  float: left;
+  width: 100%;
+}
+
+.app-chart-table__axis-midpoint {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  border-left: 1px solid $govuk-border-colour;
+}
+
+td.app-chart-table__axis-values {
+  position: relative;
+  border-left: 1px solid $govuk-border-colour;
+  border-right: 1px solid $govuk-border-colour;
+}
+
+.app-chart-table__axis-value {
+  display: block;
+  position: absolute;
+  top: 0;
+  padding: 0 govuk-spacing(2);
+  @include govuk-font($size: 14);
+}
+
+.app-chart-table__axis-value--min {
+  left: 0;
+}
+
+.app-chart-table__axis-value--mid {
+  left: 50%;
+  margin-left: -2.5em;
+}
+
+.app-chart-table__axis-value--max {
+  right: 0;
+}

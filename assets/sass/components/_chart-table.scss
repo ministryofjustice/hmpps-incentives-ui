@@ -1,0 +1,18 @@
+.app-chart-table {
+  margin: govuk-spacing(4) 0 govuk-spacing(6);
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  @include govuk-font($size: 16);
+  @include govuk-text-colour;
+
+  th, td {
+    padding: govuk-spacing(2) govuk-spacing(2) govuk-spacing(2) 0;
+    vertical-align: top;
+    text-align: right;
+  }
+
+  th {
+    font-weight: bold;
+  }
+}

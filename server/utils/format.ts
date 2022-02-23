@@ -18,6 +18,7 @@ export default {
   },
 
   percentage(value: number, total: number) {
+    if (value === 0 && total === 0) return '0%'
     if (notNumber(total) || notNumber(value) || total === 0) return '?'
     return `${Math.round((value / total) * 100)}%`
   },

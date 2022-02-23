@@ -25,7 +25,7 @@ export default function setUpWebSecurity(): Router {
             'https://www.google-analytics.com',
             (req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
           ],
-          styleSrc: ["'self'", 'code.jquery.com'],
+          styleSrc: ["'self'", 'code.jquery.com', (req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
           fontSrc: ["'self'"],
           connectSrc: ['https://www.google-analytics.com'],
           imgSrc: ["'self'", 'https://www.google-analytics.com'],

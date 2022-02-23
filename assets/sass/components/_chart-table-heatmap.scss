@@ -1,0 +1,27 @@
+.app-chart-table--heatmap {
+  @include govuk-media-query($from: desktop) {
+    width: 80%;
+  }
+
+  th {
+    text-align: left;
+
+    &:first-child {
+      text-align: right;
+    }
+  }
+
+  th, td {
+    width: 20%;
+  }
+
+  td:first-child {
+    font-weight: bold;
+  }
+}
+
+.app-chart-table--heatmap__cell {
+  display: inline-block;
+  width: 100%;
+  text-align: left;
+}

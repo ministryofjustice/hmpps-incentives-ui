@@ -98,6 +98,9 @@ export default {
   analytics: {
     googleAnalyticsId: get('GOOGLE_ANALYTICS_ID', ''),
   },
+  featureFlags: {
+    showAnalytics: get('SHOW_ANALYTICS', '') === 'true',
+  },
   feedbackUrl: get('FEEDBACK_URL', ''),
   phaseName: get('PHASE_NAME', ''),
 }

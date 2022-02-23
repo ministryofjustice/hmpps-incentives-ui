@@ -1,0 +1,31 @@
+{% extends "../partials/layout.njk" %}
+
+{% set graphTitle = "Behaviour entries in the last 28 days" %}
+{% set pageTitle = applicationName + " – " + graphTitle %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">
+    {{ graphTitle }}
+  </h1>
+
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
+
+      <h2 class="govuk-heading-m">
+        Comparison of positive and negative behaviour entries by wing
+      </h2>
+
+      CHART
+
+    </section>
+    <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
+
+      <h2 class="govuk-heading-m">
+        Percentage and number of prisoners by behaviour entry on each wing
+      </h2>
+
+      HEATMAP
+
+    </section>
+  </div>
+{% endblock %}

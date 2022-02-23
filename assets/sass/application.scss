@@ -5,8 +5,10 @@ $govuk-page-width: 1170px;
 @import 'govuk/all';
 @import 'moj/all';
 
-@import './components/header-bar';
 @import './components/card';
+@import './components/error-stack';
+@import './components/header-bar';
+
 @import './local';
 
 .moj-header__container {

@@ -1,5 +1,9 @@
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
+{% macro feedbackMessage() %}
+  This is a new service – <a class="govuk-link" target="_blank" href="{{ feedbackUrl }}"> help us to improve it</a> (opens in a new tab)
+{% endmacro %}
+
 {% block feedbackBanner %}
   {% if feedbackUrl %}
     <div class="govuk-width-container">
@@ -9,7 +13,7 @@
           tag: {
             text: "give feedback"
           },
-          html: 'This is a new service – <a class="govuk-link" target="_blank" href="' + feedbackUrl + '"> help us to improve it</a> (opens in a new tab)'
+          html: feedbackMessage()
         })
       }}
     </div>

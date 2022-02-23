@@ -6,7 +6,9 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/behaviour-entries', async (req, res) => {
-    res.render('pages/analyticsBehaviourEntries')
+    res.render('pages/analyticsBehaviourEntries', {
+      lastUpdated: new Date(),
+    })
   })
 
   return router

@@ -1,0 +1,8 @@
+{% macro dataSource(source, date, params) %}
+  <dl class="app-data-source {%- if params.classes %} {{ params.classes }}{% endif %}">
+    <dt>Data source:</dt>
+    <dd>{{ source }}</dd>
+    <dt>Date updated:</dt>
+    <dd>{{ date | date }}</dd>
+  </dl>
+{% endmacro %}

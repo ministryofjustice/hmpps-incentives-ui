@@ -1,0 +1,44 @@
+$chart-colour-a: govuk-tint(govuk-colour("blue"), 51%); // miro ~ 90aadc
+$chart-colour-b: govuk-tint(govuk-colour("dark-blue"), 18%); // miro ~ 2f5598
+
+.app-chart-colour--a {
+  background: $chart-colour-a;
+}
+
+.app-chart-colour--b {
+  background: $chart-colour-b;
+}
+
+$heat-map-colour: govuk-tint(govuk-colour("turquoise"), 10%); // miro ~ 3daaa1
+
+@function heat-map($percentage) {
+  @return govuk-tint($heat-map-colour, $percentage);
+}
+
+.app-chart-colour--heat-0 {
+  background: heat-map(100%);
+}
+
+.app-chart-colour--heat-15 {
+  background: heat-map(75%);
+}
+
+.app-chart-colour--heat-30 {
+  background: heat-map(60%);
+}
+
+.app-chart-colour--heat-45 {
+  background: heat-map(45%);
+}
+
+.app-chart-colour--heat-60 {
+  background: heat-map(30%);
+}
+
+.app-chart-colour--heat-75 {
+  background: heat-map(15%);
+}
+
+.app-chart-colour--heat-90 {
+  background: heat-map(0%);
+}

@@ -6,6 +6,11 @@ $govuk-page-width: 1170px;
 @import 'moj/all';
 
 @import './components/card';
+@import './components/chart-colours';
+@import './components/chart-legend';
+@import './components/chart-table';
+@import './components/chart-table-bars';
+@import './components/chart-table-heatmap';
 @import './components/data-source';
 @import './components/error-stack';
 @import './components/header-bar';

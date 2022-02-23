@@ -1,0 +1,20 @@
+.app-chart-legend {
+  display: inline-block;
+  overflow: hidden;
+  @include govuk-font($size: 16);
+}
+
+.app-chart-legend__label, .app-chart-legend__swatch {
+  display: block;
+  float: left;
+  height: 100%;
+}
+
+.app-chart-legend__label {
+  padding: govuk-spacing(1) govuk-spacing(2);
+}
+
+.app-chart-legend__swatch {
+  width: govuk-spacing(2);
+  padding: govuk-spacing(1) 0;
+}

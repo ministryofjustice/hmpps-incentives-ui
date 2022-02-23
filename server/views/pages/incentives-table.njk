@@ -113,14 +113,16 @@
                 {% set imageUrl = '/assets/images/prisoner.jpeg' %}
             {% endif %}
 
+            {% set prisonerFullName = (prisoner.lastName + ', ' + prisoner.firstName) | escape %}
+
             {% set _ = rows.push([
             {
-                html: '<img src="' + imageUrl + '" alt="' + prisoner.lastName + ', ' + prisoner.firstName + '\'s photo" width="90" />'
+                html: '<img src="' + imageUrl + '" alt="' + prisonerFullName + '’s photo" width="90" />'
             },
             {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="prisoner name">' + prisoner.lastName + ', ' + prisoner.firstName + '<br>' + prisoner.prisonerNumber + '</a>',
+                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="prisoner name">' + prisonerFullName + '<br>' + prisoner.prisonerNumber + '</a>',
                 attributes: {
-                    "data-sort-value": prisoner.lastName + prisoner.firstName
+                    "data-sort-value": prisonerFullName
                 }
             },
             {

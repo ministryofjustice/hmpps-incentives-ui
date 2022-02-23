@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import type UserService from '../services/userService'
 import homeRoutes from './home'
+import analyticsRouter from './analyticsRouter'
 import imageRouter from './imageRouter'
 import incentivesTableRoutes from './incentivesTable'
 import prisonerImagesRoutes from './prisonerImages'
@@ -13,6 +14,7 @@ export default function routes(userService: UserService): Router {
 
   router.use('/select-location', selectLocationRoutes(standardRouter(userService)))
   router.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
+  router.use('/analytics', analyticsRouter(standardRouter(userService)))
   router.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(imageRouter()))
   router.use('/', homeRoutes(standardRouter(userService)))
 

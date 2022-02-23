@@ -20,6 +20,17 @@
           "id": "incentive-information"
         }) }}
       </li>
+      {% if featureFlags.showAnalytics %}
+        <li class="govuk-grid-column-one-third card-group__item">
+          {{ card({
+            "href": "/analytics/behaviour-entries",
+            "clickable": "true",
+            "heading": "See incentives data",
+            "description": "View incentive level data across locations.",
+            "id": "incentive-data"
+          }) }}
+        </li>
+      {% endif %}
     </ul>
 
 {% endblock %}

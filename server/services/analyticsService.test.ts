@@ -15,6 +15,7 @@ describe('AnalyticsService', () => {
 
       const prisonTotal = entries.shift()
       expect(prisonTotal.location).toEqual('Prison total')
+      expect(prisonTotal.href).toBeUndefined()
 
       let [sumPositive, sumNegative] = [0, 0]
       entries.forEach(({ entriesPositive, entriesNegative }) => {
@@ -33,6 +34,7 @@ describe('AnalyticsService', () => {
 
       const prisonTotal = prisoners.shift()
       expect(prisonTotal.location).toEqual('Prison total')
+      expect(prisonTotal.href).toBeUndefined()
 
       let [sumPositive, sumNegative, sumBoth, sumNeither] = [0, 0, 0, 0]
       prisoners.forEach(({ prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither }) => {

@@ -15,11 +15,12 @@ type PrisonersWithEntriesByLocation = {
 }
 
 export default class AnalyticsService {
-  async getBehaviourEntriesByLocation(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    prison: string
-  ): Promise<BehaviourEntriesByLocation[]> {
-    // TODO: fake response
+  getUrlToIncentivesTable(prison: string, location: string): string {
+    return `/incentive-summary/${prison}-${location}`
+  }
+
+  async getBehaviourEntriesByLocation(prison: string): Promise<BehaviourEntriesByLocation[]> {
+    // TODO: fake response; move into test
     const response: [string, number, number][] = [
       ['1', 13, 58],
       ['2', 5, 47],
@@ -37,7 +38,7 @@ export default class AnalyticsService {
       totalNegative += negative
       return {
         location,
-        href: '#', // TODO: add link to DPS case notes
+        href: this.getUrlToIncentivesTable(prison, location),
         entriesPositive: positive,
         entriesNegative: negative,
       }
@@ -50,11 +51,8 @@ export default class AnalyticsService {
     return entries
   }
 
-  async getPrisonersWithEntriesByLocation(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    prison: string
-  ): Promise<PrisonersWithEntriesByLocation[]> {
-    // TODO: fake response
+  async getPrisonersWithEntriesByLocation(prison: string): Promise<PrisonersWithEntriesByLocation[]> {
+    // TODO: fake response; move into test
     const response: [string, number, number, number, number][] = [
       ['1', 9, 35, 2, 157],
       ['2', 3, 37, 2, 169],
@@ -75,7 +73,7 @@ export default class AnalyticsService {
         totalNeither += neither
         return {
           location,
-          href: '#', // TODO: add link to DPS case notes
+          href: this.getUrlToIncentivesTable(prison, location),
           prisonersWithPositive: positive,
           prisonersWithNegative: negative,
           prisonersWithBoth: both,

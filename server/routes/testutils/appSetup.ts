@@ -3,18 +3,13 @@ import { Cookie, Session, SessionData } from 'express-session'
 import createError from 'http-errors'
 import path from 'path'
 
-import homeRoutes from '../home'
-import incentivesTableRoutes from '../incentivesTable'
-import selectLocationRoutes from '../selectLocation'
-import prisonerImagesRoutes from '../prisonerImages'
+import allRoutes from '../all'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
-import standardRouter from '../standardRouter'
 import UserService from '../../services/userService'
 import * as auth from '../../authentication/auth'
 import { Location, PrisonApi } from '../../data/prisonApi'
 import { getTestLocation } from '../../testData/prisonApi'
-import imageRouter from '../imageRouter'
 
 jest.mock('../../data/prisonApi')
 
@@ -88,10 +83,7 @@ function appSetup(production: boolean, testSession: Session, mockUserService: Us
   app.use(express.urlencoded({ extended: true }))
 
   // App routes
-  app.use('/select-location', selectLocationRoutes(standardRouter(mockUserService)))
-  app.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(mockUserService)))
-  app.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(imageRouter()))
-  app.use('/', homeRoutes(standardRouter(mockUserService)))
+  app.use('/', allRoutes(mockUserService))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))

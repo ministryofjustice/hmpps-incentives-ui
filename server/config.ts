@@ -2,7 +2,11 @@ import 'dotenv/config'
 
 const production = process.env.NODE_ENV === 'production'
 
-function get<T>(name: string, fallback: T, options = { requireInProduction: false }): T | string {
+type EnvOptions = { requireInProduction: boolean }
+const requiredInProduction: EnvOptions = { requireInProduction: true }
+const notRequiredInProduction: EnvOptions = { requireInProduction: false }
+
+function get<T>(name: string, fallback: T, options: EnvOptions = notRequiredInProduction): T | string {
   if (process.env[name]) {
     return process.env[name]
   }
@@ -12,7 +16,10 @@ function get<T>(name: string, fallback: T, options = { requireInProduction: fals
   throw new Error(`Missing env var ${name}`)
 }
 
-const requiredInProduction = { requireInProduction: true }
+function flag(name: string, fallback = false, options: EnvOptions = notRequiredInProduction): boolean {
+  const value = get(name, fallback.toString(), options).toLowerCase()
+  return value === 'true' || value === '1'
+}
 
 export class AgentConfig {
   constructor(readonly timeout = 8000) {
@@ -36,7 +43,7 @@ export default {
     host: get('REDIS_HOST', 'localhost', requiredInProduction),
     port: parseInt(process.env.REDIS_PORT, 10) || 6379,
     password: process.env.REDIS_AUTH_TOKEN,
-    tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
+    tls_enabled: flag('REDIS_TLS_ENABLED', false),
   },
   session: {
     secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),
@@ -90,7 +97,7 @@ export default {
         deadline: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_DEADLINE', 5000)),
       },
       agent: new AgentConfig(Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000))),
-      enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
+      enabled: flag('TOKEN_VERIFICATION_ENABLED', false),
     },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
@@ -99,7 +106,7 @@ export default {
     googleAnalyticsId: get('GOOGLE_ANALYTICS_ID', ''),
   },
   featureFlags: {
-    showAnalytics: get('SHOW_ANALYTICS', '') === 'true',
+    showAnalytics: flag('FEATURE_SHOW_ANALYTICS', false),
   },
   feedbackUrl: get('FEEDBACK_URL', ''),
   phaseName: get('PHASE_NAME', ''),

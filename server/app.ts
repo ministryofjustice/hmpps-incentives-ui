@@ -15,6 +15,7 @@ import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpHealthChecks from './middleware/setUpHealthChecks'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
+import breadcrumbs from './middleware/breadcrumbs'
 
 export default function createApp(userService: UserService): express.Application {
   const app = express()
@@ -31,6 +32,7 @@ export default function createApp(userService: UserService): express.Application
   nunjucksSetup(app, path)
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
+  app.use(breadcrumbs())
 
   // App routes
   app.use('/', allRoutes(userService))

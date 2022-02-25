@@ -4,6 +4,7 @@ import createError from 'http-errors'
 import path from 'path'
 
 import allRoutes from '../all'
+import breadcrumbs from '../../middleware/breadcrumbs'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import UserService from '../../services/userService'
@@ -81,6 +82,8 @@ function appSetup(production: boolean, testSession: Session, mockUserService: Us
 
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+
+  app.use(breadcrumbs())
 
   // App routes
   app.use('/', allRoutes(mockUserService))

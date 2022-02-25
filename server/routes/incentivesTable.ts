@@ -9,7 +9,9 @@ import BehaviourService from '../services/behaviourService'
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  get('/', async (req, res, next) => {
+  get('/', async (req, res) => {
+    res.locals.breadcrumbs.addItem({ text: 'Incentive information' })
+
     const { user } = res.locals
     const { locationPrefix } = req.params
     const agencyId = locationPrefix.split('-')[0]

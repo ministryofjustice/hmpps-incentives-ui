@@ -1,5 +1,5 @@
-$chart-colour-a: govuk-tint(govuk-colour("blue"), 51%); // miro ~ 90aadc
-$chart-colour-b: govuk-tint(govuk-colour("dark-blue"), 18%); // miro ~ 2f5598
+$chart-colour-a: govuk-colour("light-blue"); // miro ~ #5695ca
+$chart-colour-b: govuk-colour("dark-blue"); // miro ~ #003078
 
 .app-chart-colour--a {
   background: $chart-colour-a;

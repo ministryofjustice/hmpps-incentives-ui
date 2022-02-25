@@ -11,10 +11,12 @@ export default function routes(router: Router): Router {
   get('/behaviour-entries', async (req, res) => {
     res.locals.breadcrumbs.addItem({ text: 'Behaviour entries' })
 
+    const activeCaseLoad = res.locals.user.activeCaseload.id
+
     const analyticsService = new AnalyticsService()
 
-    const behaviourEntries = await analyticsService.getBehaviourEntriesByLocation('????')
-    const prisonersWithEntries = await analyticsService.getPrisonersWithEntriesByLocation('????')
+    const behaviourEntries = await analyticsService.getBehaviourEntriesByLocation(activeCaseLoad)
+    const prisonersWithEntries = await analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad)
 
     res.render('pages/analytics/behaviour-entries/index', {
       lastUpdated: new Date(),

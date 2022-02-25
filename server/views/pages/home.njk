@@ -2,12 +2,12 @@
 
 {% from "../components/card/card.njk" import card %}
 
-{% set pageTitle = applicationName + " - Home" %}
+{% set pageTitle = applicationName + " – Home" %}
 
 {% block content %}
 
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
-      Manage incentives
+      {{ applicationName }}
     </h1>
 
     <ul class="govuk-grid-row card-group">
@@ -27,7 +27,7 @@
             "clickable": "true",
             "heading": "See incentives data",
             "description": "View incentive level data across locations.",
-            "id": "incentive-data"
+            "id": "incentive-analytics"
           }) }}
         </li>
       {% endif %}

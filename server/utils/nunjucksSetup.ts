@@ -12,7 +12,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
-  app.locals.applicationName = 'HMPPS Incentives'
+  app.locals.applicationName = 'Manage incentives'
   app.locals.dpsHome = config.dpsUrl
   app.locals.feedbackUrl = config.feedbackUrl
   app.locals.googleAnalyticsId = config.analytics.googleAnalyticsId

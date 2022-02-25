@@ -18,6 +18,8 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, featureGate(asyncMiddleware(handler)))
 
   get('/behaviour-entries', async (req, res) => {
+    res.locals.breadcrumbs.addItem({ text: 'Behaviour entries' })
+
     const analyticsService = new AnalyticsService()
 
     const behaviourEntries = await analyticsService.getBehaviourEntriesByLocation('????')

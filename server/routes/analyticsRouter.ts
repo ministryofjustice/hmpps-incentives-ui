@@ -25,7 +25,7 @@ export default function routes(router: Router): Router {
     const behaviourEntries = await analyticsService.getBehaviourEntriesByLocation('????')
     const prisonersWithEntries = await analyticsService.getPrisonersWithEntriesByLocation('????')
 
-    res.render('pages/analyticsBehaviourEntries', {
+    res.render('pages/analytics/behaviour-entries/index', {
       lastUpdated: new Date(),
       behaviourEntries,
       prisonersWithEntries,

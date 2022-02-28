@@ -29,6 +29,7 @@ export default class AnalyticsService {
       ['5', 13, 2],
       ['6', 5, 14],
       ['7', 12, 33],
+      ['H', 0, 0],
       ['SEG', 0, 8],
     ]
 
@@ -61,6 +62,7 @@ export default class AnalyticsService {
       ['5', 10, 2, 0, 42],
       ['6', 4, 10, 1, 154],
       ['7', 9, 17, 1, 199],
+      ['H', 0, 0, 0, 0],
       ['SEG', 0, 3, 0, 25],
     ]
 

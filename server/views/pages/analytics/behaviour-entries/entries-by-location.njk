@@ -57,12 +57,8 @@
         </td>
         <td aria-hidden="true" class="app-chart-table__percentage-cell">
         <span class="app-chart-table__axis-midpoint"></span>
-          <div id="c-pos-{{ loop.index }}" class="app-chart-table__percentage-cell-bar app-chart-colour--a">&nbsp;<br />&nbsp;</div>
-          <div id="c-neg-{{ loop.index }}" class="app-chart-table__percentage-cell-bar app-chart-colour--b">&nbsp;<br />&nbsp;</div>
-          <style nonce="{{ cspNonce }}">
-            #c-pos-{{ loop.index }} { width:{{ percentagePositive }}; }
-            #c-neg-{{ loop.index }} { width:{{ percentageNegative }}; }
-          </style>
+          <div class="app-chart-table__percentage-cell-bar app-chart-colour--a" data-style-width="{{ percentagePositive }}">&nbsp;<br />&nbsp;</div>
+          <div class="app-chart-table__percentage-cell-bar app-chart-colour--b" data-style-width="{{ percentageNegative }}">&nbsp;<br />&nbsp;</div>
         </td>
       </tr>
     {% endfor %}

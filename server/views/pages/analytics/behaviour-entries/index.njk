@@ -20,4 +20,17 @@
 
     </section>
   </div>
+
+  <script nonce="{{ cspNonce }}">
+    $(function () {
+      $('.app-chart-table__percentage-cell-bar').each(function () {
+        var $el = $(this)
+        $el.css('width', $el.data('style-width'))
+      })
+      $('.app-chart-table--heatmap__cell').each(function () {
+        var $el = $(this)
+        $el.css('background', $el.data('style-background'))
+      })
+    })
+  </script>
 {% endblock %}

@@ -6,36 +6,26 @@
 
 {{ dataSource("NOMIS", lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 
-{% macro heatMapClass(percentage) %}
-  {%- if percentage < 15 -%}
-    app-chart-colour--heat-0
-  {%- elseif percentage < 30 -%}
-    app-chart-colour--heat-15
-  {%- elseif percentage < 45 -%}
-    app-chart-colour--heat-30
-  {%- elseif percentage < 60 -%}
-    app-chart-colour--heat-45
-  {%- elseif percentage < 75 -%}
-    app-chart-colour--heat-60
-  {%- elseif percentage < 90 -%}
-    app-chart-colour--heat-75
+{% macro heatMapColour(percentage) -%}
+  {%- if percentage == 0 -%}
+    #fff
   {%- else -%}
-    app-chart-colour--heat-90
+    hsl(175,47%,{{ 45 + 52 * (100 - percentage) / 100 }}%)
   {%- endif -%}
-{% endmacro %}
+{%- endmacro %}
 
 <div>
   <a href="?" class="govuk-button govuk-button--secondary govuk-!-margin-right-6">Download heatmap</a>
 
   <div aria-hidden="true" class="app-chart-legend">
     <span class="app-chart-legend__label">100%</span>
-    <span class="app-chart-legend__swatch {{ heatMapClass(100) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch {{ heatMapClass(75) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch {{ heatMapClass(60) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch {{ heatMapClass(45) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch {{ heatMapClass(30) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch {{ heatMapClass(15) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch {{ heatMapClass(0) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(100) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(75) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(60) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(45) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(30) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(15) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(0) }}">&nbsp;</span>
     <span class="app-chart-legend__label">0%</span>
   </div>
 </div>
@@ -72,28 +62,28 @@
           {% endif %}
         </td>
         <td>
-          <span class="app-chart-table--heatmap__cell {{ heatMapClass(percentagePositive | float) }}">
+          <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentagePositive | float) }}">
             {{ percentagePositive }}
             <br />
             {{ row.prisonersWithPositive | thousands }} <span class="govuk-visually-hidden">prisoners with positive entries</span>
           </span>
         </td>
         <td>
-          <span class="app-chart-table--heatmap__cell {{ heatMapClass(percentageNegative | float) }}">
+          <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentageNegative | float) }}">
             {{ percentageNegative }}
             <br />
             {{ row.prisonersWithNegative | thousands }} <span class="govuk-visually-hidden">prisoners with negative entries</span>
           </span>
         </td>
         <td>
-          <span class="app-chart-table--heatmap__cell {{ heatMapClass(percentageBoth | float) }}">
+          <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentageBoth | float) }}">
             {{ percentageBoth }}
             <br />
             {{ row.prisonersWithBoth | thousands }} <span class="govuk-visually-hidden">prisoners with both kinds of entries</span>
           </span>
         </td>
         <td>
-          <span class="app-chart-table--heatmap__cell {{ heatMapClass(percentageNeither | float) }}">
+          <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentageNeither | float) }}">
             {{ percentageNeither }}
             <br />
             {{ row.prisonersWithNeither | thousands }} <span class="govuk-visually-hidden">prisoners with no positive or negative entries</span>

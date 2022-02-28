@@ -11,7 +11,7 @@ describe('AnalyticsService', () => {
   describe('getBehaviourEntriesByLocation()', () => {
     it('has a totals row', async () => {
       const entries = await analyticsService.getBehaviourEntriesByLocation('MDI')
-      expect(entries).toHaveLength(9)
+      expect(entries).toHaveLength(10)
 
       const prisonTotal = entries.shift()
       expect(prisonTotal.location).toEqual('Prison total')
@@ -30,7 +30,7 @@ describe('AnalyticsService', () => {
   describe('getPrisonersWithEntriesByLocation()', () => {
     it('has a totals row', async () => {
       const prisoners = await analyticsService.getPrisonersWithEntriesByLocation('MDI')
-      expect(prisoners).toHaveLength(9)
+      expect(prisoners).toHaveLength(10)
 
       const prisonTotal = prisoners.shift()
       expect(prisonTotal.location).toEqual('Prison total')

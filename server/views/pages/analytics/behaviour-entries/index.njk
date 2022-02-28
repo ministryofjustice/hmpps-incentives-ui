@@ -1,0 +1,36 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set graphTitle = "Behaviour entries in the last 28 days" %}
+{% set pageTitle = applicationName + " – " + graphTitle %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">
+    {{ graphTitle }}
+  </h1>
+
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
+
+      {% include "./entries-by-location.njk" %}
+
+    </section>
+    <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
+
+      {% include "./prisoners-with-entries-by-location.njk" %}
+
+    </section>
+  </div>
+
+  <script nonce="{{ cspNonce }}">
+    $(function () {
+      $('.app-chart-table__percentage-cell-bar').each(function () {
+        var $el = $(this)
+        $el.css('width', $el.data('style-width'))
+      })
+      $('.app-chart-table--heatmap__cell').each(function () {
+        var $el = $(this)
+        $el.css('background', $el.data('style-background'))
+      })
+    })
+  </script>
+{% endblock %}

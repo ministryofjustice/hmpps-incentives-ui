@@ -29,7 +29,10 @@ describe('Home page shows card linking to incentives analytics', () => {
   })
 })
 
-describe('Behaviour entries page', () => {
+describe('Behaviour entry graphs page', () => {
+  const samplePrison = 'MDI'
+  const sampleLocations = ['1', '2', '3', '4', '5', '6', '7', 'SEG']
+
   it('page loads if feature is turned on', () => {
     return request(app)
       .get('/analytics/behaviour-entries')
@@ -48,6 +51,16 @@ describe('Behaviour entries page', () => {
       .expect(res => {
         expect(res.text).not.toContain('Comparison of positive and negative behaviour entries by wing')
         expect(res.text).toContain('Not Found')
+      })
+  })
+
+  it('has graphs that link to incentive tables for locations', () => {
+    return request(app)
+      .get('/analytics/behaviour-entries')
+      .expect(res => {
+        sampleLocations.forEach(location => {
+          expect(res.text).toContain(`href="/incentive-summary/${samplePrison}-${location}"`)
+        })
       })
   })
 })

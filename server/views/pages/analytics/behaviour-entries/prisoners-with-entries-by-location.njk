@@ -1,0 +1,95 @@
+{% from "../../../components/dataSource.njk" import dataSource %}
+
+<h2 class="govuk-heading-m">
+  Percentage and number of prisoners by behaviour entry on each wing
+</h2>
+
+{{ dataSource("NOMIS", lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
+
+{% macro heatMapColour(percentage) -%}
+  {%- if percentage == 0 -%}
+    #fff
+  {%- else -%}
+    hsl(175,47%,{{ 45 + 52 * (100 - percentage) / 100 }}%)
+  {%- endif -%}
+{%- endmacro %}
+
+<div>
+  <a href="?" class="govuk-button govuk-button--secondary govuk-!-margin-right-6">Download heatmap</a>
+
+  <div aria-hidden="true" class="app-chart-legend">
+    <span class="app-chart-legend__label">100%</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(100) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(75) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(60) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(45) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(30) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(15) }}">&nbsp;</span>
+    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(0) }}">&nbsp;</span>
+    <span class="app-chart-legend__label">0%</span>
+  </div>
+</div>
+
+<table class="app-chart-table app-chart-table--heatmap">
+  <caption class="govuk-visually-hidden">
+    Percentage and number of prisoners by behaviour entry on each wing in the last 28 days
+  </caption>
+
+  <thead>
+    <tr>
+      <th scope="col">Location</th>
+      <th scope="col" aria-label="Prisoners with positive entries">Positive</th>
+      <th scope="col" aria-label="Prisoners with negative entries">Negative</th>
+      <th scope="col" aria-label="Prisoners with both kinds of entries">Both</th>
+      <th scope="col" aria-label="Prisoners with no positive or negative entries">None</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for row in prisonersWithEntries %}
+      {% set totalPrisoners = row.prisonersWithPositive + row.prisonersWithNegative + row.prisonersWithBoth + row.prisonersWithNeither %}
+      {% set percentagePositive = row.prisonersWithPositive | percentageOf(totalPrisoners) %}
+      {% set percentageNegative = row.prisonersWithNegative | percentageOf(totalPrisoners) %}
+      {% set percentageBoth = row.prisonersWithBoth | percentageOf(totalPrisoners) %}
+      {% set percentageNeither = row.prisonersWithNeither | percentageOf(totalPrisoners) %}
+
+      <tr>
+        <td>
+          {% if row.href %}
+            <a href="{{ row.href }}">{{ row.location }}</a>
+          {% else %}
+            {{ row.location }}
+          {% endif %}
+        </td>
+        <td>
+          <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentagePositive | float) }}">
+            {{ percentagePositive }}
+            <br />
+            {{ row.prisonersWithPositive | thousands }} <span class="govuk-visually-hidden">prisoners with positive entries</span>
+          </span>
+        </td>
+        <td>
+          <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentageNegative | float) }}">
+            {{ percentageNegative }}
+            <br />
+            {{ row.prisonersWithNegative | thousands }} <span class="govuk-visually-hidden">prisoners with negative entries</span>
+          </span>
+        </td>
+        <td>
+          <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentageBoth | float) }}">
+            {{ percentageBoth }}
+            <br />
+            {{ row.prisonersWithBoth | thousands }} <span class="govuk-visually-hidden">prisoners with both kinds of entries</span>
+          </span>
+        </td>
+        <td>
+          <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentageNeither | float) }}">
+            {{ percentageNeither }}
+            <br />
+            {{ row.prisonersWithNeither | thousands }} <span class="govuk-visually-hidden">prisoners with no positive or negative entries</span>
+          </span>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

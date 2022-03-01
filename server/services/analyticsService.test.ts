@@ -10,7 +10,7 @@ describe('AnalyticsService', () => {
 
   describe('getBehaviourEntriesByLocation()', () => {
     it('has a totals row', async () => {
-      const entries = await analyticsService.getBehaviourEntriesByLocation('MDI')
+      const { report: entries } = await analyticsService.getBehaviourEntriesByLocation('MDI')
       expect(entries).toHaveLength(10)
 
       const prisonTotal = entries.shift()
@@ -29,7 +29,7 @@ describe('AnalyticsService', () => {
 
   describe('getPrisonersWithEntriesByLocation()', () => {
     it('has a totals row', async () => {
-      const prisoners = await analyticsService.getPrisonersWithEntriesByLocation('MDI')
+      const { report: prisoners } = await analyticsService.getPrisonersWithEntriesByLocation('MDI')
       expect(prisoners).toHaveLength(10)
 
       const prisonTotal = prisoners.shift()
@@ -52,7 +52,7 @@ describe('AnalyticsService', () => {
 
   describe('getIncentiveLevelsByLocation()', () => {
     it('has a totals row', async () => {
-      const { levels, prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation('MDI')
+      const { levels, report: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation('MDI')
       expect(prisonersOnLevels).toHaveLength(10)
 
       const prisonTotal = prisonersOnLevels.shift()

@@ -1,7 +1,16 @@
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
 <div class="govuk-width-container">
-  {{ govukBreadcrumbs({
-    items: breadcrumbs.getItems()
-  }) }}
+  {% if breadcrumbs %}
+    {{ govukBreadcrumbs({
+      items: breadcrumbs.getItems()
+    }) }}
+  {% else %}
+    {{ govukBreadcrumbs({
+      items: [
+        {text: "Digital Prison Services", href: dpsHome},
+        {text: "Manage incentives"}
+      ]
+    }) }}
+  {% endif %}
 </div>

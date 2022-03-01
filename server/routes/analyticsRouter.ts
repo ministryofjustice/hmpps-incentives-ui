@@ -23,7 +23,6 @@ export default function routes(router: Router): Router {
     const prisonersWithEntries = await analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad)
 
     res.render('pages/analytics/behaviour-entries/index', {
-      lastUpdated: new Date(),
       behaviourEntries,
       prisonersWithEntries,
     })
@@ -35,11 +34,9 @@ export default function routes(router: Router): Router {
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const analyticsService = new AnalyticsService()
-    const { levels, prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)
+    const prisonersOnLevels = await analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)
 
     res.render('pages/analytics/incentive-levels/index', {
-      lastUpdated: new Date(),
-      levels,
       prisonersOnLevels,
     })
   })

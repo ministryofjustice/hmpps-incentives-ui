@@ -1,3 +1,9 @@
+type Report<T> = {
+  report: T
+  lastUpdated: Date
+  dataSource: string
+}
+
 type BehaviourEntriesByLocation = {
   location: string
   href?: string
@@ -25,7 +31,7 @@ export default class AnalyticsService {
     return `/incentive-summary/${prison}-${location}`
   }
 
-  async getBehaviourEntriesByLocation(prison: string): Promise<BehaviourEntriesByLocation[]> {
+  async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
     // TODO: fake response; move into test
     const response: [string, number, number][] = [
       ['1', 13, 58],
@@ -55,10 +61,10 @@ export default class AnalyticsService {
       entriesPositive: totalPositive,
       entriesNegative: totalNegative,
     })
-    return entries
+    return { report: entries, lastUpdated: new Date(), dataSource: 'NOMIS' }
   }
 
-  async getPrisonersWithEntriesByLocation(prison: string): Promise<PrisonersWithEntriesByLocation[]> {
+  async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation[]>> {
     // TODO: fake response; move into test
     const response: [string, number, number, number, number][] = [
       ['1', 9, 35, 2, 157],
@@ -96,12 +102,12 @@ export default class AnalyticsService {
       prisonersWithBoth: totalBoth,
       prisonersWithNeither: totalNeither,
     })
-    return prisoners
+    return { report: prisoners, lastUpdated: new Date(), dataSource: 'NOMIS' }
   }
 
   async getIncentiveLevelsByLocation(
     prison: string
-  ): Promise<{ levels: string[]; prisonersOnLevels: PrisonersOnLevelsByLocation[] }> {
+  ): Promise<{ levels: string[] } & Report<PrisonersOnLevelsByLocation[]>> {
     // TODO: fake response; move into test
     const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
     const response: [string, number, number, number, number][] = [
@@ -135,6 +141,6 @@ export default class AnalyticsService {
       location: 'Prison total',
       prisonersOnLevels: totals,
     })
-    return { levels, prisonersOnLevels }
+    return { levels, report: prisonersOnLevels, lastUpdated: new Date(), dataSource: 'NOMIS' }
   }
 }

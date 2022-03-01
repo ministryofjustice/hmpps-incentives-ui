@@ -4,7 +4,7 @@
   Percentage and number of prisoners on each incentive level by wing
 </h2>
 
-{{ dataSource("NOMIS", lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
+{{ dataSource(prisonersOnLevels.dataSource, prisonersOnLevels.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 
 {% set colourChoices = [
   'app-chart-colour--a', 'app-chart-colour--b', 'app-chart-colour--c', 'app-chart-colour--d', 'app-chart-colour--e'
@@ -14,7 +14,7 @@
   <a href="?" class="govuk-button govuk-button--secondary govuk-!-margin-right-6">Download chart</a>
 
   <div aria-hidden="true" class="app-chart-legend">
-    {% for level in levels %}
+    {% for level in prisonersOnLevels.levels %}
       <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>
       <span class="app-chart-legend__label">{{ level }}</span>
     {% endfor %}
@@ -29,7 +29,7 @@
   <thead>
     <tr>
       <th scope="col">Location</th>
-      {% for level in levels %}
+      {% for level in prisonersOnLevels.levels %}
         <th scope="col">{{ level }} <span class="govuk-visually-hidden">level</span></th>
       {% endfor %}
       <th aria-hidden="true" class="govuk-visually-hidden" scope="col">Chart</th>
@@ -37,7 +37,7 @@
   </thead>
 
   <tbody>
-    {% for row in prisonersOnLevels %}
+    {% for row in prisonersOnLevels.report %}
       {% set total = row.prisonersOnLevels | sum %}
 
       <tr>
@@ -48,7 +48,7 @@
             {{ row.location }}
           {% endif %}
         </td>
-        {% for level in levels %}
+        {% for level in prisonersOnLevels.levels %}
           <td>
             {{ row.prisonersOnLevels[loop.index0] | percentageOf(total) }}
             <br />
@@ -57,7 +57,7 @@
         {% endfor %}
         <td aria-hidden="true" class="app-chart-table__percentage-cell">
           <span class="app-chart-table__axis-midpoint"></span>
-          {% for level in levels %}
+          {% for level in prisonersOnLevels.levels %}
             <div class="app-chart-table__percentage-cell-bar {{ colourChoices[loop.index0] }}" data-style-width="{{ row.prisonersOnLevels[loop.index0] | percentageOf(total) }}">&nbsp;<br />&nbsp;</div>
           {% endfor %}
         </td>
@@ -67,7 +67,7 @@
 
   <tfoot aria-hidden="true">
     <tr>
-      <td colspan="{{ (levels | length) + 1 }}"></td>
+      <td colspan="{{ (prisonersOnLevels.levels | length) + 1 }}"></td>
       <td class="app-chart-table__axis-values">
         <span class="app-chart-table__axis-midpoint"></span>
         <span class="app-chart-table__axis-value app-chart-table__axis-value--min">0</span>
@@ -76,7 +76,7 @@
       </td>
     </tr>
     <tr>
-      <td colspan="{{ (levels | length) + 1 }}"></td>
+      <td colspan="{{ (prisonersOnLevels.levels | length) + 1 }}"></td>
       <td>Percentage</td>
     </tr>
   </tfoot>

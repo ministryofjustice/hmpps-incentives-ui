@@ -4,7 +4,7 @@
   Percentage and number of prisoners by behaviour entry on each wing
 </h2>
 
-{{ dataSource("NOMIS", lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
+{{ dataSource(prisonersWithEntries.dataSource, prisonersWithEntries.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 
 {% macro heatMapColour(percentage) -%}
   {%- if percentage == 0 -%}
@@ -46,7 +46,7 @@
   </thead>
 
   <tbody>
-    {% for row in prisonersWithEntries %}
+    {% for row in prisonersWithEntries.report %}
       {% set totalPrisoners = row.prisonersWithPositive + row.prisonersWithNegative + row.prisonersWithBoth + row.prisonersWithNeither %}
       {% set percentagePositive = row.prisonersWithPositive | percentageOf(totalPrisoners) %}
       {% set percentageNegative = row.prisonersWithNegative | percentageOf(totalPrisoners) %}

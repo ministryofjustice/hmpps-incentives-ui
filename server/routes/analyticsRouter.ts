@@ -19,7 +19,6 @@ export default function routes(router: Router): Router {
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const analyticsService = new AnalyticsService()
-
     const behaviourEntries = await analyticsService.getBehaviourEntriesByLocation(activeCaseLoad)
     const prisonersWithEntries = await analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad)
 
@@ -33,8 +32,15 @@ export default function routes(router: Router): Router {
   get('/incentive-levels', async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentives data', href: '/analytics' }, { text: 'Incentive levels' })
 
+    const activeCaseLoad = res.locals.user.activeCaseload.id
+
+    const analyticsService = new AnalyticsService()
+    const { levels, prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)
+
     res.render('pages/analytics/incentive-levels/index', {
       lastUpdated: new Date(),
+      levels,
+      prisonersOnLevels,
     })
   })
 

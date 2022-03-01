@@ -1,14 +1,24 @@
 .app-chart-table--bars {
-  td {
-    width: 13%;
+  th, td {
+    width: 12%;
 
     &:last-child {
-      width: 61%;
+      width: 52%;
     }
+  }
 
-    &:first-child {
-      font-weight: bold;
+  .govuk-grid-column-one-half & {
+    th, td {
+      width: 13%;
+
+      &:last-child {
+        width: 61%;
+      }
     }
+  }
+
+  td:first-child {
+    font-weight: bold;
   }
 }
 

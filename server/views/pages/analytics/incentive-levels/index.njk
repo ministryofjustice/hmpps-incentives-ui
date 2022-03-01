@@ -16,3 +16,8 @@
     </section>
   </div>
 {% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/assets/analyticsGraphs.js"></script>
+{% endblock %}

@@ -2,14 +2,15 @@ const notNumber = (n: unknown) => typeof n !== 'number' || Number.isNaN(n)
 
 export default {
   date(date: Date) {
-    return date
-      .toLocaleDateString('en-GB', {
-        hour: '2-digit',
-        hour12: false,
-        minute: '2-digit',
-        timeZone: 'Europe/London',
-      })
-      .replace(',', '')
+    return date.toLocaleDateString('en-GB', {
+      hour: '2-digit',
+      hour12: false,
+      minute: '2-digit',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'Europe/London',
+    })
   },
 
   thousands(integer: number) {

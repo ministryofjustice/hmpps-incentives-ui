@@ -1,5 +1,8 @@
 $chart-colour-a: govuk-colour("light-blue"); // miro ~ #5695ca
 $chart-colour-b: govuk-colour("dark-blue"); // miro ~ #003078
+$chart-colour-c: govuk-colour("turquoise"); // miro ~ #27a197
+$chart-colour-d: govuk-colour("yellow"); // miro ~ #ffdd04
+$chart-colour-e: govuk-colour("pink");
 
 .app-chart-colour--a {
   background: $chart-colour-a;
@@ -7,4 +10,16 @@ $chart-colour-b: govuk-colour("dark-blue"); // miro ~ #003078
 
 .app-chart-colour--b {
   background: $chart-colour-b;
+}
+
+.app-chart-colour--c {
+  background: $chart-colour-c;
+}
+
+.app-chart-colour--d {
+  background: $chart-colour-d;
+}
+
+.app-chart-colour--e {
+  background: $chart-colour-e;
 }

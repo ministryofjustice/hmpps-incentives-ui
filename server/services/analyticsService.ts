@@ -14,6 +14,12 @@ type PrisonersWithEntriesByLocation = {
   prisonersWithNeither: number
 }
 
+type PrisonersOnLevelsByLocation = {
+  location: string
+  href?: string
+  prisonersOnLevels: number[]
+}
+
 export default class AnalyticsService {
   getUrlToIncentivesTable(prison: string, location: string): string {
     return `/incentive-summary/${prison}-${location}`
@@ -91,5 +97,44 @@ export default class AnalyticsService {
       prisonersWithNeither: totalNeither,
     })
     return prisoners
+  }
+
+  async getIncentiveLevelsByLocation(
+    prison: string
+  ): Promise<{ levels: string[]; prisonersOnLevels: PrisonersOnLevelsByLocation[] }> {
+    // TODO: fake response; move into test
+    const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
+    const response: [string, number, number, number, number][] = [
+      ['1', 9, 35, 20, 3],
+      ['2', 3, 37, 21, 0],
+      ['3', 18, 31, 27, 10],
+      ['4', 8, 31, 4, 1],
+      ['5', 10, 2, 15, 0],
+      ['6', 4, 10, 21, 0],
+      ['7', 9, 17, 10, 0],
+      ['H', 0, 0, 0, 0],
+      ['SEG', 1, 2, 0, 0],
+    ]
+
+    const totals: number[] = []
+    for (let i = 0; i < levels.length; i += 1) {
+      totals.push(0)
+    }
+    const prisonersOnLevels: PrisonersOnLevelsByLocation[] = response.map(row => {
+      const [location, ...prisoners] = row
+      for (let i = 0; i < levels.length; i += 1) {
+        totals[i] += prisoners[i]
+      }
+      return {
+        location,
+        href: this.getUrlToIncentivesTable(prison, location),
+        prisonersOnLevels: prisoners,
+      }
+    })
+    prisonersOnLevels.unshift({
+      location: 'Prison total',
+      prisonersOnLevels: totals,
+    })
+    return { levels, prisonersOnLevels }
   }
 }

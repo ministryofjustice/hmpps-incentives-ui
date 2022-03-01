@@ -49,4 +49,25 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.prisonersWithNeither).toEqual(sumNeither)
     })
   })
+
+  describe('getIncentiveLevelsByLocation()', () => {
+    it('has a totals row', async () => {
+      const { levels, prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation('MDI')
+      expect(prisonersOnLevels).toHaveLength(10)
+
+      const prisonTotal = prisonersOnLevels.shift()
+      expect(prisonTotal.location).toEqual('Prison total')
+      expect(prisonTotal.href).toBeUndefined()
+
+      const totals = [0, 0, 0, 0]
+      prisonersOnLevels.forEach(({ prisonersOnLevels: prisoners }) => {
+        for (let i = 0; i < levels.length; i += 1) {
+          totals[i] += prisoners[i]
+        }
+      })
+      for (let i = 0; i < levels.length; i += 1) {
+        expect(prisonTotal.prisonersOnLevels[i]).toEqual(totals[i])
+      }
+    })
+  })
 })

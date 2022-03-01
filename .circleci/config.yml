@@ -30,7 +30,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: Install Dependencies
+          name: Install dependencies
           command: npm ci --no-audit
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
@@ -38,6 +38,7 @@ jobs:
             - node_modules
             - ~/.cache
       - run:
+          name: Build and record info
           command: |
             npm run build
             DATE=$(date '+%Y-%m-%d')
@@ -65,7 +66,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: install-npm
+          name: Install dependencies
           command: 'npm ci --no-audit'
       - run:
           name: Check version
@@ -87,7 +88,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: unit tests
+          name: Run unit tests
           command: npm run test
       - store_test_results:
           path: test_results
@@ -123,7 +124,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: integration tests
+          name: Run integration tests
           command: npm run int-test
       - store_test_results:
           path: test_results

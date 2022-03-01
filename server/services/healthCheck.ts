@@ -1,6 +1,8 @@
-import { serviceCheckFactory } from '../data/healthCheck'
-import config from '../config'
+import { readFileSync } from 'fs'
+
 import type { AgentConfig } from '../config'
+import config from '../config'
+import { serviceCheckFactory } from '../data/healthCheck'
 
 interface HealthCheckStatus {
   name: string
@@ -35,10 +37,10 @@ function addAppInfo(result: HealthCheckResult): HealthCheckResult {
   return { ...result, ...buildInfo }
 }
 
-function getBuild() {
+function getBuild(): { buildNumber: string; gitRef: string } | null {
   try {
-    // eslint-disable-next-line import/no-unresolved,global-require
-    return require('../../build-info.json')
+    const buildInfo = readFileSync('../../build-info.json', { encoding: 'utf8' })
+    return JSON.parse(buildInfo)
   } catch (ex) {
     return null
   }

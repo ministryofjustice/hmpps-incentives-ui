@@ -8,6 +8,7 @@ import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
 import type UserService from './services/userService'
 
+import { setUpSentryRequestHandler, setUpSentryErrorHandler } from './middleware/setUpSentryIo'
 import setUpWebSession from './middleware/setUpWebSession'
 import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
@@ -24,6 +25,7 @@ export default function createApp(userService: UserService): express.Application
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
+  setUpSentryRequestHandler(app)
   app.use(setUpHealthChecks())
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
@@ -37,6 +39,7 @@ export default function createApp(userService: UserService): express.Application
   // App routes
   app.use('/', allRoutes(userService))
 
+  setUpSentryErrorHandler(app)
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
 

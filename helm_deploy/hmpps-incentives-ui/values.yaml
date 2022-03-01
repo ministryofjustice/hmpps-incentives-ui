@@ -51,6 +51,7 @@ generic-service:
       SESSION_SECRET: "SESSION_SECRET"
       GOOGLE_ANALYTICS_ID: "GOOGLE_ANALYTICS_ID"
       FEEDBACK_URL: "FEEDBACK_URL"
+      SENTRY_DSN: "SENTRY_DSN"
     elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"

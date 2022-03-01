@@ -37,6 +37,7 @@ export interface ApiConfig {
 }
 
 export default {
+  environment: process.env.ENVIRONMENT || 'local',
   https: production,
   staticResourceCacheDuration: 20,
   redis: {

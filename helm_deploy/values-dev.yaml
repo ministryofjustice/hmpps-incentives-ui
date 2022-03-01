@@ -9,6 +9,7 @@ generic-service:
   allowlist: null
 
   env:
+    ENVIRONMENT: dev
     INGRESS_URL: "https://incentives-ui-dev.hmpps.service.justice.gov.uk"
     DPS_URL: "https://digital-dev.prison.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"

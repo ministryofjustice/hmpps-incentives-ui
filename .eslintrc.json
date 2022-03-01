@@ -1,6 +1,8 @@
 {
+  "root": true,
+
   "env": {
-    "browser": true,
+    "browser": false,
     "node": true,
     "jest": true
   },
@@ -104,5 +106,7 @@
         "arrowParens": "avoid"
       }
     ]
-  }
+  },
+
+  "reportUnusedDisableDirectives": true
 }

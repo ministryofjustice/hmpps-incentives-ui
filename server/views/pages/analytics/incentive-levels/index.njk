@@ -1,0 +1,18 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set graphTitle = "Incentive levels" %}
+{% set pageTitle = applicationName + " – " + graphTitle %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">
+    {{ graphTitle }}
+  </h1>
+
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+      {% include "./prisoners-by-location.njk" %}
+
+    </section>
+  </div>
+{% endblock %}

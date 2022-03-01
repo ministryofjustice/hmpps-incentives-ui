@@ -10,7 +10,7 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', async (req, res) => {
-    res.locals.breadcrumbs.addItem({ text: 'Incentive information' })
+    res.locals.breadcrumbs.addItems({ text: 'Incentive information' })
 
     const { user } = res.locals
     const { locationPrefix } = req.params

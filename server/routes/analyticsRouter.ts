@@ -8,8 +8,13 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) =>
     router.get(path, featureGate('showAnalytics', asyncMiddleware(handler)))
 
+  get('/', (req, res) => {
+    res.locals.breadcrumbs.addItems({ text: 'Incentives data' })
+    res.render('pages/analytics/index')
+  })
+
   get('/behaviour-entries', async (req, res) => {
-    res.locals.breadcrumbs.addItem({ text: 'Behaviour entries' })
+    res.locals.breadcrumbs.addItems({ text: 'Incentives data', href: '/analytics' }, { text: 'Behaviour entries' })
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
@@ -22,6 +27,14 @@ export default function routes(router: Router): Router {
       lastUpdated: new Date(),
       behaviourEntries,
       prisonersWithEntries,
+    })
+  })
+
+  get('/incentive-levels', async (req, res) => {
+    res.locals.breadcrumbs.addItems({ text: 'Incentives data', href: '/analytics' }, { text: 'Incentive levels' })
+
+    res.render('pages/analytics/incentive-levels/index', {
+      lastUpdated: new Date(),
     })
   })
 

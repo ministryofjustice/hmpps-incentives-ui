@@ -1,0 +1,7 @@
+{% from "../../../components/dataSource.njk" import dataSource %}
+
+<h2 class="govuk-heading-m">
+  Percentage and number of prisoners on each incentive level by wing
+</h2>
+
+{{ dataSource("NOMIS", lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}

@@ -22,8 +22,8 @@ class Breadcrumbs {
     return this.breadcrumbs[this.breadcrumbs.length - 1]
   }
 
-  addItem(item: Breadcrumb) {
-    this.breadcrumbs.push(item)
+  addItems(...items: Breadcrumb[]) {
+    items.forEach(item => this.breadcrumbs.push(item))
   }
 
   getItems(): Breadcrumb[] {

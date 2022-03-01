@@ -6,31 +6,31 @@
 
 {% block content %}
 
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
-      {{ applicationName }}
-    </h1>
+  <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
+    {{ applicationName }}
+  </h1>
 
-    <ul class="govuk-grid-row card-group">
+  <ul class="govuk-grid-row card-group">
+    <li class="govuk-grid-column-one-third card-group__item">
+      {{ card({
+        "href": "/select-location",
+        "clickable": "true",
+        "heading": "View review dates and incentive information",
+        "description": "See review dates, incentive levels and behaviour entries by residential location.",
+        "id": "incentive-information"
+      }) }}
+    </li>
+    {% if featureFlags.showAnalytics %}
       <li class="govuk-grid-column-one-third card-group__item">
         {{ card({
-          "href": "/select-location",
+          "href": "/analytics",
           "clickable": "true",
-          "heading": "View review dates and incentive information",
-          "description": "See review dates, incentive levels and behaviour entries by residential location.",
-          "id": "incentive-information"
+          "heading": "See incentives data",
+          "description": "View incentive level data across locations.",
+          "id": "incentive-analytics"
         }) }}
       </li>
-      {% if featureFlags.showAnalytics %}
-        <li class="govuk-grid-column-one-third card-group__item">
-          {{ card({
-            "href": "/analytics/behaviour-entries",
-            "clickable": "true",
-            "heading": "See incentives data",
-            "description": "View incentive level data across locations.",
-            "id": "incentive-analytics"
-          }) }}
-        </li>
-      {% endif %}
-    </ul>
+    {% endif %}
+  </ul>
 
 {% endblock %}

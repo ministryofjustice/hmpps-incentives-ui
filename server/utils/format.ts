@@ -18,9 +18,15 @@ export default {
     return Math.round(integer).toLocaleString('en-GB')
   },
 
-  percentage(value: number, total: number) {
+  percentage(value: number, total: number, roundToInteger = true) {
     if (value === 0 && total === 0) return '0%'
     if (notNumber(total) || notNumber(value) || total === 0) return '?'
-    return `${Math.round((value / total) * 100)}%`
+    let percentage = (value / total) * 100
+    if (roundToInteger) {
+      percentage = Math.round(percentage)
+    } else {
+      percentage = Math.round(percentage * 1000) / 1000
+    }
+    return `${percentage}%`
   },
 }

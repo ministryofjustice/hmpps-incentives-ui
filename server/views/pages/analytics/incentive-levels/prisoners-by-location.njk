@@ -58,7 +58,7 @@
         <td aria-hidden="true" class="app-chart-table__percentage-cell">
           <span class="app-chart-table__axis-midpoint"></span>
           {% for level in prisonersOnLevels.levels %}
-            <div class="app-chart-table__percentage-cell-bar {{ colourChoices[loop.index0] }}" data-style-width="{{ row.prisonersOnLevels[loop.index0] | percentageOf(total) }}">&nbsp;<br />&nbsp;</div>
+            <div class="app-chart-table__percentage-cell-bar {{ colourChoices[loop.index0] }}" data-style-width="{{ row.prisonersOnLevels[loop.index0] | percentageOf(total, false) }}">&nbsp;<br />&nbsp;</div>
           {% endfor %}
         </td>
       </tr>

@@ -48,21 +48,25 @@ describe.each([
 })
 
 describe.each([
-  [0, 100, '0%'],
-  [10, 100, '10%'],
-  [100, 100, '100%'],
-  [37.7, 100, '38%'],
-  [-37.7, 100, '-38%'],
-  [37, 68, '54%'],
-  [0, 0, '0%'],
-  [10, 0, '?'],
-  [10, NaN, '?'],
-  [NaN, 100, '?'],
-  [10, undefined, '?'],
-  [undefined, 100, '?'],
-  [null, 100, '?'],
-])('Format percentages', (value: number, total: number, expected: string) => {
+  [0, 100, '0%', '0%'],
+  [10, 100, '10%', '10%'],
+  [100, 100, '100%', '100%'],
+  [37.7, 100, '38%', '37.7%'],
+  [-37.7, 100, '-38%', '-37.7%'],
+  [37, 68, '54%', '54.412%'],
+  [0, 0, '0%', '0%'],
+  [10, 0, '?', '?'],
+  [10, NaN, '?', '?'],
+  [NaN, 100, '?', '?'],
+  [10, undefined, '?', '?'],
+  [undefined, 100, '?', '?'],
+  [null, 100, '?', '?'],
+])('Format percentages', (value: number, total: number, expected: string, expectedUnrounded: string) => {
   it(`${value}/${total} as a percentage formats as ${expected}`, () => {
     expect(format.percentage(value, total)).toEqual(expected)
+  })
+
+  it(`${value}/${total} as a percentage formats as ${expectedUnrounded} without rounding`, () => {
+    expect(format.percentage(value, total, false)).toEqual(expectedUnrounded)
   })
 })

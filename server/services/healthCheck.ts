@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs'
+import path from 'path'
 
 import type { AgentConfig } from '../config'
 import config from '../config'
@@ -39,7 +40,7 @@ function addAppInfo(result: HealthCheckResult): HealthCheckResult {
 
 function getBuild(): { buildNumber: string; gitRef: string } | null {
   try {
-    const buildInfo = readFileSync('../../build-info.json', { encoding: 'utf8' })
+    const buildInfo = readFileSync(path.resolve(__dirname, '../../build-info.json'), { encoding: 'utf8' })
     return JSON.parse(buildInfo)
   } catch (ex) {
     return null

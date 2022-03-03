@@ -51,7 +51,7 @@ export default {
     expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 120)),
   },
   sentry: {
-    dsn: get('SENTRY_DSN', null, requiredInProduction),
+    dsn: get('SENTRY_DSN', null, notRequiredInProduction),
   },
   apis: {
     hmppsAuth: {

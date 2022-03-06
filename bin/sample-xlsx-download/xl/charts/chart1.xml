@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  {% macro categories() %}
+    <c:cat>
+      <c:strRef>
+        <c:f>'{{ sheetName }}'!$A$7:$A${{ graphData.length + 7 }}</c:f>
+        <c:strCache>
+          <c:ptCount val="{{ graphData.length }}"/>
+          {%- for row in graphData %}
+            <c:pt idx="{{ loop.index0 }}">
+              <c:v>{{ row[0] }}</c:v>
+            </c:pt>
+          {%- endfor %}
+        </c:strCache>
+      </c:strRef>
+    </c:cat>
+  {% endmacro -%}
+
+  <c:date1904 val="0"/>
+  <c:lang val="en-GB"/>
+  <c:chart>
+    <c:autoTitleDeleted val="1"/>
+    <c:plotArea>
+      <c:layout>
+        <c:manualLayout>
+          <c:layoutTarget val="inner"/>
+          <c:xMode val="edge"/>
+          <c:yMode val="edge"/>
+          <c:x val="0"/>
+          <c:y val="0"/>
+          <c:w val="1"/>
+          <c:h val="0.75"/>
+        </c:manualLayout>
+      </c:layout>
+      <c:barChart>
+        <c:barDir val="bar"/>
+        <c:grouping val="stacked"/>
+        {% for column in graphColumns %}
+          <c:ser>
+            <c:idx val="{{ loop.index0 }}"/>
+            <c:order val="{{ loop.index0 }}"/>
+            <c:tx>
+              <c:strRef>
+                <c:f>'{{ sheetName }}'!${{ (loop.index0 * 2 + 2) | columnLetter }}$6</c:f>
+                <c:strCache>
+                  <c:ptCount val="1"/>
+                  <c:pt idx="0">
+                    <c:v>{{ column }}</c:v>
+                  </c:pt>
+                </c:strCache>
+              </c:strRef>
+            </c:tx>
+            <c:spPr>
+              <a:solidFill>
+                <a:schemeClr val="accent{{ loop.index }}"/>
+              </a:solidFill>
+              <a:ln>
+                <a:noFill/>
+              </a:ln>
+            </c:spPr>
+            <c:invertIfNegative val="0"/>
+            {{ categories() }}
+            <c:val>
+              <c:numRef>
+                <c:f>'{{ sheetName }}'!${{ (loop.index0 * 2 + 3) | columnLetter }}$7:${{ (loop.index0 * 2 + 3) | columnLetter }}${{ graphData.length + 7 }}</c:f>
+                <c:numCache>
+                  <c:formatCode>0.0%</c:formatCode>
+                  {% set columnIndex = loop.index0 %}
+                  <c:ptCount val="{{ graphData.length }}"/>
+                  {% for data in graphData %}
+                    {% set data = data.slice(1) %}
+                    {% set total = data | sum %}
+                    {% set datum = data[columnIndex] %}
+                    <c:pt idx="{{ loop.index0 }}">
+                      {%- if total == 0 %}
+                        <c:v>0</c:v>
+                      {%- else %}
+                        <c:v>{{ datum / total }}</c:v>
+                      {%- endif %}
+                    </c:pt>
+                  {% endfor %}
+                </c:numCache>
+              </c:numRef>
+            </c:val>
+          </c:ser>
+        {% endfor %}
+        <c:gapWidth val="150"/>
+        <c:overlap val="100"/>
+        <c:axId val="1"/>
+        <c:axId val="2"/>
+      </c:barChart>
+
+      <c:catAx>
+        <c:axId val="1"/>
+        <c:scaling>
+          <c:orientation val="maxMin"/>
+        </c:scaling>
+        <c:delete val="0"/>
+        <c:axPos val="l"/>
+        <c:title>
+          <c:tx>
+            <c:rich>
+              <a:bodyPr rot="-5400000"/>
+              <a:p>
+                <a:pPr>
+                  <a:defRPr b="0" i="0" sz="1200" u="none">
+                    <a:solidFill>
+                      <a:schemeClr val="dk1"/>
+                    </a:solidFill>
+                    <a:latin typeface="Arial"/>
+                  </a:defRPr>
+                </a:pPr>
+                <a:r>
+                  <a:t>Location</a:t>
+                </a:r>
+              </a:p>
+            </c:rich>
+          </c:tx>
+          <c:overlay val="1"/>
+        </c:title>
+        <c:numFmt formatCode="General" sourceLinked="1"/>
+        <c:majorTickMark val="none"/>
+        <c:minorTickMark val="none"/>
+        <c:tickLblPos val="nextTo"/>
+        <c:spPr>
+          <a:ln w="12700" cap="flat">
+            <a:solidFill>
+              <a:schemeClr val="dk2"/>
+            </a:solidFill>
+            <a:prstDash val="solid"/>
+            <a:round/>
+          </a:ln>
+        </c:spPr>
+        <c:txPr>
+          <a:bodyPr rot="0"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr>
+              <a:defRPr b="0" i="0" sz="1200" u="none">
+                <a:solidFill>
+                  <a:schemeClr val="dk1"/>
+                </a:solidFill>
+                <a:latin typeface="Arial"/>
+              </a:defRPr>
+            </a:pPr>
+          </a:p>
+        </c:txPr>
+        <c:crossAx val="2"/>
+        <c:crosses val="autoZero"/>
+        <c:auto val="1"/>
+        <c:lblAlgn val="ctr"/>
+        <c:noMultiLvlLbl val="1"/>
+      </c:catAx>
+
+      <c:valAx>
+        <c:axId val="2"/>
+        <c:scaling>
+          <c:orientation val="minMax"/>
+          <c:min val="0"/>
+          <c:max val="1"/>
+        </c:scaling>
+        <c:delete val="0"/>
+        <c:axPos val="b"/>
+        <c:majorGridlines>
+          <c:spPr>
+            <a:ln w="12700" cap="flat">
+              <a:solidFill>
+                <a:schemeClr val="dk2"/>
+              </a:solidFill>
+              <a:prstDash val="solid"/>
+              <a:round/>
+            </a:ln>
+          </c:spPr>
+        </c:majorGridlines>
+        <c:title>
+          <c:tx>
+            <c:rich>
+              <a:bodyPr rot="0"/>
+              <a:p>
+                <a:pPr>
+                  <a:defRPr b="0" i="0" sz="1200" u="none">
+                    <a:solidFill>
+                      <a:schemeClr val="dk1"/>
+                    </a:solidFill>
+                    <a:latin typeface="Arial"/>
+                  </a:defRPr>
+                </a:pPr>
+                <a:r>
+                  <a:t>Percentage</a:t>
+                </a:r>
+              </a:p>
+            </c:rich>
+          </c:tx>
+          <c:layout>
+            <c:manualLayout>
+              <c:xMode val="edge"/>
+              <c:yMode val="edge"/>
+              <c:x val="0.8"/>
+              <c:y val="0.9"/>
+            </c:manualLayout>
+          </c:layout>
+          <c:overlay val="1"/>
+        </c:title>
+        <c:numFmt formatCode="Percentage" sourceLinked="1"/>
+        <c:majorTickMark val="out"/>
+        <c:minorTickMark val="none"/>
+        <c:tickLblPos val="high"/>
+        <c:spPr>
+          <a:ln w="12700" cap="flat">
+            <a:solidFill>
+              <a:schemeClr val="dk2"/>
+            </a:solidFill>
+            <a:prstDash val="solid"/>
+            <a:round/>
+          </a:ln>
+        </c:spPr>
+        <c:txPr>
+          <a:bodyPr rot="0"/>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr>
+              <a:defRPr b="0" i="0" sz="1200" u="none">
+                <a:solidFill>
+                  <a:schemeClr val="dk1"/>
+                </a:solidFill>
+                <a:latin typeface="Arial"/>
+              </a:defRPr>
+            </a:pPr>
+          </a:p>
+        </c:txPr>
+        <c:crossAx val="1"/>
+        <c:crosses val="autoZero"/>
+        <c:crossBetween val="between"/>
+        <c:majorUnit val="0.5"/>
+        <c:minorUnit val="0.125"/>
+      </c:valAx>
+
+      <c:spPr>
+        <a:solidFill>
+          <a:schemeClr val="lt1"/>
+        </a:solidFill>
+        <a:ln>
+          <a:noFill/>
+        </a:ln>
+      </c:spPr>
+    </c:plotArea>
+
+    <c:legend>
+      <c:legendPos val="b"/>
+      <c:layout>
+        <c:manualLayout>
+          <c:xMode val="edge"/>
+          <c:yMode val="edge"/>
+          <c:x val="0"/>
+          <c:y val="0.9"/>
+          <c:w val="0.7"/>
+        </c:manualLayout>
+      </c:layout>
+      <c:overlay val="1"/>
+      <c:spPr>
+        <a:noFill/>
+        <a:ln>
+          <a:noFill/>
+        </a:ln>
+        <a:effectLst/>
+      </c:spPr>
+      <c:txPr>
+        <a:bodyPr rot="0"/>
+        <a:lstStyle/>
+        <a:p>
+          <a:pPr>
+            <a:defRPr b="0" i="0" sz="1200" u="none">
+              <a:solidFill>
+                <a:schemeClr val="dk1"/>
+              </a:solidFill>
+              <a:latin typeface="Arial"/>
+            </a:defRPr>
+          </a:pPr>
+        </a:p>
+      </c:txPr>
+    </c:legend>
+
+    <c:plotVisOnly val="1"/>
+    <c:dispBlanksAs val="gap"/>
+  </c:chart>
+  <c:spPr>
+    <a:solidFill>
+      <a:schemeClr val="lt1"/>
+    </a:solidFill>
+    <a:ln>
+      <a:noFill/>
+    </a:ln>
+  </c:spPr>
+</c:chartSpace>

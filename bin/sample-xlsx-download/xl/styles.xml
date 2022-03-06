@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <numFmts count="1">
+    <numFmt numFmtId="1" formatCode="0.0%"/>
+  </numFmts>
+  <fonts count="4">
+    <!-- normal -->
+    <font>
+      <name val="Arial"/>
+      <sz val="12"/>
+      <scheme val="minor"/>
+      <color theme="1"/>
+    </font>
+    <!-- heading -->
+    <font>
+      <name val="Arial"/>
+      <sz val="20"/>
+      <b/>
+      <scheme val="major"/>
+      <color theme="1"/>
+    </font>
+    <!-- subheading -->
+    <font>
+      <name val="Arial"/>
+      <sz val="16"/>
+      <b/>
+      <scheme val="major"/>
+      <color theme="1"/>
+    </font>
+  </fonts>
+  <fills count="1">
+    <fill>
+      <patternFill patternType="none"/>
+    </fill>
+  </fills>
+  <borders count="1"><border/></borders>
+  <cellStyleXfs count="2">
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0" applyFont="1"/>
+    <xf numFmtId="9" fontId="0" fillId="0" borderId="0" applyFont="1" applyFill="0" applyBorder="0" applyAlignment="0" applyProtection="0"/>
+  </cellStyleXfs>
+  <cellXfs count="4">
+    <!-- normal -->
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyFont="0"/>
+    <!-- percentage -->
+    <xf numFmtId="1" fontId="0" fillId="0" borderId="0" xfId="1" applyNumberFormat="1" applyFont="0"/>
+    <!-- heading -->
+    <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>
+    <!-- subheading -->
+    <xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/>
+    <!-- location cell -->
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyFont="0">
+      <alignment horizontal="right"/>
+    </xf>
+  </cellXfs>
+  <cellStyles count="2">
+    <cellStyle name="Normal" xfId="0" builtinId="0"/>
+    <cellStyle name="Percent" xfId="1" builtinId="5"/>
+  </cellStyles>
+  <colors>
+    <indexedColors>
+      <rgbColor rgb="ff000000"/>
+      <rgbColor rgb="ffffffff"/>
+      <rgbColor rgb="ff5694CA"/>
+      <rgbColor rgb="ff003078"/>
+      <rgbColor rgb="ff28A197"/>
+      <rgbColor rgb="ffFFDD00"/>
+      <rgbColor rgb="ffD53880"/>
+      <rgbColor rgb="ff00703C"/>
+      <rgbColor rgb="ff505A5F"/>
+      <rgbColor rgb="ffF3F2F1"/>
+    </indexedColors>
+  </colors>
+</styleSheet>

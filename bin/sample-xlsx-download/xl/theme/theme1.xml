@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="GDS Theme">
+  <a:themeElements>
+    <a:clrScheme name="GDS Theme">
+      <a:dk1>
+        <a:srgbClr val="000000"/>
+      </a:dk1>
+      <a:lt1>
+        <a:srgbClr val="FFFFFF"/>
+      </a:lt1>
+      <a:dk2>
+        <!-- GDS dark-grey -->
+        <a:srgbClr val="505A5F"/>
+      </a:dk2>
+      <a:lt2>
+        <!-- GDS light-grey -->
+        <a:srgbClr val="F3F2F1"/>
+      </a:lt2>
+      <a:accent1>
+        <!-- GDS light-blue -->
+        <a:srgbClr val="5694CA"/>
+      </a:accent1>
+      <a:accent2>
+        <!-- GDS dark-blue -->
+        <a:srgbClr val="003078"/>
+      </a:accent2>
+      <a:accent3>
+        <!-- GDS turquoise -->
+        <a:srgbClr val="28A197"/>
+      </a:accent3>
+      <a:accent4>
+        <!-- GDS yellow -->
+        <a:srgbClr val="FFDD00"/>
+      </a:accent4>
+      <a:accent5>
+        <!-- GDS pink -->
+        <a:srgbClr val="D53880"/>
+      </a:accent5>
+      <a:accent6>
+        <!-- GDS green -->
+        <a:srgbClr val="00703C"/>
+      </a:accent6>
+      <a:hlink>
+        <!-- GDS link style -->
+        <a:srgbClr val="1D70B8"/>
+      </a:hlink>
+      <a:folHlink>
+        <!-- GDS visited link style -->
+        <a:srgbClr val="4C2C92"/>
+      </a:folHlink>
+    </a:clrScheme>
+    <a:fontScheme name="GDS Theme">
+      <a:majorFont>
+        <a:latin typeface="Arial"/>
+        <a:ea typeface="Arial"/>
+        <a:cs typeface="Arial"/>
+      </a:majorFont>
+      <a:minorFont>
+        <a:latin typeface="Arial"/>
+        <a:ea typeface="Arial"/>
+        <a:cs typeface="Arial"/>
+      </a:minorFont>
+    </a:fontScheme>
+    <a:fmtScheme name="GDS Theme">
+      <a:fillStyleLst>
+        <a:solidFill>
+          <a:schemeClr val="phClr"/>
+        </a:solidFill>
+        <a:solidFill>
+          <a:schemeClr val="phClr"/>
+        </a:solidFill>
+        <a:solidFill>
+          <a:schemeClr val="phClr"/>
+        </a:solidFill>
+      </a:fillStyleLst>
+      <a:lnStyleLst>
+        <a:ln w="6350" cap="flat" cmpd="sng" algn="ctr">
+          <a:solidFill>
+            <a:schemeClr val="phClr"/>
+          </a:solidFill>
+          <a:prstDash val="solid"/>
+          <a:miter lim="800000"/>
+        </a:ln>
+        <a:ln w="12700" cap="flat" cmpd="sng" algn="ctr">
+          <a:solidFill>
+            <a:schemeClr val="phClr"/>
+          </a:solidFill>
+          <a:prstDash val="solid"/>
+          <a:miter lim="800000"/>
+        </a:ln>
+        <a:ln w="19050" cap="flat" cmpd="sng" algn="ctr">
+          <a:solidFill>
+            <a:schemeClr val="phClr"/>
+          </a:solidFill>
+          <a:prstDash val="solid"/>
+          <a:miter lim="800000"/>
+        </a:ln>
+      </a:lnStyleLst>
+      <a:effectStyleLst>
+        <a:effectStyle>
+          <a:effectLst/>
+        </a:effectStyle>
+        <a:effectStyle>
+          <a:effectLst/>
+        </a:effectStyle>
+        <a:effectStyle>
+          <a:effectLst/>
+        </a:effectStyle>
+      </a:effectStyleLst>
+      <a:bgFillStyleLst>
+        <a:solidFill>
+          <a:schemeClr val="phClr"/>
+        </a:solidFill>
+        <a:solidFill>
+          <a:schemeClr val="phClr"/>
+        </a:solidFill>
+        <a:solidFill>
+          <a:schemeClr val="phClr"/>
+        </a:solidFill>
+      </a:bgFillStyleLst>
+    </a:fmtScheme>
+  </a:themeElements>
+</a:theme>

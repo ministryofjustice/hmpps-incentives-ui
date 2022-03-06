@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  {% set columnCount = graphColumns.length * 2 + 1 -%}
+  <dimension ref="A1:{{ columnCount | columnLetter }}{{ graphData.length + 5 }}"/>
+  <sheetViews>
+    <sheetView tabSelected="1" workbookViewId="0">
+      <selection activeCell="A1" sqref="A1"/>
+    </sheetView>
+  </sheetViews>
+  <sheetFormatPr baseColWidth="10" defaultRowHeight="16"/>
+  <sheetData>
+    <row r="1" ht="26">
+      <c r="A1" s="2" t="inlineStr">
+        <is><t>{{ graphHeading }}</t></is>
+      </c>
+    </row>
+    <row r="2" ht="21">
+      <c r="A2" s="3" t="inlineStr">
+        <is><t>{{ graphSubheading }}</t></is>
+      </c>
+    </row>
+
+    <row r="3" spans="1:2">
+      <c r="A3" t="inlineStr">
+        <is><t>Data source</t></is>
+      </c>
+      <c r="B3" t="inlineStr">
+        <is><t>{{ dataSource }}</t></is>
+      </c>
+    </row>
+    <row r="4" spans="1:2">
+      <c r="A4" t="inlineStr">
+        <is><t>Data updated</t></is>
+      </c>
+      <c r="B4" t="inlineStr">
+        <is><t>{{ dataDateUpdated.toLocaleString().replace(',', '') }}</t></is>
+      </c>
+    </row>
+
+    <row r="6" spans="1:{{ columnCount }}">
+      <c r="A6" s="4" t="inlineStr">
+        <is><t>Location</t></is>
+      </c>
+      {% for column in graphColumns %}
+        <c r="{{ (loop.index0 * 2 + 2) | columnLetter }}6" t="inlineStr">
+          <is><t>{{ column }}</t></is>
+        </c>
+        <c r="{{ (loop.index0 * 2 + 3) | columnLetter }}6" t="inlineStr">
+          <is><t>{{ column }} %</t></is>
+        </c>
+      {% endfor %}
+    </row>
+
+    {% for data in graphData %}
+      {%- set row = loop.index0 + 7 -%}
+      {%- set location = data[0] -%}
+
+      <row r="{{ row }}" spans="1:{{ columnCount }}">
+        <c r="A{{ row }}" s="4" t="inlineStr">
+          <is><t>{{ location }}</t></is>
+        </c>
+        {% set total = data.slice(1) | sum %}
+        {% for datum in data.slice(1) %}
+          {%- set dataCellRef = (loop.index0 * 2 + 2) | columnLetter + row -%}
+
+          <c r="{{ dataCellRef }}">
+            <v>{{ datum }}</v>
+          </c>
+          <c r="{{ (loop.index0 * 2 + 3) | columnLetter }}{{ row }}" s="1" {% if total == 0 %}t="e"{% endif %}>
+            <f>{{ dataCellRef }}/(
+              {%- for x in range(1, data.length) -%}
+                {{ (x * 2) | columnLetter }}{{ row }}
+                {%- if not loop.last %}+{% endif -%}
+              {%- endfor -%}
+            )</f>
+            <v>
+              {%- if total == 0 -%}
+                #DIV/0!
+              {%- else -%}
+                {{ datum / total }}
+              {%- endif -%}
+            </v>
+          </c>
+        {% endfor %}
+      </row>
+    {% endfor %}
+
+  </sheetData>
+  <mergeCells count="2">
+    <mergeCell ref="A1:{{ columnCount | columnLetter }}1"/>
+    <mergeCell ref="A2:{{ columnCount | columnLetter }}2"/>
+  </mergeCells>
+  <pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>
+</worksheet>

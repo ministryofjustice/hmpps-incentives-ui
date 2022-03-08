@@ -57,7 +57,7 @@ export default class AnalyticsService {
       }
     })
     entries.unshift({
-      location: 'Prison total',
+      location: 'All',
       entriesPositive: totalPositive,
       entriesNegative: totalNegative,
     })
@@ -96,7 +96,7 @@ export default class AnalyticsService {
       }
     )
     prisoners.unshift({
-      location: 'Prison total',
+      location: 'All',
       prisonersWithPositive: totalPositive,
       prisonersWithNegative: totalNegative,
       prisonersWithBoth: totalBoth,
@@ -138,7 +138,7 @@ export default class AnalyticsService {
       }
     })
     prisonersOnLevels.unshift({
-      location: 'Prison total',
+      location: 'All',
       prisonersOnLevels: totals,
     })
     return { levels, report: prisonersOnLevels, lastUpdated: new Date(), dataSource: 'NOMIS' }

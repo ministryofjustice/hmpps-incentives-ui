@@ -10,6 +10,7 @@ export function setUpSentryRequestHandler(app: Express): void {
       dsn: config.sentry.dsn,
       environment: config.environment,
       release: applicationVersion.gitRef,
+      debug: config.environment === 'local',
     })
     app.use(
       Sentry.Handlers.requestHandler({

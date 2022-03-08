@@ -18,4 +18,10 @@
   .govuk-table__header {
     @include govuk-font($size: 16, $weight: bold);
   }
+
+  .govuk-table__body {
+    .govuk-table__cell {
+      vertical-align: middle;
+    }
+  }
 }

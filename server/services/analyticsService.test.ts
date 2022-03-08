@@ -14,7 +14,7 @@ describe('AnalyticsService', () => {
       expect(entries).toHaveLength(10)
 
       const prisonTotal = entries.shift()
-      expect(prisonTotal.location).toEqual('Prison total')
+      expect(prisonTotal.location).toEqual('All')
       expect(prisonTotal.href).toBeUndefined()
 
       let [sumPositive, sumNegative] = [0, 0]
@@ -33,7 +33,7 @@ describe('AnalyticsService', () => {
       expect(prisoners).toHaveLength(10)
 
       const prisonTotal = prisoners.shift()
-      expect(prisonTotal.location).toEqual('Prison total')
+      expect(prisonTotal.location).toEqual('All')
       expect(prisonTotal.href).toBeUndefined()
 
       let [sumPositive, sumNegative, sumBoth, sumNeither] = [0, 0, 0, 0]
@@ -56,7 +56,7 @@ describe('AnalyticsService', () => {
       expect(prisonersOnLevels).toHaveLength(10)
 
       const prisonTotal = prisonersOnLevels.shift()
-      expect(prisonTotal.location).toEqual('Prison total')
+      expect(prisonTotal.location).toEqual('All')
       expect(prisonTotal.href).toBeUndefined()
 
       const totals = [0, 0, 0, 0]

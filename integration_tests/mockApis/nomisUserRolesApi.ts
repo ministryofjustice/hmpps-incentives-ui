@@ -27,20 +27,18 @@ export default {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: [
-          {
-            activeCaseload: {
+        jsonBody: {
+          activeCaseload: {
+            id: 'MDI',
+            name: 'Moorland (HMP & YOI)',
+          },
+          caseloads: [
+            {
               id: 'MDI',
               name: 'Moorland (HMP & YOI)',
             },
-            caseloads: [
-              {
-                id: 'MDI',
-                name: 'Moorland (HMP & YOI)',
-              },
-            ],
-          },
-        ],
+          ],
+        },
       },
     })
   },

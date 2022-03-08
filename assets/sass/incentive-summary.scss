@@ -1,6 +1,8 @@
 .govuk-tabs--incentive-summary {
   h2 {
-    display: none
+    @include govuk-media-query($from: tablet) {
+      display: none;
+    }
   }
 
   .govuk-tabs__panel {

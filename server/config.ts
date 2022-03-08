@@ -53,6 +53,9 @@ export default {
   sentry: {
     dsn: get('SENTRY_DSN', null, notRequiredInProduction),
   },
+  s3: {
+    bucket: get('S3_BUCKET_NAME', 'example-bucket', requiredInProduction),
+  },
   apis: {
     hmppsAuth: {
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),

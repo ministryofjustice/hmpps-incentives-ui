@@ -9,8 +9,9 @@
     <div class="govuk-width-container">
       {{
         govukPhaseBanner({
-          classes: 'feedback-banner',
+          classes: 'app-feedback-banner',
           tag: {
+            classes: 'app-feedback-banner__tag',
             text: "give feedback"
           },
           html: feedbackMessage()

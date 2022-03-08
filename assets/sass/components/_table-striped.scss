@@ -1,0 +1,7 @@
+.app-table--striped {
+  tbody {
+    tr:nth-child(even) {
+      background-color: govuk-colour("light-grey");
+    }
+  }
+}

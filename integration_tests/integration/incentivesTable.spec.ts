@@ -31,8 +31,8 @@ context('Wing incentives table page', () => {
 
   it('has feedback banner', () => {
     Page.verifyOnPage(BehaviourEntriesPage)
-    cy.get('.feedback-banner').contains('This is a new service – help us to improve it (opens in a new tab)')
-    cy.get('.feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/feedback')
+    cy.get('.app-feedback-banner').contains('This is a new service – help us to improve it (opens in a new tab)')
+    cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/feedback')
   })
 
   it('has correct numbers of people at each level', () => {
@@ -203,7 +203,7 @@ context('Wing incentives table page', () => {
       )
 
     // links in table send events
-    cy.get('.govuk-table--striped:visible .govuk-table__body tr:first-child a[data-ga-category]')
+    cy.get('.app-table--striped:visible .govuk-table__body tr:first-child a[data-ga-category]')
       .first()
       .then($th =>
         cy

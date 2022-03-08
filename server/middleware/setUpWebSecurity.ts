@@ -29,6 +29,7 @@ export default function setUpWebSecurity(): Router {
           imgSrc: ["'self'", 'https://www.google-analytics.com'],
         },
       },
+      crossOriginEmbedderPolicy: true,
     })
   )
 

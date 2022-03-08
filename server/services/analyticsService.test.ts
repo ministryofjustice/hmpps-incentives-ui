@@ -4,7 +4,7 @@ describe('AnalyticsService', () => {
   let analyticsService: AnalyticsService
 
   beforeEach(() => {
-    analyticsService = new AnalyticsService()
+    analyticsService = new AnalyticsService(() => '')
     // TODO: move fake data from service into mock here
   })
 

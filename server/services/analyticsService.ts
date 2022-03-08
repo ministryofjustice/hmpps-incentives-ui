@@ -27,9 +27,7 @@ type PrisonersOnLevelsByLocation = {
 }
 
 export default class AnalyticsService {
-  getUrlToIncentivesTable(prison: string, location: string): string {
-    return `/incentive-summary/${prison}-${location}`
-  }
+  constructor(private readonly urlForLocation: (prison: string, location: string) => string) {}
 
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
     // TODO: fake response; move into test
@@ -51,7 +49,7 @@ export default class AnalyticsService {
       totalNegative += negative
       return {
         location,
-        href: this.getUrlToIncentivesTable(prison, location),
+        href: this.urlForLocation(prison, location),
         entriesPositive: positive,
         entriesNegative: negative,
       }
@@ -87,7 +85,7 @@ export default class AnalyticsService {
         totalNeither += neither
         return {
           location,
-          href: this.getUrlToIncentivesTable(prison, location),
+          href: this.urlForLocation(prison, location),
           prisonersWithPositive: positive,
           prisonersWithNegative: negative,
           prisonersWithBoth: both,
@@ -133,7 +131,7 @@ export default class AnalyticsService {
       }
       return {
         location,
-        href: this.getUrlToIncentivesTable(prison, location),
+        href: this.urlForLocation(prison, location),
         prisonersOnLevels: prisoners,
       }
     })

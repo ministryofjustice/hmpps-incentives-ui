@@ -1,0 +1,4 @@
+{
+  "peer": true,
+  "reject": ["@types/node"]
+}

@@ -55,11 +55,15 @@
 
       <tr>
         <td>
-          {% if row.href %}
-            <a href="{{ row.href }}">{{ row.location }}</a>
-          {% else %}
-            {{ row.location }}
-          {% endif %}
+          <strong>
+            {% if row.href %}
+              <a href="{{ row.href }}">{{ row.location }}</a>
+            {% else %}
+              {{ row.location }}
+            {% endif %}
+          </strong>
+          <br />
+          {{ totalPrisoners | thousands }} <span class="govuk-visually-hidden">prisoners</span>
         </td>
         <td>
           <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentagePositive | float) }}">

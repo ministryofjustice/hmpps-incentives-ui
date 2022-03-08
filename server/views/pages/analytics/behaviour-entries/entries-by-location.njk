@@ -37,11 +37,15 @@
 
       <tr>
         <td>
-          {% if row.href %}
-            <a href="{{ row.href }}">{{ row.location }}</a>
-          {% else %}
-            {{ row.location }}
-          {% endif %}
+          <strong>
+            {% if row.href %}
+              <a href="{{ row.href }}">{{ row.location }}</a>
+            {% else %}
+              {{ row.location }}
+            {% endif %}
+          </strong>
+          <br />
+          {{ totalEntries | thousands }} <span class="govuk-visually-hidden">entries</span>
         </td>
         <td>
           {{ row.entriesPositive | percentageOf(totalEntries) }}

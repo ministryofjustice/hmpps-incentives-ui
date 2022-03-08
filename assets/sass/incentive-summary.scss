@@ -1,0 +1,19 @@
+.govuk-tabs--incentive-summary {
+  h2 {
+    display: none
+  }
+
+  .govuk-tabs__panel {
+    border: 0;
+    overflow-x: auto;
+    padding: 30px 0px;
+  }
+}
+
+.govuk-table--incentive-summary {
+  width: 99%;
+
+  .govuk-table__header {
+    font-size: 16px;
+  }
+}

@@ -42,11 +42,15 @@
 
       <tr>
         <td>
-          {% if row.href %}
-            <a href="{{ row.href }}">{{ row.location }}</a>
-          {% else %}
-            {{ row.location }}
-          {% endif %}
+          <strong>
+            {% if row.href %}
+              <a href="{{ row.href }}">{{ row.location }}</a>
+            {% else %}
+              {{ row.location }}
+            {% endif %}
+          </strong>
+          <br />
+          {{ total | thousands }} <span class="govuk-visually-hidden">prisoners</span>
         </td>
         {% for level in prisonersOnLevels.levels %}
           <td>

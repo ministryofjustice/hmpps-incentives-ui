@@ -94,6 +94,10 @@
           </span>
         </td>
       </tr>
+
+      {% if loop.first %}
+        <tr aria-hidden="true"><td colspan="5"></td></tr>
+      {% endif %}
     {% endfor %}
   </tbody>
 </table>

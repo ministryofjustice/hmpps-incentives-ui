@@ -63,6 +63,15 @@
           <div class="app-chart-table__percentage-cell-bar app-chart-colour--b" data-style-width="{{ row.entriesNegative | percentageOf(totalEntries, false) }}">&nbsp;<br />&nbsp;</div>
         </td>
       </tr>
+
+      {% if loop.first %}
+        <tr aria-hidden="true">
+          <td colspan="3"></td>
+          <td class="app-chart-table__percentage-cell">
+            <span class="app-chart-table__axis-midpoint"></span>
+          </td>
+        </tr>
+      {% endif %}
     {% endfor %}
   </tbody>
 

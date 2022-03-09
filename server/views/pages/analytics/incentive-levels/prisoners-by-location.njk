@@ -66,6 +66,15 @@
           {% endfor %}
         </td>
       </tr>
+
+      {% if loop.first %}
+        <tr aria-hidden="true">
+          <td colspan="{{ (prisonersOnLevels.levels | length) + 1 }}"></td>
+          <td class="app-chart-table__percentage-cell">
+            <span class="app-chart-table__axis-midpoint"></span>
+          </td>
+        </tr>
+      {% endif %}
     {% endfor %}
   </tbody>
 

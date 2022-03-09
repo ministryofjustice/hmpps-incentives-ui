@@ -8,11 +8,11 @@ import AnalyticsService from './analyticsService'
 jest.mock('@aws-sdk/client-s3')
 jest.mock('../data/s3Client')
 
-const s3Client = new S3Client('test-bucket') as jest.Mocked<S3Client>
-
 describe('AnalyticsService', () => {
   let sampleCaseEntriesTable: string
   let analyticsService: AnalyticsService
+
+  const s3Client = new S3Client({ bucket: 'test-bucket' }) as jest.Mocked<S3Client>
 
   beforeAll(done => {
     fs.readFile(path.resolve(__dirname, 'testData/caseEntries.json.gz'), (readErr, gzdata) => {
@@ -27,10 +27,17 @@ describe('AnalyticsService', () => {
     analyticsService = new AnalyticsService(s3Client, () => '')
   })
 
-  describe('getBehaviourEntriesByLocation()', () => {
-    it('has a totals row', async () => {
-      s3Client.getObject.mockResolvedValue(sampleCaseEntriesTable)
+  const prisonLocations = [
+    ['MDI', ['All', '1', '2', '3', '4', '5', '6', '7', 'H', 'SEG']],
+    ['BWI', ['All', 'B', 'C', 'F', 'H', 'M', 'O', 'P', 'R', 'V']],
+  ]
 
+  describe('getBehaviourEntriesByLocation()', () => {
+    beforeEach(() => {
+      s3Client.getObject.mockResolvedValue(sampleCaseEntriesTable)
+    })
+
+    it('has a totals row', async () => {
       const { report: entries } = await analyticsService.getBehaviourEntriesByLocation('MDI')
       expect(entries).toHaveLength(10)
 
@@ -46,9 +53,24 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.entriesPositive).toEqual(sumPositive)
       expect(prisonTotal.entriesNegative).toEqual(sumNegative)
     })
+
+    describe.each(prisonLocations)(
+      'lists locations in the correct order',
+      (prison: string, expectedLocations: string[]) => {
+        it(`for ${prison}`, async () => {
+          const { report } = await analyticsService.getBehaviourEntriesByLocation(prison)
+          const locations = report.map(row => row.location)
+          expect(locations).toEqual(expectedLocations)
+        })
+      }
+    )
   })
 
   describe('getPrisonersWithEntriesByLocation()', () => {
+    beforeEach(() => {
+      s3Client.getObject.mockResolvedValue(sampleCaseEntriesTable)
+    })
+
     it('has a totals row', async () => {
       const { report: prisoners } = await analyticsService.getPrisonersWithEntriesByLocation('MDI')
       expect(prisoners).toHaveLength(10)
@@ -69,6 +91,17 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.prisonersWithBoth).toEqual(sumBoth)
       expect(prisonTotal.prisonersWithNeither).toEqual(sumNeither)
     })
+
+    describe.each(prisonLocations)(
+      'lists locations in the correct order',
+      (prison: string, expectedLocations: string[]) => {
+        it(`for ${prison}`, async () => {
+          const { report } = await analyticsService.getPrisonersWithEntriesByLocation(prison)
+          const locations = report.map(row => row.location)
+          expect(locations).toEqual(expectedLocations)
+        })
+      }
+    )
   })
 
   describe('getIncentiveLevelsByLocation()', () => {

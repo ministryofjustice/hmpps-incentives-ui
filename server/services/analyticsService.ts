@@ -51,7 +51,7 @@ interface CaseEntriesTable extends Table {
 }
 
 export default class AnalyticsService {
-  private readonly tableCache: Record<string, unknown>
+  private readonly tableCache: Record<string, Table>
 
   constructor(
     private readonly client: S3Client,
@@ -68,92 +68,99 @@ export default class AnalyticsService {
     return this.tableCache[objectPath] as T
   }
 
-  private filterTable<T extends Table>(table: T, column: keyof T, filter: unknown): T {
-    const filteredRows = Object.entries(table[column])
-      .filter(([, value]) => value === filter)
+  private stitchAndFilter<T extends Table>(
+    table: T,
+    stitch: (keyof T)[],
+    filterBy: keyof T,
+    equalling: string | number
+  ): (string | number)[][] {
+    const columnToFilter: Record<string, string | number> = table[filterBy]
+    const columnsToStitch: Record<string, string | number>[] = stitch.map(column => table[column])
+    const rowsFiltered: string[] = Object.entries(columnToFilter)
+      .filter(([, value]) => value === equalling)
       .map(([row]) => row)
-    return Object.fromEntries(
-      Object.entries(table).map(([col, rows]) => {
-        return [col, Object.fromEntries(filteredRows.map(filteredRow => [filteredRow, rows[filteredRow]]))]
-      })
-    ) as T
-  }
-
-  private reduceTable<T extends Table>(table: T, groupBy: keyof T, ...summing: (keyof T)[]): (string | number)[][] {
-    const groups: Record<string | number, Record<string, number>> = {}
-    const columnsToSum = Object.fromEntries(summing.map(column => [column, table[column]]))
-    Object.entries(table[groupBy]).forEach(([row, groupValue]) => {
-      const ref = groups[groupValue] ?? (groups[groupValue] = Object.fromEntries(summing.map(column => [column, 0])))
-      Object.entries(columnsToSum).forEach(([column, columnValues]) => {
-        ref[column] += columnValues[row] as number
-      })
-    })
-    return Object.entries(groups).map(([groupColumn, summedColumns]) => [groupColumn, ...Object.values(summedColumns)])
+    return rowsFiltered.map(row => columnsToStitch.map(column => column[row]))
   }
 
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
-    let table = await this.loadTable<CaseEntriesTable>('????')
-    table = this.filterTable(table, 'prison', prison)
-    const reducedTable = this.reduceTable(table, 'wing', 'positives', 'negatives') as [string, number, number][]
+    const table = await this.loadTable<CaseEntriesTable>('caseEntries.json')
+    const ungroupedRows = this.stitchAndFilter(table, ['wing', 'positives', 'negatives'], 'prison', prison) as [
+      string,
+      number,
+      number
+    ][]
 
     let [totalPositive, totalNegative] = [0, 0]
-    const entries: BehaviourEntriesByLocation[] = reducedTable.map(([location, positive, negative]) => {
-      totalPositive += positive
-      totalNegative += negative
-      return {
-        location,
-        href: this.urlForLocation(prison, location),
-        entriesPositive: positive,
-        entriesNegative: negative,
+    const groups: Record<string, BehaviourEntriesByLocation> = {}
+    ungroupedRows.forEach(([location, entriesPositive, entriesNegative]) => {
+      if (typeof groups[location] === 'undefined') {
+        groups[location] = { location, href: this.urlForLocation(prison, location), entriesPositive, entriesNegative }
+      } else {
+        const group = groups[location]
+        group.entriesPositive += entriesPositive
+        group.entriesNegative += entriesNegative
       }
+      totalPositive += entriesPositive
+      totalNegative += entriesNegative
     })
-    entries.unshift({
+
+    const report: BehaviourEntriesByLocation[] = Object.values(groups).sort(locationSort)
+    report.unshift({
       location: 'All',
       entriesPositive: totalPositive,
       entriesNegative: totalNegative,
     })
-    return { report: entries, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
+
+    return { report, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
   }
 
   async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation[]>> {
-    // TODO: fake response; move into test
-    const response: [string, number, number, number, number][] = [
-      ['1', 9, 35, 2, 157],
-      ['2', 3, 37, 2, 169],
-      ['3', 18, 31, 2, 241],
-      ['4', 8, 31, 1, 156],
-      ['5', 10, 2, 0, 42],
-      ['6', 4, 10, 1, 154],
-      ['7', 9, 17, 1, 199],
-      ['H', 0, 0, 0, 0],
-      ['SEG', 0, 3, 0, 25],
-    ]
+    const table = await this.loadTable<CaseEntriesTable>('caseEntries.json')
+    const ungroupedRows = this.stitchAndFilter(table, ['wing', 'positives', 'negatives'], 'prison', prison) as [
+      string,
+      number,
+      number
+    ][]
 
     let [totalPositive, totalNegative, totalBoth, totalNeither] = [0, 0, 0, 0]
-    const prisoners: PrisonersWithEntriesByLocation[] = response.map(
-      ([location, positive, negative, both, neither]) => {
-        totalPositive += positive
-        totalNegative += negative
-        totalBoth += both
-        totalNeither += neither
-        return {
+    const groups: Record<string, PrisonersWithEntriesByLocation> = {}
+    ungroupedRows.forEach(([location, entriesPositive, entriesNegative]) => {
+      if (typeof groups[location] === 'undefined') {
+        groups[location] = {
           location,
           href: this.urlForLocation(prison, location),
-          prisonersWithPositive: positive,
-          prisonersWithNegative: negative,
-          prisonersWithBoth: both,
-          prisonersWithNeither: neither,
+          prisonersWithPositive: 0,
+          prisonersWithNegative: 0,
+          prisonersWithBoth: 0,
+          prisonersWithNeither: 0,
         }
       }
-    )
-    prisoners.unshift({
+      const group = groups[location]
+      if (entriesPositive > 0 && entriesNegative > 0) {
+        totalBoth += 1
+        group.prisonersWithBoth += 1
+      } else if (entriesPositive > 0) {
+        totalPositive += 1
+        group.prisonersWithPositive += 1
+      } else if (entriesNegative > 0) {
+        totalNegative += 1
+        group.prisonersWithNegative += 1
+      } else {
+        totalNeither += 1
+        group.prisonersWithNeither += 1
+      }
+    })
+
+    const report: PrisonersWithEntriesByLocation[] = Object.values(groups).sort(locationSort)
+    report.unshift({
       location: 'All',
       prisonersWithPositive: totalPositive,
       prisonersWithNegative: totalNegative,
       prisonersWithBoth: totalBoth,
       prisonersWithNeither: totalNeither,
     })
-    return { report: prisoners, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
+
+    return { report, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
   }
 
   async getIncentiveLevelsByLocation(
@@ -266,4 +273,14 @@ export default class AnalyticsService {
     })
     return { levels, report: prisonersOnLevels, lastUpdated: new Date(), dataSource: 'NOMIS' }
   }
+}
+
+function locationSort(a: { location: string }, b: { location: string }): number {
+  if (a.location.length === 1 && b.location.length !== 1) {
+    return -1
+  }
+  if (a.location.length !== 1 && b.location.length === 1) {
+    return 1
+  }
+  return a.location.localeCompare(b.location)
 }

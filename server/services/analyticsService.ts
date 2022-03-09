@@ -1,3 +1,5 @@
+import type S3Client from '../data/s3Client'
+
 type Report<T> = {
   report: T
   lastUpdated: Date
@@ -36,25 +38,66 @@ type PrisonersOnLevelsByAgeGroup = {
   prisonersOnLevels: number[]
 }
 
+/**
+ * Table holds the source data in columns represented by objects with row number to value maps
+ */
+type Table = Record<string, Record<string, string | number>>
+
+interface CaseEntriesTable extends Table {
+  prison: Record<string, string>
+  wing: Record<string, string>
+  positives: Record<string, number>
+  negatives: Record<string, number>
+}
+
 export default class AnalyticsService {
-  constructor(private readonly urlForLocation: (prison: string, location: string) => string) {}
+  private readonly tableCache: Record<string, unknown>
+
+  constructor(
+    private readonly client: S3Client,
+    private readonly urlForLocation: (prison: string, location: string) => string
+  ) {
+    this.tableCache = {}
+  }
+
+  private async loadTable<T extends Table>(objectPath: string): Promise<T> {
+    if (typeof this.tableCache[objectPath] === 'undefined') {
+      const objectString = await this.client.getObject(objectPath)
+      this.tableCache[objectPath] = JSON.parse(objectString)
+    }
+    return this.tableCache[objectPath] as T
+  }
+
+  private filterTable<T extends Table>(table: T, column: keyof T, filter: unknown): T {
+    const filteredRows = Object.entries(table[column])
+      .filter(([, value]) => value === filter)
+      .map(([row]) => row)
+    return Object.fromEntries(
+      Object.entries(table).map(([col, rows]) => {
+        return [col, Object.fromEntries(filteredRows.map(filteredRow => [filteredRow, rows[filteredRow]]))]
+      })
+    ) as T
+  }
+
+  private reduceTable<T extends Table>(table: T, groupBy: keyof T, ...summing: (keyof T)[]): (string | number)[][] {
+    const groups: Record<string | number, Record<string, number>> = {}
+    const columnsToSum = Object.fromEntries(summing.map(column => [column, table[column]]))
+    Object.entries(table[groupBy]).forEach(([row, groupValue]) => {
+      const ref = groups[groupValue] ?? (groups[groupValue] = Object.fromEntries(summing.map(column => [column, 0])))
+      Object.entries(columnsToSum).forEach(([column, columnValues]) => {
+        ref[column] += columnValues[row] as number
+      })
+    })
+    return Object.entries(groups).map(([groupColumn, summedColumns]) => [groupColumn, ...Object.values(summedColumns)])
+  }
 
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
-    // TODO: fake response; move into test
-    const response: [string, number, number][] = [
-      ['1', 13, 58],
-      ['2', 5, 47],
-      ['3', 24, 64],
-      ['4', 10, 53],
-      ['5', 13, 2],
-      ['6', 5, 14],
-      ['7', 12, 33],
-      ['H', 0, 0],
-      ['SEG', 0, 8],
-    ]
+    let table = await this.loadTable<CaseEntriesTable>('????')
+    table = this.filterTable(table, 'prison', prison)
+    const reducedTable = this.reduceTable(table, 'wing', 'positives', 'negatives') as [string, number, number][]
 
     let [totalPositive, totalNegative] = [0, 0]
-    const entries: BehaviourEntriesByLocation[] = response.map(([location, positive, negative]) => {
+    const entries: BehaviourEntriesByLocation[] = reducedTable.map(([location, positive, negative]) => {
       totalPositive += positive
       totalNegative += negative
       return {

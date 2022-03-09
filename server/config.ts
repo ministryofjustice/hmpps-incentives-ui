@@ -55,6 +55,7 @@ export default {
   },
   s3: {
     bucket: get('S3_BUCKET_NAME', 'example-bucket', requiredInProduction),
+    endpoint: get('S3_ENDPOINT', null, notRequiredInProduction),
   },
   apis: {
     hmppsAuth: {

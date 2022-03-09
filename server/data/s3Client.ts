@@ -2,18 +2,27 @@ import type { Readable } from 'stream'
 
 import { S3Client as Client, GetObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3'
 
+type S3ClientConfig = {
+  bucket: string
+  endpoint?: string
+}
+
 type ObjectInfo = {
   key: string
   modified: Date
 }
 
 export default class S3Client {
+  bucket: string
+
   s3: Client
 
-  constructor(private readonly bucket: string) {
+  constructor({ bucket, endpoint }: S3ClientConfig) {
+    this.bucket = bucket
     this.s3 = new Client({
       region: 'eu-west-2',
       forcePathStyle: true,
+      endpoint,
     })
   }
 

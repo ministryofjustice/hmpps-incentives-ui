@@ -1,15 +1,36 @@
+import fs from 'fs'
+import path from 'path'
+import zlib from 'zlib'
+
+import S3Client from '../data/s3Client'
 import AnalyticsService from './analyticsService'
 
+jest.mock('@aws-sdk/client-s3')
+jest.mock('../data/s3Client')
+
+const s3Client = new S3Client('test-bucket') as jest.Mocked<S3Client>
+
 describe('AnalyticsService', () => {
+  let sampleCaseEntriesTable: string
   let analyticsService: AnalyticsService
 
+  beforeAll(done => {
+    fs.readFile(path.resolve(__dirname, 'testData/caseEntries.json.gz'), (readErr, gzdata) => {
+      zlib.gunzip(gzdata, (gunzipErr, data) => {
+        sampleCaseEntriesTable = data.toString()
+        done()
+      })
+    })
+  })
+
   beforeEach(() => {
-    analyticsService = new AnalyticsService(() => '')
-    // TODO: move fake data from service into mock here
+    analyticsService = new AnalyticsService(s3Client, () => '')
   })
 
   describe('getBehaviourEntriesByLocation()', () => {
     it('has a totals row', async () => {
+      s3Client.getObject.mockResolvedValue(sampleCaseEntriesTable)
+
       const { report: entries } = await analyticsService.getBehaviourEntriesByLocation('MDI')
       expect(entries).toHaveLength(10)
 

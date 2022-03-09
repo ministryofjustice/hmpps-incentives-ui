@@ -19,17 +19,15 @@ export default function setUpWebSecurity(): Router {
           defaultSrc: ["'self'"],
           scriptSrc: [
             "'self'",
-            'code.jquery.com',
             'https://www.google-analytics.com',
             (req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
           ],
-          styleSrc: ["'self'", 'code.jquery.com', (req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
+          styleSrc: ["'self'", (req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
           fontSrc: ["'self'"],
           connectSrc: ['https://www.google-analytics.com'],
           imgSrc: ["'self'", 'https://www.google-analytics.com'],
         },
       },
-      crossOriginEmbedderPolicy: true,
     })
   )
 

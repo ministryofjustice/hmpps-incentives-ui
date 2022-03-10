@@ -45,5 +45,20 @@ export default function routes(router: Router): Router {
     })
   })
 
+  get('/protected-characteristics', async (req, res) => {
+    res.locals.breadcrumbs.addItems(
+      { text: 'Incentives data', href: '/analytics' },
+      { text: 'Protected characteristics' }
+    )
+
+    const prisonersByEthnicity = { dataSource: 'NOMIS', lastUpdated: new Date() }
+    const prisonersInAgeGroups = { dataSource: 'NOMIS', lastUpdated: new Date() }
+
+    res.render('pages/analytics/protected-characteristics/index', {
+      prisonersByEthnicity,
+      prisonersInAgeGroups,
+    })
+  })
+
   return router
 }

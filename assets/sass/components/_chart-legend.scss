@@ -12,6 +12,10 @@
 
 .app-chart-legend__label {
   padding: govuk-spacing(1) govuk-spacing(2);
+
+  &:first-child {
+    padding-left: 0;
+  }
 }
 
 .app-chart-legend__swatch {

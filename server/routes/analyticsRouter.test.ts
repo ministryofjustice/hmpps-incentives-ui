@@ -34,16 +34,19 @@ const analyticsPages = [
     name: 'Behaviour entries',
     url: '/analytics/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by wing',
+    linksToIncentivesTable: true,
   },
   {
     name: 'Incentive levels',
     url: '/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by wing',
+    linksToIncentivesTable: true,
   },
   {
     name: 'Protected characteristics',
     url: '/analytics/protected-characteristics',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by ethnicity',
+    linksToIncentivesTable: false,
   },
 ]
 
@@ -73,7 +76,7 @@ describe('Analytics home page', () => {
 const samplePrison = 'MDI'
 const sampleLocations = ['1', '2', '3', '4', '5', '6', '7', 'H', 'SEG']
 
-describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHeading }) => {
+describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHeading, linksToIncentivesTable }) => {
   it(`${name} page loads if feature is turned on`, () => {
     return request(app)
       .get(url)
@@ -95,13 +98,15 @@ describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHead
       })
   })
 
-  it(`${name} page has graphs that link to incentive tables for locations`, () => {
-    return request(app)
-      .get(url)
-      .expect(res => {
-        sampleLocations.forEach(location => {
-          expect(res.text).toContain(`href="/incentive-summary/${samplePrison}-${location}"`)
+  if (linksToIncentivesTable) {
+    it(`${name} page has graphs that link to incentive tables for locations`, () => {
+      return request(app)
+        .get(url)
+        .expect(res => {
+          sampleLocations.forEach(location => {
+            expect(res.text).toContain(`href="/incentive-summary/${samplePrison}-${location}"`)
+          })
         })
-      })
-  })
+    })
+  }
 })

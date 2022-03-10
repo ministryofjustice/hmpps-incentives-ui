@@ -3,6 +3,7 @@ import HomePage from '../pages/home'
 import AnalyticsIndex from '../pages/analyticsIndex'
 import AnalyticsBehaviourEntries from '../pages/analyticsBehaviourEntries'
 import AnalyticsIncentiveLevels from '../pages/analyticsIncentiveLevels'
+import AnalyticsProtectedCharacteristics from '../pages/analyticsProtectedCharacteristics'
 
 context('Analytics', () => {
   beforeEach(() => {
@@ -17,7 +18,7 @@ context('Analytics', () => {
   })
 
   it('users see analytics index page with cards', () => {
-    const expectedCards = ['See behaviour entries', 'See incentive levels']
+    const expectedCards = ['See behaviour entries', 'See incentive levels', 'See protected characteristics']
 
     const page = Page.verifyOnPage(AnalyticsIndex)
     page.cards.each((card, index) => {
@@ -44,7 +45,7 @@ context('Analytics', () => {
     })
   })
 
-  it('users see incentive levels analytocs', () => {
+  it('users see incentive levels analytics', () => {
     const indexPage = Page.verifyOnPage(AnalyticsIndex)
     indexPage.cards.eq(1).find('a').click()
     const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
@@ -53,6 +54,24 @@ context('Analytics', () => {
       const location = totalsRow.find('td:first-child').text()
       expect(location).to.contain('All')
       expect(location).to.contain('359')
+    })
+  })
+
+  it('users see protected characteristics analytics', () => {
+    const indexPage = Page.verifyOnPage(AnalyticsIndex)
+    indexPage.cards.eq(2).find('a').click()
+    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+
+    page.incentivesByEthnicity.first().then(totalsRow => {
+      const location = totalsRow.find('td:first-child').text()
+      expect(location).to.contain('All')
+      expect(location).to.contain('1,558')
+    })
+
+    page.incentivesByAgeGroup.first().then(totalsRow => {
+      const location = totalsRow.find('td:first-child').text()
+      expect(location).to.contain('All')
+      expect(location).to.contain('70')
     })
   })
 })

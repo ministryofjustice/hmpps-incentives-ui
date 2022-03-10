@@ -1,0 +1,31 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% set graphTitle = "Protected characteristics" %}
+{% set pageTitle = applicationName + " – " + graphTitle %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">
+    {{ graphTitle }}
+  </h1>
+
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+      {% include "./prisoners-by-ethnicity.njk" %}
+
+    </section>
+  </div>
+
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+      {% include "./prisoners-by-age-group.njk" %}
+
+    </section>
+  </div>
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/assets/analyticsGraphs.js"></script>
+{% endblock %}

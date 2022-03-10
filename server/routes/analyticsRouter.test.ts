@@ -40,6 +40,11 @@ const analyticsPages = [
     url: '/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by wing',
   },
+  {
+    name: 'Protected characteristics',
+    url: '/analytics/protected-characteristics',
+    expectedHeading: 'Percentage and number of prisoners on each incentive level by ethnicity',
+  },
 ]
 
 describe('Analytics home page', () => {

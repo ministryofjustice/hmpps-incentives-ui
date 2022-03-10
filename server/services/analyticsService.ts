@@ -26,6 +26,16 @@ type PrisonersOnLevelsByLocation = {
   prisonersOnLevels: number[]
 }
 
+type PrisonersOnLevelsByEthnicity = {
+  ethnicity: string
+  prisonersOnLevels: number[]
+}
+
+type PrisonersOnLevelsByAgeGroup = {
+  ageGroup: string
+  prisonersOnLevels: number[]
+}
+
 export default class AnalyticsService {
   constructor(private readonly urlForLocation: (prison: string, location: string) => string) {}
 
@@ -137,6 +147,78 @@ export default class AnalyticsService {
     })
     prisonersOnLevels.unshift({
       location: 'All',
+      prisonersOnLevels: totals,
+    })
+    return { levels, report: prisonersOnLevels, lastUpdated: new Date(), dataSource: 'NOMIS' }
+  }
+
+  async getIncentiveLevelsByEthnicity(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    prison: string
+  ): Promise<{ levels: string[] } & Report<PrisonersOnLevelsByEthnicity[]>> {
+    // TODO: fake response; move into test
+    const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
+    const response: [string, number, number, number, number][] = [
+      ['Asian or Asian British', 3, 39, 42, 0],
+      ['Black or Black British', 8, 62, 46, 2],
+      ['Mixed', 2, 30, 40, 0],
+      ['Other', 1, 7, 8, 0],
+      ['White', 28, 615, 623, 2],
+    ]
+
+    const totals: number[] = []
+    for (let i = 0; i < levels.length; i += 1) {
+      totals.push(0)
+    }
+    const prisonersOnLevels: PrisonersOnLevelsByEthnicity[] = response.map(row => {
+      const [ethnicity, ...prisoners] = row
+      for (let i = 0; i < levels.length; i += 1) {
+        totals[i] += prisoners[i]
+      }
+      return {
+        ethnicity,
+        prisonersOnLevels: prisoners,
+      }
+    })
+    prisonersOnLevels.unshift({
+      ethnicity: 'All',
+      prisonersOnLevels: totals,
+    })
+    return { levels, report: prisonersOnLevels, lastUpdated: new Date(), dataSource: 'NOMIS' }
+  }
+
+  async getIncentiveLevelsByAgeGroup(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    prison: string
+  ): Promise<{ levels: string[] } & Report<PrisonersOnLevelsByAgeGroup[]>> {
+    // TODO: fake response; move into test
+    const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
+    const response: [string, number, number, number, number][] = [
+      ['15 - 17', 1, 2, 3, 4],
+      ['18 - 25', 1, 2, 3, 4],
+      ['26 - 35', 1, 2, 3, 4],
+      ['36 - 45', 1, 2, 3, 4],
+      ['46 - 55', 1, 2, 3, 4],
+      ['56 - 65', 1, 2, 3, 4],
+      ['66+', 1, 2, 3, 4],
+    ]
+
+    const totals: number[] = []
+    for (let i = 0; i < levels.length; i += 1) {
+      totals.push(0)
+    }
+    const prisonersOnLevels: PrisonersOnLevelsByAgeGroup[] = response.map(row => {
+      const [ageGroup, ...prisoners] = row
+      for (let i = 0; i < levels.length; i += 1) {
+        totals[i] += prisoners[i]
+      }
+      return {
+        ageGroup,
+        prisonersOnLevels: prisoners,
+      }
+    })
+    prisonersOnLevels.unshift({
+      ageGroup: 'All',
       prisonersOnLevels: totals,
     })
     return { levels, report: prisonersOnLevels, lastUpdated: new Date(), dataSource: 'NOMIS' }

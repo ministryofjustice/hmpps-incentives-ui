@@ -51,8 +51,11 @@ export default function routes(router: Router): Router {
       { text: 'Protected characteristics' }
     )
 
-    const prisonersByEthnicity = { dataSource: 'NOMIS', lastUpdated: new Date() }
-    const prisonersInAgeGroups = { dataSource: 'NOMIS', lastUpdated: new Date() }
+    const activeCaseLoad = res.locals.user.activeCaseload.id
+
+    const analyticsService = new AnalyticsService(urlForLocation)
+    const prisonersByEthnicity = await analyticsService.getIncentiveLevelsByEthnicity(activeCaseLoad)
+    const prisonersInAgeGroups = await analyticsService.getIncentiveLevelsByAgeGroup(activeCaseLoad)
 
     res.render('pages/analytics/protected-characteristics/index', {
       prisonersByEthnicity,

@@ -16,7 +16,7 @@
   #}
 
   <div aria-hidden="true" class="app-chart-legend">
-    {% for level in prisonersByEthnicity.levels %}
+    {% for level in prisonersByEthnicity.columns %}
       <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>
       <span class="app-chart-legend__label">{{ level }}</span>
     {% endfor %}
@@ -31,7 +31,7 @@
   <thead>
     <tr>
       <th scope="col">Ethnicity</th>
-      {% for level in prisonersByEthnicity.levels %}
+      {% for level in prisonersByEthnicity.columns %}
         <th scope="col">{{ level }} <span class="govuk-visually-hidden">level</span></th>
       {% endfor %}
       <th aria-hidden="true" scope="col"></th>
@@ -50,7 +50,7 @@
           <br />
           {{ total | thousands }} <span class="govuk-visually-hidden">prisoners</span>
         </td>
-        {% for level in prisonersByEthnicity.levels %}
+        {% for level in prisonersByEthnicity.columns %}
           <td>
             {{ row.prisonersOnLevels[loop.index0] | percentageOf(total) }}
             <br />
@@ -59,7 +59,7 @@
         {% endfor %}
         <td aria-hidden="true" class="app-chart-table__percentage-cell">
           <span class="app-chart-table__axis-midpoint"></span>
-          {% for level in prisonersByEthnicity.levels %}
+          {% for level in prisonersByEthnicity.columns %}
             <div class="app-chart-table__percentage-cell-bar {{ colourChoices[loop.index0] }}" data-style-width="{{ row.prisonersOnLevels[loop.index0] | percentageOf(total, false) }}">&nbsp;<br />&nbsp;</div>
           {% endfor %}
         </td>
@@ -67,7 +67,7 @@
 
       {% if loop.first %}
         <tr aria-hidden="true">
-          <td colspan="{{ (prisonersByEthnicity.levels | length) + 1 }}"></td>
+          <td colspan="{{ (prisonersByEthnicity.columns | length) + 1 }}"></td>
           <td class="app-chart-table__percentage-cell">
             <span class="app-chart-table__axis-midpoint"></span>
           </td>
@@ -78,7 +78,7 @@
 
   <tfoot aria-hidden="true">
     <tr>
-      <td colspan="{{ (prisonersByEthnicity.levels | length) + 1 }}"></td>
+      <td colspan="{{ (prisonersByEthnicity.columns | length) + 1 }}"></td>
       <td class="app-chart-table__axis-values">
         <span class="app-chart-table__axis-midpoint"></span>
         <span class="app-chart-table__axis-value app-chart-table__axis-value--min">0</span>
@@ -87,7 +87,7 @@
       </td>
     </tr>
     <tr>
-      <td colspan="{{ (prisonersByEthnicity.levels | length) + 1 }}"></td>
+      <td colspan="{{ (prisonersByEthnicity.columns | length) + 1 }}"></td>
       <td>Percentage</td>
     </tr>
   </tfoot>

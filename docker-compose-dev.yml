@@ -4,7 +4,7 @@ services:
   redis:
     image: bitnami/redis:5.0
     networks:
-      - hmpps_int
+      - hmpps
     container_name: inc-ui-redis
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
@@ -56,14 +56,5 @@ services:
         exit 0
       "
 
-  wiremock:
-    image: rodolpheche/wiremock
-    networks:
-    - hmpps_int
-    container_name: inc-ui-wiremock
-    restart: always
-    ports:
-      - '9091:8080'
-
 networks:
-  hmpps_int:
+  hmpps:

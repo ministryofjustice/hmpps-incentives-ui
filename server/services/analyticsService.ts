@@ -1,4 +1,5 @@
 import type S3Client from '../data/s3Client'
+import logger from '../../logger'
 
 /**
  * Type returned by all analytics service functions
@@ -84,6 +85,7 @@ export default class AnalyticsService {
 
   private async loadTable<T extends Table>(objectPath: string): Promise<T> {
     if (typeof this.tableCache[objectPath] === 'undefined') {
+      logger.debug(`Analytics service loading table "${objectPath}"`)
       const objectString = await this.client.getObject(objectPath)
       this.tableCache[objectPath] = JSON.parse(objectString)
     }

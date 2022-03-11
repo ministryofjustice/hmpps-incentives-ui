@@ -2,6 +2,8 @@ import type { Readable } from 'stream'
 
 import { S3Client as Client, GetObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3'
 
+import logger from '../../logger'
+
 type S3ClientConfig = {
   bucket: string
   accessKeyId?: string
@@ -37,6 +39,7 @@ export default class S3Client {
   }
 
   async getObject(key: string): Promise<string> {
+    logger.debug(`S3 Client getting object "${key}"`)
     const command = new GetObjectCommand({
       Bucket: this.bucket,
       Key: key,
@@ -52,6 +55,7 @@ export default class S3Client {
   }
 
   async listObjects(prefix?: string): Promise<ObjectInfo[]> {
+    logger.debug(`S3 Client listing objects within "${prefix ?? '/'}"`)
     let nextToken: string | undefined
     const objects: ObjectInfo[] = []
     do {

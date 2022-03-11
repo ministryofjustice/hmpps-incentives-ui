@@ -5,10 +5,10 @@ import createError from 'http-errors'
 
 import allRoutes from './routes/all'
 import nunjucksSetup from './utils/nunjucksSetup'
+import { setUpSentryErrorHandler, setUpSentryRequestHandler } from './utils/sentry'
 import errorHandler from './errorHandler'
 import type UserService from './services/userService'
 
-import { setUpSentryRequestHandler, setUpSentryErrorHandler } from './middleware/setUpSentryIo'
 import setUpWebSession from './middleware/setUpWebSession'
 import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebSecurity from './middleware/setUpWebSecurity'

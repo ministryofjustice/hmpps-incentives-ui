@@ -10,6 +10,9 @@ buildAppInsightsClient()
 
 import app from './server/index'
 import logger from './logger'
+import { initSentry } from './server/utils/sentry'
+
+initSentry()
 
 app.listen(app.get('port'), () => {
   logger.info(`Server listening on port ${app.get('port')}`)

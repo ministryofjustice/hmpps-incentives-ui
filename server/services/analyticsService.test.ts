@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import zlib from 'zlib'
 
 import S3Client from '../data/s3Client'
 import AnalyticsService from './analyticsService'
@@ -15,11 +14,9 @@ describe('AnalyticsService', () => {
   const s3Client = new S3Client({ bucket: 'test-bucket' }) as jest.Mocked<S3Client>
 
   beforeAll(done => {
-    fs.readFile(path.resolve(__dirname, 'testData/caseEntries.json.gz'), (readErr, gzdata) => {
-      zlib.gunzip(gzdata, (gunzipErr, data) => {
-        sampleCaseEntriesTable = data.toString()
-        done()
-      })
+    fs.readFile(path.resolve(__dirname, '../testData/s3Bucket/caseEntries.json'), { encoding: 'utf8' }, (err, data) => {
+      sampleCaseEntriesTable = data
+      done()
     })
   })
 

@@ -55,6 +55,8 @@ export default {
   },
   s3: {
     bucket: get('S3_BUCKET_NAME', 'example-bucket', requiredInProduction),
+    accessKeyId: get('S3_ACCESS_KEY_ID', null, notRequiredInProduction),
+    secretAccessKey: get('S3_SECRET_ACCESS_KEY', null, notRequiredInProduction),
     endpoint: get('S3_ENDPOINT', null, notRequiredInProduction),
   },
   apis: {

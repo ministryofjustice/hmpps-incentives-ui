@@ -71,7 +71,7 @@ context('Analytics', () => {
     page.incentivesByAgeGroup.first().then(totalsRow => {
       const location = totalsRow.find('td:first-child').text()
       expect(location).to.contain('All')
-      expect(location).to.contain('70')
+      expect(location).to.contain('1,525')
     })
   })
 })

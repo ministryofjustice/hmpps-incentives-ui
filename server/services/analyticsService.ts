@@ -194,13 +194,13 @@ export default class AnalyticsService {
     // TODO: fake response; move into test
     const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
     const response: [string, number, number, number, number][] = [
-      ['15 - 17', 1, 2, 3, 4],
-      ['18 - 25', 1, 2, 3, 4],
-      ['26 - 35', 1, 2, 3, 4],
-      ['36 - 45', 1, 2, 3, 4],
-      ['46 - 55', 1, 2, 3, 4],
-      ['56 - 65', 1, 2, 3, 4],
-      ['66+', 1, 2, 3, 4],
+      ['15 - 17', 0, 0, 0, 0],
+      ['18 - 25', 15, 218, 105, 0],
+      ['26 - 35', 14, 285, 240, 3],
+      ['36 - 45', 8, 154, 193, 0],
+      ['46 - 55', 1, 79, 95, 0],
+      ['56 - 65', 0, 29, 36, 0],
+      ['66+', 0, 41, 9, 0],
     ]
 
     const totals: number[] = []

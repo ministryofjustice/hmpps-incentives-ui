@@ -33,7 +33,7 @@ const analyticsPages = [
   {
     name: 'Behaviour entries',
     url: '/analytics/behaviour-entries',
-    expectedHeading: 'Comparison of positive and negative behaviour entries by wing',
+    expectedHeading: 'Behaviour entries – comparison of positive and negative behaviour entries by wing',
     linksToIncentivesTable: true,
   },
   {

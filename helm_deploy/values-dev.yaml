@@ -4,6 +4,8 @@
 generic-service:
   replicaCount: 2
 
+  serviceAccountName: hmpps-incentives-dev-analytical-platform
+
   ingress:
     host: incentives-ui-dev.hmpps.service.justice.gov.uk
   allowlist: null

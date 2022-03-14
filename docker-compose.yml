@@ -32,6 +32,32 @@ services:
       - :9001
       - /data
 
+  minio-init:
+    image: minio/mc
+    networks:
+      - hmpps
+    container_name: inc-ui-minio-init
+    depends_on:
+      - minio
+    environment:
+      - MINIO_ROOT_USER=incentives
+      - MINIO_ROOT_PASSWORD=incentives
+      - MINIO_SITE_REGION=eu-west-2
+    volumes:
+      - $PWD/server/testData/s3Bucket:/tmp/s3Bucket
+    entrypoint: |
+      /bin/sh -c "
+        echo Provisioning bucket with minio
+        until $$(curl --output /dev/null --silent http://minio:9000); do
+          echo 'Waiting for http://minio:9000'
+          sleep 3
+        done
+        mc config host add local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD
+        mc mb --region eu-west-2 --ignore-existing local/incentives
+        mc mirror --overwrite /tmp/s3Bucket local/incentives
+        exit 0
+      "
+
   hmpps-auth:
     image: quay.io/hmpps/hmpps-auth:latest
     networks:
@@ -95,7 +121,13 @@ services:
     networks:
       - hmpps
     container_name: inc-ui
-    depends_on: [redis]
+    depends_on:
+      - redis
+      - minio
+      - hmpps-auth
+      - nomis-user-roles-api
+      - hmpps-prison-api
+      - hmpps-incentives-api
     ports:
       - '3000:3000'
     environment:

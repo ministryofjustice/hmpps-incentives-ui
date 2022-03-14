@@ -44,7 +44,7 @@ services:
       - $PWD/server/testData/s3Bucket:/tmp/s3Bucket
     entrypoint: |
       /bin/sh -c "
-        echo Provisioning "incentives" bucket with minio
+        echo Provisioning bucket with minio
         until $$(curl --output /dev/null --silent http://minio:9000); do
           echo 'Waiting for http://minio:9000'
           sleep 3

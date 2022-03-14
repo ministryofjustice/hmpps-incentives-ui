@@ -14,10 +14,14 @@ describe('AnalyticsService', () => {
   const s3Client = new S3Client({ bucket: 'test-bucket' }) as jest.Mocked<S3Client>
 
   beforeAll(done => {
-    fs.readFile(path.resolve(__dirname, '../testData/s3Bucket/caseEntries.json'), { encoding: 'utf8' }, (err, data) => {
-      sampleCaseEntriesTable = data
-      done()
-    })
+    fs.readFile(
+      path.resolve(__dirname, '../testData/s3Bucket/incentives_visuals/incentives_latest/2022-03-09.json'),
+      { encoding: 'utf8' },
+      (err, data) => {
+        sampleCaseEntriesTable = data
+        done()
+      }
+    )
   })
 
   beforeEach(() => {

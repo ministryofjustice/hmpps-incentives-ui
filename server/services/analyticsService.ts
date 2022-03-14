@@ -125,7 +125,7 @@ export default class AnalyticsService {
   }
 
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
-    const table = await this.loadTable<CaseEntriesTable>('caseEntries.json')
+    const table = await this.loadTable<CaseEntriesTable>('incentives_visuals/incentives_latest/2022-03-09.json')
     const ungroupedRows = this.stitchAndFilter(table, ['wing', 'positives', 'negatives'], 'prison', prison) as [
       string,
       number,
@@ -162,7 +162,7 @@ export default class AnalyticsService {
   }
 
   async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation[]>> {
-    const table = await this.loadTable<CaseEntriesTable>('caseEntries.json')
+    const table = await this.loadTable<CaseEntriesTable>('incentives_visuals/incentives_latest/2022-03-09.json')
     const ungroupedRows = this.stitchAndFilter(table, ['wing', 'positives', 'negatives'], 'prison', prison) as [
       string,
       number,

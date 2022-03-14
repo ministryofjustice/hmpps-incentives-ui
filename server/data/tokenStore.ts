@@ -1,15 +1,9 @@
 import type { RedisClient } from './redisClient'
 
-import logger from '../../logger'
-
 export default class TokenStore {
   private readonly prefix = 'systemToken:'
 
-  constructor(private readonly client: RedisClient) {
-    client.on('error', error => {
-      logger.error(error, `Redis error`)
-    })
-  }
+  constructor(private readonly client: RedisClient) {}
 
   private async ensureConnected() {
     if (!this.client.isOpen) {

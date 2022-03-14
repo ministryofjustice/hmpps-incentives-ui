@@ -55,6 +55,8 @@ generic-service:
     elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"
+    analytical-platform-s3-bucket-output:
+      S3_BUCKET_NAME: "bucket_name"
 
   allowlist:
     global-protect: "35.176.93.186/32"

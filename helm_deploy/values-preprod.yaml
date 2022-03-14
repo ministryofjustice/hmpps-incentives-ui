@@ -2,6 +2,9 @@
 # Per environment values which override defaults in hmpps-incentives-ui/values.yaml
 
 generic-service:
+  replicaCount: 2
+
+  serviceAccountName: hmpps-incentives-preprod-analytical-platform
 
   ingress:
     host: incentives-ui-preprod.hmpps.service.justice.gov.uk

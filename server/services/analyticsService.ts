@@ -69,7 +69,7 @@ export default class AnalyticsService {
       entriesPositive: totalPositive,
       entriesNegative: totalNegative,
     })
-    return { report: entries, lastUpdated: new Date(), dataSource: 'NOMIS' }
+    return { report: entries, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
   }
 
   async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation[]>> {
@@ -110,7 +110,7 @@ export default class AnalyticsService {
       prisonersWithBoth: totalBoth,
       prisonersWithNeither: totalNeither,
     })
-    return { report: prisoners, lastUpdated: new Date(), dataSource: 'NOMIS' }
+    return { report: prisoners, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
   }
 
   async getIncentiveLevelsByLocation(

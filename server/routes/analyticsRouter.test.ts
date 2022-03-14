@@ -1,19 +1,40 @@
+import fs from 'fs'
+import path from 'path'
+
+import type { GetObjectOutput } from '@aws-sdk/client-s3'
 import type { Express } from 'express'
 import request from 'supertest'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 
-jest.mock('@aws-sdk/client-s3')
+const s3 = {
+  send: jest.fn().mockReturnThis(),
+}
+
+jest.mock('@aws-sdk/client-s3', () => {
+  const { GetObjectCommand, ListObjectsV2Command } = jest.requireActual('@aws-sdk/client-s3')
+  return {
+    S3Client: jest.fn(() => s3),
+    GetObjectCommand,
+    ListObjectsV2Command,
+  }
+})
 
 let app: Express
 
 beforeEach(() => {
+  const stream = fs.createReadStream(
+    path.resolve(__dirname, '../testData/s3Bucket/incentives_visuals/incentives_latest/2022-03-09.json')
+  )
+  const awsResponse: GetObjectOutput = { Body: stream }
+  s3.send.mockResolvedValue(awsResponse)
+
   app = appWithAllRoutes({})
   app.locals.featureFlags.showAnalytics = true
 })
 
 afterEach(() => {
-  jest.resetAllMocks()
+  jest.clearAllMocks()
 })
 
 describe('Home page shows card linking to incentives analytics', () => {

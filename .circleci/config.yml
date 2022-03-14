@@ -22,7 +22,7 @@ executors:
   integration-tests:
     docker:
       - image: cimg/node:16.13-browsers
-      - image: circleci/redis:buster
+      - image: cimg/redis:5.0
       - image: minio/minio
         command: server --address :9000 /data
         environment:

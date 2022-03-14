@@ -17,6 +17,21 @@ parameters:
     type: string
     default: 16.13-browsers
 
+executors:
+  # same as hmpps/node_redis executor with the addition of minio containers
+  integration-tests:
+    docker:
+      - image: cimg/node:16.13-browsers
+      - image: circleci/redis:buster
+      - image: minio/minio
+        command: server --address :9000 /data
+        environment:
+          MINIO_ROOT_USER: incentives
+          MINIO_ROOT_PASSWORD: incentives
+          MINIO_SITE_REGION: eu-west-2
+    resource_class: medium
+    working_directory: ~/app
+
 jobs:
   build:
     executor:
@@ -96,10 +111,7 @@ jobs:
           path: test_results/unit-test-reports.html
 
   integration_test:
-    executor:
-      name: hmpps/node_redis
-      node_tag: << pipeline.parameters.node-version >>
-      redis_tag: buster
+    executor: integration-tests
     steps:
       - checkout
       - attach_workspace:
@@ -114,6 +126,17 @@ jobs:
           name: Run wiremock
           command: java -jar wiremock.jar --port 9091
           background: true
+      - hmpps/install_aws_cli
+      - run:
+          name: Provision minio bucket
+          command: |
+            aws --endpoint-url http://localhost:9000 s3 mb s3://incentives
+            aws --endpoint-url http://localhost:9000 s3 sync server/testData/s3Bucket s3://incentives/
+            aws --endpoint-url http://localhost:9000 s3 ls s3://incentives
+          environment:
+            AWS_ACCESS_KEY_ID: incentives
+            AWS_SECRET_ACCESS_KEY: incentives
+            AWS_DEFAULT_REGION: eu-west-2
       - run:
           name: Run the node app.
           command: npm run start-feature

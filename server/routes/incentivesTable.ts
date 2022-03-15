@@ -6,6 +6,8 @@ import TokenStore from '../data/tokenStore'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import BehaviourService from '../services/behaviourService'
 
+const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient()))
+
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
@@ -16,7 +18,6 @@ export default function routes(router: Router): Router {
     const { locationPrefix } = req.params
     const agencyId = locationPrefix.split('-')[0]
 
-    const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient()))
     const systemToken = await hmppsAuthClient.getSystemClientToken(user.username)
 
     const behaviorService = new BehaviourService(systemToken)

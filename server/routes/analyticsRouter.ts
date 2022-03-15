@@ -1,8 +1,10 @@
 import type { RequestHandler, Router } from 'express'
 
+import config from '../config'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import AnalyticsService from '../services/analyticsService'
 import featureGate from '../middleware/featureGate'
+import S3Client from '../data/s3Client'
+import AnalyticsService from '../services/analyticsService'
 
 function urlForLocation(prison: string, location: string): string {
   return `/incentive-summary/${prison}-${location}`
@@ -22,7 +24,8 @@ export default function routes(router: Router): Router {
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
-    const analyticsService = new AnalyticsService(urlForLocation)
+    const s3Client = new S3Client(config.s3)
+    const analyticsService = new AnalyticsService(s3Client, urlForLocation)
     const behaviourEntries = await analyticsService.getBehaviourEntriesByLocation(activeCaseLoad)
     const prisonersWithEntries = await analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad)
 
@@ -37,7 +40,8 @@ export default function routes(router: Router): Router {
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
-    const analyticsService = new AnalyticsService(urlForLocation)
+    const s3Client = new S3Client(config.s3)
+    const analyticsService = new AnalyticsService(s3Client, urlForLocation)
     const prisonersOnLevels = await analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)
 
     res.render('pages/analytics/incentive-levels/index', {
@@ -53,7 +57,8 @@ export default function routes(router: Router): Router {
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
-    const analyticsService = new AnalyticsService(urlForLocation)
+    const s3Client = new S3Client(config.s3)
+    const analyticsService = new AnalyticsService(s3Client, urlForLocation)
     const prisonersByEthnicity = await analyticsService.getIncentiveLevelsByEthnicity(activeCaseLoad)
     const prisonersInAgeGroups = await analyticsService.getIncentiveLevelsByAgeGroup(activeCaseLoad)
 

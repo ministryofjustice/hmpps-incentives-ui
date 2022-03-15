@@ -7,7 +7,7 @@ jest.mock('../data/s3Client')
 describe('AnalyticsService', () => {
   let analyticsService: AnalyticsService
 
-  const s3Client = new S3Client({ bucket: 'incentives' }) as jest.Mocked<S3Client>
+  const s3Client = new S3Client({ region: 'eu-west-1', bucket: 'incentives' }) as jest.Mocked<S3Client>
 
   beforeEach(() => {
     jest.resetAllMocks()

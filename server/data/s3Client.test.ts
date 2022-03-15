@@ -23,7 +23,7 @@ describe('S3Client', () => {
   let s3Client: S3Client
 
   beforeEach(() => {
-    s3Client = new S3Client({ bucket: 'test-bucket' })
+    s3Client = new S3Client({ region: 'eu-west-1', bucket: 'test-bucket' })
   })
 
   afterEach(() => {

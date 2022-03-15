@@ -5,6 +5,7 @@ import { S3Client as Client, GetObjectCommand, ListObjectsV2Command } from '@aws
 import logger from '../../logger'
 
 type S3ClientConfig = {
+  region: string
   bucket: string
   accessKeyId?: string
   secretAccessKey?: string
@@ -21,7 +22,7 @@ export default class S3Client {
 
   s3: Client
 
-  constructor({ bucket, endpoint, accessKeyId, secretAccessKey }: S3ClientConfig) {
+  constructor({ region, bucket, endpoint, accessKeyId, secretAccessKey }: S3ClientConfig) {
     this.bucket = bucket
     const credentials =
       accessKeyId && secretAccessKey
@@ -31,7 +32,7 @@ export default class S3Client {
           }
         : undefined
     this.s3 = new Client({
-      region: 'eu-west-2',
+      region,
       credentials,
       endpoint,
       forcePathStyle: true,

@@ -20,7 +20,7 @@ services:
     environment:
       - MINIO_ROOT_USER=incentives
       - MINIO_ROOT_PASSWORD=incentives
-      - MINIO_SITE_REGION=eu-west-2
+      - MINIO_SITE_REGION=eu-west-1
     ports:
       - '9000:9000'
       - '9001:9001'
@@ -42,7 +42,7 @@ services:
     environment:
       - MINIO_ROOT_USER=incentives
       - MINIO_ROOT_PASSWORD=incentives
-      - MINIO_SITE_REGION=eu-west-2
+      - MINIO_SITE_REGION=eu-west-1
     volumes:
       - $PWD/server/testData/s3Bucket:/tmp/s3Bucket
     entrypoint: |
@@ -53,7 +53,7 @@ services:
           sleep 3
         done
         mc config host add local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD
-        mc mb --region eu-west-2 --ignore-existing local/incentives
+        mc mb --region eu-west-1 --ignore-existing local/incentives
         mc mirror --overwrite /tmp/s3Bucket local/incentives
         exit 0
       "

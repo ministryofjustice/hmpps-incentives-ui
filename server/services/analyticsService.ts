@@ -1,3 +1,12 @@
+import type S3Client from '../data/s3Client'
+import logger from '../../logger'
+
+/**
+ * Generic source data from Analytical Platform
+ * in columns represented by objects with row number to value maps
+ */
+type Table = Record<string, Record<string, string | number>>
+
 /**
  * Type returned by all analytics service functions
  */
@@ -56,7 +65,25 @@ type PrisonersOnLevelsByAgeGroup = {
 }
 
 export default class AnalyticsService {
-  constructor(private readonly urlForLocation: (prison: string, location: string) => string) {}
+  constructor(
+    private readonly client: S3Client,
+    private readonly urlForLocation: (prison: string, location: string) => string
+  ) {}
+
+  async findTable<T extends Table>(tableName: string): Promise<{ table: T; date: Date; modified: Date }> {
+    logger.debug(`Finding latest "${tableName}" table`)
+    let objects = await this.client.listObjects(`${tableName}/`)
+    objects = objects.filter(object => /\/\d\d\d\d-\d\d-\d\d.json$/i.test(object.key))
+    if (objects.length === 0) {
+      throw new Error(`Cannot find latest "${tableName}" table`)
+    }
+    const { key, modified } = objects[objects.length - 1]
+    const date = new Date(key.slice(key.length - 15, key.length - 5))
+    const object = await this.client.getObject(key)
+    const table = JSON.parse(object) as T
+    logger.info(`Found latest "${tableName}" table: ${key} (modified ${modified.toISOString()})`)
+    return { table, date, modified }
+  }
 
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
     // TODO: fake response; move into test

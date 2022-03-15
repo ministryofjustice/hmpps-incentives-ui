@@ -3,6 +3,8 @@ import request from 'supertest'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 
+jest.mock('@aws-sdk/client-s3')
+
 let app: Express
 
 beforeEach(() => {

@@ -10,7 +10,7 @@ describe('AnalyticsService', () => {
 
   describe('getBehaviourEntriesByLocation()', () => {
     it('has a totals row', async () => {
-      const { report: entries } = await analyticsService.getBehaviourEntriesByLocation('MDI')
+      const { rows: entries } = await analyticsService.getBehaviourEntriesByLocation('MDI')
       expect(entries).toHaveLength(10)
 
       const prisonTotal = entries.shift()
@@ -29,7 +29,7 @@ describe('AnalyticsService', () => {
 
   describe('getPrisonersWithEntriesByLocation()', () => {
     it('has a totals row', async () => {
-      const { report: prisoners } = await analyticsService.getPrisonersWithEntriesByLocation('MDI')
+      const { rows: prisoners } = await analyticsService.getPrisonersWithEntriesByLocation('MDI')
       expect(prisoners).toHaveLength(10)
 
       const prisonTotal = prisoners.shift()
@@ -52,7 +52,7 @@ describe('AnalyticsService', () => {
 
   describe('getIncentiveLevelsByLocation()', () => {
     it('has a totals row', async () => {
-      const { levels, report: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation('MDI')
+      const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation('MDI')
       expect(prisonersOnLevels).toHaveLength(9)
 
       const prisonTotal = prisonersOnLevels.shift()
@@ -61,11 +61,11 @@ describe('AnalyticsService', () => {
 
       const totals = [0, 0, 0, 0]
       prisonersOnLevels.forEach(({ prisonersOnLevels: prisoners }) => {
-        for (let i = 0; i < levels.length; i += 1) {
+        for (let i = 0; i < columns.length; i += 1) {
           totals[i] += prisoners[i]
         }
       })
-      for (let i = 0; i < levels.length; i += 1) {
+      for (let i = 0; i < columns.length; i += 1) {
         expect(prisonTotal.prisonersOnLevels[i]).toEqual(totals[i])
       }
     })

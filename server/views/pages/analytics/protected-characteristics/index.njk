@@ -11,6 +11,7 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
+      {% set report = prisonersByEthnicity %}
       {% include "./prisoners-by-ethnicity.njk" %}
 
     </section>
@@ -19,6 +20,7 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
+      {% set report = prisonersInAgeGroups %}
       {% include "./prisoners-by-age-group.njk" %}
 
     </section>

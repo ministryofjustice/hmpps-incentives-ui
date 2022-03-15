@@ -4,7 +4,7 @@
   Behaviour entries – comparison of positive and negative behaviour entries by wing
 </h2>
 
-{{ dataSource(behaviourEntries.dataSource, behaviourEntries.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
+{{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 
 <div class="govuk-!-margin-top-8">
   {#
@@ -34,7 +34,7 @@
   </thead>
 
   <tbody>
-    {% for row in behaviourEntries.report %}
+    {% for row in report.rows %}
       {% set totalEntries = row.entriesPositive + row.entriesNegative %}
 
       <tr>

@@ -11,11 +11,13 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
 
+      {% set report = behaviourEntries %}
       {% include "./entries-by-location.njk" %}
 
     </section>
     <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
 
+      {% set report = prisonersWithEntries %}
       {% include "./prisoners-with-entries-by-location.njk" %}
 
     </section>

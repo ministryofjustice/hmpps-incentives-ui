@@ -28,7 +28,7 @@ executors:
         environment:
           MINIO_ROOT_USER: incentives
           MINIO_ROOT_PASSWORD: incentives
-          MINIO_SITE_REGION: eu-west-2
+          MINIO_SITE_REGION: eu-west-1
     resource_class: medium
     working_directory: ~/app
 
@@ -136,7 +136,7 @@ jobs:
           environment:
             AWS_ACCESS_KEY_ID: incentives
             AWS_SECRET_ACCESS_KEY: incentives
-            AWS_DEFAULT_REGION: eu-west-2
+            AWS_DEFAULT_REGION: eu-west-1
       - run:
           name: Run the node app.
           command: npm run start-feature

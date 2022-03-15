@@ -1,9 +1,16 @@
+/**
+ * Type returned by all analytics service functions
+ */
 type Report<T> = {
-  report: T
+  columns: string[]
+  rows: T
   lastUpdated: Date
   dataSource: string
 }
 
+/**
+ * A row in a report returned
+ */
 type BehaviourEntriesByLocation = {
   location: string
   href?: string
@@ -11,6 +18,9 @@ type BehaviourEntriesByLocation = {
   entriesNegative: number
 }
 
+/**
+ * A row in a report returned
+ */
 type PrisonersWithEntriesByLocation = {
   location: string
   href?: string
@@ -20,17 +30,26 @@ type PrisonersWithEntriesByLocation = {
   prisonersWithNeither: number
 }
 
+/**
+ * A row in a report returned
+ */
 type PrisonersOnLevelsByLocation = {
   location: string
   href?: string
   prisonersOnLevels: number[]
 }
 
+/**
+ * A row in a report returned
+ */
 type PrisonersOnLevelsByEthnicity = {
   ethnicity: string
   prisonersOnLevels: number[]
 }
 
+/**
+ * A row in a report returned
+ */
 type PrisonersOnLevelsByAgeGroup = {
   ageGroup: string
   prisonersOnLevels: number[]
@@ -41,6 +60,7 @@ export default class AnalyticsService {
 
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
     // TODO: fake response; move into test
+    const columns = ['Positive', 'Negative']
     const response: [string, number, number][] = [
       ['1', 13, 58],
       ['2', 5, 47],
@@ -54,7 +74,7 @@ export default class AnalyticsService {
     ]
 
     let [totalPositive, totalNegative] = [0, 0]
-    const entries: BehaviourEntriesByLocation[] = response.map(([location, positive, negative]) => {
+    const rows: BehaviourEntriesByLocation[] = response.map(([location, positive, negative]) => {
       totalPositive += positive
       totalNegative += negative
       return {
@@ -64,16 +84,17 @@ export default class AnalyticsService {
         entriesNegative: negative,
       }
     })
-    entries.unshift({
+    rows.unshift({
       location: 'All',
       entriesPositive: totalPositive,
       entriesNegative: totalNegative,
     })
-    return { report: entries, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
+    return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
   }
 
   async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation[]>> {
     // TODO: fake response; move into test
+    const columns = ['Positive', 'Negative', 'Both', 'None']
     const response: [string, number, number, number, number][] = [
       ['1', 9, 35, 2, 157],
       ['2', 3, 37, 2, 169],
@@ -87,37 +108,33 @@ export default class AnalyticsService {
     ]
 
     let [totalPositive, totalNegative, totalBoth, totalNeither] = [0, 0, 0, 0]
-    const prisoners: PrisonersWithEntriesByLocation[] = response.map(
-      ([location, positive, negative, both, neither]) => {
-        totalPositive += positive
-        totalNegative += negative
-        totalBoth += both
-        totalNeither += neither
-        return {
-          location,
-          href: this.urlForLocation(prison, location),
-          prisonersWithPositive: positive,
-          prisonersWithNegative: negative,
-          prisonersWithBoth: both,
-          prisonersWithNeither: neither,
-        }
+    const rows: PrisonersWithEntriesByLocation[] = response.map(([location, positive, negative, both, neither]) => {
+      totalPositive += positive
+      totalNegative += negative
+      totalBoth += both
+      totalNeither += neither
+      return {
+        location,
+        href: this.urlForLocation(prison, location),
+        prisonersWithPositive: positive,
+        prisonersWithNegative: negative,
+        prisonersWithBoth: both,
+        prisonersWithNeither: neither,
       }
-    )
-    prisoners.unshift({
+    })
+    rows.unshift({
       location: 'All',
       prisonersWithPositive: totalPositive,
       prisonersWithNegative: totalNegative,
       prisonersWithBoth: totalBoth,
       prisonersWithNeither: totalNeither,
     })
-    return { report: prisoners, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
+    return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
   }
 
-  async getIncentiveLevelsByLocation(
-    prison: string
-  ): Promise<{ levels: string[] } & Report<PrisonersOnLevelsByLocation[]>> {
+  async getIncentiveLevelsByLocation(prison: string): Promise<Report<PrisonersOnLevelsByLocation[]>> {
     // TODO: fake response; move into test
-    const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
+    const columns = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
     const response: [string, number, number, number, number][] = [
       ['A', 11, 221, 90, 2],
       ['B', 13, 242, 105, 1],
@@ -130,12 +147,12 @@ export default class AnalyticsService {
     ]
 
     const totals: number[] = []
-    for (let i = 0; i < levels.length; i += 1) {
+    for (let i = 0; i < columns.length; i += 1) {
       totals.push(0)
     }
-    const prisonersOnLevels: PrisonersOnLevelsByLocation[] = response.map(row => {
+    const rows: PrisonersOnLevelsByLocation[] = response.map(row => {
       const [location, ...prisoners] = row
-      for (let i = 0; i < levels.length; i += 1) {
+      for (let i = 0; i < columns.length; i += 1) {
         totals[i] += prisoners[i]
       }
       return {
@@ -144,19 +161,19 @@ export default class AnalyticsService {
         prisonersOnLevels: prisoners,
       }
     })
-    prisonersOnLevels.unshift({
+    rows.unshift({
       location: 'All',
       prisonersOnLevels: totals,
     })
-    return { levels, report: prisonersOnLevels, lastUpdated: new Date(), dataSource: 'NOMIS' }
+    return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS' }
   }
 
   async getIncentiveLevelsByEthnicity(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     prison: string
-  ): Promise<{ levels: string[] } & Report<PrisonersOnLevelsByEthnicity[]>> {
+  ): Promise<Report<PrisonersOnLevelsByEthnicity[]>> {
     // TODO: fake response; move into test
-    const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
+    const columns = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
     const response: [string, number, number, number, number][] = [
       ['Asian or Asian British', 0, 40, 40, 0],
       ['Black or Black British', 4, 51, 41, 1],
@@ -166,12 +183,12 @@ export default class AnalyticsService {
     ]
 
     const totals: number[] = []
-    for (let i = 0; i < levels.length; i += 1) {
+    for (let i = 0; i < columns.length; i += 1) {
       totals.push(0)
     }
-    const prisonersOnLevels: PrisonersOnLevelsByEthnicity[] = response.map(row => {
+    const rows: PrisonersOnLevelsByEthnicity[] = response.map(row => {
       const [ethnicity, ...prisoners] = row
-      for (let i = 0; i < levels.length; i += 1) {
+      for (let i = 0; i < columns.length; i += 1) {
         totals[i] += prisoners[i]
       }
       return {
@@ -179,19 +196,19 @@ export default class AnalyticsService {
         prisonersOnLevels: prisoners,
       }
     })
-    prisonersOnLevels.unshift({
+    rows.unshift({
       ethnicity: 'All',
       prisonersOnLevels: totals,
     })
-    return { levels, report: prisonersOnLevels, lastUpdated: new Date(), dataSource: 'NOMIS' }
+    return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS' }
   }
 
   async getIncentiveLevelsByAgeGroup(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     prison: string
-  ): Promise<{ levels: string[] } & Report<PrisonersOnLevelsByAgeGroup[]>> {
+  ): Promise<Report<PrisonersOnLevelsByAgeGroup[]>> {
     // TODO: fake response; move into test
-    const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
+    const columns = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
     const response: [string, number, number, number, number][] = [
       ['15 - 17', 0, 0, 0, 0],
       ['18 - 25', 15, 217, 105, 0],
@@ -203,12 +220,12 @@ export default class AnalyticsService {
     ]
 
     const totals: number[] = []
-    for (let i = 0; i < levels.length; i += 1) {
+    for (let i = 0; i < columns.length; i += 1) {
       totals.push(0)
     }
-    const prisonersOnLevels: PrisonersOnLevelsByAgeGroup[] = response.map(row => {
+    const rows: PrisonersOnLevelsByAgeGroup[] = response.map(row => {
       const [ageGroup, ...prisoners] = row
-      for (let i = 0; i < levels.length; i += 1) {
+      for (let i = 0; i < columns.length; i += 1) {
         totals[i] += prisoners[i]
       }
       return {
@@ -216,10 +233,10 @@ export default class AnalyticsService {
         prisonersOnLevels: prisoners,
       }
     })
-    prisonersOnLevels.unshift({
+    rows.unshift({
       ageGroup: 'All',
       prisonersOnLevels: totals,
     })
-    return { levels, report: prisonersOnLevels, lastUpdated: new Date(), dataSource: 'NOMIS' }
+    return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS' }
   }
 }

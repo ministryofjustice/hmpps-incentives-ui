@@ -119,15 +119,14 @@ export default class AnalyticsService {
     // TODO: fake response; move into test
     const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
     const response: [string, number, number, number, number][] = [
-      ['1', 9, 35, 20, 3],
-      ['2', 3, 37, 21, 0],
-      ['3', 18, 31, 27, 10],
-      ['4', 8, 31, 4, 1],
-      ['5', 10, 2, 15, 0],
-      ['6', 4, 10, 21, 0],
-      ['7', 9, 17, 10, 0],
-      ['H', 0, 0, 0, 0],
-      ['SEG', 1, 2, 0, 0],
+      ['A', 11, 221, 90, 2],
+      ['B', 13, 242, 105, 1],
+      ['C', 7, 28, 25, 0],
+      ['D', 3, 41, 46, 0],
+      ['E', 2, 8, 2, 0],
+      ['H', 0, 10, 4, 0],
+      ['T', 2, 110, 281, 1],
+      ['X', 0, 111, 161, 0],
     ]
 
     const totals: number[] = []

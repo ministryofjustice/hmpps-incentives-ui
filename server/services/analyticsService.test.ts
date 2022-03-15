@@ -53,7 +53,7 @@ describe('AnalyticsService', () => {
   describe('getIncentiveLevelsByLocation()', () => {
     it('has a totals row', async () => {
       const { levels, report: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation('MDI')
-      expect(prisonersOnLevels).toHaveLength(10)
+      expect(prisonersOnLevels).toHaveLength(9)
 
       const prisonTotal = prisonersOnLevels.shift()
       expect(prisonTotal.location).toEqual('All')

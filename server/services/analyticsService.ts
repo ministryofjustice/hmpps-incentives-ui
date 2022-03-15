@@ -159,11 +159,11 @@ export default class AnalyticsService {
     // TODO: fake response; move into test
     const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
     const response: [string, number, number, number, number][] = [
-      ['Asian or Asian British', 3, 39, 42, 0],
-      ['Black or Black British', 8, 62, 46, 2],
-      ['Mixed', 2, 30, 40, 0],
-      ['Other', 1, 7, 8, 0],
-      ['White', 28, 615, 623, 2],
+      ['Asian or Asian British', 0, 40, 40, 0],
+      ['Black or Black British', 4, 51, 41, 1],
+      ['Mixed', 2, 30, 29, 0],
+      ['Other', 2, 6, 5, 0],
+      ['White', 28, 646, 595, 2],
     ]
 
     const totals: number[] = []
@@ -195,7 +195,7 @@ export default class AnalyticsService {
     const levels = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
     const response: [string, number, number, number, number][] = [
       ['15 - 17', 0, 0, 0, 0],
-      ['18 - 25', 15, 218, 105, 0],
+      ['18 - 25', 15, 217, 105, 0],
       ['26 - 35', 14, 285, 240, 3],
       ['36 - 45', 8, 154, 193, 0],
       ['46 - 55', 1, 79, 95, 0],

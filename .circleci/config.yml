@@ -175,7 +175,7 @@ jobs:
             [ -n "$UPLOAD_FAILED" ] && {
               echo 'Failed to upload test data'
               exit 1
-            }
+            } || exit 0
           environment:
             AWS_DEFAULT_REGION: eu-west-2
 

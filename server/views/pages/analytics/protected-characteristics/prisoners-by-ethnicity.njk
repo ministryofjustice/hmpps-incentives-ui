@@ -9,7 +9,11 @@
   <div class="govuk-grid-column-two-thirds">
     {{ govukDetails({
       summaryText: "Help using this chart",
-      text: "Use this chart to see incentive levels for the main ethnicity groups and compare them to prison levels. Are there patterns or imbalances that you might want to explore further?"
+      text: "Use this chart to see incentive levels for the main ethnicity groups and compare them to prison levels. Are there patterns or imbalances that you might want to explore further?",
+      attributes: {
+        "data-ga-category": "Help using this chart > Incentive level by ethnicity",
+        "data-ga-label": user.activeCaseload.id | default("")
+      }
     }) }}
   </div>
 </div>

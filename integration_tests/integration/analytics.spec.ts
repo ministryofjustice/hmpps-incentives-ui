@@ -4,6 +4,7 @@ import AnalyticsIndex from '../pages/analyticsIndex'
 import AnalyticsBehaviourEntries from '../pages/analyticsBehaviourEntries'
 import AnalyticsIncentiveLevels from '../pages/analyticsIncentiveLevels'
 import AnalyticsProtectedCharacteristics from '../pages/analyticsProtectedCharacteristics'
+import GoogleAnalyticsSpy from '../plugins/googleAnalyticsSpy'
 
 context('Analytics', () => {
   beforeEach(() => {
@@ -57,6 +58,22 @@ context('Analytics', () => {
     })
   })
 
+  it('guidance box for incentive levels analytics is tracked', () => {
+    const indexPage = Page.verifyOnPage(AnalyticsIndex)
+    indexPage.incentiveLevelsCard.find('a').click()
+    Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+    const gaSpy = new GoogleAnalyticsSpy()
+    gaSpy.install()
+
+    cy.get('.govuk-details__summary')
+      .click()
+      .then(() => gaSpy.shouldHaveSentEvent('Help using this chart > Incentive level by wing', 'opened', 'MDI'))
+    cy.get('.govuk-details__summary')
+      .click()
+      .then(() => gaSpy.shouldHaveSentEvent('Help using this chart > Incentive level by wing', 'closed', 'MDI'))
+  })
+
   it('users see protected characteristics analytics', () => {
     const indexPage = Page.verifyOnPage(AnalyticsIndex)
     indexPage.protectedCharacteristicsCard.find('a').click()
@@ -73,5 +90,23 @@ context('Analytics', () => {
       expect(location).to.contain('All')
       expect(location).to.contain('1,524')
     })
+  })
+
+  it('guidance box for protected characteristics analytics is tracked', () => {
+    const indexPage = Page.verifyOnPage(AnalyticsIndex)
+    indexPage.protectedCharacteristicsCard.find('a').click()
+    Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+
+    const gaSpy = new GoogleAnalyticsSpy()
+    gaSpy.install()
+
+    cy.get('.govuk-details__summary')
+      .first()
+      .click()
+      .then(() => gaSpy.shouldHaveSentEvent('Help using this chart > Incentive level by ethnicity', 'opened', 'MDI'))
+    cy.get('.govuk-details__summary')
+      .first()
+      .click()
+      .then(() => gaSpy.shouldHaveSentEvent('Help using this chart > Incentive level by ethnicity', 'closed', 'MDI'))
   })
 })

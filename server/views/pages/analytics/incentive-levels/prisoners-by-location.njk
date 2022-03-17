@@ -1,8 +1,18 @@
+{% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "../../../components/dataSource.njk" import dataSource %}
 
 <h2 class="govuk-heading-m">
   Percentage and number of prisoners on each incentive level by wing
 </h2>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {{ govukDetails({
+      summaryText: "Help using this chart",
+      text: "Use this chart to see incentive level splits for the prison and wings. What does it tell you about how the policy framework is applied, the population and possible actions for your prison?"
+    }) }}
+  </div>
+</div>
 
 {{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 

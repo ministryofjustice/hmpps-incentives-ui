@@ -9,7 +9,11 @@
   <div class="govuk-grid-column-two-thirds">
     {{ govukDetails({
       summaryText: "Help using this chart",
-      text: "Use this chart to see incentive levels for the main age groups and compare them to prison levels. Are there patterns that suggest the policy framework isn’t working as well for some groups?"
+      text: "Use this chart to see incentive levels for the main age groups and compare them to prison levels. Are there patterns that suggest the policy framework isn’t working as well for some groups?",
+      attributes: {
+        "data-ga-category": "Help using this chart > Incentive level by age group",
+        "data-ga-label": user.activeCaseload.id | default("")
+      }
     }) }}
   </div>
 </div>

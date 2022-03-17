@@ -9,7 +9,7 @@ const url = config.redis.tls_enabled
   ? `rediss://${config.redis.host}:${config.redis.port}`
   : `redis://${config.redis.host}:${config.redis.port}`
 
-export const createRedisClient = (legacyMode = false): RedisClient => {
+export const createRedisClient = (clientName: string, legacyMode = false): RedisClient => {
   const client = createClient({
     url,
     password: config.redis.password,
@@ -17,7 +17,7 @@ export const createRedisClient = (legacyMode = false): RedisClient => {
   })
 
   client.on('error', error => {
-    logger.error(`Redis error`, error)
+    logger.error(`[${clientName}] Redis error`, error)
   })
 
   return client

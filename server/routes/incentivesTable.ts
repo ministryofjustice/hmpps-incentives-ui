@@ -6,7 +6,7 @@ import TokenStore from '../data/tokenStore'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import BehaviourService from '../services/behaviourService'
 
-const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient()))
+const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient('routes/incentivesTable.ts')))
 
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))

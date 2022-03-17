@@ -9,7 +9,7 @@ import config from '../config'
 const RedisStore = connectRedis(session)
 
 export default function setUpWebSession(): Router {
-  const client = createRedisClient(true)
+  const client = createRedisClient(`middleware/setUpWebSession.ts`, true)
   client.connect()
 
   const router = express.Router()

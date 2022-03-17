@@ -2,7 +2,7 @@ import Page, { type PageElement } from './page'
 
 export default class AnalyticsIndex extends Page {
   constructor() {
-    super('See incentives data')
+    super('Incentives data')
   }
 
   get cards(): PageElement {

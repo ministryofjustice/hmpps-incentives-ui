@@ -20,14 +20,14 @@ describe('Home page shows card linking to incentives analytics', () => {
   it('if feature is turned on', () => {
     return request(app)
       .get('/')
-      .expect(res => expect(res.text).toContain('See incentives data'))
+      .expect(res => expect(res.text).toContain('Incentives data'))
   })
 
   it('otherwise it is hidden', () => {
     app.locals.featureFlags.showAnalytics = false
     return request(app)
       .get('/')
-      .expect(res => expect(res.text).not.toContain('See incentives data'))
+      .expect(res => expect(res.text).not.toContain('Incentives data'))
   })
 })
 

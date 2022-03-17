@@ -5,5 +5,9 @@
     "node": false,
     "jest": false,
     "jquery": true
+  },
+  "globals": {
+    // Google Analytics
+    "ga": true
   }
 }

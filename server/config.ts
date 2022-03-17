@@ -117,6 +117,7 @@ export default {
     googleAnalyticsId: get('GOOGLE_ANALYTICS_ID', ''),
   },
   featureFlags: {
+    addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),
     showAnalytics: flag('FEATURE_SHOW_ANALYTICS', false),
   },
   feedbackUrl: get('FEEDBACK_URL', ''),

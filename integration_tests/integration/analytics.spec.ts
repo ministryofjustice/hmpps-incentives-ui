@@ -18,7 +18,7 @@ context('Analytics', () => {
   })
 
   it('users see analytics index page with cards', () => {
-    const expectedCards = ['See behaviour entries', 'See incentive levels', 'See protected characteristics']
+    const expectedCards = ['Incentive levels', 'Behaviour entries', 'Protected characteristics']
 
     const page = Page.verifyOnPage(AnalyticsIndex)
     page.cards.each((card, index) => {
@@ -29,7 +29,7 @@ context('Analytics', () => {
 
   it('users see behaviour entry analytics', () => {
     const indexPage = Page.verifyOnPage(AnalyticsIndex)
-    indexPage.cards.eq(0).find('a').click()
+    indexPage.behaviourEntriesCard.find('a').click()
     const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
 
     page.entriesByLocation.first().then(totalsRow => {
@@ -47,7 +47,7 @@ context('Analytics', () => {
 
   it('users see incentive levels analytics', () => {
     const indexPage = Page.verifyOnPage(AnalyticsIndex)
-    indexPage.cards.eq(1).find('a').click()
+    indexPage.incentiveLevelsCard.find('a').click()
     const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
 
     page.incentivesByLocation.first().then(totalsRow => {
@@ -59,7 +59,7 @@ context('Analytics', () => {
 
   it('users see protected characteristics analytics', () => {
     const indexPage = Page.verifyOnPage(AnalyticsIndex)
-    indexPage.cards.eq(2).find('a').click()
+    indexPage.protectedCharacteristicsCard.find('a').click()
     const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
 
     page.incentivesByEthnicity.first().then(totalsRow => {

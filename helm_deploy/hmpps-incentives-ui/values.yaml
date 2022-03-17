@@ -34,6 +34,7 @@ generic-service:
     REDIS_TLS_ENABLED: "true"
     TOKEN_VERIFICATION_ENABLED: "true"
     PHASE_NAME: ""
+    FEATURE_ADD_TEST_ERROR_ENDPOINT: ""
     FEATURE_SHOW_ANALYTICS: ""
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.

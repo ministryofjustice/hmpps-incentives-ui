@@ -54,7 +54,7 @@ context('Analytics', () => {
     page.incentivesByLocation.first().then(totalsRow => {
       const location = totalsRow.find('td:first-child').text()
       expect(location).to.contain('All')
-      expect(location).to.contain('1,527')
+      expect(location).to.contain('1,144')
     })
   })
 

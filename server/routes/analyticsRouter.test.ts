@@ -57,7 +57,8 @@ const analyticsPages = [
     url: '/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by wing',
     linksToIncentivesTable: true,
-    sampleLocations: ['A', 'B', 'C', 'D', 'E', 'H', 'T', 'X'],
+    sampleLocations: ['1', '2', '3', '4', '5', '6', '7', 'H', 'SEG'],
+    sourceTable: 'incentives_latest_narrow',
   },
   {
     name: 'Protected characteristics',

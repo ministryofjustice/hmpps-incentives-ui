@@ -2,18 +2,30 @@ import type { Express } from 'express'
 import request from 'supertest'
 
 import { appWithAllRoutes } from './testutils/appSetup'
+import { mockSdkS3ClientReponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
+
+const s3 = {
+  send: jest.fn(),
+}
+
+jest.mock('@aws-sdk/client-s3', () => {
+  const { GetObjectCommand, ListObjectsV2Command } = jest.requireActual('@aws-sdk/client-s3')
+  return {
+    S3Client: jest.fn(() => s3),
+    GetObjectCommand,
+    ListObjectsV2Command,
+  }
+})
 
 let app: Express
 
 beforeEach(() => {
+  jest.clearAllMocks()
+
   app = appWithAllRoutes({})
   app.locals.featureFlags.showAnalytics = true
-})
-
-afterEach(() => {
-  jest.resetAllMocks()
 })
 
 describe('Home page shows card linking to incentives analytics', () => {
@@ -38,6 +50,7 @@ const analyticsPages = [
     expectedHeading: 'Behaviour entries – comparison of positive and negative behaviour entries by wing',
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', 'H', 'SEG'],
+    sourceTable: 'behaviour_entries_28d',
   },
   {
     name: 'Incentive levels',
@@ -81,7 +94,11 @@ const samplePrison = 'MDI'
 
 describe.each(analyticsPages)(
   'Analytics data pages',
-  ({ name, url, expectedHeading, linksToIncentivesTable, sampleLocations }) => {
+  ({ name, url, expectedHeading, linksToIncentivesTable, sampleLocations, sourceTable }) => {
+    beforeEach(() => {
+      mockSdkS3ClientReponse(s3.send, sourceTable)
+    })
+
     it(`${name} page loads if feature is turned on`, () => {
       return request(app)
         .get(url)

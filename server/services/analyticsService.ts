@@ -85,6 +85,43 @@ export default class AnalyticsService {
     return { table, date, modified }
   }
 
+  stitchTable<T extends Table, Row extends [string, ...(number | string)[]]>(table: T, columns: (keyof T)[]): Row[] {
+    const [keyColumn] = columns
+    return Object.keys(table[keyColumn]).map(rowIndex => {
+      return columns.map(column => table[column][rowIndex]) as Row
+    })
+  }
+
+  mapRowsAndSumTotals<RowIn extends [string, ...(number | string)[]], RowOut extends [string, ...number[]]>(
+    stitchedTable: RowIn[],
+    grouper: (row: RowIn) => RowOut,
+    summedColumnCount: number // the number of number columns at the end of RowOut
+  ): RowOut[] {
+    const groups: Record<string, RowOut> = {}
+    const grandTotals: number[] = Array(summedColumnCount).fill(0)
+    stitchedTable.forEach(rowIn => {
+      const rowOut = grouper(rowIn)
+      const [groupId, ...rest] = rowOut
+      const rowValues = rest as number[]
+      if (typeof groups[groupId] === 'undefined') {
+        groups[groupId] = rowOut
+      } else {
+        const group = groups[groupId]
+        rowValues.forEach((value, index) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          group[index + 1] += value
+        })
+      }
+      rowValues.forEach((value, index) => {
+        grandTotals[index] += value
+      })
+    })
+    const rows = Object.values(groups)
+    rows.unshift(['All', ...grandTotals] as RowOut)
+    return rows
+  }
+
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
     // TODO: fake response; move into test
     const columns = ['Positive', 'Negative']

@@ -65,6 +65,50 @@ describe('AnalyticsService', () => {
     })
   })
 
+  describe('table manipulation', () => {
+    type Table = {
+      ignoredColumn: Record<string, string>
+      category: Record<string, string>
+      valA: Record<string, number>
+      valB: Record<string, number>
+    }
+    type StitchedRow = [string, number, number]
+    type MappedRow = [string, number]
+
+    const sampleInputTable: Table = {
+      ignoredColumn: { '1': 'a', '2': 'b', '3': 'c', '4': 'd' },
+      category: { '1': 'A', '2': 'B', '3': 'C', '4': 'B' },
+      valA: { '1': 1, '2': 2, '3': 3, '4': 4 },
+      valB: { '1': 5, '2': 6, '3': 7, '4': 8 },
+    }
+    const columnsToPluck: (keyof Table)[] = ['category', 'valA', 'valB']
+
+    it('stitchTable() stitches a column-based source table into rows', () => {
+      const stitchedTable = analyticsService.stitchTable<Table, StitchedRow>(sampleInputTable, columnsToPluck)
+      expect(stitchedTable).toEqual<StitchedRow[]>([
+        ['A', 1, 5],
+        ['B', 2, 6],
+        ['C', 3, 7],
+        ['B', 4, 8],
+      ])
+    })
+
+    it('mapRowsAndSumTotals() maps rows of a stitched table and sums them into a grand total', () => {
+      const stitchedTable = analyticsService.stitchTable<Table, StitchedRow>(sampleInputTable, columnsToPluck)
+      const output = analyticsService.mapRowsAndSumTotals<StitchedRow, MappedRow>(
+        stitchedTable,
+        ([category, valA, valB]) => [category, valA + valB],
+        1
+      )
+      expect(output).toEqual<MappedRow[]>([
+        ['All', 36],
+        ['A', 6],
+        ['B', 20],
+        ['C', 10],
+      ])
+    })
+  })
+
   describe('getBehaviourEntriesByLocation()', () => {
     // TODO: move fake data from service into mock here
 

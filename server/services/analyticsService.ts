@@ -19,6 +19,19 @@ interface CaseEntriesTable extends Table {
 }
 
 /**
+ * Source data table from Analytical Platform
+ * NB: must always be filtered by _some_ characteristic to get by-wing aggregates
+ * NB: other unused columns exist
+ */
+interface IncentiveLevelsTable extends Table {
+  prison: Record<string, string>
+  wing: Record<string, string>
+  incentive: Record<string, string>
+  characteristic: Record<string, string>
+  charac_group: Record<string, string>
+}
+
+/**
  * Type returned by all analytics service functions
  */
 type Report<T> = {
@@ -199,39 +212,37 @@ export default class AnalyticsService {
   }
 
   async getIncentiveLevelsByLocation(prison: string): Promise<Report<PrisonersOnLevelsByLocation[]>> {
-    // TODO: fake response; move into test
-    const columns = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
-    const response: [string, number, number, number, number][] = [
-      ['A', 11, 221, 90, 2],
-      ['B', 13, 242, 105, 1],
-      ['C', 7, 28, 25, 0],
-      ['D', 3, 41, 46, 0],
-      ['E', 2, 8, 2, 0],
-      ['H', 0, 10, 4, 0],
-      ['T', 2, 110, 281, 1],
-      ['X', 0, 111, 161, 0],
-    ]
+    const { table, date: lastUpdated } = await this.findTable<IncentiveLevelsTable>('incentives_latest_narrow')
 
-    const totals: number[] = []
-    for (let i = 0; i < columns.length; i += 1) {
-      totals.push(0)
-    }
-    const rows: PrisonersOnLevelsByLocation[] = response.map(row => {
-      const [location, ...prisoners] = row
-      for (let i = 0; i < columns.length; i += 1) {
-        totals[i] += prisoners[i]
-      }
-      return {
-        location,
-        href: this.urlForLocation(prison, location),
-        prisonersOnLevels: prisoners,
-      }
+    const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
+    type StitchedRow = [string, string, string, string, string]
+    const stitchedTable = this.stitchTable<IncentiveLevelsTable, StitchedRow>(table, columnsToStitch)
+
+    const filteredTables = stitchedTable.filter(
+      ([somePrison, _wing, _incentive, characteristic]) => somePrison === prison && characteristic === 'age_group_10yr'
+    )
+
+    let columns = Array.from(new Set(Object.values(table.incentive)))
+    columns.sort() // TODO: sort level
+    type AggregateRow = [string, ...number[]]
+    const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+      filteredTables,
+      ([, wing, incentive]) => {
+        const levels = Array(columns.length).fill(0)
+        const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
+        levels[levelIndex] = 1
+        return [wing, ...levels]
+      },
+      4
+    )
+    columns = columns.map(removeLevelPrefix)
+
+    const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([location, ...prisonersOnLevels], index) => {
+      const href = index === 0 ? undefined : this.urlForLocation(prison, location)
+      return { location, href, prisonersOnLevels }
     })
-    rows.unshift({
-      location: 'All',
-      prisonersOnLevels: totals,
-    })
-    return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS' }
+    rows.sort(compareLocations)
+    return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
   }
 
   async getIncentiveLevelsByEthnicity(
@@ -322,4 +333,8 @@ export function compareLocations({ location: location1 }: LocationRow, { locatio
     return 1
   }
   return location1.localeCompare(location2)
+}
+
+export function removeLevelPrefix(level: string): string {
+  return /.\. (.*)/.exec(level)[1]
 }

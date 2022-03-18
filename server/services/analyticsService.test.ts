@@ -19,6 +19,10 @@ describe('AnalyticsService', () => {
     ['MDI', ['All', '1', '2', '3', '4', '5', '6', '7', 'H', 'SEG']],
     ['BWI', ['All', 'B', 'C', 'F', 'H', 'M', 'O', 'P', 'R', 'V']],
   ]
+  const prisonLevels = [
+    ['MDI', ['Basic', 'Standard', 'Enhanced']],
+    ['BWI', ['Basic', 'Standard', 'Enhanced']],
+  ]
 
   describe('findTable()', () => {
     it('returns a table when there is only one candidate', async () => {
@@ -188,11 +192,13 @@ describe('AnalyticsService', () => {
   })
 
   describe('getIncentiveLevelsByLocation()', () => {
-    // TODO: move fake data from service into mock here
+    beforeEach(() => {
+      mockAppS3ClientResponse(s3Client, 'incentives_latest_narrow')
+    })
 
     it('has a totals row', async () => {
       const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation('MDI')
-      expect(prisonersOnLevels).toHaveLength(9)
+      expect(prisonersOnLevels).toHaveLength(11)
 
       const prisonTotal = prisonersOnLevels.shift()
       expect(prisonTotal.location).toEqual('All')
@@ -207,6 +213,24 @@ describe('AnalyticsService', () => {
       for (let i = 0; i < columns.length; i += 1) {
         expect(prisonTotal.prisonersOnLevels[i]).toEqual(totals[i])
       }
+    })
+
+    describe.each(prisonLocations)(
+      'lists locations in the correct order',
+      (prison: string, expectedLocations: string[]) => {
+        it(`for ${prison}`, async () => {
+          const { rows } = await analyticsService.getIncentiveLevelsByLocation(prison)
+          const locations = rows.map(row => row.location)
+          expect(locations).toEqual(expectedLocations)
+        })
+      }
+    )
+
+    describe.each(prisonLevels)('lists levels in the correct order', (prison: string, levels: string[]) => {
+      it(`for ${prison}`, async () => {
+        const { columns } = await analyticsService.getIncentiveLevelsByLocation(prison)
+        expect(columns).toEqual(levels)
+      })
     })
   })
 

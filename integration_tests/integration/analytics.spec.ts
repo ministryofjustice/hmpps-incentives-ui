@@ -36,13 +36,13 @@ context('Analytics', () => {
     page.entriesByLocation.first().then(totalsRow => {
       const location = totalsRow.find('td:first-child').text()
       expect(location).to.contain('All')
-      expect(location).to.contain('361')
+      expect(location).to.contain('441')
     })
 
     page.prisonersWithEntriesByLocation.first().then(totalsRow => {
       const location = totalsRow.find('td:first-child').text()
       expect(location).to.contain('All')
-      expect(location).to.contain('1,379')
+      expect(location).to.contain('1,425')
     })
   })
 

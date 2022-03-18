@@ -5,7 +5,18 @@ import logger from '../../logger'
  * Generic source data from Analytical Platform
  * in columns represented by objects with row number to value maps
  */
-type Table = Record<string, Record<string, string | number>>
+type Table = Record<string, Record<string, number | string>>
+
+/**
+ * Source data table from Analytical Platform
+ * NB: other unused columns exist
+ */
+interface CaseEntriesTable extends Table {
+  prison: Record<string, string>
+  wing: Record<string, string>
+  positives: Record<string, number>
+  negatives: Record<string, number>
+}
 
 /**
  * Type returned by all analytics service functions
@@ -123,77 +134,68 @@ export default class AnalyticsService {
   }
 
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
-    // TODO: fake response; move into test
-    const columns = ['Positive', 'Negative']
-    const response: [string, number, number][] = [
-      ['1', 13, 58],
-      ['2', 5, 47],
-      ['3', 24, 64],
-      ['4', 10, 53],
-      ['5', 13, 2],
-      ['6', 5, 14],
-      ['7', 12, 33],
-      ['H', 0, 0],
-      ['SEG', 0, 8],
-    ]
+    const { table, date: lastUpdated } = await this.findTable<CaseEntriesTable>('behaviour_entries_28d')
 
-    let [totalPositive, totalNegative] = [0, 0]
-    const rows: BehaviourEntriesByLocation[] = response.map(([location, positive, negative]) => {
-      totalPositive += positive
-      totalNegative += negative
-      return {
-        location,
-        href: this.urlForLocation(prison, location),
-        entriesPositive: positive,
-        entriesNegative: negative,
+    const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
+    type StitchedRow = [string, string, number, number]
+    const stitchedTable = this.stitchTable<CaseEntriesTable, StitchedRow>(table, columnsToStitch)
+
+    const filteredTables = stitchedTable.filter(([somePrison]) => somePrison === prison)
+
+    const columns = ['Positive', 'Negative']
+    type AggregateRow = [string, number, number]
+    const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+      filteredTables,
+      ([, wing, positives, negatives]) => [wing, positives, negatives],
+      2
+    )
+
+    const rows: BehaviourEntriesByLocation[] = aggregateTable.map(
+      ([location, entriesPositive, entriesNegative], index) => {
+        const href = index === 0 ? undefined : this.urlForLocation(prison, location)
+        return { location, href, entriesPositive, entriesNegative }
       }
-    })
-    rows.unshift({
-      location: 'All',
-      entriesPositive: totalPositive,
-      entriesNegative: totalNegative,
-    })
-    return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
+    )
+    rows.sort(compareLocations)
+    return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
   async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation[]>> {
-    // TODO: fake response; move into test
-    const columns = ['Positive', 'Negative', 'Both', 'None']
-    const response: [string, number, number, number, number][] = [
-      ['1', 9, 35, 2, 157],
-      ['2', 3, 37, 2, 169],
-      ['3', 18, 31, 2, 241],
-      ['4', 8, 31, 1, 156],
-      ['5', 10, 2, 0, 42],
-      ['6', 4, 10, 1, 154],
-      ['7', 9, 17, 1, 199],
-      ['H', 0, 0, 0, 0],
-      ['SEG', 0, 3, 0, 25],
-    ]
+    const { table, date: lastUpdated } = await this.findTable<CaseEntriesTable>('behaviour_entries_28d')
 
-    let [totalPositive, totalNegative, totalBoth, totalNeither] = [0, 0, 0, 0]
-    const rows: PrisonersWithEntriesByLocation[] = response.map(([location, positive, negative, both, neither]) => {
-      totalPositive += positive
-      totalNegative += negative
-      totalBoth += both
-      totalNeither += neither
-      return {
-        location,
-        href: this.urlForLocation(prison, location),
-        prisonersWithPositive: positive,
-        prisonersWithNegative: negative,
-        prisonersWithBoth: both,
-        prisonersWithNeither: neither,
+    const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
+    type StitchedRow = [string, string, number, number]
+    const stitchedTable = this.stitchTable<CaseEntriesTable, StitchedRow>(table, columnsToStitch)
+
+    const filteredTables = stitchedTable.filter(([somePrison]) => somePrison === prison)
+
+    const columns = ['Positive', 'Negative', 'Both', 'None']
+    type AggregateRow = [string, number, number, number, number]
+    const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+      filteredTables,
+      ([, wing, positives, negatives]) => {
+        if (positives > 0 && negatives > 0) {
+          return [wing, 0, 0, 1, 0]
+        }
+        if (positives > 0) {
+          return [wing, 1, 0, 0, 0]
+        }
+        if (negatives > 0) {
+          return [wing, 0, 1, 0, 0]
+        }
+        return [wing, 0, 0, 0, 1]
+      },
+      4
+    )
+
+    const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(
+      ([location, prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither], index) => {
+        const href = index === 0 ? undefined : this.urlForLocation(prison, location)
+        return { location, href, prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither }
       }
-    })
-    rows.unshift({
-      location: 'All',
-      prisonersWithPositive: totalPositive,
-      prisonersWithNegative: totalNegative,
-      prisonersWithBoth: totalBoth,
-      prisonersWithNeither: totalNeither,
-    })
-    return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS positive and negative case notes' }
+    )
+    rows.sort(compareLocations)
+    return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
   async getIncentiveLevelsByLocation(prison: string): Promise<Report<PrisonersOnLevelsByLocation[]>> {
@@ -303,4 +305,21 @@ export default class AnalyticsService {
     })
     return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS' }
   }
+}
+
+type LocationRow = { location: string }
+export function compareLocations({ location: location1 }: LocationRow, { location: location2 }: LocationRow) {
+  if (location1 === 'All') {
+    return -1
+  }
+  if (location2 === 'All') {
+    return 1
+  }
+  if (location1.length === 1 && location2.length !== 1) {
+    return -1
+  }
+  if (location1.length !== 1 && location2.length === 1) {
+    return 1
+  }
+  return location1.localeCompare(location2)
 }

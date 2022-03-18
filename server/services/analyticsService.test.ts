@@ -1,5 +1,6 @@
 import S3Client from '../data/s3Client'
 import AnalyticsService from './analyticsService'
+import { mockAppS3ClientResponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
 jest.mock('../data/s3Client')
@@ -13,6 +14,11 @@ describe('AnalyticsService', () => {
     jest.resetAllMocks()
     analyticsService = new AnalyticsService(s3Client, () => '')
   })
+
+  const prisonLocations = [
+    ['MDI', ['All', '1', '2', '3', '4', '5', '6', '7', 'H', 'SEG']],
+    ['BWI', ['All', 'B', 'C', 'F', 'H', 'M', 'O', 'P', 'R', 'V']],
+  ]
 
   describe('findTable()', () => {
     it('returns a table when there is only one candidate', async () => {
@@ -110,7 +116,9 @@ describe('AnalyticsService', () => {
   })
 
   describe('getBehaviourEntriesByLocation()', () => {
-    // TODO: move fake data from service into mock here
+    beforeEach(() => {
+      mockAppS3ClientResponse(s3Client, 'behaviour_entries_28d')
+    })
 
     it('has a totals row', async () => {
       const { rows: entries } = await analyticsService.getBehaviourEntriesByLocation('MDI')
@@ -128,10 +136,23 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.entriesPositive).toEqual(sumPositive)
       expect(prisonTotal.entriesNegative).toEqual(sumNegative)
     })
+
+    describe.each(prisonLocations)(
+      'lists locations in the correct order',
+      (prison: string, expectedLocations: string[]) => {
+        it(`for ${prison}`, async () => {
+          const { rows } = await analyticsService.getBehaviourEntriesByLocation(prison)
+          const locations = rows.map(row => row.location)
+          expect(locations).toEqual(expectedLocations)
+        })
+      }
+    )
   })
 
   describe('getPrisonersWithEntriesByLocation()', () => {
-    // TODO: move fake data from service into mock here
+    beforeEach(() => {
+      mockAppS3ClientResponse(s3Client, 'behaviour_entries_28d')
+    })
 
     it('has a totals row', async () => {
       const { rows: prisoners } = await analyticsService.getPrisonersWithEntriesByLocation('MDI')
@@ -153,6 +174,17 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.prisonersWithBoth).toEqual(sumBoth)
       expect(prisonTotal.prisonersWithNeither).toEqual(sumNeither)
     })
+
+    describe.each(prisonLocations)(
+      'lists locations in the correct order',
+      (prison: string, expectedLocations: string[]) => {
+        it(`for ${prison}`, async () => {
+          const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(prison)
+          const locations = rows.map(row => row.location)
+          expect(locations).toEqual(expectedLocations)
+        })
+      }
+    )
   })
 
   describe('getIncentiveLevelsByLocation()', () => {

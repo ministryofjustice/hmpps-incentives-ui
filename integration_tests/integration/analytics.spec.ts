@@ -82,13 +82,13 @@ context('Analytics', () => {
     page.incentivesByEthnicity.first().then(totalsRow => {
       const location = totalsRow.find('td:first-child').text()
       expect(location).to.contain('All')
-      expect(location).to.contain('1,522')
+      expect(location).to.contain('1,144')
     })
 
     page.incentivesByAgeGroup.first().then(totalsRow => {
       const location = totalsRow.find('td:first-child').text()
       expect(location).to.contain('All')
-      expect(location).to.contain('1,524')
+      expect(location).to.contain('1,144')
     })
   })
 

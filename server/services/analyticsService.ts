@@ -75,17 +75,17 @@ type PrisonersOnLevelsByLocation = {
 /**
  * A row in a report returned
  */
-type PrisonersOnLevelsByEthnicity = {
-  ethnicity: string
+type PrisonersOnLevelsByProtectedCharacteristic = {
+  characteristic: string
   prisonersOnLevels: number[]
 }
 
 /**
- * A row in a report returned
+ * Characteristics values from IncentiveLevelsTable
  */
-type PrisonersOnLevelsByAgeGroup = {
-  ageGroup: string
-  prisonersOnLevels: number[]
+export enum ProtectedCharacteristic {
+  Ethnicity = 'ethnic_group',
+  AgeGroup = 'age_group_10yr',
 }
 
 export default class AnalyticsService {
@@ -245,76 +245,45 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
   }
 
-  async getIncentiveLevelsByEthnicity(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    prison: string
-  ): Promise<Report<PrisonersOnLevelsByEthnicity[]>> {
-    // TODO: fake response; move into test
-    const columns = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
-    const response: [string, number, number, number, number][] = [
-      ['Asian or Asian British', 0, 40, 40, 0],
-      ['Black or Black British', 4, 51, 41, 1],
-      ['Mixed', 2, 30, 29, 0],
-      ['Other', 2, 6, 5, 0],
-      ['White', 28, 646, 595, 2],
-    ]
+  async getIncentiveLevelsByProtectedCharacteristic(
+    prison: string,
+    protectedCharacteristic: ProtectedCharacteristic
+  ): Promise<Report<PrisonersOnLevelsByProtectedCharacteristic[]>> {
+    const { table, date: lastUpdated } = await this.findTable<IncentiveLevelsTable>('incentives_latest_narrow')
 
-    const totals: number[] = []
-    for (let i = 0; i < columns.length; i += 1) {
-      totals.push(0)
-    }
-    const rows: PrisonersOnLevelsByEthnicity[] = response.map(row => {
-      const [ethnicity, ...prisoners] = row
-      for (let i = 0; i < columns.length; i += 1) {
-        totals[i] += prisoners[i]
-      }
-      return {
-        ethnicity,
-        prisonersOnLevels: prisoners,
-      }
-    })
-    rows.unshift({
-      ethnicity: 'All',
-      prisonersOnLevels: totals,
-    })
-    return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS' }
-  }
+    const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
+    type StitchedRow = [string, string, string, string, string]
+    const stitchedTable = this.stitchTable<IncentiveLevelsTable, StitchedRow>(table, columnsToStitch)
 
-  async getIncentiveLevelsByAgeGroup(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    prison: string
-  ): Promise<Report<PrisonersOnLevelsByAgeGroup[]>> {
-    // TODO: fake response; move into test
-    const columns = ['Basic', 'Standard', 'Enhanced', 'Enhanced 2']
-    const response: [string, number, number, number, number][] = [
-      ['15 - 17', 0, 0, 0, 0],
-      ['18 - 25', 15, 217, 105, 0],
-      ['26 - 35', 14, 285, 240, 3],
-      ['36 - 45', 8, 154, 193, 0],
-      ['46 - 55', 1, 79, 95, 0],
-      ['56 - 65', 0, 29, 36, 0],
-      ['66+', 0, 41, 9, 0],
-    ]
+    const filteredTables = stitchedTable.filter(
+      ([somePrison, _wing, _incentive, characteristic, characteristicGroup]) => {
+        // TODO: include null charactersisticGroup??
+        return somePrison === prison && characteristic === protectedCharacteristic && characteristicGroup
+      }
+    )
 
-    const totals: number[] = []
-    for (let i = 0; i < columns.length; i += 1) {
-      totals.push(0)
-    }
-    const rows: PrisonersOnLevelsByAgeGroup[] = response.map(row => {
-      const [ageGroup, ...prisoners] = row
-      for (let i = 0; i < columns.length; i += 1) {
-        totals[i] += prisoners[i]
+    let columns = Array.from(new Set(Object.values(table.incentive)))
+    columns.sort() // TODO: sort level
+    type AggregateRow = [string, ...number[]]
+    const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+      filteredTables,
+      ([, , incentive, , characteristicGroup]) => {
+        const levels = Array(columns.length).fill(0)
+        const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
+        levels[levelIndex] = 1
+        return [characteristicGroup.trim(), ...levels]
+      },
+      4
+    )
+    columns = columns.map(removeLevelPrefix)
+
+    const rows: PrisonersOnLevelsByProtectedCharacteristic[] = aggregateTable.map(
+      ([characteristic, ...prisonersOnLevels]) => {
+        return { characteristic, prisonersOnLevels }
       }
-      return {
-        ageGroup,
-        prisonersOnLevels: prisoners,
-      }
-    })
-    rows.unshift({
-      ageGroup: 'All',
-      prisonersOnLevels: totals,
-    })
-    return { columns, rows, lastUpdated: new Date(), dataSource: 'NOMIS' }
+    )
+    rows.sort(compareCharacteristics)
+    return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
   }
 }
 
@@ -333,6 +302,20 @@ export function compareLocations({ location: location1 }: LocationRow, { locatio
     return 1
   }
   return location1.localeCompare(location2)
+}
+
+type ProtectedCharacteristicRow = { characteristic: string }
+export function compareCharacteristics(
+  { characteristic: characteristic1 }: ProtectedCharacteristicRow,
+  { characteristic: characteristic2 }: ProtectedCharacteristicRow
+) {
+  if (characteristic1 === 'All') {
+    return -1
+  }
+  if (characteristic2 === 'All') {
+    return 1
+  }
+  return characteristic1.localeCompare(characteristic2)
 }
 
 export function removeLevelPrefix(level: string): string {

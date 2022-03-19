@@ -4,7 +4,7 @@ import config from '../config'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import featureGate from '../middleware/featureGate'
 import S3Client from '../data/s3Client'
-import AnalyticsService from '../services/analyticsService'
+import AnalyticsService, { ProtectedCharacteristic } from '../services/analyticsService'
 
 function urlForLocation(prison: string, location: string): string {
   return `/incentive-summary/${prison}-${location}`
@@ -59,8 +59,14 @@ export default function routes(router: Router): Router {
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
-    const prisonersByEthnicity = await analyticsService.getIncentiveLevelsByEthnicity(activeCaseLoad)
-    const prisonersInAgeGroups = await analyticsService.getIncentiveLevelsByAgeGroup(activeCaseLoad)
+    const prisonersByEthnicity = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
+      activeCaseLoad,
+      ProtectedCharacteristic.Ethnicity
+    )
+    const prisonersInAgeGroups = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
+      activeCaseLoad,
+      ProtectedCharacteristic.AgeGroup
+    )
 
     res.render('pages/analytics/protected-characteristics/index', {
       prisonersByEthnicity,

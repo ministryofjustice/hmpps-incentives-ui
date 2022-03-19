@@ -1,5 +1,5 @@
 import S3Client from '../data/s3Client'
-import AnalyticsService from './analyticsService'
+import AnalyticsService, { ProtectedCharacteristic } from './analyticsService'
 import { mockAppS3ClientResponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
@@ -234,5 +234,46 @@ describe('AnalyticsService', () => {
     })
   })
 
-  // TODO: test getIncentiveLevelsByEthnicity and getIncentiveLevelsByAgeGroup once service uses test data
+  describe.each([
+    [ProtectedCharacteristic.Ethnicity, ['All', 'Asian', 'Black', 'Mixed', 'Other', 'White']],
+    [ProtectedCharacteristic.AgeGroup, ['All', '18-25', '26-35', '36-45', '46-55', '56-65', '66+']],
+  ])('getIncentiveLevelsByProtectedCharacteristic()', (characteristic, expectedCharacteristics) => {
+    beforeEach(() => {
+      mockAppS3ClientResponse(s3Client, 'incentives_latest_narrow')
+    })
+
+    it('has a totals row', async () => {
+      const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
+        'MDI',
+        characteristic
+      )
+      expect(prisonersOnLevels).toHaveLength(expectedCharacteristics.length)
+
+      const prisonTotal = prisonersOnLevels.shift()
+      expect(prisonTotal.characteristic).toEqual('All')
+
+      const totals = [0, 0, 0, 0]
+      prisonersOnLevels.forEach(({ prisonersOnLevels: prisoners }) => {
+        for (let i = 0; i < columns.length; i += 1) {
+          totals[i] += prisoners[i]
+        }
+      })
+      for (let i = 0; i < columns.length; i += 1) {
+        expect(prisonTotal.prisonersOnLevels[i]).toEqual(totals[i])
+      }
+    })
+
+    it('lists characteristics in the correct order', async () => {
+      const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
+      const characteristics = rows.map(row => row.characteristic)
+      expect(characteristics).toEqual(expectedCharacteristics)
+    })
+
+    describe.each(prisonLevels)('lists levels in the correct order', (prison: string, levels: string[]) => {
+      it(`for ${prison}`, async () => {
+        const { columns } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(prison, characteristic)
+        expect(columns).toEqual(levels)
+      })
+    })
+  })
 })

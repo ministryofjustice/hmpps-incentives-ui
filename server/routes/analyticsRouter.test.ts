@@ -65,6 +65,7 @@ const analyticsPages = [
     url: '/analytics/protected-characteristics',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by ethnicity',
     linksToIncentivesTable: false,
+    sourceTable: 'incentives_latest_narrow',
   },
 ]
 

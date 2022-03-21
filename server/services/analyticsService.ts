@@ -266,5 +266,5 @@ export function compareCharacteristics(
  * e.g. "C. Standard" → "Standard"
  */
 export function removeLevelPrefix(level: string): string {
-  return /.\. (.*)/.exec(level)[1]
+  return /^[A-Z]+\.\s+(.*)\s*$/.exec(level)?.[1] || level
 }

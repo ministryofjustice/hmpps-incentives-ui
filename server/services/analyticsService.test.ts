@@ -1,5 +1,5 @@
 import S3Client from '../data/s3Client'
-import AnalyticsService from './analyticsService'
+import AnalyticsService, { compareLocations, compareCharacteristics, removeLevelPrefix } from './analyticsService'
 import { ProtectedCharacteristic } from './analyticsServiceTypes'
 import { mockAppS3ClientResponse } from '../testData/s3Bucket'
 
@@ -125,6 +125,58 @@ describe('AnalyticsService', () => {
         ['B', 20],
         ['C', 10],
       ])
+    })
+  })
+
+  describe('comparators and filters', () => {
+    describe.each([
+      { a: { location: 'All' }, b: { location: '1' }, expected: -1 },
+      { a: { location: 'A' }, b: { location: 'All' }, expected: 1 },
+      { a: { location: '1' }, b: { location: 'A' }, expected: -1 },
+      { a: { location: 'A' }, b: { location: '1' }, expected: 1 },
+      { a: { location: 'A' }, b: { location: 'B' }, expected: -1 },
+      { a: { location: 'SEG' }, b: { location: 'X' }, expected: 1 },
+      { a: { location: 'RECP' }, b: { location: 'SEG' }, expected: -1 },
+    ])('compareLocations()', ({ a, b, expected }) => {
+      let compares = '='
+      if (expected > 0) {
+        compares = '>'
+      } else if (expected < 0) {
+        compares = '<'
+      }
+      it(`${a.location} ${compares} ${b.location}`, () => {
+        expect(compareLocations(a, b)).toEqual(expected)
+      })
+    })
+
+    describe.each([
+      { a: { characteristic: 'All' }, b: { characteristic: 'Asian' }, expected: -1 },
+      { a: { characteristic: 'White' }, b: { characteristic: 'All' }, expected: 1 },
+      { a: { characteristic: 'Asian' }, b: { characteristic: 'Other' }, expected: -1 },
+    ])('compareCharacteristics()', ({ a, b, expected }) => {
+      let compares = '='
+      if (expected > 0) {
+        compares = '>'
+      } else if (expected < 0) {
+        compares = '<'
+      }
+      it(`${a.characteristic} ${compares} ${b.characteristic}`, () => {
+        expect(compareCharacteristics(a, b)).toEqual(expected)
+      })
+    })
+
+    describe.each([
+      ['B. Basic', 'Basic'],
+      ['C. Standard', 'Standard'],
+      ['D. Enhanced', 'Enhanced'],
+      ['E. Enhanced 2', 'Enhanced 2'],
+      // Prefixes are expected to always be "[letter]. ", so don't mangle other formats
+      ['Enhanced 2', 'Enhanced 2'],
+      ['A Entry', 'A Entry'],
+    ])('removeLevelPrefix()', (levelWithPrefix, expectedLevelWithoutPrefix) => {
+      it(`Level "${levelWithPrefix}" becomes "${expectedLevelWithoutPrefix}" without prefix`, () => {
+        expect(removeLevelPrefix(levelWithPrefix)).toEqual(expectedLevelWithoutPrefix)
+      })
     })
   })
 

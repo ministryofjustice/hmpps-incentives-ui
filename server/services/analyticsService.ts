@@ -1,92 +1,17 @@
 import type S3Client from '../data/s3Client'
 import logger from '../../logger'
 
-/**
- * Generic source data from Analytical Platform
- * in columns represented by objects with row number to value maps
- */
-type Table = Record<string, Record<string, number | string>>
-
-/**
- * Source data table from Analytical Platform
- * NB: other unused columns exist
- */
-interface CaseEntriesTable extends Table {
-  prison: Record<string, string>
-  wing: Record<string, string>
-  positives: Record<string, number>
-  negatives: Record<string, number>
-}
-
-/**
- * Source data table from Analytical Platform
- * NB: must always be filtered by _some_ characteristic to get by-wing aggregates
- * NB: other unused columns exist
- */
-interface IncentiveLevelsTable extends Table {
-  prison: Record<string, string>
-  wing: Record<string, string>
-  incentive: Record<string, string>
-  characteristic: Record<string, string>
-  charac_group: Record<string, string>
-}
-
-/**
- * Type returned by all analytics service functions
- */
-type Report<T> = {
-  columns: string[]
-  rows: T
-  lastUpdated: Date
-  dataSource: string
-}
-
-/**
- * A row in a report returned
- */
-type BehaviourEntriesByLocation = {
-  location: string
-  href?: string
-  entriesPositive: number
-  entriesNegative: number
-}
-
-/**
- * A row in a report returned
- */
-type PrisonersWithEntriesByLocation = {
-  location: string
-  href?: string
-  prisonersWithPositive: number
-  prisonersWithNegative: number
-  prisonersWithBoth: number
-  prisonersWithNeither: number
-}
-
-/**
- * A row in a report returned
- */
-type PrisonersOnLevelsByLocation = {
-  location: string
-  href?: string
-  prisonersOnLevels: number[]
-}
-
-/**
- * A row in a report returned
- */
-type PrisonersOnLevelsByProtectedCharacteristic = {
-  characteristic: string
-  prisonersOnLevels: number[]
-}
-
-/**
- * Characteristics values from IncentiveLevelsTable
- */
-export enum ProtectedCharacteristic {
-  Ethnicity = 'ethnic_group',
-  AgeGroup = 'age_group_10yr',
-}
+import type {
+  Table,
+  CaseEntriesTable,
+  IncentiveLevelsTable,
+  Report,
+  BehaviourEntriesByLocation,
+  PrisonersWithEntriesByLocation,
+  PrisonersOnLevelsByLocation,
+  ProtectedCharacteristic,
+  PrisonersOnLevelsByProtectedCharacteristic,
+} from './analyticsServiceTypes'
 
 export default class AnalyticsService {
   constructor(
@@ -94,6 +19,10 @@ export default class AnalyticsService {
     private readonly urlForLocation: (prison: string, location: string) => string
   ) {}
 
+  /**
+   * Finds the latest available table (by date) in S3 bucket, returning an object.
+   * The source data hold columns separately
+   */
   async findTable<T extends Table>(tableName: string): Promise<{ table: T; date: Date; modified: Date }> {
     logger.debug(`Finding latest "${tableName}" table`)
     let objects = await this.client.listObjects(`${tableName}/`)
@@ -109,6 +38,9 @@ export default class AnalyticsService {
     return { table, date, modified }
   }
 
+  /**
+   * Stitches together the source table into arrays representing the rows
+   */
   stitchTable<T extends Table, Row extends [string, ...(number | string)[]]>(table: T, columns: (keyof T)[]): Row[] {
     const [keyColumn] = columns
     return Object.keys(table[keyColumn]).map(rowIndex => {
@@ -116,15 +48,18 @@ export default class AnalyticsService {
     })
   }
 
+  /**
+   * Maps each row in a stitched table and sums up totals
+   */
   mapRowsAndSumTotals<RowIn extends [string, ...(number | string)[]], RowOut extends [string, ...number[]]>(
     stitchedTable: RowIn[],
-    grouper: (row: RowIn) => RowOut,
+    mapRow: (row: RowIn) => RowOut,
     summedColumnCount: number // the number of number columns at the end of RowOut
   ): RowOut[] {
     const groups: Record<string, RowOut> = {}
     const grandTotals: number[] = Array(summedColumnCount).fill(0)
     stitchedTable.forEach(rowIn => {
-      const rowOut = grouper(rowIn)
+      const rowOut = mapRow(rowIn)
       const [groupId, ...rest] = rowOut
       const rowValues = rest as number[]
       if (typeof groups[groupId] === 'undefined') {
@@ -223,7 +158,7 @@ export default class AnalyticsService {
     )
 
     let columns = Array.from(new Set(Object.values(table.incentive)))
-    columns.sort() // TODO: sort level
+    columns.sort() // NB: levels sort naturally because they include a prefix
     type AggregateRow = [string, ...number[]]
     const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
@@ -263,7 +198,7 @@ export default class AnalyticsService {
     )
 
     let columns = Array.from(new Set(Object.values(table.incentive)))
-    columns.sort() // TODO: sort level
+    columns.sort() // NB: levels sort naturally because they include a prefix
     type AggregateRow = [string, ...number[]]
     const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
@@ -288,6 +223,10 @@ export default class AnalyticsService {
 }
 
 type LocationRow = { location: string }
+
+/**
+ * Used to sort rows with locations
+ */
 export function compareLocations({ location: location1 }: LocationRow, { location: location2 }: LocationRow) {
   if (location1 === 'All') {
     return -1
@@ -305,6 +244,10 @@ export function compareLocations({ location: location1 }: LocationRow, { locatio
 }
 
 type ProtectedCharacteristicRow = { characteristic: string }
+
+/**
+ * Used to sort rows with protected characteristics
+ */
 export function compareCharacteristics(
   { characteristic: characteristic1 }: ProtectedCharacteristicRow,
   { characteristic: characteristic2 }: ProtectedCharacteristicRow
@@ -318,6 +261,10 @@ export function compareCharacteristics(
   return characteristic1.localeCompare(characteristic2)
 }
 
+/**
+ * Strips prefix from level
+ * e.g. "C. Standard" → "Standard"
+ */
 export function removeLevelPrefix(level: string): string {
   return /.\. (.*)/.exec(level)[1]
 }

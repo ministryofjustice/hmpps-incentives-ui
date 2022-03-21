@@ -4,7 +4,8 @@ import config from '../config'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import featureGate from '../middleware/featureGate'
 import S3Client from '../data/s3Client'
-import AnalyticsService, { ProtectedCharacteristic } from '../services/analyticsService'
+import AnalyticsService from '../services/analyticsService'
+import { ProtectedCharacteristic } from '../services/analyticsServiceTypes'
 
 function urlForLocation(prison: string, location: string): string {
   return `/incentive-summary/${prison}-${location}`

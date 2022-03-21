@@ -1,6 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 
+import { TableType } from '../services/analyticsServiceTypes'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { mockSdkS3ClientReponse } from '../testData/s3Bucket'
 
@@ -50,7 +51,7 @@ const analyticsPages = [
     expectedHeading: 'Behaviour entries – comparison of positive and negative behaviour entries by wing',
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', 'H', 'SEG'],
-    sourceTable: 'behaviour_entries_28d',
+    sourceTable: TableType.behaviourEntries,
   },
   {
     name: 'Incentive levels',
@@ -58,14 +59,14 @@ const analyticsPages = [
     expectedHeading: 'Percentage and number of prisoners on each incentive level by wing',
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', 'H', 'SEG'],
-    sourceTable: 'incentives_latest_narrow',
+    sourceTable: TableType.incentiveLevels,
   },
   {
     name: 'Protected characteristics',
     url: '/analytics/protected-characteristics',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by ethnicity',
     linksToIncentivesTable: false,
-    sourceTable: 'incentives_latest_narrow',
+    sourceTable: TableType.incentiveLevels,
   },
 ]
 

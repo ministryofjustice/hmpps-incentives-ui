@@ -1,6 +1,6 @@
 import S3Client from '../data/s3Client'
 import AnalyticsService, { compareLocations, compareCharacteristics, removeLevelPrefix } from './analyticsService'
-import { ProtectedCharacteristic } from './analyticsServiceTypes'
+import { TableType, ProtectedCharacteristic } from './analyticsServiceTypes'
 import { mockAppS3ClientResponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
@@ -39,7 +39,7 @@ describe('AnalyticsService', () => {
       s3Client.listObjects.mockResolvedValue([{ key: 'behaviour_entries/2022-03-13.json', modified }])
       s3Client.getObject.mockResolvedValue('{"column":{"1":1,"2":2}}')
 
-      await expect(analyticsService.findTable('behaviour_entries')).resolves.toEqual({
+      await expect(analyticsService.findTable(TableType.behaviourEntries)).resolves.toEqual({
         table: { column: { '1': 1, '2': 2 } },
         date: new Date(2022, 2, 13),
         modified,
@@ -61,7 +61,7 @@ describe('AnalyticsService', () => {
       ])
       s3Client.getObject.mockResolvedValue('{"column":{"1":1,"2":2}}')
 
-      await expect(analyticsService.findTable('behaviour_entries')).resolves.toEqual({
+      await expect(analyticsService.findTable(TableType.behaviourEntries)).resolves.toEqual({
         table: { column: { '1': 1, '2': 2 } },
         date: new Date(2022, 2, 13),
         modified,
@@ -72,7 +72,7 @@ describe('AnalyticsService', () => {
     it('throws an error when it cannot find a table', async () => {
       s3Client.listObjects.mockResolvedValue([])
 
-      await expect(analyticsService.findTable('behaviour_entries')).rejects.toThrow()
+      await expect(analyticsService.findTable(TableType.behaviourEntries)).rejects.toThrow()
     })
 
     it('throws an error when object contents cannot be parsed', async () => {
@@ -80,7 +80,7 @@ describe('AnalyticsService', () => {
       s3Client.listObjects.mockResolvedValue([{ key: 'behaviour_entries/2022-03-13.json', modified }])
       s3Client.getObject.mockResolvedValue('{"column":')
 
-      await expect(analyticsService.findTable('behaviour_entries')).rejects.toThrow()
+      await expect(analyticsService.findTable(TableType.behaviourEntries)).rejects.toThrow()
     })
   })
 
@@ -182,7 +182,7 @@ describe('AnalyticsService', () => {
 
   describe('getBehaviourEntriesByLocation()', () => {
     beforeEach(() => {
-      mockAppS3ClientResponse(s3Client, 'behaviour_entries_28d')
+      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries)
     })
 
     it('has a totals row', async () => {
@@ -216,7 +216,7 @@ describe('AnalyticsService', () => {
 
   describe('getPrisonersWithEntriesByLocation()', () => {
     beforeEach(() => {
-      mockAppS3ClientResponse(s3Client, 'behaviour_entries_28d')
+      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries)
     })
 
     it('has a totals row', async () => {
@@ -254,7 +254,7 @@ describe('AnalyticsService', () => {
 
   describe('getIncentiveLevelsByLocation()', () => {
     beforeEach(() => {
-      mockAppS3ClientResponse(s3Client, 'incentives_latest_narrow')
+      mockAppS3ClientResponse(s3Client, TableType.incentiveLevels)
     })
 
     it('has a totals row', async () => {
@@ -300,7 +300,7 @@ describe('AnalyticsService', () => {
     [ProtectedCharacteristic.AgeGroup, ['All', '18-25', '26-35', '36-45', '46-55', '56-65', '66+']],
   ])('getIncentiveLevelsByProtectedCharacteristic()', (characteristic, expectedCharacteristics) => {
     beforeEach(() => {
-      mockAppS3ClientResponse(s3Client, 'incentives_latest_narrow')
+      mockAppS3ClientResponse(s3Client, TableType.incentiveLevels)
     })
 
     it('has a totals row', async () => {

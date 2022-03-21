@@ -12,6 +12,7 @@ import type {
   ProtectedCharacteristic,
   PrisonersOnLevelsByProtectedCharacteristic,
 } from './analyticsServiceTypes'
+import { TableType } from './analyticsServiceTypes'
 
 export default class AnalyticsService {
   constructor(
@@ -23,18 +24,18 @@ export default class AnalyticsService {
    * Finds the latest available table (by date) in S3 bucket, returning an object.
    * The source data hold columns separately
    */
-  async findTable<T extends Table>(tableName: string): Promise<{ table: T; date: Date; modified: Date }> {
-    logger.debug(`Finding latest "${tableName}" table`)
-    let objects = await this.client.listObjects(`${tableName}/`)
+  async findTable<T extends Table>(tableType: TableType): Promise<{ table: T; date: Date; modified: Date }> {
+    logger.debug(`Finding latest "${tableType}" table`)
+    let objects = await this.client.listObjects(`${tableType}/`)
     objects = objects.filter(object => /\/\d\d\d\d-\d\d-\d\d.json$/i.test(object.key))
     if (objects.length === 0) {
-      throw new Error(`Cannot find latest "${tableName}" table`)
+      throw new Error(`Cannot find latest "${tableType}" table`)
     }
     const { key, modified } = objects[objects.length - 1]
     const date = new Date(key.slice(key.length - 15, key.length - 5))
     const object = await this.client.getObject(key)
     const table = JSON.parse(object) as T
-    logger.info(`Found latest "${tableName}" table: ${key} (modified ${modified.toISOString()})`)
+    logger.info(`Found latest "${tableType}" table: ${key} (modified ${modified.toISOString()})`)
     return { table, date, modified }
   }
 
@@ -82,7 +83,7 @@ export default class AnalyticsService {
   }
 
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
-    const { table, date: lastUpdated } = await this.findTable<CaseEntriesTable>('behaviour_entries_28d')
+    const { table, date: lastUpdated } = await this.findTable<CaseEntriesTable>(TableType.behaviourEntries)
 
     const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
     type StitchedRow = [string, string, number, number]
@@ -109,7 +110,7 @@ export default class AnalyticsService {
   }
 
   async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation[]>> {
-    const { table, date: lastUpdated } = await this.findTable<CaseEntriesTable>('behaviour_entries_28d')
+    const { table, date: lastUpdated } = await this.findTable<CaseEntriesTable>(TableType.behaviourEntries)
 
     const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
     type StitchedRow = [string, string, number, number]
@@ -147,7 +148,7 @@ export default class AnalyticsService {
   }
 
   async getIncentiveLevelsByLocation(prison: string): Promise<Report<PrisonersOnLevelsByLocation[]>> {
-    const { table, date: lastUpdated } = await this.findTable<IncentiveLevelsTable>('incentives_latest_narrow')
+    const { table, date: lastUpdated } = await this.findTable<IncentiveLevelsTable>(TableType.incentiveLevels)
 
     const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string, string]
@@ -184,7 +185,7 @@ export default class AnalyticsService {
     prison: string,
     protectedCharacteristic: ProtectedCharacteristic
   ): Promise<Report<PrisonersOnLevelsByProtectedCharacteristic[]>> {
-    const { table, date: lastUpdated } = await this.findTable<IncentiveLevelsTable>('incentives_latest_narrow')
+    const { table, date: lastUpdated } = await this.findTable<IncentiveLevelsTable>(TableType.incentiveLevels)
 
     const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string, string]

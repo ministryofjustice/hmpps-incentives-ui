@@ -5,6 +5,14 @@
 export type Table = Record<string, Record<string, number | string>>
 
 /**
+ * Name of table sourced from Analytical Platform
+ */
+export enum TableType {
+  behaviourEntries = 'behaviour_entries_28d',
+  incentiveLevels = 'incentives_latest_narrow',
+}
+
+/**
  * Source data table from Analytical Platform
  * NB: other unused columns exist
  */

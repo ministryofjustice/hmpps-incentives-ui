@@ -12,7 +12,7 @@ import type {
   ProtectedCharacteristic,
   PrisonersOnLevelsByProtectedCharacteristic,
 } from './analyticsServiceTypes'
-import { TableType } from './analyticsServiceTypes'
+import { TableType, knownGroupsFor } from './analyticsServiceTypes'
 
 export default class AnalyticsService {
   constructor(
@@ -193,7 +193,7 @@ export default class AnalyticsService {
 
     const filteredTables = stitchedTable.filter(
       ([somePrison, _wing, _incentive, characteristic, characteristicGroup]) => {
-        // TODO: include null charactersisticGroup??
+        // TODO: null characteristicGroup is excluded; convert to 'Unknown'?
         return somePrison === prison && characteristic === protectedCharacteristic && characteristicGroup
       }
     )
@@ -218,6 +218,12 @@ export default class AnalyticsService {
         return { characteristic, prisonersOnLevels }
       }
     )
+    const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
+    // TODO: 15-17 age group may be removed if establishment is not a YOI
+    rows.forEach(({ characteristic }) => missingCharacteristics.delete(characteristic))
+    missingCharacteristics.forEach(characteristic => {
+      rows.push({ characteristic, prisonersOnLevels: Array(columns.length).fill(0) })
+    })
     rows.sort(compareCharacteristics)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
   }

@@ -92,3 +92,27 @@ export enum ProtectedCharacteristic {
   Ethnicity = 'ethnic_group',
   AgeGroup = 'age_group_10yr',
 }
+
+/**
+ * Known protected characteristic groups
+ */
+export const Ethnicities = ['Asian', 'Black', 'Mixed', 'Other', 'White'] as const
+
+/**
+ * Known protected characteristic groups
+ */
+export const AgeGroups = ['15-17', '18-25', '26-35', '36-45', '46-55', '56-65', '66+'] as const
+
+/**
+ * Returns list of known groups for given protected characteristic
+ */
+export function knownGroupsFor(characteristic: ProtectedCharacteristic): ReadonlyArray<string> {
+  switch (characteristic) {
+    case ProtectedCharacteristic.Ethnicity:
+      return Ethnicities
+    case ProtectedCharacteristic.AgeGroup:
+      return AgeGroups
+    default:
+      throw new Error('Unknown characteristic')
+  }
+}

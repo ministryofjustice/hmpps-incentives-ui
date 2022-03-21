@@ -16,8 +16,16 @@ describe('AnalyticsService', () => {
   })
 
   const prisonLocations = [
-    ['MDI', ['All', '1', '2', '3', '4', '5', '6', '7', 'H', 'SEG']],
-    ['BWI', ['All', 'B', 'C', 'F', 'H', 'M', 'O', 'P', 'R', 'V']],
+    [
+      'MDI',
+      ['All', '1', '2', '3', '4', '5', '6', '7', 'H', 'SEG'],
+      ['All', '1', '2', '3', '4', '5', '6', '7', 'H', 'RECP', 'SEG'],
+    ],
+    [
+      'BWI',
+      ['All', 'B', 'C', 'F', 'H', 'M', 'O', 'P', 'R', 'V'],
+      ['All', 'B', 'C', 'F', 'H', 'M', 'O', 'P', 'R', 'V', 'RECP'],
+    ],
   ]
   const prisonLevels = [
     ['MDI', ['Basic', 'Standard', 'Enhanced']],
@@ -217,11 +225,11 @@ describe('AnalyticsService', () => {
 
     describe.each(prisonLocations)(
       'lists locations in the correct order',
-      (prison: string, expectedLocations: string[]) => {
+      (prison: string, filteredLocations: string[], expectedUnfilteredLocations: string[]) => {
         it(`for ${prison}`, async () => {
           const { rows } = await analyticsService.getIncentiveLevelsByLocation(prison)
           const locations = rows.map(row => row.location)
-          expect(locations).toEqual(expectedLocations)
+          expect(locations).toEqual(expectedUnfilteredLocations)
         })
       }
     )

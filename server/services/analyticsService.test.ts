@@ -1,5 +1,6 @@
 import S3Client from '../data/s3Client'
-import AnalyticsService, { ProtectedCharacteristic } from './analyticsService'
+import AnalyticsService from './analyticsService'
+import { ProtectedCharacteristic } from './analyticsServiceTypes'
 import { mockAppS3ClientResponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')

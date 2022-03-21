@@ -78,7 +78,7 @@ export default class AnalyticsService {
       })
     })
     const rows = Object.values(groups)
-    rows.unshift(['All', ...grandTotals] as RowOut)
+    rows.push(['All', ...grandTotals] as RowOut)
     return rows
   }
 
@@ -101,7 +101,7 @@ export default class AnalyticsService {
 
     const rows: BehaviourEntriesByLocation[] = aggregateTable.map(
       ([location, entriesPositive, entriesNegative], index) => {
-        const href = index === 0 ? undefined : this.urlForLocation(prison, location)
+        const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
         return { location, href, entriesPositive, entriesNegative }
       }
     )
@@ -139,7 +139,7 @@ export default class AnalyticsService {
 
     const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(
       ([location, prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither], index) => {
-        const href = index === 0 ? undefined : this.urlForLocation(prison, location)
+        const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
         return { location, href, prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither }
       }
     )
@@ -174,7 +174,7 @@ export default class AnalyticsService {
     columns = columns.map(removeLevelPrefix)
 
     const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([location, ...prisonersOnLevels], index) => {
-      const href = index === 0 ? undefined : this.urlForLocation(prison, location)
+      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
       return { location, href, prisonersOnLevels }
     })
     rows.sort(compareLocations)

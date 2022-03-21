@@ -121,10 +121,10 @@ describe('AnalyticsService', () => {
         1
       )
       expect(output).toEqual<MappedRow[]>([
-        ['All', 36],
         ['A', 6],
         ['B', 20],
         ['C', 10],
+        ['All', 36],
       ])
     })
   })

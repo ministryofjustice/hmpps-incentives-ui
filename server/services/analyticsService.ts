@@ -12,7 +12,7 @@ import type {
   ProtectedCharacteristic,
   PrisonersOnLevelsByProtectedCharacteristic,
 } from './analyticsServiceTypes'
-import { TableType, knownGroupsFor } from './analyticsServiceTypes'
+import { AnalyticsError, AnalyticsErrorType, TableType, knownGroupsFor } from './analyticsServiceTypes'
 
 export default class AnalyticsService {
   constructor(
@@ -29,14 +29,22 @@ export default class AnalyticsService {
     let objects = await this.client.listObjects(`${tableType}/`)
     objects = objects.filter(object => /\/\d\d\d\d-\d\d-\d\d.json$/i.test(object.key))
     if (objects.length === 0) {
-      throw new Error(`Cannot find latest "${tableType}" table`)
+      const errorMessage = `Cannot find latest "${tableType}" table`
+      logger.error(errorMessage)
+      throw new AnalyticsError(AnalyticsErrorType.MissingTable, errorMessage)
     }
     const { key, modified } = objects[objects.length - 1]
     const date = new Date(key.slice(key.length - 15, key.length - 5))
     const object = await this.client.getObject(key)
-    const table = JSON.parse(object) as T
-    logger.info(`Found latest "${tableType}" table: ${key} (modified ${modified.toISOString()})`)
-    return { table, date, modified }
+    try {
+      const table = JSON.parse(object) as T
+      logger.info(`Found latest "${tableType}" table: ${key} (modified ${modified.toISOString()})`)
+      return { table, date, modified }
+    } catch (e) {
+      const errorMessage = `Cannot parse "${key}" table: ${e}`
+      logger.error(errorMessage)
+      throw new AnalyticsError(AnalyticsErrorType.MalformedTable, errorMessage)
+    }
   }
 
   /**

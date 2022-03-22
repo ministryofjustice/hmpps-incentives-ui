@@ -95,7 +95,7 @@ export default class AnalyticsService {
     type AggregateRow = [string, number, number]
     const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
-      ([, wing, positives, negatives]) => [wing, positives, negatives],
+      ([_prison, wing, positives, negatives]) => [wing, positives, negatives],
       2
     )
 
@@ -122,7 +122,7 @@ export default class AnalyticsService {
     type AggregateRow = [string, number, number, number, number]
     const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
-      ([, wing, positives, negatives]) => {
+      ([_prison, wing, positives, negatives]) => {
         if (positives > 0 && negatives > 0) {
           return [wing, 0, 0, 1, 0]
         }
@@ -163,7 +163,7 @@ export default class AnalyticsService {
     type AggregateRow = [string, ...number[]]
     const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
-      ([, wing, incentive]) => {
+      ([_prison, wing, incentive]) => {
         const levels = Array(columns.length).fill(0)
         const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
         levels[levelIndex] = 1
@@ -203,7 +203,7 @@ export default class AnalyticsService {
     type AggregateRow = [string, ...number[]]
     const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
-      ([, , incentive, , characteristicGroup]) => {
+      ([_prison, _wing, incentive, _characteristic, characteristicGroup]) => {
         const levels = Array(columns.length).fill(0)
         const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
         levels[levelIndex] = 1

@@ -82,7 +82,7 @@ export default class AnalyticsService {
     return rows
   }
 
-  async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation[]>> {
+  async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation>> {
     const { table, date: lastUpdated } = await this.findTable<CaseEntriesTable>(TableType.behaviourEntries)
 
     const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
@@ -109,7 +109,7 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
-  async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation[]>> {
+  async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation>> {
     const { table, date: lastUpdated } = await this.findTable<CaseEntriesTable>(TableType.behaviourEntries)
 
     const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
@@ -147,7 +147,7 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
-  async getIncentiveLevelsByLocation(prison: string): Promise<Report<PrisonersOnLevelsByLocation[]>> {
+  async getIncentiveLevelsByLocation(prison: string): Promise<Report<PrisonersOnLevelsByLocation>> {
     const { table, date: lastUpdated } = await this.findTable<IncentiveLevelsTable>(TableType.incentiveLevels)
 
     const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
@@ -184,7 +184,7 @@ export default class AnalyticsService {
   async getIncentiveLevelsByProtectedCharacteristic(
     prison: string,
     protectedCharacteristic: ProtectedCharacteristic
-  ): Promise<Report<PrisonersOnLevelsByProtectedCharacteristic[]>> {
+  ): Promise<Report<PrisonersOnLevelsByProtectedCharacteristic>> {
     const { table, date: lastUpdated } = await this.findTable<IncentiveLevelsTable>(TableType.incentiveLevels)
 
     const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']

@@ -39,9 +39,9 @@ export interface IncentiveLevelsTable extends Table {
 /**
  * Type returned by all analytics service functions
  */
-export type Report<T> = {
+export type Report<Row extends Record<string, unknown>> = {
   columns: string[]
-  rows: T
+  rows: Row[]
   lastUpdated: Date
   dataSource: string
 }

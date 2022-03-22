@@ -1,6 +1,6 @@
 import S3Client from '../data/s3Client'
 import AnalyticsService, { compareLocations, compareCharacteristics, removeLevelPrefix } from './analyticsService'
-import { TableType, ProtectedCharacteristic, Ethnicities, AgeGroups } from './analyticsServiceTypes'
+import { AnalyticsError, TableType, ProtectedCharacteristic, Ethnicities, AgeGroups } from './analyticsServiceTypes'
 import type { PrisonersOnLevelsByProtectedCharacteristic } from './analyticsServiceTypes'
 import { mockAppS3ClientResponse } from '../testData/s3Bucket'
 
@@ -73,7 +73,7 @@ describe('AnalyticsService', () => {
     it('throws an error when it cannot find a table', async () => {
       s3Client.listObjects.mockResolvedValue([])
 
-      await expect(analyticsService.findTable(TableType.behaviourEntries)).rejects.toThrow()
+      await expect(analyticsService.findTable(TableType.behaviourEntries)).rejects.toThrow(AnalyticsError)
     })
 
     it('throws an error when object contents cannot be parsed', async () => {
@@ -81,7 +81,7 @@ describe('AnalyticsService', () => {
       s3Client.listObjects.mockResolvedValue([{ key: 'behaviour_entries/2022-03-13.json', modified }])
       s3Client.getObject.mockResolvedValue('{"column":')
 
-      await expect(analyticsService.findTable(TableType.behaviourEntries)).rejects.toThrow()
+      await expect(analyticsService.findTable(TableType.behaviourEntries)).rejects.toThrow(AnalyticsError)
     })
   })
 

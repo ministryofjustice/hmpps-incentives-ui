@@ -116,3 +116,20 @@ export function knownGroupsFor(characteristic: ProtectedCharacteristic): Readonl
       throw new Error('Unknown characteristic')
   }
 }
+
+/**
+ * Types of errors thrown by the analytics service
+ */
+export enum AnalyticsErrorType {
+  MissingTable,
+  MalformedTable,
+}
+
+/**
+ * Thrown by the analytics service when a categorisable error ocurred
+ */
+export class AnalyticsError extends Error {
+  constructor(readonly type: AnalyticsErrorType, message?: string) {
+    super(message)
+  }
+}

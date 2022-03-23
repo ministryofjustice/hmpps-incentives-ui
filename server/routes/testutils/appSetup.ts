@@ -1,7 +1,8 @@
+import path from 'path'
+
 import express, { type Express, type Router } from 'express'
 import { Cookie, type Session, type SessionData } from 'express-session'
-import createError from 'http-errors'
-import path from 'path'
+import { NotFound } from 'http-errors'
 
 import allRoutes from '../all'
 import breadcrumbs from '../../middleware/breadcrumbs'
@@ -98,7 +99,7 @@ function appSetup(
     app.use(testRouter)
   }
 
-  app.use((req, res, next) => next(createError(404, 'Not found')))
+  app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))
 
   return app

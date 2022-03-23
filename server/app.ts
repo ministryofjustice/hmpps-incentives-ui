@@ -1,7 +1,7 @@
-import express from 'express'
-
 import path from 'path'
-import createError from 'http-errors'
+
+import express from 'express'
+import { NotFound } from 'http-errors'
 
 import allRoutes from './routes/all'
 import nunjucksSetup from './utils/nunjucksSetup'
@@ -40,7 +40,7 @@ export default function createApp(userService: UserService): express.Application
   app.use('/', allRoutes(userService))
 
   setUpSentryErrorHandler(app)
-  app.use((req, res, next) => next(createError(404, 'Not found')))
+  app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
 
   return app

@@ -13,7 +13,7 @@ describe('Error pages', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).toContain('Page not found')
-          expect(res.text).toContain('NotFoundError: Not found')
+          expect(res.text).toContain('NotFoundError: Not Found')
           expect(res.text).not.toContain('Sorry, there is a problem with the service')
         })
     })
@@ -25,7 +25,7 @@ describe('Error pages', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).toContain('Page not found')
-          expect(res.text).not.toContain('NotFoundError: Not found')
+          expect(res.text).not.toContain('NotFoundError: Not Found')
           expect(res.text).not.toContain('Sorry, there is a problem with the service')
         })
     })

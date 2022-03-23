@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response, RequestHandler } from 'express'
-import { featureGate, activeCaseloadGate } from './featureGate'
+import { featureGate, activeCaseloadGate, usernameGate } from './featureGate'
 
 /** Trivial request handler that always returns "OK" */
 const simpleRequestHandler: RequestHandler = (req, res) => {
@@ -87,6 +87,29 @@ describe('activeCaseloadGate', () => {
   })
 
   it('returns 404 when user case load is unknown', () => {
+    const req = mockRequest()
+    const res = mockResponse()
+    expectRequestHandlerTo404(gatedHandler, req, res)
+  })
+})
+
+describe('usernameGate', () => {
+  /** Gated request handler that requires username to be user1 or user2 */
+  const gatedHandler = usernameGate(['user1', 'user2'], simpleRequestHandler)
+
+  it('calls handler when user’s username is included in specified list', () => {
+    const req = mockRequest()
+    const res = mockResponse({ user: { username: 'user1' } })
+    expectRequestHandlerToBeCalled(gatedHandler, req, res)
+  })
+
+  it('returns 404 when user’s username is not included in specified list', () => {
+    const req = mockRequest()
+    const res = mockResponse({ user: { username: 'user5' } })
+    expectRequestHandlerTo404(gatedHandler, req, res)
+  })
+
+  it('returns 404 when user’s username is unknown', () => {
     const req = mockRequest()
     const res = mockResponse()
     expectRequestHandlerTo404(gatedHandler, req, res)

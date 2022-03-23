@@ -2,7 +2,7 @@ import type { RequestHandler, Router } from 'express'
 
 import config from '../config'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { featureGate } from '../middleware/featureGate'
+import { featureGate, activeCaseloadGate } from '../middleware/featureGate'
 import S3Client from '../data/s3Client'
 import AnalyticsService from '../services/analyticsService'
 import { ProtectedCharacteristic } from '../services/analyticsServiceTypes'
@@ -13,7 +13,10 @@ function urlForLocation(prison: string, location: string): string {
 
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) =>
-    router.get(path, featureGate('showAnalytics', asyncMiddleware(handler)))
+    router.get(
+      path,
+      featureGate('showAnalytics', activeCaseloadGate(config.prisonsWithAnalytics, asyncMiddleware(handler)))
+    )
 
   get('/', (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentives data' })

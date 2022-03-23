@@ -120,6 +120,7 @@ export default {
     addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),
     showAnalytics: flag('FEATURE_SHOW_ANALYTICS', false),
   },
+  prisonsWithAnalytics: (get('PRISONS_WITH_ANALYTICS', null, notRequiredInProduction) ?? '').split(','),
   feedbackUrl: get('FEEDBACK_URL', ''),
   phaseName: get('PHASE_NAME', ''),
 }

@@ -16,3 +16,8 @@ generic-service:
     HMPPS_PRISON_API_URL: "https://api.prison.service.justice.gov.uk"
     NOMIS_USER_ROLES_API_URL: "https://nomis-user.aks-live-1.studio-hosting.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
+    # from 2022-03-30:
+    # FEATURE_SHOW_ANALYTICS: "true"
+    # PRISONS_WITH_ANALYTICS: "WRI"
+    # from 2022-04-04:
+    # PRISONS_WITH_ANALYTICS: "AYI,BLI,CKI,DTI,DWI,EXI,FDI,GNI,HEI,HLI,ISI,IWI,LLI,MDI,NHI,NLI,NWI,PBI,PDI,PFI,PNI,RSI,SKI,SPI,STI,UKI,WRI,WTI,WWI,WYI"

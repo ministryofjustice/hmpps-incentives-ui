@@ -2,7 +2,7 @@ import convertToTitleCase from '../utils/utils'
 import type HmppsAuthClient from '../data/hmppsAuthClient'
 import { NomisUserRolesApi, Caseload } from '../data/nomisUserRolesApi'
 
-interface UserDetails {
+export interface UserDetails {
   name: string
   displayName: string
   caseloads: Array<Caseload>

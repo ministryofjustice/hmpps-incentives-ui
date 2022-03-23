@@ -2,7 +2,7 @@ import type { RequestHandler, Router } from 'express'
 
 import config from '../config'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { featureGate, activeCaseloadGate } from '../middleware/featureGate'
+import { featureGate, activeCaseloadGate, usernameGate } from '../middleware/featureGate'
 import S3Client from '../data/s3Client'
 import AnalyticsService from '../services/analyticsService'
 import { ProtectedCharacteristic } from '../services/analyticsServiceTypes'
@@ -15,7 +15,13 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) =>
     router.get(
       path,
-      featureGate('showAnalytics', activeCaseloadGate(config.prisonsWithAnalytics, asyncMiddleware(handler)))
+      featureGate(
+        'showAnalytics',
+        activeCaseloadGate(
+          config.prisonsWithAnalytics,
+          usernameGate(config.usernamesWithAnalytics, asyncMiddleware(handler))
+        )
+      )
     )
 
   get('/', (req, res) => {

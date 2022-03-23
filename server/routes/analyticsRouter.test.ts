@@ -22,9 +22,11 @@ jest.mock('@aws-sdk/client-s3', () => {
 })
 
 let originalPrisonsWithAnalytics: string[]
+let originalUsernamesWithAnalytics: string[]
 
 beforeAll(() => {
   originalPrisonsWithAnalytics = config.prisonsWithAnalytics
+  originalUsernamesWithAnalytics = config.usernamesWithAnalytics
 })
 
 let app: Express
@@ -33,6 +35,7 @@ beforeEach(() => {
   jest.clearAllMocks()
 
   config.prisonsWithAnalytics = ['MDI']
+  config.usernamesWithAnalytics = ['user1']
 
   app = appWithAllRoutes({})
   app.locals.featureFlags.showAnalytics = true
@@ -40,6 +43,7 @@ beforeEach(() => {
 
 afterAll(() => {
   config.prisonsWithAnalytics = originalPrisonsWithAnalytics
+  config.usernamesWithAnalytics = originalUsernamesWithAnalytics
 })
 
 describe('Home page shows card linking to incentives analytics', () => {
@@ -59,6 +63,14 @@ describe('Home page shows card linking to incentives analytics', () => {
   it('it is also hidden when user does not have appropriate case load', () => {
     config.prisonsWithAnalytics.pop()
     config.prisonsWithAnalytics.push('LEI')
+    return request(app)
+      .get('/')
+      .expect(res => expect(res.text).not.toContain('Incentives data'))
+  })
+
+  it('it is also hidden when username is not explicitly allowed', () => {
+    config.usernamesWithAnalytics.pop()
+    config.usernamesWithAnalytics.push('user5')
     return request(app)
       .get('/')
       .expect(res => expect(res.text).not.toContain('Incentives data'))

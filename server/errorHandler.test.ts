@@ -1,41 +1,68 @@
 import { Router } from 'express'
-import type { Express } from 'express'
 import { Forbidden, Unauthorized } from 'http-errors'
 import request from 'supertest'
 
 import { appWithAllRoutes } from './routes/testutils/appSetup'
 
-let app: Express
+describe('Error pages', () => {
+  describe('should render 404 page', () => {
+    it('with stack in dev mode', () => {
+      return request(appWithAllRoutes({}))
+        .get('/unknown')
+        .expect(404)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Page not found')
+          expect(res.text).toContain('NotFoundError: Not found')
+          expect(res.text).not.toContain('Sorry, there is a problem with the service')
+        })
+    })
 
-beforeEach(() => {
-  app = appWithAllRoutes({})
-})
-
-afterEach(() => {
-  jest.resetAllMocks()
-})
-
-describe('GET 404', () => {
-  it('should render content with stack in dev mode', () => {
-    return request(app)
-      .get('/unknown')
-      .expect(404)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('NotFoundError: Not found')
-        expect(res.text).not.toContain('Something went wrong. The error has been logged. Please try again')
-      })
+    it('without stack in production mode', () => {
+      return request(appWithAllRoutes({ production: true }))
+        .get('/unknown')
+        .expect(404)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Page not found')
+          expect(res.text).not.toContain('NotFoundError: Not found')
+          expect(res.text).not.toContain('Sorry, there is a problem with the service')
+        })
+    })
   })
 
-  it('should render content without stack in production mode', () => {
-    return request(appWithAllRoutes({ production: true }))
-      .get('/unknown')
-      .expect(404)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Something went wrong. The error has been logged. Please try again')
-        expect(res.text).not.toContain('NotFoundError: Not found')
+  describe('should render 500 page', () => {
+    function makeApp(production: boolean) {
+      const testRouter = Router()
+      testRouter.use('/error', (req, res, next) => {
+        next(new Error('custom error'))
       })
+      return appWithAllRoutes({ production, testRouter })
+    }
+
+    it('with stack in dev mode', () => {
+      return request(makeApp(false))
+        .get('/error')
+        .expect(500)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Sorry, there is a problem with the service')
+          expect(res.text).toContain('custom error')
+          expect(res.text).not.toContain('Page not found')
+        })
+    })
+
+    it('without stack in production mode', () => {
+      return request(makeApp(true))
+        .get('/error')
+        .expect(500)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Sorry, there is a problem with the service')
+          expect(res.text).not.toContain('custom error')
+          expect(res.text).not.toContain('Page not found')
+        })
+    })
   })
 
   describe.each([

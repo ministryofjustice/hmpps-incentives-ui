@@ -30,7 +30,7 @@ export function userActiveCaseloadMatches(prisons: string[], user?: Express.User
  * Wraps a request handler and returns 404 unless the user’s *active* case load appears in given prisons
  * If "*" appears in the prisons list, call is always forwarded to request handler
  */
-export function activeCaseloadGate(prisons: string[], handler: RequestHandler) {
+export function activeCaseloadGate(prisons: string[], handler: RequestHandler): RequestHandler {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (userActiveCaseloadMatches(prisons, res.locals.user)) {
       handler(req, res, next)

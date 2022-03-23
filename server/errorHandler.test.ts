@@ -1,4 +1,6 @@
+import { Router } from 'express'
 import type { Express } from 'express'
+import { Forbidden, Unauthorized } from 'http-errors'
 import request from 'supertest'
 
 import { appWithAllRoutes } from './routes/testutils/appSetup'
@@ -34,5 +36,23 @@ describe('GET 404', () => {
         expect(res.text).toContain('Something went wrong. The error has been logged. Please try again')
         expect(res.text).not.toContain('NotFoundError: Not found')
       })
+  })
+
+  describe.each([
+    ['401 Unauthorised', new Unauthorized()],
+    ['403 Forbidden', new Forbidden()],
+  ])('should redirect to sign-out', (name, error) => {
+    it(`if a request handler returns ${name}`, () => {
+      const testRouter = Router()
+      testRouter.use('/error', (req, res, next) => {
+        next(error)
+      })
+      return request(appWithAllRoutes({ testRouter }))
+        .get('/error')
+        .expect(302)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+        })
+    })
   })
 })

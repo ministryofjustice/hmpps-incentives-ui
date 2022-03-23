@@ -62,8 +62,6 @@ context('Wing incentives table page', () => {
           imageSrc: '/prisoner-images/222222.jpeg',
           name: 'Doe, Jane<br>A1234AB',
           nameLink: caseNotesLink('A1234AB'),
-          daysOnLevel: '50',
-          daysSinceLastReview: '10',
           positiveBehaviours: '100',
           positiveBehavioursLink: caseNotesLink('A1234AB', { type: 'POS' }),
           incentiveEncouragements: '99',
@@ -92,8 +90,6 @@ context('Wing incentives table page', () => {
           imageSrc: '/prisoner-images/333333.jpeg',
           name: 'Dean, James<br>B1234CD',
           nameLink: caseNotesLink('B1234CD'),
-          daysOnLevel: '100',
-          daysSinceLastReview: '10',
           positiveBehaviours: '123',
           positiveBehavioursLink: caseNotesLink('B1234CD', { type: 'POS' }),
           incentiveEncouragements: '100',
@@ -109,8 +105,6 @@ context('Wing incentives table page', () => {
           imageSrc: '/prisoner-images/444444.jpeg',
           name: 'Doe, John<br>C1234EF',
           nameLink: caseNotesLink('C1234EF'),
-          daysOnLevel: '10',
-          daysSinceLastReview: '10',
           positiveBehaviours: '80',
           positiveBehavioursLink: caseNotesLink('C1234EF', { type: 'POS' }),
           incentiveEncouragements: '79',
@@ -185,15 +179,13 @@ context('Wing incentives table page', () => {
     cy.get('a#tab_STD')
       .click()
       .then(() => gaSpy.clear())
-    cy.get('table#incentive-table-STD .govuk-table__header')
+    cy.get('table#incentive-table-STD .govuk-table__header:visible')
       .spread((...$ths) =>
         $ths.map($th => cy.wrap($th).click()).reduce((thClick, thNextClick) => thClick.then(() => thNextClick))
       )
       .then(() =>
         gaSpy.shouldHaveSentEvents(
           ['Incentives information > Sorted table', 'by name (descending)', 'MDI-42'],
-          ['Incentives information > Sorted table', 'by days on level (ascending)', 'MDI-42'],
-          ['Incentives information > Sorted table', 'by days since last review (ascending)', 'MDI-42'],
           ['Incentives information > Sorted table', 'by positive behaviours (ascending)', 'MDI-42'],
           ['Incentives information > Sorted table', 'by incentive encouragements (ascending)', 'MDI-42'],
           ['Incentives information > Sorted table', 'by negative behaviours (ascending)', 'MDI-42'],

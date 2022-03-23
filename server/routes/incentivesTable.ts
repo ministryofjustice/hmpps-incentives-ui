@@ -25,7 +25,11 @@ export default function routes(router: Router): Router {
 
     const threeMonthsAgo = daysAgo(90)
 
-    res.render('pages/incentives-table', { entries, threeMonthsAgo, locationPrefix })
+    // Determine whether the 'Days since last review'/'Days on level' columns
+    // should be hidden
+    const hideDaysColumns = res.app.locals.featureFlags.hideDaysColumnsInIncentivesTable
+
+    res.render('pages/incentives-table', { entries, threeMonthsAgo, locationPrefix, hideDaysColumns })
   })
 
   return router

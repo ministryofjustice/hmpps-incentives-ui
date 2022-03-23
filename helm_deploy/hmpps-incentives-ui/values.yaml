@@ -35,6 +35,7 @@ generic-service:
     TOKEN_VERIFICATION_ENABLED: "true"
     PHASE_NAME: ""
     FEATURE_ADD_TEST_ERROR_ENDPOINT: ""
+    FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE: ""
     FEATURE_SHOW_ANALYTICS: ""
     PRISONS_WITH_ANALYTICS: ""    # "" means no prisons, "*" means all prisons
     USERNAMES_WITH_ANALYTICS: ""  # "" means nobody, "*" means everybody

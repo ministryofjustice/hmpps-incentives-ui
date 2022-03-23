@@ -5,6 +5,12 @@
 
 {% set pageTitle = applicationName + " – Incentives information" %}
 
+{% if hideDaysColumns %}
+    {% set hideDaysClasses = 'govuk-!-display-none' %}
+{% else %}
+    {% set hideDaysClasses = '' %}
+{% endif %}
+
 {% block content %}
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
         Incentive information
@@ -49,6 +55,7 @@
             },
             {
                 text: "Days on level",
+                classes: hideDaysClasses,
                 attributes: {
                     "aria-sort": "none",
                     "data-ga-category": "Incentives information > Sorted table",
@@ -57,6 +64,7 @@
             },
             {
                 text: "Days since last review",
+                classes: hideDaysClasses,
                 attributes: {
                     "aria-sort": "none",
                     "data-ga-category": "Incentives information > Sorted table",
@@ -127,12 +135,14 @@
             },
             {
                 html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days on level">' + prisoner.daysOnLevel + '</a>',
+                classes: hideDaysClasses,
                 attributes: {
                     "data-sort-value": prisoner.daysOnLevel
                 }
             },
             {
                 html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days since last review">' + prisoner.daysSinceLastReview + '</a>',
+                classes: hideDaysClasses,
                 attributes: {
                     "data-sort-value": prisoner.daysSinceLastReview
                 }

@@ -36,7 +36,8 @@ generic-service:
     PHASE_NAME: ""
     FEATURE_ADD_TEST_ERROR_ENDPOINT: ""
     FEATURE_SHOW_ANALYTICS: ""
-    PRISONS_WITH_ANALYTICS: ""
+    PRISONS_WITH_ANALYTICS: ""    # "" means no prisons, "*" means all prisons
+    USERNAMES_WITH_ANALYTICS: ""  # "" means nobody, "*" means everybody
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

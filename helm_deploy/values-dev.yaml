@@ -23,6 +23,7 @@ generic-service:
     PHASE_NAME: "DEV"
     FEATURE_SHOW_ANALYTICS: "true"
     PRISONS_WITH_ANALYTICS: "*"
+    USERNAMES_WITH_ANALYTICS: "*"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

@@ -1,5 +1,5 @@
-import express, { Express } from 'express'
-import { Cookie, Session, SessionData } from 'express-session'
+import express, { type Express, type Router } from 'express'
+import { Cookie, type Session, type SessionData } from 'express-session'
 import createError from 'http-errors'
 import path from 'path'
 
@@ -61,7 +61,12 @@ function makeTestSession(sessionData: Partial<SessionData> = {}): Session & Part
   }
 }
 
-function appSetup(production: boolean, testSession: Session, mockUserService: UserService): Express {
+function appSetup(
+  production: boolean,
+  testSession: Session,
+  mockUserService: UserService,
+  testRouter?: Router
+): Express {
   const app = express()
 
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
@@ -88,6 +93,11 @@ function appSetup(production: boolean, testSession: Session, mockUserService: Us
   // App routes
   app.use('/', allRoutes(mockUserService))
 
+  // Test router is *only* added for unit tests
+  if (testRouter) {
+    app.use(testRouter)
+  }
+
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))
 
@@ -98,13 +108,15 @@ function appWithAllRoutes({
   production = false,
   testSession = makeTestSession(),
   mockUserService = new MockUserService(),
+  testRouter = undefined,
 }: {
   production?: boolean
   testSession?: Session
   mockUserService?: UserService
+  testRouter?: Router
 }): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(production, testSession, mockUserService)
+  return appSetup(production, testSession, mockUserService, testRouter)
 }
 
 export { appWithAllRoutes, makeTestSession }

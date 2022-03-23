@@ -65,53 +65,137 @@ describe('featureGate', () => {
 })
 
 describe('activeCaseloadGate', () => {
-  /** Gated request handler that requires *active* case load to include BWI or MDI */
-  const gatedHandler = activeCaseloadGate(['BWI', 'MDI'], simpleRequestHandler)
+  describe('with predefined list of prisons', () => {
+    /** Gated request handler that requires *active* case load to include BWI or MDI */
+    const gatedHandler = activeCaseloadGate(['BWI', 'MDI'], simpleRequestHandler)
 
-  it('calls handler when user’s active case load is included in specified prisons', () => {
-    const req = mockRequest()
-    const res = mockResponse({ user: { activeCaseload: { id: 'MDI' }, caseloads: [{ id: 'LEI' }, { id: 'MDI' }] } })
-    expectRequestHandlerToBeCalled(gatedHandler, req, res)
+    it('calls handler when user’s active case load is included in specified prisons', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { activeCaseload: { id: 'MDI' }, caseloads: [{ id: 'LEI' }, { id: 'MDI' }] } })
+      expectRequestHandlerToBeCalled(gatedHandler, req, res)
+    })
+
+    it('returns 404 when user’s case loads overlap with specified prisons but not the active one', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { activeCaseload: { id: 'LEI' }, caseloads: [{ id: 'LEI' }, { id: 'BWI' }] } })
+      expectRequestHandlerTo404(gatedHandler, req, res)
+    })
+
+    it('returns 404 when user’s case loads do not overlap with specified prisons', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { activeCaseload: { id: 'LEI' }, caseloads: [{ id: 'LEI' }, { id: 'BXI' }] } })
+      expectRequestHandlerTo404(gatedHandler, req, res)
+    })
+
+    it('returns 404 when user case load is unknown', () => {
+      const req = mockRequest()
+      const res = mockResponse()
+      expectRequestHandlerTo404(gatedHandler, req, res)
+    })
   })
 
-  it('returns 404 when user’s case loads overlap with specified prisons but not the active one', () => {
-    const req = mockRequest()
-    const res = mockResponse({ user: { activeCaseload: { id: 'LEI' }, caseloads: [{ id: 'LEI' }, { id: 'BWI' }] } })
-    expectRequestHandlerTo404(gatedHandler, req, res)
+  describe('with * in list of prisons', () => {
+    /** Gated request handler that allows any *active* case load */
+    const gatedHandler = activeCaseloadGate(['*'], simpleRequestHandler)
+
+    it('calls handler when user’s active case load is included in specified prisons', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { activeCaseload: { id: 'MDI' }, caseloads: [{ id: 'LEI' }, { id: 'MDI' }] } })
+      expectRequestHandlerToBeCalled(gatedHandler, req, res)
+    })
+
+    it('calls handler when user’s case loads overlap with specified prisons but not the active one', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { activeCaseload: { id: 'LEI' }, caseloads: [{ id: 'LEI' }, { id: 'BWI' }] } })
+      expectRequestHandlerToBeCalled(gatedHandler, req, res)
+    })
+
+    it('calls handler when user’s case loads do not overlap with specified prisons', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { activeCaseload: { id: 'LEI' }, caseloads: [{ id: 'LEI' }, { id: 'BXI' }] } })
+      expectRequestHandlerToBeCalled(gatedHandler, req, res)
+    })
+
+    it('calls handler when user case load is unknown', () => {
+      const req = mockRequest()
+      const res = mockResponse()
+      expectRequestHandlerToBeCalled(gatedHandler, req, res)
+    })
   })
 
-  it('returns 404 when user’s case loads do not overlap with specified prisons', () => {
-    const req = mockRequest()
-    const res = mockResponse({ user: { activeCaseload: { id: 'LEI' }, caseloads: [{ id: 'LEI' }, { id: 'BXI' }] } })
-    expectRequestHandlerTo404(gatedHandler, req, res)
-  })
+  describe('with empty list of prisons', () => {
+    /** Gated request handler that forbids any *active* case load */
+    const gatedHandler = activeCaseloadGate([], simpleRequestHandler)
 
-  it('returns 404 when user case load is unknown', () => {
-    const req = mockRequest()
-    const res = mockResponse()
-    expectRequestHandlerTo404(gatedHandler, req, res)
+    it('returns 404 when user’s active case load is known', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { activeCaseload: { id: 'MDI' }, caseloads: [{ id: 'LEI' }, { id: 'MDI' }] } })
+      expectRequestHandlerTo404(gatedHandler, req, res)
+    })
+
+    it('returns 404 when user case load is unknown', () => {
+      const req = mockRequest()
+      const res = mockResponse()
+      expectRequestHandlerTo404(gatedHandler, req, res)
+    })
   })
 })
 
 describe('usernameGate', () => {
-  /** Gated request handler that requires username to be user1 or user2 */
-  const gatedHandler = usernameGate(['user1', 'user2'], simpleRequestHandler)
+  describe('with predefined list of usernames', () => {
+    /** Gated request handler that requires username to be user1 or user2 */
+    const gatedHandler = usernameGate(['user1', 'user2'], simpleRequestHandler)
 
-  it('calls handler when user’s username is included in specified list', () => {
-    const req = mockRequest()
-    const res = mockResponse({ user: { username: 'user1' } })
-    expectRequestHandlerToBeCalled(gatedHandler, req, res)
+    it('calls handler when user’s username is included in specified list', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { username: 'user1' } })
+      expectRequestHandlerToBeCalled(gatedHandler, req, res)
+    })
+
+    it('returns 404 when user’s username is not included in specified list', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { username: 'user5' } })
+      expectRequestHandlerTo404(gatedHandler, req, res)
+    })
+
+    it('returns 404 when user’s username is unknown', () => {
+      const req = mockRequest()
+      const res = mockResponse()
+      expectRequestHandlerTo404(gatedHandler, req, res)
+    })
   })
 
-  it('returns 404 when user’s username is not included in specified list', () => {
-    const req = mockRequest()
-    const res = mockResponse({ user: { username: 'user5' } })
-    expectRequestHandlerTo404(gatedHandler, req, res)
+  describe('with * in list of usernames', () => {
+    /** Gated request handler that allows any username */
+    const gatedHandler = usernameGate(['*'], simpleRequestHandler)
+
+    it('calls handler when user’s username is included in specified list', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { username: 'user1' } })
+      expectRequestHandlerToBeCalled(gatedHandler, req, res)
+    })
+
+    it('calls handler when user’s username is unknown', () => {
+      const req = mockRequest()
+      const res = mockResponse()
+      expectRequestHandlerToBeCalled(gatedHandler, req, res)
+    })
   })
 
-  it('returns 404 when user’s username is unknown', () => {
-    const req = mockRequest()
-    const res = mockResponse()
-    expectRequestHandlerTo404(gatedHandler, req, res)
+  describe('with empty list of usernames', () => {
+    /** Gated request handler that forbids any username */
+    const gatedHandler = usernameGate([], simpleRequestHandler)
+
+    it('returns 404 when user’s active case load is known', () => {
+      const req = mockRequest()
+      const res = mockResponse({ user: { username: 'user1' } })
+      expectRequestHandlerTo404(gatedHandler, req, res)
+    })
+
+    it('returns 404 when user case load is unknown', () => {
+      const req = mockRequest()
+      const res = mockResponse()
+      expectRequestHandlerTo404(gatedHandler, req, res)
+    })
   })
 })

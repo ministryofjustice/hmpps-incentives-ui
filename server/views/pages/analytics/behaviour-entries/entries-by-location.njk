@@ -1,8 +1,22 @@
+{% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "../../../components/dataSource.njk" import dataSource %}
 
 <h2 class="govuk-heading-m">
   Behaviour entries – comparison of positive and negative behaviour entries by wing
 </h2>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {{ govukDetails({
+      summaryText: "Help using this chart",
+      text: "This chart lets you see the proportion of positive to negative entries across the prison and at wing level. Do these splits suggest a fair and consistent application of incentives?",
+      attributes: {
+        "data-ga-category": "Help using this chart > Behaviour entries by wing",
+        "data-ga-label": user.activeCaseload.id | default("")
+      }
+    }) }}
+  </div>
+</div>
 
 {{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 

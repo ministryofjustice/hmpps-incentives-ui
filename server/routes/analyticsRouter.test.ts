@@ -88,7 +88,7 @@ describe('Analytics home page', () => {
       .get('/analytics')
       .expect(404)
       .expect(res => {
-        expect(res.text).toContain('Not Found')
+        expect(res.text).toContain('Page not found')
       })
   })
 })
@@ -108,7 +108,7 @@ describe.each(analyticsPages)(
         .expect(200)
         .expect(res => {
           expect(res.text).toContain(expectedHeading)
-          expect(res.text).not.toContain('Not Found')
+          expect(res.text).not.toContain('Page not found')
         })
     })
 
@@ -119,7 +119,7 @@ describe.each(analyticsPages)(
         .expect(404)
         .expect(res => {
           expect(res.text).not.toContain(expectedHeading)
-          expect(res.text).toContain('Not Found')
+          expect(res.text).toContain('Page not found')
         })
     })
 

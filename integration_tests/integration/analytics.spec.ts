@@ -68,10 +68,10 @@ context('Analytics', () => {
 
     cy.get('.govuk-details__summary')
       .click()
-      .then(() => gaSpy.shouldHaveSentEvent('Help using this chart > Incentive level by wing', 'opened', 'MDI'))
+      .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'opened', 'MDI'))
     cy.get('.govuk-details__summary')
       .click()
-      .then(() => gaSpy.shouldHaveSentEvent('Help using this chart > Incentive level by wing', 'closed', 'MDI'))
+      .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'closed', 'MDI'))
   })
 
   it('users see protected characteristics analytics', () => {
@@ -103,10 +103,14 @@ context('Analytics', () => {
     cy.get('.govuk-details__summary')
       .first()
       .click()
-      .then(() => gaSpy.shouldHaveSentEvent('Help using this chart > Incentive level by ethnicity', 'opened', 'MDI'))
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'opened', 'MDI')
+      )
     cy.get('.govuk-details__summary')
       .first()
       .click()
-      .then(() => gaSpy.shouldHaveSentEvent('Help using this chart > Incentive level by ethnicity', 'closed', 'MDI'))
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'closed', 'MDI')
+      )
   })
 })

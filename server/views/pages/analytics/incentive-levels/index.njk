@@ -1,9 +1,12 @@
-{% extends "../../../partials/layout.njk" %}
+{% extends "../graph-layout.njk" %}
 
+{% set graphID = "incentive-levels" %}
 {% set graphTitle = "Incentive levels" %}
 {% set pageTitle = applicationName + " – " + graphTitle %}
 
 {% block content %}
+  {{ super() }}
+
   <h1 class="govuk-heading-xl">
     {{ graphTitle }}
   </h1>
@@ -16,9 +19,4 @@
 
     </section>
   </div>
-{% endblock %}
-
-{% block bodyEnd %}
-  {{ super() }}
-  <script src="/assets/analyticsGraphs.js"></script>
 {% endblock %}

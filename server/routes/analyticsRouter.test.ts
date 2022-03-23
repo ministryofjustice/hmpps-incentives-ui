@@ -70,29 +70,6 @@ const analyticsPages = [
   },
 ]
 
-describe('Analytics home page', () => {
-  it('shows links to all analytics pages if feature is turned on', () => {
-    return request(app)
-      .get('/analytics')
-      .expect(200)
-      .expect(res => {
-        analyticsPages.forEach(({ url }) => {
-          expect(res.text).toContain(`href="${url}"`)
-        })
-      })
-  })
-
-  it('otherwise it responds with a 404', () => {
-    app.locals.featureFlags.showAnalytics = false
-    return request(app)
-      .get('/analytics')
-      .expect(404)
-      .expect(res => {
-        expect(res.text).toContain('Page not found')
-      })
-  })
-})
-
 const samplePrison = 'MDI'
 
 describe.each(analyticsPages)(

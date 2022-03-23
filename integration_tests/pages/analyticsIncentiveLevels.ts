@@ -1,11 +1,12 @@
-import Page, { type PageElement } from './page'
+import { type PageElement } from './page'
+import AnalyticsPage from './analytics'
 
-export default class AnalyticsIncentiveLevels extends Page {
+export default class AnalyticsIncentiveLevels extends AnalyticsPage {
   constructor() {
     super('Incentive levels')
   }
 
-  get incentivesByLocation(): PageElement {
+  get incentivesByLocation(): PageElement<HTMLTableRowElement> {
     return cy.get('#table-incentive-levels-by-location tbody tr')
   }
 }

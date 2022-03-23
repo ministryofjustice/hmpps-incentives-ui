@@ -1,6 +1,5 @@
 import Page from '../pages/page'
 import HomePage from '../pages/home'
-import AnalyticsIndex from '../pages/analyticsIndex'
 import AnalyticsBehaviourEntries from '../pages/analyticsBehaviourEntries'
 import AnalyticsIncentiveLevels from '../pages/analyticsIncentiveLevels'
 import AnalyticsProtectedCharacteristics from '../pages/analyticsProtectedCharacteristics'
@@ -18,19 +17,9 @@ context('Analytics', () => {
     homePage.viewAnalyticsLink().click()
   })
 
-  it('users see analytics index page with cards', () => {
-    const expectedCards = ['Incentive levels', 'Behaviour entries', 'Protected characteristics']
-
-    const page = Page.verifyOnPage(AnalyticsIndex)
-    page.cards.each((card, index) => {
-      const link = card.find('.card__link')
-      expect(link.text().trim()).to.equal(expectedCards[index])
-    })
-  })
-
   it('users see behaviour entry analytics', () => {
-    const indexPage = Page.verifyOnPage(AnalyticsIndex)
-    indexPage.behaviourEntriesCard.find('a').click()
+    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    somePage.behaviourEntriesNavItem.click()
     const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
 
     page.entriesByLocation.first().then(totalsRow => {
@@ -47,8 +36,6 @@ context('Analytics', () => {
   })
 
   it('users see incentive levels analytics', () => {
-    const indexPage = Page.verifyOnPage(AnalyticsIndex)
-    indexPage.incentiveLevelsCard.find('a').click()
     const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
 
     page.incentivesByLocation.first().then(totalsRow => {
@@ -59,8 +46,6 @@ context('Analytics', () => {
   })
 
   it('guidance box for incentive levels analytics is tracked', () => {
-    const indexPage = Page.verifyOnPage(AnalyticsIndex)
-    indexPage.incentiveLevelsCard.find('a').click()
     Page.verifyOnPage(AnalyticsIncentiveLevels)
 
     const gaSpy = new GoogleAnalyticsSpy()
@@ -75,8 +60,8 @@ context('Analytics', () => {
   })
 
   it('users see protected characteristics analytics', () => {
-    const indexPage = Page.verifyOnPage(AnalyticsIndex)
-    indexPage.protectedCharacteristicsCard.find('a').click()
+    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    somePage.protectedCharacteristicsNavItem.click()
     const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
 
     page.incentivesByEthnicity.first().then(totalsRow => {
@@ -93,8 +78,8 @@ context('Analytics', () => {
   })
 
   it('guidance box for protected characteristics analytics is tracked', () => {
-    const indexPage = Page.verifyOnPage(AnalyticsIndex)
-    indexPage.protectedCharacteristicsCard.find('a').click()
+    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    somePage.protectedCharacteristicsNavItem.click()
     Page.verifyOnPage(AnalyticsProtectedCharacteristics)
 
     const gaSpy = new GoogleAnalyticsSpy()

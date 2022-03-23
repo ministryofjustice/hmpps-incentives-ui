@@ -16,12 +16,11 @@ export default function routes(router: Router): Router {
     router.get(path, featureGate('showAnalytics', asyncMiddleware(handler)))
 
   get('/', (req, res) => {
-    res.locals.breadcrumbs.addItems({ text: 'Incentives data' })
-    res.render('pages/analytics/index')
+    res.redirect('/analytics/incentive-levels')
   })
 
   get('/behaviour-entries', async (req, res) => {
-    res.locals.breadcrumbs.addItems({ text: 'Incentives data', href: '/analytics' }, { text: 'Behaviour entries' })
+    res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
@@ -37,7 +36,7 @@ export default function routes(router: Router): Router {
   })
 
   get('/incentive-levels', async (req, res) => {
-    res.locals.breadcrumbs.addItems({ text: 'Incentives data', href: '/analytics' }, { text: 'Incentive levels' })
+    res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
@@ -51,10 +50,7 @@ export default function routes(router: Router): Router {
   })
 
   get('/protected-characteristics', async (req, res) => {
-    res.locals.breadcrumbs.addItems(
-      { text: 'Incentives data', href: '/analytics' },
-      { text: 'Protected characteristics' }
-    )
+    res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 

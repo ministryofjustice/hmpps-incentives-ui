@@ -1,6 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 
+import config from '../config'
 import { TableType } from '../services/analyticsServiceTypes'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { mockSdkS3ClientReponse } from '../testData/s3Bucket'
@@ -20,13 +21,25 @@ jest.mock('@aws-sdk/client-s3', () => {
   }
 })
 
+let originalPrisonsWithAnalytics: string[]
+
+beforeAll(() => {
+  originalPrisonsWithAnalytics = config.prisonsWithAnalytics
+})
+
 let app: Express
 
 beforeEach(() => {
   jest.clearAllMocks()
 
+  config.prisonsWithAnalytics = ['MDI']
+
   app = appWithAllRoutes({})
   app.locals.featureFlags.showAnalytics = true
+})
+
+afterAll(() => {
+  config.prisonsWithAnalytics = originalPrisonsWithAnalytics
 })
 
 describe('Home page shows card linking to incentives analytics', () => {
@@ -38,6 +51,14 @@ describe('Home page shows card linking to incentives analytics', () => {
 
   it('otherwise it is hidden', () => {
     app.locals.featureFlags.showAnalytics = false
+    return request(app)
+      .get('/')
+      .expect(res => expect(res.text).not.toContain('Incentives data'))
+  })
+
+  it('it is also hidden when user does not have appropriate case load', () => {
+    config.prisonsWithAnalytics.pop()
+    config.prisonsWithAnalytics.push('LEI')
     return request(app)
       .get('/')
       .expect(res => expect(res.text).not.toContain('Incentives data'))

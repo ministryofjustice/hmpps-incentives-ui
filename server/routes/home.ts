@@ -1,6 +1,8 @@
 import type { RequestHandler, Router } from 'express'
 
+import config from '../config'
 import asyncMiddleware from '../middleware/asyncMiddleware'
+import { userActiveCaseloadMatches } from '../middleware/featureGate'
 
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
@@ -8,7 +10,11 @@ export default function routes(router: Router): Router {
   get('/', async (req, res, next) => {
     res.locals.breadcrumbs.lastItem.href = undefined
 
-    res.render('pages/home.njk')
+    const showAnalytics =
+      req.app.locals.featureFlags.showAnalytics &&
+      userActiveCaseloadMatches(config.prisonsWithAnalytics, res.locals.user)
+
+    res.render('pages/home.njk', { showAnalytics })
   })
 
   return router

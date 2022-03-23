@@ -1,8 +1,22 @@
+{% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "../../../components/dataSource.njk" import dataSource %}
 
 <h2 class="govuk-heading-m">
   Prisoners – percentage and number of prisoners by behaviour entry on each wing
 </h2>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {{ govukDetails({
+      summaryText: "Help using this chart",
+      text: "Looking at individual prisoner behaviours can give you a fuller picture. Are you happy with how many prisoners have no entries and how many have both? Positive entries can be powerful in leading to behaviour improvements.",
+      attributes: {
+        "data-ga-category": "Help using this chart > Prisoners with behaviour entries by wing",
+        "data-ga-label": user.activeCaseload.id | default("")
+      }
+    }) }}
+  </div>
+</div>
 
 {{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 

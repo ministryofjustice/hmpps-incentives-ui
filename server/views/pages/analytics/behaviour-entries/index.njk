@@ -1,9 +1,12 @@
-{% extends "../../../partials/layout.njk" %}
+{% extends "../graph-layout.njk" %}
 
+{% set graphID = "behaviour-entries" %}
 {% set graphTitle = "Behaviour entries in the last 28 days" %}
 {% set pageTitle = applicationName + " – " + graphTitle %}
 
 {% block content %}
+  {{ super() }}
+
   <h1 class="govuk-heading-xl">
     {{ graphTitle }}
   </h1>
@@ -22,9 +25,4 @@
 
     </section>
   </div>
-{% endblock %}
-
-{% block bodyEnd %}
-  {{ super() }}
-  <script src="/assets/analyticsGraphs.js"></script>
 {% endblock %}

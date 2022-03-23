@@ -1,8 +1,8 @@
 import type { RequestHandler, Router } from 'express'
 
-import asyncMiddleware from '../middleware/asyncMiddleware'
-import featureGate from '../middleware/featureGate'
 import logger from '../../logger'
+import asyncMiddleware from '../middleware/asyncMiddleware'
+import { featureGate } from '../middleware/featureGate'
 import { createRedisClient } from '../data/redisClient'
 
 export default function routes(router: Router): Router {

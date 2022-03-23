@@ -2,7 +2,7 @@ import type { RequestHandler, Router } from 'express'
 
 import config from '../config'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import featureGate from '../middleware/featureGate'
+import { featureGate } from '../middleware/featureGate'
 import S3Client from '../data/s3Client'
 import AnalyticsService from '../services/analyticsService'
 import { ProtectedCharacteristic } from '../services/analyticsServiceTypes'

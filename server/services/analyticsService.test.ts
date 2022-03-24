@@ -2,7 +2,7 @@ import S3Client from '../data/s3Client'
 import AnalyticsService, { compareLocations, compareCharacteristics, removeLevelPrefix } from './analyticsService'
 import { AnalyticsError, TableType, ProtectedCharacteristic, Ethnicities, AgeGroups } from './analyticsServiceTypes'
 import type { PrisonersOnLevelsByProtectedCharacteristic } from './analyticsServiceTypes'
-import { mockAppS3ClientResponse } from '../testData/s3Bucket'
+import { MockTable, mockAppS3ClientResponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
 jest.mock('../data/s3Client')
@@ -203,6 +203,12 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.entriesNegative).toEqual(sumNegative)
     })
 
+    it('throws an error when the table is empty', async () => {
+      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries, MockTable.Empty)
+
+      await expect(analyticsService.getBehaviourEntriesByLocation('MDI')).rejects.toThrow(AnalyticsError)
+    })
+
     describe.each(prisonLocations)(
       'lists locations in the correct order',
       (prison: string, expectedLocations: string[]) => {
@@ -241,6 +247,12 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.prisonersWithNeither).toEqual(sumNeither)
     })
 
+    it('throws an error when the table is empty', async () => {
+      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries, MockTable.Empty)
+
+      await expect(analyticsService.getPrisonersWithEntriesByLocation('MDI')).rejects.toThrow(AnalyticsError)
+    })
+
     describe.each(prisonLocations)(
       'lists locations in the correct order',
       (prison: string, expectedLocations: string[]) => {
@@ -275,6 +287,12 @@ describe('AnalyticsService', () => {
       for (let i = 0; i < columns.length; i += 1) {
         expect(prisonTotal.prisonersOnLevels[i]).toEqual(totals[i])
       }
+    })
+
+    it('throws an error when the table is empty', async () => {
+      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries, MockTable.Empty)
+
+      await expect(analyticsService.getIncentiveLevelsByLocation('MDI')).rejects.toThrow(AnalyticsError)
     })
 
     describe.each(prisonLocations)(
@@ -323,6 +341,14 @@ describe('AnalyticsService', () => {
       for (let i = 0; i < columns.length; i += 1) {
         expect(prisonTotal.prisonersOnLevels[i]).toEqual(totals[i])
       }
+    })
+
+    it(`[${characteristic}]: throws an error when the table is empty`, async () => {
+      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries, MockTable.Empty)
+
+      await expect(analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)).rejects.toThrow(
+        AnalyticsError
+      )
     })
 
     it(`[${characteristic}]: lists groups in the correct order`, async () => {

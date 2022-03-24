@@ -98,6 +98,9 @@ export default class AnalyticsService {
     const stitchedTable = this.stitchTable<CaseEntriesTable, StitchedRow>(table, columnsToStitch)
 
     const filteredTables = stitchedTable.filter(([somePrison]) => somePrison === prison)
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered BehaviourEntriesByLocation report has no rows')
+    }
 
     const columns = ['Positive', 'Negative']
     type AggregateRow = [string, number, number]
@@ -125,6 +128,12 @@ export default class AnalyticsService {
     const stitchedTable = this.stitchTable<CaseEntriesTable, StitchedRow>(table, columnsToStitch)
 
     const filteredTables = stitchedTable.filter(([somePrison]) => somePrison === prison)
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(
+        AnalyticsErrorType.EmptyTable,
+        'Filtered PrisonersWithEntriesByLocation report has no rows'
+      )
+    }
 
     const columns = ['Positive', 'Negative', 'Both', 'None']
     type AggregateRow = [string, number, number, number, number]
@@ -165,6 +174,9 @@ export default class AnalyticsService {
     const filteredTables = stitchedTable.filter(
       ([somePrison, _wing, _incentive, characteristic]) => somePrison === prison && characteristic === 'age_group_10yr'
     )
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered PrisonersOnLevelsByLocation report has no rows')
+    }
 
     let columns = Array.from(new Set(Object.values(table.incentive)))
     columns.sort() // NB: levels sort naturally because they include a prefix
@@ -205,6 +217,12 @@ export default class AnalyticsService {
         return somePrison === prison && characteristic === protectedCharacteristic && characteristicGroup
       }
     )
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(
+        AnalyticsErrorType.EmptyTable,
+        `Filtered PrisonersOnLevelsByProtectedCharacteristic report for ${protectedCharacteristic} has no rows`
+      )
+    }
 
     let columns = Array.from(new Set(Object.values(table.incentive)))
     columns.sort() // NB: levels sort naturally because they include a prefix

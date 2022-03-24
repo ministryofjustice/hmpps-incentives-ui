@@ -8,7 +8,7 @@ import { featureGate, activeCaseloadGate, usernameGate } from '../middleware/fea
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import AnalyticsService from '../services/analyticsService'
-import { ProtectedCharacteristic } from '../services/analyticsServiceTypes'
+import { AnalyticsError, ProtectedCharacteristic, Report } from '../services/analyticsServiceTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 
 /**
@@ -41,6 +41,30 @@ function addFeatureGates(asyncHandler: RequestHandler): RequestHandler {
   )
 }
 
+/**
+ * Makes an empty report object indicating errors occurred
+ * if the promise is rejected with an AnalyticsError
+ */
+async function transformAnalyticsError<Row extends Record<string, unknown>>(
+  reportPromise: Promise<Report<Row>>
+): Promise<Report<Row>> {
+  try {
+    return await reportPromise
+  } catch (error) {
+    logger.error(`Analytics page cannot load chart data: ${error}`)
+    if (error instanceof AnalyticsError) {
+      return {
+        columns: [],
+        dataSource: 'Not available',
+        lastUpdated: undefined,
+        rows: [],
+        hasErrors: true,
+      }
+    }
+    throw error
+  }
+}
+
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, addFeatureGates(handler))
 
@@ -68,8 +92,12 @@ export default function routes(router: Router): Router {
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
-    const behaviourEntries = await analyticsService.getBehaviourEntriesByLocation(activeCaseLoad)
-    const prisonersWithEntries = await analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad)
+    const behaviourEntries = await transformAnalyticsError(
+      analyticsService.getBehaviourEntriesByLocation(activeCaseLoad)
+    )
+    const prisonersWithEntries = await transformAnalyticsError(
+      analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad)
+    )
 
     res.render('pages/analytics/behaviour-entries/index', {
       ...templateContext(req),
@@ -85,7 +113,9 @@ export default function routes(router: Router): Router {
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
-    const prisonersOnLevels = await analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)
+    const prisonersOnLevels = await transformAnalyticsError(
+      analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)
+    )
 
     res.render('pages/analytics/incentive-levels/index', {
       ...templateContext(req),
@@ -105,13 +135,11 @@ export default function routes(router: Router): Router {
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
-    const prisonersByEthnicity = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-      activeCaseLoad,
-      ProtectedCharacteristic.Ethnicity
+    const prisonersByEthnicity = await transformAnalyticsError(
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Ethnicity)
     )
-    const prisonersInAgeGroups = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-      activeCaseLoad,
-      ProtectedCharacteristic.AgeGroup
+    const prisonersInAgeGroups = await transformAnalyticsError(
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.AgeGroup)
     )
 
     res.render('pages/analytics/protected-characteristics/index', {

@@ -44,6 +44,7 @@ export type Report<Row extends Record<string, unknown>> = {
   rows: Row[]
   lastUpdated: Date
   dataSource: string
+  hasErrors?: boolean
 }
 
 /**

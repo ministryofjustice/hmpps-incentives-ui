@@ -1,6 +1,10 @@
 .app-feedback-banner {
   padding-top: 0;
 
+  @media print {
+    display: none;
+  }
+
   .app-feedback-banner__tag {
     background-color: govuk-colour("pink");
   }

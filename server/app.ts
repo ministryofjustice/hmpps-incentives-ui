@@ -17,6 +17,7 @@ import setUpHealthChecks from './middleware/setUpHealthChecks'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import breadcrumbs from './middleware/breadcrumbs'
+import { metricsMiddleware } from './monitoring/metricsApp'
 
 export default function createApp(userService: UserService): express.Application {
   const app = express()
@@ -26,6 +27,7 @@ export default function createApp(userService: UserService): express.Application
   app.set('port', process.env.PORT || 3000)
 
   setUpSentryRequestHandler(app)
+  app.use(metricsMiddleware)
   app.use(setUpHealthChecks())
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())

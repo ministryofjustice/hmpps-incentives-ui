@@ -5,6 +5,8 @@
   Percentage and number of prisoners on each incentive level by age group
 </h2>
 
+{% if not report.hasErrors %}
+
 {{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 
 <div class="govuk-grid-row">
@@ -126,3 +128,9 @@
     </tr>
   </tfoot>
 </table>
+
+{% else %}
+
+  {% include "../no-data-partial.njk" %}
+
+{% endif %}

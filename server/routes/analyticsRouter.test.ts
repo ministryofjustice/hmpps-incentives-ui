@@ -157,9 +157,10 @@ describe.each(analyticsPages)(
 
       return request(app)
         .get(url)
-        .expect(500)
+        .expect(200)
         .expect(res => {
-          expect(res.text).toContain('Sorry, there is a problem with the service')
+          expect(res.text).toContain(expectedHeading)
+          expect(res.text).toContain('There is no data available')
         })
     })
 
@@ -168,9 +169,10 @@ describe.each(analyticsPages)(
 
       return request(app)
         .get(url)
-        .expect(500)
+        .expect(200)
         .expect(res => {
-          expect(res.text).toContain('Sorry, there is a problem with the service')
+          expect(res.text).toContain(expectedHeading)
+          expect(res.text).toContain('There is no data available')
         })
     })
 

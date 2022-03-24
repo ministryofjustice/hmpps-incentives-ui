@@ -5,6 +5,8 @@
   Prisoners – percentage and number of prisoners by behaviour entry on each wing
 </h2>
 
+{% if not report.hasErrors %}
+
 {{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 
 <div class="govuk-grid-row">
@@ -141,3 +143,9 @@
     {% endfor %}
   </tbody>
 </table>
+
+{% else %}
+
+  {% include "../no-data-partial.njk" %}
+
+{% endif %}

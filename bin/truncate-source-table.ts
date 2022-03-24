@@ -45,22 +45,11 @@ Object.keys(sourceTable)
   .filter(column => !columnsToKeep.includes(column))
   .forEach(columnToDelete => delete sourceTable[columnToDelete])
 
-const prisonMap: ReadonlyMap<string, string> = new Map([
-  ['HHI', 'MDI'],
-  ['ACI', 'BWI'],
-])
-process.stderr.write('Selecting and renaming prisons…\n')
+const prisonsToKeep: ReadonlySet<string> = new Set(['BWI', 'MDI', 'WRI'])
+process.stderr.write(`Selecting ${prisonsToKeep.size} prisons…\n`)
 const prisonColumn = sourceTable.prison as Record<string, string>
 const newPrisonColumn: Record<string, string> = Object.fromEntries(
-  Object.entries<string>(prisonColumn)
-    .map(([rowIndex, prison]) => {
-      const newPrison = prisonMap.get(prison)
-      if (newPrison) {
-        return [rowIndex, newPrison]
-      }
-      return null
-    })
-    .filter(entry => entry)
+  Object.entries(prisonColumn).filter(([_rowIndex, prison]) => prisonsToKeep.has(prison))
 )
 sourceTable.prison = newPrisonColumn
 

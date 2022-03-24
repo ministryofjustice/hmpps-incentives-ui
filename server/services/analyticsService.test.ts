@@ -1,3 +1,4 @@
+import { youthCustodyServicePrisons } from '../data/prisonRegister'
 import S3Client from '../data/s3Client'
 import AnalyticsService, { compareLocations, compareCharacteristics, removeLevelPrefix } from './analyticsService'
 import {
@@ -334,6 +335,12 @@ describe('AnalyticsService', () => {
   ])('getIncentiveLevelsByProtectedCharacteristic()', (characteristic, expectedCharacteristics) => {
     beforeEach(() => {
       mockAppS3ClientResponse(s3Client, TableType.incentiveLevels)
+
+      // pretend that MDI is a YCS
+      if (!youthCustodyServicePrisons.includes('MDI')) {
+        const ycsPrisons = youthCustodyServicePrisons as string[]
+        ycsPrisons.push('MDI')
+      }
     })
 
     it(`[${characteristic}]: has a totals row`, async () => {
@@ -372,7 +379,7 @@ describe('AnalyticsService', () => {
     })
 
     if (characteristic === ProtectedCharacteristic.Age) {
-      it(`[${characteristic}]: adds missing group with all zeros`, async () => {
+      it(`[${characteristic}]: adds missing 15-17 group with all zeros in YCS prison`, async () => {
         const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
         const zeroRows = rows.filter(({ characteristic: someCharacteristic }) => someCharacteristic === '15-17')
         expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([
@@ -381,6 +388,22 @@ describe('AnalyticsService', () => {
             prisonersOnLevels: [0, 0, 0],
           },
         ])
+      })
+
+      it(`[${characteristic}]: skips 15-17 group in non-YCS prison`, async () => {
+        // make MDI not a YCS
+        if (youthCustodyServicePrisons.includes('MDI')) {
+          const ycsPrisonsEcludingMDI = youthCustodyServicePrisons.filter(prison => prison !== 'MDI')
+          const ycsPrisons = youthCustodyServicePrisons as string[]
+          while (ycsPrisons.length) {
+            ycsPrisons.pop()
+          }
+          ycsPrisons.push(...ycsPrisonsEcludingMDI)
+        }
+
+        const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
+        const zeroRows = rows.filter(({ characteristic: someCharacteristic }) => someCharacteristic === '15-17')
+        expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([])
       })
     }
 

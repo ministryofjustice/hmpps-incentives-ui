@@ -2,17 +2,24 @@ import type S3Client from '../data/s3Client'
 import logger from '../../logger'
 
 import type {
-  Table,
+  BehaviourEntriesByLocation,
   CaseEntriesTable,
   IncentiveLevelsTable,
-  Report,
-  BehaviourEntriesByLocation,
-  PrisonersWithEntriesByLocation,
   PrisonersOnLevelsByLocation,
-  ProtectedCharacteristic,
   PrisonersOnLevelsByProtectedCharacteristic,
+  PrisonersWithEntriesByLocation,
+  Report,
+  Table,
 } from './analyticsServiceTypes'
-import { AnalyticsError, AnalyticsErrorType, TableType, knownGroupsFor } from './analyticsServiceTypes'
+import {
+  AgeYoungPeople,
+  AnalyticsError,
+  AnalyticsErrorType,
+  ProtectedCharacteristic,
+  TableType,
+  knownGroupsFor,
+} from './analyticsServiceTypes'
+import PrisonRegister from '../data/prisonRegister'
 
 export default class AnalyticsService {
   constructor(
@@ -279,7 +286,10 @@ export default class AnalyticsService {
       }
     )
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
-    // TODO: 15-17 age group may be removed if establishment is not a YOI
+    // Don't show empty young people ('15-17') group in non-YCS prisons
+    if (protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(prison)) {
+      missingCharacteristics.delete(AgeYoungPeople)
+    }
     rows.forEach(({ characteristic }) => missingCharacteristics.delete(characteristic))
     missingCharacteristics.forEach(characteristic => {
       rows.push({ characteristic, prisonersOnLevels: Array(columns.length).fill(0) })

@@ -10,6 +10,7 @@
     {{ govukDetails({
       summaryText: "How you can use this chart",
       text: "Individual prisoner behaviours can give you a fuller picture. Are you happy with how many prisoners have no entries and how many have both? Positive entries can help lead to behaviour improvements.",
+      classes: "govuk-!-display-none-print",
       attributes: {
         "data-ga-category": "How you can use this chart > Prisoners with behaviour entries by wing",
         "data-ga-label": user.activeCaseload.id | default("")

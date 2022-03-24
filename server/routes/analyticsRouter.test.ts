@@ -83,7 +83,7 @@ const analyticsPages = [
     url: '/analytics/behaviour-entries',
     expectedHeading: 'Behaviour entries – comparison of positive and negative behaviour entries by wing',
     linksToIncentivesTable: true,
-    sampleLocations: ['1', '2', '3', '4', '5', '6', '7', 'H', 'SEG'],
+    sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     sourceTable: TableType.behaviourEntries,
   },
   {
@@ -91,7 +91,7 @@ const analyticsPages = [
     url: '/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by wing',
     linksToIncentivesTable: true,
-    sampleLocations: ['1', '2', '3', '4', '5', '6', '7', 'H', 'SEG'],
+    sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     sourceTable: TableType.incentiveLevels,
   },
   {

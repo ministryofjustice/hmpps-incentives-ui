@@ -10,6 +10,7 @@
     {{ govukDetails({
       summaryText: "How you can use this chart",
       text: "Use this chart to see incentive level splits for the prison and wings. What does it tell you about how the incentives policy is applied, the population and possible actions for your prison?",
+      classes: "govuk-!-display-none-print",
       attributes: {
         "data-ga-category": "How you can use this chart > Incentive level by wing",
         "data-ga-label": user.activeCaseload.id | default("")

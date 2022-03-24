@@ -15,4 +15,15 @@
   th {
     font-weight: bold;
   }
+
+  @media print {
+    a {
+      text-decoration: none;
+      color: $govuk-print-text-colour;
+
+      &:after {
+        display: none;
+      }
+    }
+  }
 }

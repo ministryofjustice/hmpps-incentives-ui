@@ -17,6 +17,12 @@ context('Analytics', () => {
     homePage.viewAnalyticsLink().click()
   })
 
+  it('has feedback banner', () => {
+    Page.verifyOnPage(AnalyticsIncentiveLevels)
+    cy.get('.app-feedback-banner').contains('help us to improve it')
+    cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/analytics-feedback')
+  })
+
   it('users see behaviour entry analytics', () => {
     const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
     somePage.behaviourEntriesNavItem.click()

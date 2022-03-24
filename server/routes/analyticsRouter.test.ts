@@ -4,7 +4,7 @@ import request from 'supertest'
 import config from '../config'
 import { TableType } from '../services/analyticsServiceTypes'
 import { appWithAllRoutes } from './testutils/appSetup'
-import { mockSdkS3ClientReponse } from '../testData/s3Bucket'
+import { MockTable, mockSdkS3ClientReponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
 
@@ -130,6 +130,28 @@ describe.each(analyticsPages)(
         .expect(res => {
           expect(res.text).not.toContain(expectedHeading)
           expect(res.text).toContain('Page not found')
+        })
+    })
+
+    it(`error is presented on ${name} page if no source table was found`, () => {
+      mockSdkS3ClientReponse(s3.send, sourceTable, MockTable.Missing)
+
+      return request(app)
+        .get(url)
+        .expect(500)
+        .expect(res => {
+          expect(res.text).toContain('Sorry, there is a problem with the service')
+        })
+    })
+
+    it(`error is presented on ${name} page if source table contains no data`, () => {
+      mockSdkS3ClientReponse(s3.send, sourceTable, MockTable.Empty)
+
+      return request(app)
+        .get(url)
+        .expect(500)
+        .expect(res => {
+          expect(res.text).toContain('Sorry, there is a problem with the service')
         })
     })
 

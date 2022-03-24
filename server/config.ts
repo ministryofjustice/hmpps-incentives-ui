@@ -123,5 +123,6 @@ export default {
   prisonsWithAnalytics: (get('PRISONS_WITH_ANALYTICS', null, notRequiredInProduction) ?? '').split(','),
   usernamesWithAnalytics: (get('USERNAMES_WITH_ANALYTICS', null, notRequiredInProduction) ?? '').split(','),
   feedbackUrl: get('FEEDBACK_URL', ''),
+  feedbackUrlForAnalytics: get('FEEDBACK_URL_ANALYTICS', ''),
   phaseName: get('PHASE_NAME', ''),
 }

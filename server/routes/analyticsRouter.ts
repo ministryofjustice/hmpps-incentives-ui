@@ -7,6 +7,18 @@ import S3Client from '../data/s3Client'
 import AnalyticsService from '../services/analyticsService'
 import { ProtectedCharacteristic } from '../services/analyticsServiceTypes'
 
+/**
+ * Shared template variables needed throughout analytics section
+ */
+function getAnalyticsContext(): Record<string, unknown> {
+  return {
+    feedbackUrl: config.feedbackUrlForAnalytics || config.feedbackUrl,
+  }
+}
+
+/**
+ * Makes a link from locations in analytics graphs to incentives review table
+ */
 function urlForLocation(prison: string, location: string): string {
   return `/incentive-summary/${prison}-${location}`
 }
@@ -39,6 +51,7 @@ export default function routes(router: Router): Router {
     const prisonersWithEntries = await analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad)
 
     res.render('pages/analytics/behaviour-entries/index', {
+      ...getAnalyticsContext(),
       behaviourEntries,
       prisonersWithEntries,
     })
@@ -54,6 +67,7 @@ export default function routes(router: Router): Router {
     const prisonersOnLevels = await analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)
 
     res.render('pages/analytics/incentive-levels/index', {
+      ...getAnalyticsContext(),
       prisonersOnLevels,
     })
   })
@@ -75,6 +89,7 @@ export default function routes(router: Router): Router {
     )
 
     res.render('pages/analytics/protected-characteristics/index', {
+      ...getAnalyticsContext(),
       prisonersByEthnicity,
       prisonersInAgeGroups,
     })

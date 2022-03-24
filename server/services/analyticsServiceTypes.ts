@@ -123,6 +123,7 @@ export function knownGroupsFor(characteristic: ProtectedCharacteristic): Readonl
 export enum AnalyticsErrorType {
   MissingTable,
   MalformedTable,
+  EmptyTable,
 }
 
 /**

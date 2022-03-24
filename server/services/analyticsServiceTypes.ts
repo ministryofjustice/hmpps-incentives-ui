@@ -106,7 +106,8 @@ export const Ethnicities = ['Asian or Asian British', 'Black or Black British', 
  * Known protected characteristic groups
  * NB: must match source table values
  */
-export const Ages = ['15-17', '18-25', '26-35', '36-45', '46-55', '56-65', '66+'] as const
+export const AgeYoungPeople = '15-17' as const
+export const Ages = [AgeYoungPeople, '18-25', '26-35', '36-45', '46-55', '56-65', '66+'] as const
 
 /**
  * Known protected characteristic groups

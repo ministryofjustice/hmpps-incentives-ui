@@ -12,11 +12,19 @@
 
   <ul class="govuk-grid-row card-group">
     <li class="govuk-grid-column-one-third card-group__item">
+      {% if featureFlags.hideDaysColumnsInIncentivesTable %}
+        {% set cardHeading = 'View incentive levels and behaviour entries' %}
+        {% set cardDescription = 'See incentive levels and behaviour entries by residential location.' %}
+      {% else %}
+        {% set cardHeading = 'View review dates and incentive information' %}
+        {% set cardDescription = 'See review dates, incentive levels and behaviour entries by residential location.' %}
+      {% endif %}
+
       {{ card({
         "href": "/select-location",
         "clickable": "true",
-        "heading": "View review dates and incentive information",
-        "description": "See review dates, incentive levels and behaviour entries by residential location.",
+        "heading": cardHeading,
+        "description": cardDescription,
         "id": "incentive-information"
       }) }}
     </li>

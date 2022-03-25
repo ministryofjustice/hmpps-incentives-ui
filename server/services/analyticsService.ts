@@ -171,15 +171,21 @@ export default class AnalyticsService {
     type StitchedRow = [string, string, string, string, string]
     const stitchedTable = this.stitchTable<IncentiveLevelsTable, StitchedRow>(table, columnsToStitch)
 
-    const filteredTables = stitchedTable.filter(
-      ([somePrison, _wing, _incentive, characteristic]) => somePrison === prison && characteristic === 'age_group_10yr'
-    )
+    const columnSet: Set<string> = new Set()
+    const filteredTables = stitchedTable.filter(([somePrison, _wing, incentive, characteristic]) => {
+      const include = somePrison === prison && characteristic === 'age_group_10yr'
+      if (include) {
+        columnSet.add(incentive)
+      }
+      return include
+    })
     if (filteredTables.length === 0) {
       throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered PrisonersOnLevelsByLocation report has no rows')
     }
 
-    let columns = Array.from(new Set(Object.values(table.incentive)))
+    let columns = Array.from(columnSet)
     columns.sort() // NB: levels sort naturally because they include a prefix
+
     type AggregateRow = [string, ...number[]]
     const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
@@ -189,7 +195,7 @@ export default class AnalyticsService {
         levels[levelIndex] = 1
         return [wing, ...levels]
       },
-      4
+      columns.length
     )
     columns = columns.map(removeLevelPrefix)
 
@@ -211,10 +217,15 @@ export default class AnalyticsService {
     type StitchedRow = [string, string, string, string, string]
     const stitchedTable = this.stitchTable<IncentiveLevelsTable, StitchedRow>(table, columnsToStitch)
 
+    const columnSet: Set<string> = new Set()
     const filteredTables = stitchedTable.filter(
-      ([somePrison, _wing, _incentive, characteristic, characteristicGroup]) => {
+      ([somePrison, _wing, incentive, characteristic, characteristicGroup]) => {
         // TODO: null characteristicGroup is excluded; convert to 'Unknown'?
-        return somePrison === prison && characteristic === protectedCharacteristic && characteristicGroup
+        const include = somePrison === prison && characteristic === protectedCharacteristic && characteristicGroup
+        if (include) {
+          columnSet.add(incentive)
+        }
+        return include
       }
     )
     if (filteredTables.length === 0) {
@@ -224,8 +235,9 @@ export default class AnalyticsService {
       )
     }
 
-    let columns = Array.from(new Set(Object.values(table.incentive)))
+    let columns = Array.from(columnSet)
     columns.sort() // NB: levels sort naturally because they include a prefix
+
     type AggregateRow = [string, ...number[]]
     const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
@@ -235,7 +247,7 @@ export default class AnalyticsService {
         levels[levelIndex] = 1
         return [characteristicGroup.trim(), ...levels]
       },
-      4
+      columns.length
     )
     columns = columns.map(removeLevelPrefix)
 

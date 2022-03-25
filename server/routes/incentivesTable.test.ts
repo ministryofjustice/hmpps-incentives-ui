@@ -50,6 +50,15 @@ describe('GET /incentive-summary/:locationPrefix', () => {
         app.locals.featureFlags.hideDaysColumnsInIncentivesTable = true
       })
 
+      it('information banner is shown', () => {
+        return request(app)
+          .get('/incentive-summary/MDI-2')
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('Review details have been removed from this table while we work on data.')
+          })
+      })
+
       it('table heading does not mention review dates', () => {
         return request(app)
           .get('/incentive-summary/MDI-2')
@@ -63,6 +72,15 @@ describe('GET /incentive-summary/:locationPrefix', () => {
     describe(`when off`, () => {
       beforeAll(() => {
         app.locals.featureFlags.hideDaysColumnsInIncentivesTable = false
+      })
+
+      it('information banner is not shown', () => {
+        return request(app)
+          .get('/incentive-summary/MDI-2')
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).not.toContain('Review details have been removed from this table while we work on data.')
+          })
       })
 
       it('table heading mentions review dates', () => {

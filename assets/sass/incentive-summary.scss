@@ -15,13 +15,15 @@
 .govuk-table--incentive-summary {
   width: 99%;
 
-  .govuk-table__header {
-    @include govuk-font($size: 16, $weight: bold);
-  }
-
   .govuk-table__body {
     .govuk-table__cell {
       vertical-align: middle;
     }
+  }
+}
+
+.govuk-table--small-headers {
+  .govuk-table__header {
+    @include govuk-font($size: 16, $weight: bold);
   }
 }

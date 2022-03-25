@@ -202,7 +202,7 @@
                 'id': 'incentive-table-' + level.level,
                 'data-module': 'moj-sortable-table'
             },
-            classes: 'govuk-table--incentive-summary app-table--striped',
+            classes: 'govuk-table--incentive-summary app-table--striped' + '' if featureFlags.hideDaysColumnsInIncentivesTable else ' govuk-table--small-headers',
             head: commonHeader,
             rows: rows
         }) }}

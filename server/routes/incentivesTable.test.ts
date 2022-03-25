@@ -40,9 +40,40 @@ describe('GET /incentive-summary/:locationPrefix', () => {
       .expect(res => {
         expect(res.text).toContain('Incentive information')
         expect(res.text).toContain('Houseblock 2')
-        expect(res.text).toContain('Review dates and behaviour entries in the last 3 months')
         expect(res.text).toContain('Doe, Jane<br>A1234AB')
       })
+  })
+
+  describe(`'hideDaysColumnsInIncentivesTable' feature flag`, () => {
+    describe(`when on`, () => {
+      beforeAll(() => {
+        app.locals.featureFlags.hideDaysColumnsInIncentivesTable = true
+      })
+
+      it('table heading does not mention review dates', () => {
+        return request(app)
+          .get('/incentive-summary/MDI-2')
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('Behaviour entries in the last 3 months')
+          })
+      })
+    })
+
+    describe(`when off`, () => {
+      beforeAll(() => {
+        app.locals.featureFlags.hideDaysColumnsInIncentivesTable = false
+      })
+
+      it('table heading mentions review dates', () => {
+        return request(app)
+          .get('/incentive-summary/MDI-2')
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('Review dates and behaviour entries in the last 3 months')
+          })
+      })
+    })
   })
 
   it('sets Google Analytics custom dimension for active case load', () => {

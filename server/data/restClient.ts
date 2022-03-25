@@ -4,7 +4,7 @@ import { Readable } from 'stream'
 
 import logger from '../../logger'
 import sanitiseError from '../sanitisedError'
-import { ApiConfig } from '../config'
+import type { ApiConfig } from '../config'
 import type { UnsanitisedError } from '../sanitisedError'
 
 interface GetRequest {

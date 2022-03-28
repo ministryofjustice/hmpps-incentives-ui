@@ -1,6 +1,6 @@
 {% extends "../graph-layout.njk" %}
 
-{% set graphID = "incentive-levels" %}
+{% set graphPageId = "incentive-levels" %}
 {% set graphTitle = "Incentive levels" %}
 {% set pageTitle = applicationName + " – " + graphTitle %}
 
@@ -14,6 +14,7 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
+      {% set graphId = "incentive-levels-by-location" %}
       {% set report = prisonersOnLevels %}
       {% include "./prisoners-by-location.njk" %}
 

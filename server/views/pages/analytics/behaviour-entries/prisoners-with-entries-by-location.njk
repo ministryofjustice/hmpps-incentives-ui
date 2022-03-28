@@ -5,6 +5,8 @@
   Prisoners – percentage and number of prisoners by behaviour entry on each wing
 </h2>
 
+{{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
+
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     {{ govukDetails({
@@ -18,8 +20,6 @@
     }) }}
   </div>
 </div>
-
-{{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 
 {% macro heatMapColour(percentage) -%}
   {#- heat map ranges from white at 0% to (almost) GDS light purple at 100% -#}
@@ -51,7 +51,7 @@
   </div>
 </div>
 
-<table class="app-chart-table app-chart-table--heatmap" id="table-prisoners-with-entries-by-location">
+<table class="app-chart-table app-chart-table--heatmap" id="table-{{ graphId }}">
   <caption class="govuk-visually-hidden">
     Prisoners – percentage and number of prisoners by behaviour entry on each wing in the last 28 days
   </caption>

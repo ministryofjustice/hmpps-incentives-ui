@@ -1,0 +1,95 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{# Required variables: graphId, csrfToken #}
+
+{% macro commentTextarea(graphId, id) %}
+  {{ govukTextarea({
+    id: graphId + "-" + id + "Comments",
+    name: id + "Comments",
+    label: {
+      text: "Comments (optional)"
+    },
+    rows: 3
+  }) }}
+{% endmacro %}
+
+{% set chartUsefulHtml %}
+  {{ commentTextarea(graphId, "yes") }}
+{% endset %}
+
+{% set chartNotUsefulHtml %}
+  {{ govukRadios({
+    idPrefix: graphId + "-mainNoReason",
+    name: "mainNoReason",
+    classes: "govuk-radios--small",
+    fieldset: {
+      legend: {
+        text: "Why wasn’t this chart useful?",
+        classes: "govuk-fieldset__legend--s"
+      }
+    },
+    items: [
+      {
+        value: "not-relevant",
+        text: "It’s not relevant to me"
+      },
+      {
+        value: "do-not-understand",
+        text: "I don’t understand it"
+      },
+      {
+        value: "does-not-show-enough",
+        text: "It doesn’t show me enough"
+      },
+      {
+        value: "what-to-do-with-info",
+        text: "I don’t know what to do with the information"
+      },
+      {
+        value: "other",
+        text: "Other"
+      }
+    ]
+  }) }}
+  {{ commentTextarea(graphId, "no") }}
+{% endset %}
+
+<form id="form-{{ graphId }}" method="post" novalidate>
+  {{ govukRadios({
+    idPrefix: graphId + "-chartUseful",
+    name: "chartUseful",
+    fieldset: {
+      legend: {
+        text: "Is this chart useful?",
+        classes: "govuk-visually-hidden"
+      }
+    },
+    items: [
+      {
+        value: "yes",
+        text: "Yes",
+        conditional: {
+          html: chartUsefulHtml
+        }
+      },
+      {
+        value: "no",
+        text: "No",
+        conditional: {
+          html: chartNotUsefulHtml
+        }
+      }
+    ]
+  }) }}
+
+  <input type="hidden" name="formId" value="{{ graphId }}" />
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+  {{ govukButton({
+    text: "Submit",
+    classes: "govuk-!-margin-bottom-0",
+    preventDoubleClick: true
+  }) }}
+</form>

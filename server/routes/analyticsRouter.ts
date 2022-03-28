@@ -138,7 +138,7 @@ async function chartFeedbackHandler(req: Request, res: Response, next: NextFunct
   const form = new Form<ChartFeedbackForm>(data)
   validate(form)
   if (form.hasErrors) {
-    // form has errors so should be re-displayed
+    logger.warn(`Form ${form.data.formId} submitted with errors`)
     res.locals.formsWithErrors = { [form.data.formId]: form }
     next()
     return

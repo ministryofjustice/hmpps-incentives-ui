@@ -39,7 +39,8 @@ export default class ZendeskClient {
   agent: Agent
 
   constructor(private readonly config: ApiConfig, private readonly username: string, private readonly token: string) {
-    this.agent = config.url.startsWith('https') ? new HttpsAgent(config.agent) : new Agent(config.agent)
+    const agentConfig = { ...config.agent, keepAlive: false }
+    this.agent = config.url.startsWith('https') ? new HttpsAgent(agentConfig) : new Agent(agentConfig)
   }
 
   async createTicket(ticket: CreateTicketRequest): Promise<TicketResponse> {

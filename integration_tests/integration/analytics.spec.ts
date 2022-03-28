@@ -1,5 +1,6 @@
 import Page from '../pages/page'
 import HomePage from '../pages/home'
+import type AnalyticsPage from '../pages/analytics'
 import AnalyticsBehaviourEntries from '../pages/analyticsBehaviourEntries'
 import AnalyticsIncentiveLevels from '../pages/analyticsIncentiveLevels'
 import AnalyticsProtectedCharacteristics from '../pages/analyticsProtectedCharacteristics'
@@ -109,17 +110,17 @@ context('Analytics section', () => {
     })
 
     it('users can submit feedback on charts', () => {
-      let page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+      testValidFeedbackSubmission(AnalyticsBehaviourEntries, [
+        ['entriesByLocationFeedback', 'entriesByLocationFeedbackForm'],
+        ['prisonersWithEntriesByLocationFeedback', 'prisonersWithEntriesByLocationFeedbackForm'],
+      ])
+    })
 
-      page.entriesByLocationFeedback.click()
-      page.entriesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
-      page.entriesByLocationFeedbackForm.submit()
-
-      page = Page.verifyOnPage(AnalyticsBehaviourEntries)
-
-      page.prisonersWithEntriesByLocationFeedback.click()
-      page.prisonersWithEntriesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
-      page.prisonersWithEntriesByLocationFeedbackForm.submit()
+    it('users will see errors if they submit invalid feedback on chart', () => {
+      testInvalidFeedbackSubmission(AnalyticsBehaviourEntries, [
+        ['entriesByLocationFeedback', 'entriesByLocationFeedbackForm'],
+        ['prisonersWithEntriesByLocationFeedback', 'prisonersWithEntriesByLocationFeedbackForm'],
+      ])
     })
   })
 
@@ -163,13 +164,15 @@ context('Analytics section', () => {
     })
 
     it('users can submit feedback on chart', () => {
-      const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+      testValidFeedbackSubmission(AnalyticsIncentiveLevels, [
+        ['incentivesByLocationFeedback', 'incentivesByLocationFeedbackForm'],
+      ])
+    })
 
-      page.incentivesByLocationFeedback.click()
-      page.incentivesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
-      page.incentivesByLocationFeedbackForm.submit()
-
-      Page.verifyOnPage(AnalyticsIncentiveLevels)
+    it('users will see errors if they submit invalid feedback on chart', () => {
+      testInvalidFeedbackSubmission(AnalyticsIncentiveLevels, [
+        ['incentivesByLocationFeedback', 'incentivesByLocationFeedbackForm'],
+      ])
     })
   })
 
@@ -246,17 +249,61 @@ context('Analytics section', () => {
     })
 
     it('users can submit feedback on charts', () => {
-      let page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+      testValidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
+        ['incentivesByEthnicityFeedback', 'incentivesByEthnicityFeedbackForm'],
+        ['incentivesByAgeGroupFeedback', 'incentivesByAgeGroupFeedbackForm'],
+      ])
+    })
 
-      page.incentivesByEthnicityFeedback.click()
-      page.incentivesByEthnicityFeedbackForm.find('[name=chartUseful]').first().click()
-      page.incentivesByEthnicityFeedbackForm.submit()
-
-      page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
-
-      page.incentivesByAgeGroupFeedback.click()
-      page.incentivesByAgeGroupFeedbackForm.find('[name=chartUseful]').first().click()
-      page.incentivesByAgeGroupFeedbackForm.submit()
+    it('users will see errors if they submit invalid feedback on chart', () => {
+      testInvalidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
+        ['incentivesByEthnicityFeedback', 'incentivesByEthnicityFeedbackForm'],
+        ['incentivesByAgeGroupFeedback', 'incentivesByAgeGroupFeedbackForm'],
+      ])
     })
   })
 })
+
+function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(pageClass: new () => PageClass, feedbackBoxes) {
+  feedbackBoxes.forEach(([feedbackBox, feedbackForm]) => {
+    const page = Page.verifyOnPage(pageClass)
+
+    // open feedback box and select "yes"
+    page[feedbackBox].click()
+    page[feedbackForm].find('[name=chartUseful][value=yes]').click()
+    page[feedbackForm].submit()
+
+    // should remain on the same page
+    Page.verifyOnPage(pageClass)
+  })
+}
+
+function testInvalidFeedbackSubmission<PageClass extends AnalyticsPage>(pageClass: new () => PageClass, feedbackBoxes) {
+  feedbackBoxes.forEach(([feedbackBox, feedbackForm]) => {
+    let page = Page.verifyOnPage(pageClass)
+
+    // open feedback box and select "no", typing some comments
+    page[feedbackBox].click()
+    page[feedbackForm].find('[name=chartUseful][value=no]').click()
+    page[feedbackForm].find('[name=noComments]').type('I’m confused')
+    page[feedbackForm].submit()
+
+    // should remain on the same page
+    page = Page.verifyOnPage(pageClass)
+
+    // error summary should have 1 error message
+    page.errorSummaryTitle.contains('There is a problem')
+    page.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(1)
+      expect($lis[0]).to.contain('Select a reason for your answer')
+    })
+    // feedback box should be open already
+    page[feedbackBox].parent().should('have.attr', 'open')
+    // "no" should already be checked
+    page[feedbackForm].find('[name=chartUseful][value=no]').should('have.attr', 'checked')
+    // typed comments should still be there
+    page[feedbackForm].find('[name=noComments]').should('have.value', 'I’m confused')
+    // same error message should show
+    page[feedbackForm].find('p.govuk-error-message').contains('Select a reason for your answer')
+  })
+}

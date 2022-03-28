@@ -50,14 +50,14 @@ describe('Home page shows card linking to incentives analytics', () => {
   it('if feature is turned on', () => {
     return request(app)
       .get('/')
-      .expect(res => expect(res.text).toContain('Incentives data'))
+      .expect(res => expect(res.text).toContain('/analytics'))
   })
 
   it('otherwise it is hidden', () => {
     app.locals.featureFlags.showAnalytics = false
     return request(app)
       .get('/')
-      .expect(res => expect(res.text).not.toContain('Incentives data'))
+      .expect(res => expect(res.text).not.toContain('/analytics'))
   })
 
   it('it is also hidden when user does not have appropriate case load', () => {
@@ -65,7 +65,7 @@ describe('Home page shows card linking to incentives analytics', () => {
     config.prisonsWithAnalytics.push('LEI')
     return request(app)
       .get('/')
-      .expect(res => expect(res.text).not.toContain('Incentives data'))
+      .expect(res => expect(res.text).not.toContain('/analytics'))
   })
 
   it('it is also hidden when username is not explicitly allowed', () => {
@@ -73,7 +73,7 @@ describe('Home page shows card linking to incentives analytics', () => {
     config.usernamesWithAnalytics.push('user5')
     return request(app)
       .get('/')
-      .expect(res => expect(res.text).not.toContain('Incentives data'))
+      .expect(res => expect(res.text).not.toContain('/analytics'))
   })
 })
 

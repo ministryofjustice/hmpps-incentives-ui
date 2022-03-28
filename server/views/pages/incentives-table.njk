@@ -5,12 +5,6 @@
 
 {% set pageTitle = applicationName + " – Incentives information" %}
 
-{% if featureFlags.hideDaysColumnsInIncentivesTable %}
-    {% set hideDaysClasses = 'govuk-!-display-none' %}
-{% else %}
-    {% set hideDaysClasses = '' %}
-{% endif %}
-
 {% block content %}
     {% if featureFlags.hideDaysColumnsInIncentivesTable %}
         {%- from "moj/components/banner/macro.njk" import mojBanner -%}
@@ -57,6 +51,7 @@
     </h2>
 
     {% macro table(level) %}
+        {# First 2 columns always shown #}
         {% set commonHeader = [
             {
                 text: ""
@@ -68,25 +63,32 @@
                     "data-ga-category": "Incentives information > Sorted table",
                     "data-ga-action": "by name"
                 }
-            },
-            {
-                text: "Days on level",
-                classes: hideDaysClasses,
-                attributes: {
-                    "aria-sort": "none",
-                    "data-ga-category": "Incentives information > Sorted table",
-                    "data-ga-action": "by days on level"
+            }
+        ] %}
+        {# Only show 'Days on level'/'Days since last review' columns when
+        'hideDaysColumnsInIncentivesTable' flag is off #}
+        {% if not featureFlags.hideDaysColumnsInIncentivesTable %}
+            {% set _ = commonHeader.push(
+                {
+                    text: "Days on level",
+                    attributes: {
+                        "aria-sort": "none",
+                        "data-ga-category": "Incentives information > Sorted table",
+                        "data-ga-action": "by days on level"
+                    }
+                },
+                {
+                    text: "Days since last review",
+                    attributes: {
+                        "aria-sort": "none",
+                        "data-ga-category": "Incentives information > Sorted table",
+                        "data-ga-action": "by days since last review"
+                    }
                 }
-            },
-            {
-                text: "Days since last review",
-                classes: hideDaysClasses,
-                attributes: {
-                    "aria-sort": "none",
-                    "data-ga-category": "Incentives information > Sorted table",
-                    "data-ga-action": "by days since last review"
-                }
-            },
+            ) %}
+        {% endif %}
+        {# Rest of the columns always shown #}
+        {% set _ = commonHeader.push(
             {
                 text: "Positive behaviours",
                 attributes: {
@@ -127,7 +129,7 @@
                     "data-ga-action": "by proven adjudications"
                 }
             }
-        ] %}
+        ) %}
 
         {% set rows = [] %}
         {% for prisoner in level.prisonerBehaviours %}
@@ -139,61 +141,71 @@
 
             {% set prisonerFullName = (prisoner.lastName + ', ' + prisoner.firstName) | escape %}
 
-            {% set _ = rows.push([
-            {
-                html: '<img src="' + imageUrl + '" alt="' + prisonerFullName + '’s photo" width="90" />'
-            },
-            {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="prisoner name">' + prisonerFullName + '<br>' + prisoner.prisonerNumber + '</a>',
-                attributes: {
-                    "data-sort-value": prisonerFullName
+            {# First 2 columns always shown #}
+            {% set row = [
+                {
+                    html: '<img src="' + imageUrl + '" alt="' + prisonerFullName + '’s photo" width="90" />'
+                },
+                {
+                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="prisoner name">' + prisonerFullName + '<br>' + prisoner.prisonerNumber + '</a>',
+                    attributes: {
+                        "data-sort-value": prisonerFullName
+                    }
                 }
-            },
-            {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days on level">' + prisoner.daysOnLevel + '</a>',
-                classes: hideDaysClasses,
-                attributes: {
-                    "data-sort-value": prisoner.daysOnLevel
+            ] %}
+            {# Only show 'Days on level'/'Days since last review' columns when
+            'hideDaysColumnsInIncentivesTable' flag is off #}
+            {% if not featureFlags.hideDaysColumnsInIncentivesTable %}
+                {% set _ = row.push(
+                    {
+                        html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days on level">' + prisoner.daysOnLevel + '</a>',
+                        attributes: {
+                            "data-sort-value": prisoner.daysOnLevel
+                        }
+                    },
+                    {
+                        html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days since last review">' + prisoner.daysSinceLastReview + '</a>',
+                        attributes: {
+                            "data-sort-value": prisoner.daysSinceLastReview
+                        }
+                    }
+                ) %}
+            {% endif %}
+            {# Rest of the columns always shown #}
+            {% set _ = row.push(
+                {
+                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="positive behaviours">' + prisoner.positiveBehaviours + '</a>',
+                    attributes: {
+                        "data-sort-value": prisoner.positiveBehaviours
+                    }
+                },
+                {
+                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&subType=IEP_ENC&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive encouragements">' + prisoner.incentiveEncouragements + '</a>',
+                    attributes: {
+                        "data-sort-value": prisoner.incentiveEncouragements
+                    }
+                },
+                {
+                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="negative behaviours">' + prisoner.negativeBehaviours + '</a>',
+                    attributes: {
+                        "data-sort-value": prisoner.negativeBehaviours
+                    }
+                },
+                {
+                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&subType=IEP_WARN&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive warnings">' + prisoner.incentiveWarnings + '</a>',
+                    attributes: {
+                        "data-sort-value": prisoner.incentiveWarnings
+                    }
+                },
+                {
+                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/adjudications?finding=PROVED" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="proven adjudications">' + prisoner.provenAdjudications + '</a>',
+                    attributes: {
+                        "data-sort-value": prisoner.provenAdjudications
+                    }
                 }
-            },
-            {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days since last review">' + prisoner.daysSinceLastReview + '</a>',
-                classes: hideDaysClasses,
-                attributes: {
-                    "data-sort-value": prisoner.daysSinceLastReview
-                }
-            },
-            {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="positive behaviours">' + prisoner.positiveBehaviours + '</a>',
-                attributes: {
-                    "data-sort-value": prisoner.positiveBehaviours
-                }
-            },
-            {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&subType=IEP_ENC&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive encouragements">' + prisoner.incentiveEncouragements + '</a>',
-                attributes: {
-                    "data-sort-value": prisoner.incentiveEncouragements
-                }
-            },
-            {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="negative behaviours">' + prisoner.negativeBehaviours + '</a>',
-                attributes: {
-                    "data-sort-value": prisoner.negativeBehaviours
-                }
-            },
-            {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&subType=IEP_WARN&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive warnings">' + prisoner.incentiveWarnings + '</a>',
-                attributes: {
-                    "data-sort-value": prisoner.incentiveWarnings
-                }
-            },
-            {
-                html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/adjudications?finding=PROVED" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="proven adjudications">' + prisoner.provenAdjudications + '</a>',
-                attributes: {
-                    "data-sort-value": prisoner.provenAdjudications
-                }
-            }
-            ]) %}
+            ) %}
+
+            {% set _ = rows.push(row) %}
         {% endfor %}
 
         <h2 class="govuk-heading-l">{{ level.levelDescription }}</h2>

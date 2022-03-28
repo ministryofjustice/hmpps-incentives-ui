@@ -11,6 +11,8 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+      {% include "../../../partials/messages.njk" %}
+
       {% set errorSummary = formsWithErrors["incentive-levels-by-ethnicity"].errorSummary | default(formsWithErrors["incentive-levels-by-age-group"].errorSummary) %}
       {% if errorSummary %}
         {{ govukErrorSummary({

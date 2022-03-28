@@ -15,9 +15,10 @@ import { type ChartFeedbackForm, validate } from './forms/chartFeedbackForm'
 /**
  * Shared template variables needed throughout analytics section
  */
-function getAnalyticsContext(): Record<string, unknown> {
+function templateContext(req: Request): Record<string, unknown> {
   return {
     feedbackUrl: config.feedbackUrlForAnalytics || config.feedbackUrl,
+    messages: req.flash(),
   }
 }
 
@@ -72,7 +73,7 @@ export default function routes(router: Router): Router {
     const prisonersWithEntries = await analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad)
 
     res.render('pages/analytics/behaviour-entries/index', {
-      ...getAnalyticsContext(),
+      ...templateContext(req),
       behaviourEntries,
       prisonersWithEntries,
     })
@@ -88,7 +89,7 @@ export default function routes(router: Router): Router {
     const prisonersOnLevels = await analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)
 
     res.render('pages/analytics/incentive-levels/index', {
-      ...getAnalyticsContext(),
+      ...templateContext(req),
       prisonersOnLevels,
     })
   })
@@ -110,7 +111,7 @@ export default function routes(router: Router): Router {
     )
 
     res.render('pages/analytics/protected-characteristics/index', {
-      ...getAnalyticsContext(),
+      ...templateContext(req),
       prisonersByEthnicity,
       prisonersInAgeGroups,
     })
@@ -198,6 +199,7 @@ ${form.data.noComments}`
     const zendesk = new ZendeskClient(config.apis.zendesk, username, token)
     try {
       await zendesk.createTicket(ticket)
+      req.flash('success', 'Your feedback has been submitted.')
     } catch (error) {
       logger.error('Failed to create Zendesk ticket', error)
     }

@@ -14,7 +14,7 @@ describe('ChartFeedbackForm', () => {
       validate(form)
       expect(form.hasErrors).toBeFalsy()
       expect(form.fieldErrors).toEqual({})
-      expect(form.errorSummary()).toEqual([])
+      expect(form.errorSummary).toEqual([])
     })
   })
 
@@ -32,7 +32,7 @@ describe('ChartFeedbackForm', () => {
       validate(form)
       expect(form.hasErrors).toBeTruthy()
       expect(new Set(Object.keys(form.fieldErrors))).toEqual(new Set(invalidFields))
-      expect(form.errorSummary()).toHaveLength(invalidFields.length)
+      expect(form.errorSummary).toHaveLength(invalidFields.length)
     })
   })
 

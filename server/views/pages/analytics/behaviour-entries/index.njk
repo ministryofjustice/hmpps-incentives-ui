@@ -1,4 +1,5 @@
 {% extends "../graph-layout.njk" %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set graphPageId = "behaviour-entries" %}
 {% set graphTitle = "Behaviour entries in the last 28 days" %}
@@ -7,9 +8,23 @@
 {% block content %}
   {{ super() }}
 
-  <h1 class="govuk-heading-xl">
-    {{ graphTitle }}
-  </h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set errorSummary = formsWithErrors["entries-by-location"].errorSummary | default(formsWithErrors["prisoners-with-entries-by-location"].errorSummary) %}
+      {% if errorSummary.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorSummary
+        }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-xl">
+        {{ graphTitle }}
+      </h1>
+
+    </div>
+  </div>
 
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">

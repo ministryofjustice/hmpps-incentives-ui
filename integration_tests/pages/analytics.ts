@@ -16,4 +16,12 @@ export default abstract class AnalyticsPage extends Page {
   get protectedCharacteristicsNavItem(): PageElement<HTMLAnchorElement> {
     return this.subNavigation.find('[data-qa=protected-characteristics]')
   }
+
+  get chartGuidanceBoxes(): PageElement<HTMLDetailsElement> {
+    return cy.get('.govuk-details[data-qa=guidance]')
+  }
+
+  get chartFeedbackBoxes(): PageElement<HTMLDetailsElement> {
+    return cy.get('.govuk-details[data-qa=chart-feedback]')
+  }
 }

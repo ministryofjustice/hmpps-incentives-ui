@@ -33,4 +33,12 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
       .filter('#chart-feedback-incentive-levels-by-age-group')
       .find('.govuk-details__summary')
   }
+
+  get incentivesByEthnicityFeedbackForm(): PageElement<HTMLFormElement> {
+    return cy.get('#form-incentive-levels-by-ethnicity')
+  }
+
+  get incentivesByAgeGroupFeedbackForm(): PageElement<HTMLFormElement> {
+    return cy.get('#form-incentive-levels-by-age-group')
+  }
 }

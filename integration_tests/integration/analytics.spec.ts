@@ -10,6 +10,7 @@ context('Analytics', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubCreateZendeskTicket')
 
     cy.signIn()
 
@@ -39,6 +40,22 @@ context('Analytics', () => {
       expect(location).to.contain('All')
       expect(location).to.contain('1,227')
     })
+  })
+
+  it('users can submit feedback on behaviour entry charts', () => {
+    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    somePage.behaviourEntriesNavItem.click()
+    let page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+
+    page.entriesByLocationFeedback.click()
+    page.entriesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
+    page.entriesByLocationFeedbackForm.submit()
+
+    page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+
+    page.prisonersWithEntriesByLocationFeedback.click()
+    page.prisonersWithEntriesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
+    page.prisonersWithEntriesByLocationFeedbackForm.submit()
   })
 
   it('users see incentive levels analytics', () => {
@@ -77,6 +94,16 @@ context('Analytics', () => {
     page.incentivesByLocationFeedback
       .click()
       .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by wing', 'closed', 'MDI'))
+  })
+
+  it('users can submit feedback on incentive levels chart', () => {
+    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+    page.incentivesByLocationFeedback.click()
+    page.incentivesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
+    page.incentivesByLocationFeedbackForm.submit()
+
+    Page.verifyOnPage(AnalyticsIncentiveLevels)
   })
 
   it('users see protected characteristics analytics', () => {
@@ -131,5 +158,21 @@ context('Analytics', () => {
     page.incentivesByAgeGroupFeedback
       .click()
       .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age group', 'closed', 'MDI'))
+  })
+
+  it('users can submit feedback on protected characteristics chart', () => {
+    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    somePage.protectedCharacteristicsNavItem.click()
+    let page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+
+    page.incentivesByEthnicityFeedback.click()
+    page.incentivesByEthnicityFeedbackForm.find('[name=chartUseful]').first().click()
+    page.incentivesByEthnicityFeedbackForm.submit()
+
+    page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+
+    page.incentivesByAgeGroupFeedback.click()
+    page.incentivesByAgeGroupFeedbackForm.find('[name=chartUseful]').first().click()
+    page.incentivesByAgeGroupFeedbackForm.submit()
   })
 })

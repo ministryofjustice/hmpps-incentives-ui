@@ -5,6 +5,7 @@ import tokenVerification from '../mockApis/tokenVerification'
 import prisonApi from '../mockApis/prisonApi'
 import incentivesApi from '../mockApis/incentivesApi'
 import nomisUserRolesApi from '../mockApis/nomisUserRolesApi'
+import zendeskApi from '../mockApis/zendeskApi'
 
 export default (on: (string, Record) => void): void => {
   on('task', {
@@ -27,5 +28,7 @@ export default (on: (string, Record) => void): void => {
     stubPrisonApiLocations: prisonApi.stubGetUserLocations,
 
     stubTokenVerificationPing: tokenVerification.stubPing,
+
+    stubCreateZendeskTicket: zendeskApi.stubCreateTicket,
   })
 }

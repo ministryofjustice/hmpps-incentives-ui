@@ -19,4 +19,8 @@ export default class AnalyticsIncentiveLevels extends AnalyticsPage {
       .filter('#chart-feedback-incentive-levels-by-location')
       .find('.govuk-details__summary')
   }
+
+  get incentivesByLocationFeedbackForm(): PageElement<HTMLFormElement> {
+    return cy.get('#form-incentive-levels-by-location')
+  }
 }

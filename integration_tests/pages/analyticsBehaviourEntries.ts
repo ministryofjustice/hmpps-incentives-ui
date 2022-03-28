@@ -33,4 +33,12 @@ export default class AnalyticsBehaviourEntries extends AnalyticsPage {
       .filter('#chart-feedback-prisoners-with-entries-by-location')
       .find('.govuk-details__summary')
   }
+
+  get entriesByLocationFeedbackForm(): PageElement<HTMLFormElement> {
+    return cy.get('#form-entries-by-location')
+  }
+
+  get prisonersWithEntriesByLocationFeedbackForm(): PageElement<HTMLFormElement> {
+    return cy.get('#form-prisoners-with-entries-by-location')
+  }
 }

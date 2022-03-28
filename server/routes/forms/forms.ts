@@ -15,7 +15,7 @@ export default class Form<Data extends { formId: string }> {
   }
 
   // for use with error summary component
-  errorSummary(): { text: string; href: string }[] {
+  get errorSummary(): { text: string; href: string }[] {
     return Object.entries(this.fieldErrors).map(([field, error]) => {
       return { text: error, href: `#${this.data.formId}-${field}` }
     })

@@ -265,6 +265,10 @@ describe.each(analyticsPages)(
           .expect(200)
           .expect(res => {
             expect(res.text).toContain(expectedHeading)
+            expect(res.text).toContain('There is a problem') // error summary
+            expect(res.text).toContain(`#${graphId}-mainNoReason`) // link to field
+            expect(res.text).toContain('Select a reason for your answer') // error message
+            expect(res.text).toContain(`id="${graphId}-mainNoReason"`) // field with error
             expect(mockedZendeskClientClass).not.toHaveBeenCalled()
           })
       })

@@ -3,11 +3,13 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 
 {# Required variables: graphId, csrfToken #}
+{# Optional variables: form (if there are errors) #}
 
 {% macro commentTextarea(graphId, id) %}
   {{ govukTextarea({
     id: graphId + "-" + id + "Comments",
     name: id + "Comments",
+    value: form.data[id + "Comments"] | default(""),
     label: {
       text: "Comments (optional)"
     },
@@ -33,25 +35,31 @@
     items: [
       {
         value: "not-relevant",
-        text: "It’s not relevant to me"
+        text: "It’s not relevant to me",
+        checked: form.data.mainReason === "not-relevant"
       },
       {
         value: "do-not-understand",
-        text: "I don’t understand it"
+        text: "I don’t understand it",
+        checked: form.data.mainReason === "do-not-understand"
       },
       {
         value: "does-not-show-enough",
-        text: "It doesn’t show me enough"
+        text: "It doesn’t show me enough",
+        checked: form.data.mainReason === "does-not-show-enough"
       },
       {
         value: "what-to-do-with-info",
-        text: "I don’t know what to do with the information"
+        text: "I don’t know what to do with the information",
+        checked: form.data.mainReason === "what-to-do-with-info"
       },
       {
         value: "other",
-        text: "Other"
+        text: "Other",
+        checked: form.data.mainReason === "other"
       }
-    ]
+    ],
+    errorMessage: { text: form.fieldErrors.mainNoReason } if form.fieldErrors.mainNoReason else undefined
   }) }}
   {{ commentTextarea(graphId, "no") }}
 {% endset %}
@@ -70,6 +78,7 @@
       {
         value: "yes",
         text: "Yes",
+        checked: form.data.chartUseful === "yes",
         conditional: {
           html: chartUsefulHtml
         }
@@ -77,11 +86,13 @@
       {
         value: "no",
         text: "No",
+        checked: form.data.chartUseful === "no",
         conditional: {
           html: chartNotUsefulHtml
         }
       }
-    ]
+    ],
+    errorMessage: { text: form.fieldErrors.chartUseful } if form.fieldErrors.chartUseful else undefined
   }) }}
 
   <input type="hidden" name="formId" value="{{ graphId }}" />

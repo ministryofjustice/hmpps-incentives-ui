@@ -56,6 +56,7 @@ generic-service:
       GOOGLE_ANALYTICS_ID: "GOOGLE_ANALYTICS_ID"
       FEEDBACK_URL: "FEEDBACK_URL"
       FEEDBACK_URL_ANALYTICS: "FEEDBACK_URL_ANALYTICS"
+      FEEDBACK_URL_TABLE: "FEEDBACK_URL_TABLE"
       SENTRY_DSN: "SENTRY_DSN"
     elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"

@@ -126,5 +126,6 @@ export default {
   usernamesWithAnalytics: (get('USERNAMES_WITH_ANALYTICS', null, notRequiredInProduction) ?? '').split(','),
   feedbackUrl: get('FEEDBACK_URL', ''),
   feedbackUrlForAnalytics: get('FEEDBACK_URL_ANALYTICS', ''),
+  feedbackUrlForTable: get('FEEDBACK_URL_TABLE', ''),
   phaseName: get('PHASE_NAME', ''),
 }

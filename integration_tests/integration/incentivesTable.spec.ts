@@ -32,7 +32,7 @@ context('Wing incentives table page', () => {
   it('has feedback banner', () => {
     Page.verifyOnPage(BehaviourEntriesPage)
     cy.get('.app-feedback-banner').contains('This is a new service – help us to improve it (opens in a new tab)')
-    cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/feedback')
+    cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/table-feedback')
   })
 
   it('has correct numbers of people at each level', () => {

@@ -236,6 +236,7 @@ describe.each(analyticsPages)(
           .expect(200)
           .expect(res => {
             expect(res.text).toContain(expectedHeading)
+            expect(res.text).toContain('Your feedback has been submitted')
             const mockedZendeskClient = mockedZendeskClientClass.mock.instances[0] as jest.Mocked<ZendeskClient>
             expect(mockedZendeskClient.createTicket).toHaveBeenCalledWith({
               subject: expect.any(String),
@@ -265,6 +266,7 @@ describe.each(analyticsPages)(
           .expect(200)
           .expect(res => {
             expect(res.text).toContain(expectedHeading)
+            expect(res.text).not.toContain('Your feedback has been submitted')
             expect(res.text).toContain('There is a problem') // error summary
             expect(res.text).toContain(`#${graphId}-mainNoReason`) // link to field
             expect(res.text).toContain('Select a reason for your answer') // error message

@@ -1,0 +1,10 @@
+{% from "moj/components/banner/macro.njk" import mojBanner %}
+
+{% for messageType, messages in messages %}
+  {% for message in messages %}
+    {{ mojBanner({
+      type: messageType,
+      text: message
+    }) }}
+  {% endfor %}
+{% endfor %}

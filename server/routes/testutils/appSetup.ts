@@ -1,5 +1,6 @@
 import path from 'path'
 
+import flash from 'connect-flash'
 import express, { type Express, type Router } from 'express'
 import { Cookie, type Session, type SessionData } from 'express-session'
 import { NotFound } from 'http-errors'
@@ -85,6 +86,7 @@ function appSetup(
 
     next()
   })
+  app.use(flash())
 
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))

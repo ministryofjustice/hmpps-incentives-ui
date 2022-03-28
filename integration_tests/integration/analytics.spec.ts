@@ -266,15 +266,20 @@ context('Analytics section', () => {
 
 function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(pageClass: new () => PageClass, feedbackBoxes) {
   feedbackBoxes.forEach(([feedbackBox, feedbackForm]) => {
-    const page = Page.verifyOnPage(pageClass)
+    let page = Page.verifyOnPage(pageClass)
 
     // open feedback box and select "yes"
     page[feedbackBox].click()
     page[feedbackForm].find('[name=chartUseful][value=yes]').click()
     page[feedbackForm].submit()
 
-    // should remain on the same page
-    Page.verifyOnPage(pageClass)
+    // should remain on the same page with a success message and no error summary
+    page = Page.verifyOnPage(pageClass)
+    page.messages.spread((...$divs) => {
+      expect($divs).to.have.lengthOf(1)
+      expect($divs[0]).to.contain('Your feedback has been submitted')
+    })
+    page.errorSummary.should('not.exist')
   })
 }
 
@@ -292,6 +297,7 @@ function testInvalidFeedbackSubmission<PageClass extends AnalyticsPage>(pageClas
     page = Page.verifyOnPage(pageClass)
 
     // error summary should have 1 error message
+    page.messages.should('not.exist')
     page.errorSummaryTitle.contains('There is a problem')
     page.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)

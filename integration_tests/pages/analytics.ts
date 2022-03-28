@@ -17,6 +17,10 @@ export default abstract class AnalyticsPage extends Page {
     return this.subNavigation.find('[data-qa=protected-characteristics]')
   }
 
+  get messages(): PageElement<HTMLDivElement> {
+    return cy.get('.moj-banner')
+  }
+
   get errorSummary(): PageElement<HTMLDivElement> {
     return cy.get('.govuk-error-summary')
   }

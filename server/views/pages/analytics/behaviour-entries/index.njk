@@ -11,6 +11,8 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+      {% include "../../../partials/messages.njk" %}
+
       {% set errorSummary = formsWithErrors["entries-by-location"].errorSummary | default(formsWithErrors["prisoners-with-entries-by-location"].errorSummary) %}
       {% if errorSummary.length %}
         {{ govukErrorSummary({

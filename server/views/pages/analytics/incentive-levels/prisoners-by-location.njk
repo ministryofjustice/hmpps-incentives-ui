@@ -5,6 +5,8 @@
   Percentage and number of prisoners on each incentive level by wing
 </h2>
 
+{{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
+
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     {{ govukDetails({
@@ -18,8 +20,6 @@
     }) }}
   </div>
 </div>
-
-{{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 
 {% set colourChoices = [
   'app-chart-colour--a', 'app-chart-colour--b', 'app-chart-colour--c', 'app-chart-colour--d', 'app-chart-colour--e'
@@ -38,7 +38,7 @@
   </div>
 </div>
 
-<table class="app-chart-table app-chart-table--bars" id="table-incentive-levels-by-location">
+<table class="app-chart-table app-chart-table--bars" id="table-{{ graphId }}">
   <caption class="govuk-visually-hidden">
     Percentage and number of prisoners on each incentive level by wing
   </caption>

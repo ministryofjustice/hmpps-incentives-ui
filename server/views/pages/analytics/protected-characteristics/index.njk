@@ -1,6 +1,6 @@
 {% extends "../graph-layout.njk" %}
 
-{% set graphID = "protected-characteristics" %}
+{% set graphPageId = "protected-characteristics" %}
 {% set graphTitle = "Protected characteristics" %}
 {% set pageTitle = applicationName + " – " + graphTitle %}
 
@@ -14,6 +14,7 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
+      {% set graphId = "incentive-levels-by-ethnicity" %}
       {% set report = prisonersByEthnicity %}
       {% include "./prisoners-by-ethnicity.njk" %}
 
@@ -23,6 +24,7 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
+      {% set graphId = "incentive-levels-by-age-group" %}
       {% set report = prisonersInAgeGroups %}
       {% include "./prisoners-by-age-group.njk" %}
 

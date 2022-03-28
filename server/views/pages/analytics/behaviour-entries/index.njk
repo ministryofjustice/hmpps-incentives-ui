@@ -1,6 +1,6 @@
 {% extends "../graph-layout.njk" %}
 
-{% set graphID = "behaviour-entries" %}
+{% set graphPageId = "behaviour-entries" %}
 {% set graphTitle = "Behaviour entries in the last 28 days" %}
 {% set pageTitle = applicationName + " – " + graphTitle %}
 
@@ -14,12 +14,14 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
 
+      {% set graphId = "entries-by-location" %}
       {% set report = behaviourEntries %}
       {% include "./entries-by-location.njk" %}
 
     </section>
     <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
 
+      {% set graphId = "prisoners-with-entries-by-location" %}
       {% set report = prisonersWithEntries %}
       {% include "./prisoners-with-entries-by-location.njk" %}
 

@@ -12,9 +12,22 @@
     {{ govukDetails({
       summaryText: "How you can use this chart",
       text: "Use this chart to see incentive levels for the main ethnicity groups and compare them to prison levels. Are there patterns or imbalances that you might want to explore further?",
-      classes: "govuk-!-display-none-print",
+      classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
       attributes: {
         "data-ga-category": "How you can use this chart > Incentive level by ethnicity",
+        "data-ga-label": user.activeCaseload.id | default("")
+      }
+    }) }}
+
+    {% set chartFeedback %}
+      {% include "../../../partials/analytics/chartFeedbackForm.njk" %}
+    {% endset %}
+    {{ govukDetails({
+      summaryText: "Is this chart useful?",
+      html: chartFeedback,
+      classes: "govuk-!-display-none-print",
+      attributes: {
+        "data-ga-category": "Is this chart useful > Incentive level by ethnicity",
         "data-ga-label": user.activeCaseload.id | default("")
       }
     }) }}

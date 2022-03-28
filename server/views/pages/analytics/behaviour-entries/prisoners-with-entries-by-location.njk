@@ -12,9 +12,22 @@
     {{ govukDetails({
       summaryText: "How you can use this chart",
       text: "Individual prisoner behaviours can give you a fuller picture. Are you happy with how many prisoners have no entries and how many have both? Positive entries can help lead to behaviour improvements.",
-      classes: "govuk-!-display-none-print",
+      classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
       attributes: {
         "data-ga-category": "How you can use this chart > Prisoners with behaviour entries by wing",
+        "data-ga-label": user.activeCaseload.id | default("")
+      }
+    }) }}
+
+    {% set chartFeedback %}
+      {% include "../../../partials/analytics/chartFeedbackForm.njk" %}
+    {% endset %}
+    {{ govukDetails({
+      summaryText: "Is this chart useful?",
+      html: chartFeedback,
+      classes: "govuk-!-display-none-print",
+      attributes: {
+        "data-ga-category": "Is this chart useful > Prisoners with behaviour entries by wing",
         "data-ga-label": user.activeCaseload.id | default("")
       }
     }) }}

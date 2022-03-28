@@ -13,4 +13,24 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
   get incentivesByAgeGroup(): PageElement<HTMLTableRowElement> {
     return cy.get('#table-incentive-levels-by-age-group tbody tr')
   }
+
+  get incentivesByEthnicityGuidance(): PageElement<HTMLDetailsElement> {
+    return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-ethnicity').find('.govuk-details__summary')
+  }
+
+  get incentivesByAgeGroupGuidance(): PageElement<HTMLDetailsElement> {
+    return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-age-group').find('.govuk-details__summary')
+  }
+
+  get incentivesByEthnicityFeedback(): PageElement<HTMLDetailsElement> {
+    return this.chartFeedbackBoxes
+      .filter('#chart-feedback-incentive-levels-by-ethnicity')
+      .find('.govuk-details__summary')
+  }
+
+  get incentivesByAgeGroupFeedback(): PageElement<HTMLDetailsElement> {
+    return this.chartFeedbackBoxes
+      .filter('#chart-feedback-incentive-levels-by-age-group')
+      .find('.govuk-details__summary')
+  }
 }

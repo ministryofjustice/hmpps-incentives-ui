@@ -13,4 +13,24 @@ export default class AnalyticsBehaviourEntries extends AnalyticsPage {
   get prisonersWithEntriesByLocation(): PageElement<HTMLTableRowElement> {
     return cy.get('#table-prisoners-with-entries-by-location tbody tr')
   }
+
+  get entriesByLocationGuidance(): PageElement<HTMLDetailsElement> {
+    return this.chartGuidanceBoxes.filter('#guidance-entries-by-location').find('.govuk-details__summary')
+  }
+
+  get prisonersWithEntriesByLocationGuidance(): PageElement<HTMLDetailsElement> {
+    return this.chartGuidanceBoxes
+      .filter('#guidance-prisoners-with-entries-by-location')
+      .find('.govuk-details__summary')
+  }
+
+  get entriesByLocationFeedback(): PageElement<HTMLDetailsElement> {
+    return this.chartFeedbackBoxes.filter('#chart-feedback-entries-by-location').find('.govuk-details__summary')
+  }
+
+  get prisonersWithEntriesByLocationFeedback(): PageElement<HTMLDetailsElement> {
+    return this.chartFeedbackBoxes
+      .filter('#chart-feedback-prisoners-with-entries-by-location')
+      .find('.govuk-details__summary')
+  }
 }

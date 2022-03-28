@@ -52,17 +52,31 @@ context('Analytics', () => {
   })
 
   it('guidance box for incentive levels analytics is tracked', () => {
-    Page.verifyOnPage(AnalyticsIncentiveLevels)
+    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
 
     const gaSpy = new GoogleAnalyticsSpy()
     gaSpy.install()
 
-    cy.get('.govuk-details__summary')
+    page.incentivesByLocationGuidance
       .click()
       .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'opened', 'MDI'))
-    cy.get('.govuk-details__summary')
+    page.incentivesByLocationGuidance
       .click()
       .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'closed', 'MDI'))
+  })
+
+  it('chart feedback box for incentive levels analytics is tracked', () => {
+    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+    const gaSpy = new GoogleAnalyticsSpy()
+    gaSpy.install()
+
+    page.incentivesByLocationFeedback
+      .click()
+      .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by wing', 'opened', 'MDI'))
+    page.incentivesByLocationFeedback
+      .click()
+      .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by wing', 'closed', 'MDI'))
   })
 
   it('users see protected characteristics analytics', () => {
@@ -86,22 +100,36 @@ context('Analytics', () => {
   it('guidance box for protected characteristics analytics is tracked', () => {
     const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
     somePage.protectedCharacteristicsNavItem.click()
-    Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
 
     const gaSpy = new GoogleAnalyticsSpy()
     gaSpy.install()
 
-    cy.get('.govuk-details__summary')
-      .first()
+    page.incentivesByEthnicityGuidance
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'opened', 'MDI')
       )
-    cy.get('.govuk-details__summary')
-      .first()
+    page.incentivesByEthnicityGuidance
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'closed', 'MDI')
       )
+  })
+
+  it('chart feedback box for protected characteristics analytics is tracked', () => {
+    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    somePage.protectedCharacteristicsNavItem.click()
+    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+
+    const gaSpy = new GoogleAnalyticsSpy()
+    gaSpy.install()
+
+    page.incentivesByAgeGroupFeedback
+      .click()
+      .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age group', 'opened', 'MDI'))
+    page.incentivesByAgeGroupFeedback
+      .click()
+      .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age group', 'closed', 'MDI'))
   })
 })

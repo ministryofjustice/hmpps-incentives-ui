@@ -5,7 +5,7 @@ import AnalyticsIncentiveLevels from '../pages/analyticsIncentiveLevels'
 import AnalyticsProtectedCharacteristics from '../pages/analyticsProtectedCharacteristics'
 import GoogleAnalyticsSpy from '../plugins/googleAnalyticsSpy'
 
-context('Analytics', () => {
+context('Analytics section', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
@@ -24,155 +24,239 @@ context('Analytics', () => {
     cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/analytics-feedback')
   })
 
-  it('users see behaviour entry analytics', () => {
-    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    somePage.behaviourEntriesNavItem.click()
-    const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
-
-    page.entriesByLocation.first().then(totalsRow => {
-      const location = totalsRow.find('td:first-child').text()
-      expect(location).to.contain('All')
-      expect(location).to.contain('410')
+  context('behaviour entries page', () => {
+    beforeEach(() => {
+      const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+      somePage.behaviourEntriesNavItem.click()
     })
 
-    page.prisonersWithEntriesByLocation.first().then(totalsRow => {
-      const location = totalsRow.find('td:first-child').text()
-      expect(location).to.contain('All')
-      expect(location).to.contain('1,227')
+    it('users see analytics', () => {
+      const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+
+      page.entriesByLocation.first().then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('410')
+      })
+
+      page.prisonersWithEntriesByLocation.first().then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('1,227')
+      })
+    })
+
+    it('guidance box for analytics is tracked', () => {
+      const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+
+      const gaSpy = new GoogleAnalyticsSpy()
+      gaSpy.install()
+
+      page.entriesByLocationGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('How you can use this chart > Behaviour entries by wing', 'opened', 'MDI')
+        )
+      page.entriesByLocationGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('How you can use this chart > Behaviour entries by wing', 'closed', 'MDI')
+        )
+
+      page.prisonersWithEntriesByLocationGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent(
+            'How you can use this chart > Prisoners with behaviour entries by wing',
+            'opened',
+            'MDI'
+          )
+        )
+      page.prisonersWithEntriesByLocationGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent(
+            'How you can use this chart > Prisoners with behaviour entries by wing',
+            'closed',
+            'MDI'
+          )
+        )
+    })
+
+    it('chart feedback box for analytics is tracked', () => {
+      const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+
+      const gaSpy = new GoogleAnalyticsSpy()
+      gaSpy.install()
+
+      page.entriesByLocationFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Behaviour entries by wing', 'opened', 'MDI'))
+      page.entriesByLocationFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Behaviour entries by wing', 'closed', 'MDI'))
+
+      page.prisonersWithEntriesByLocationFeedback
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('Is this chart useful > Prisoners with behaviour entries by wing', 'opened', 'MDI')
+        )
+      page.prisonersWithEntriesByLocationFeedback
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('Is this chart useful > Prisoners with behaviour entries by wing', 'closed', 'MDI')
+        )
+    })
+
+    it('users can submit feedback on charts', () => {
+      let page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+
+      page.entriesByLocationFeedback.click()
+      page.entriesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
+      page.entriesByLocationFeedbackForm.submit()
+
+      page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+
+      page.prisonersWithEntriesByLocationFeedback.click()
+      page.prisonersWithEntriesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
+      page.prisonersWithEntriesByLocationFeedbackForm.submit()
     })
   })
 
-  it('users can submit feedback on behaviour entry charts', () => {
-    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    somePage.behaviourEntriesNavItem.click()
-    let page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+  context('incentive levels page', () => {
+    it('users see analytics', () => {
+      const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
 
-    page.entriesByLocationFeedback.click()
-    page.entriesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
-    page.entriesByLocationFeedbackForm.submit()
+      page.incentivesByLocation.first().then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('918')
+      })
+    })
 
-    page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+    it('guidance box for analytics is tracked', () => {
+      const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
 
-    page.prisonersWithEntriesByLocationFeedback.click()
-    page.prisonersWithEntriesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
-    page.prisonersWithEntriesByLocationFeedbackForm.submit()
-  })
+      const gaSpy = new GoogleAnalyticsSpy()
+      gaSpy.install()
 
-  it('users see incentive levels analytics', () => {
-    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+      page.incentivesByLocationGuidance
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'opened', 'MDI'))
+      page.incentivesByLocationGuidance
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'closed', 'MDI'))
+    })
 
-    page.incentivesByLocation.first().then(totalsRow => {
-      const location = totalsRow.find('td:first-child').text()
-      expect(location).to.contain('All')
-      expect(location).to.contain('918')
+    it('chart feedback box for analytics is tracked', () => {
+      const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+      const gaSpy = new GoogleAnalyticsSpy()
+      gaSpy.install()
+
+      page.incentivesByLocationFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by wing', 'opened', 'MDI'))
+      page.incentivesByLocationFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by wing', 'closed', 'MDI'))
+    })
+
+    it('users can submit feedback on chart', () => {
+      const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+      page.incentivesByLocationFeedback.click()
+      page.incentivesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
+      page.incentivesByLocationFeedbackForm.submit()
+
+      Page.verifyOnPage(AnalyticsIncentiveLevels)
     })
   })
 
-  it('guidance box for incentive levels analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
-
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    page.incentivesByLocationGuidance
-      .click()
-      .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'opened', 'MDI'))
-    page.incentivesByLocationGuidance
-      .click()
-      .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'closed', 'MDI'))
-  })
-
-  it('chart feedback box for incentive levels analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
-
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    page.incentivesByLocationFeedback
-      .click()
-      .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by wing', 'opened', 'MDI'))
-    page.incentivesByLocationFeedback
-      .click()
-      .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by wing', 'closed', 'MDI'))
-  })
-
-  it('users can submit feedback on incentive levels chart', () => {
-    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
-
-    page.incentivesByLocationFeedback.click()
-    page.incentivesByLocationFeedbackForm.find('[name=chartUseful]').first().click()
-    page.incentivesByLocationFeedbackForm.submit()
-
-    Page.verifyOnPage(AnalyticsIncentiveLevels)
-  })
-
-  it('users see protected characteristics analytics', () => {
-    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    somePage.protectedCharacteristicsNavItem.click()
-    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
-
-    page.incentivesByEthnicity.first().then(totalsRow => {
-      const location = totalsRow.find('td:first-child').text()
-      expect(location).to.contain('All')
-      expect(location).to.contain('915')
+  context('protected characteristics page', () => {
+    beforeEach(() => {
+      const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+      somePage.protectedCharacteristicsNavItem.click()
     })
 
-    page.incentivesByAgeGroup.first().then(totalsRow => {
-      const location = totalsRow.find('td:first-child').text()
-      expect(location).to.contain('All')
-      expect(location).to.contain('918')
+    it('users see analytics', () => {
+      const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+
+      page.incentivesByEthnicity.first().then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('915')
+      })
+
+      page.incentivesByAgeGroup.first().then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('918')
+      })
     })
-  })
 
-  it('guidance box for protected characteristics analytics is tracked', () => {
-    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    somePage.protectedCharacteristicsNavItem.click()
-    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+    it('guidance box for analytics is tracked', () => {
+      const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
 
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
+      const gaSpy = new GoogleAnalyticsSpy()
+      gaSpy.install()
 
-    page.incentivesByEthnicityGuidance
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'opened', 'MDI')
-      )
-    page.incentivesByEthnicityGuidance
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'closed', 'MDI')
-      )
-  })
+      page.incentivesByEthnicityGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'opened', 'MDI')
+        )
+      page.incentivesByEthnicityGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'closed', 'MDI')
+        )
 
-  it('chart feedback box for protected characteristics analytics is tracked', () => {
-    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    somePage.protectedCharacteristicsNavItem.click()
-    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+      page.incentivesByAgeGroupGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by age group', 'opened', 'MDI')
+        )
+      page.incentivesByAgeGroupGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by age group', 'closed', 'MDI')
+        )
+    })
 
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
+    it('chart feedback box for analytics is tracked', () => {
+      const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
 
-    page.incentivesByAgeGroupFeedback
-      .click()
-      .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age group', 'opened', 'MDI'))
-    page.incentivesByAgeGroupFeedback
-      .click()
-      .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age group', 'closed', 'MDI'))
-  })
+      const gaSpy = new GoogleAnalyticsSpy()
+      gaSpy.install()
 
-  it('users can submit feedback on protected characteristics chart', () => {
-    const somePage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    somePage.protectedCharacteristicsNavItem.click()
-    let page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+      page.incentivesByEthnicityFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by ethnicity', 'opened', 'MDI'))
+      page.incentivesByEthnicityFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by ethnicity', 'closed', 'MDI'))
 
-    page.incentivesByEthnicityFeedback.click()
-    page.incentivesByEthnicityFeedbackForm.find('[name=chartUseful]').first().click()
-    page.incentivesByEthnicityFeedbackForm.submit()
+      page.incentivesByAgeGroupFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age group', 'opened', 'MDI'))
+      page.incentivesByAgeGroupFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age group', 'closed', 'MDI'))
+    })
 
-    page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+    it('users can submit feedback on charts', () => {
+      let page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
 
-    page.incentivesByAgeGroupFeedback.click()
-    page.incentivesByAgeGroupFeedbackForm.find('[name=chartUseful]').first().click()
-    page.incentivesByAgeGroupFeedbackForm.submit()
+      page.incentivesByEthnicityFeedback.click()
+      page.incentivesByEthnicityFeedbackForm.find('[name=chartUseful]').first().click()
+      page.incentivesByEthnicityFeedbackForm.submit()
+
+      page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+
+      page.incentivesByAgeGroupFeedback.click()
+      page.incentivesByAgeGroupFeedbackForm.find('[name=chartUseful]').first().click()
+      page.incentivesByAgeGroupFeedbackForm.submit()
+    })
   })
 })

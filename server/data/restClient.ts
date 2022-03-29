@@ -1,4 +1,4 @@
-import superagent from 'superagent'
+import superagent, { type Response } from 'superagent'
 import Agent, { HttpsAgent } from 'agentkeepalive'
 import { Readable } from 'stream'
 
@@ -129,5 +129,36 @@ export default class RestClient {
           }
         })
     })
+  }
+
+  async unauthenticatedGet<Body = unknown>(request: GetRequest & { raw?: false }): Promise<Body>
+
+  async unauthenticatedGet(request: GetRequest & { raw: true }): Promise<Response>
+
+  async unauthenticatedGet<Body = unknown>({
+    path = null,
+    query = {},
+    headers = {},
+    raw = false,
+  }: GetRequest): Promise<Body | Response> {
+    logger.info(`Get without user credentials: calling ${this.name}: ${path} ${query}`)
+    try {
+      const result = await superagent
+        .get(`${this.apiUrl()}${path}`)
+        .agent(this.agent)
+        .retry(2, (err, res) => {
+          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
+          return undefined // retry handler only for logging retries, not to influence retry logic
+        })
+        .query(query)
+        .set(headers)
+        .timeout(this.timeoutConfig())
+
+      return raw ? result : result.body
+    } catch (error) {
+      const sanitisedError = sanitiseError(error)
+      logger.warn({ ...sanitisedError, query }, `Error calling ${this.name}, path: '${path}', verb: 'GET'`)
+      throw sanitisedError
+    }
   }
 }

@@ -147,7 +147,7 @@ async function chartFeedbackHandler(req: Request, res: Response, next: NextFunct
 
   logger.info(`Submitting feedback to Zendesk: Chart ${form.data.formId} was useful=${form.data.chartUseful}`)
 
-  const tags = ['hmpps-incentives', 'chart-feedback', `useful-${form.data.chartUseful}`]
+  const tags = ['hmpps-incentives', 'chart-feedback', `chart-${form.data.formId}`, `useful-${form.data.chartUseful}`]
   if (form.data.chartUseful === 'no') {
     tags.push(`not-useful-${form.data.mainNoReason}`)
   }

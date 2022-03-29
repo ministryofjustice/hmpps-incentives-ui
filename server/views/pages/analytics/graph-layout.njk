@@ -2,9 +2,8 @@
 {% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
 
 {% block content %}
-  {{ mojSubNavigation({
-    label: "Incentive data navigation",
-    items: [{
+  {% set subNavigationItems = [
+    {
       text: "Incentive levels",
       href: "/analytics/incentive-levels",
       active: graphPageId == "incentive-levels",
@@ -14,12 +13,21 @@
       href: "/analytics/behaviour-entries",
       active: graphPageId == "behaviour-entries",
       attributes: { "data-qa": "behaviour-entries" }
-    }, {
-      text: "Protected characteristics",
-      href: "/analytics/protected-characteristics",
-      active: graphPageId == "protected-characteristics",
-      attributes: { "data-qa": "protected-characteristics" }
-    }],
+    }
+  ] %}
+  {% if featureFlags.showPcAnalytics %}
+    {% set _ = subNavigationItems.push(
+      {
+        text: "Protected characteristics",
+        href: "/analytics/protected-characteristics",
+        active: graphPageId == "protected-characteristics",
+        attributes: { "data-qa": "protected-characteristics" }
+      }
+    ) %}
+  {% endif %}
+  {{ mojSubNavigation({
+    label: "Incentive data navigation",
+    items: subNavigationItems,
     classes: "govuk-!-display-none-print"
   }) }}
 {% endblock %}

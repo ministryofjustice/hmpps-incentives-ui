@@ -1,5 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
-import { MethodNotAllowed } from 'http-errors'
+import { MethodNotAllowed, NotFound } from 'http-errors'
 
 import config from '../config'
 import logger from '../../logger'
@@ -94,7 +94,12 @@ export default function routes(router: Router): Router {
     })
   })
 
-  routeWithFeedback('/protected-characteristics', async (req, res) => {
+  routeWithFeedback('/protected-characteristics', async (req, res, next) => {
+    if (!config.featureFlags.showPcAnalytics) {
+      next(new NotFound())
+      return
+    }
+
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
     const activeCaseLoad = res.locals.user.activeCaseload.id

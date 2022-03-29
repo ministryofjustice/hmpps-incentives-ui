@@ -41,6 +41,7 @@ beforeEach(() => {
 
   app = appWithAllRoutes({})
   app.locals.featureFlags.showAnalytics = true
+  app.locals.featureFlags.showPcAnalytics = true
 })
 
 afterAll(() => {
@@ -283,3 +284,43 @@ describe.each(analyticsPages)(
     })
   }
 )
+
+describe('Protected characteristics', () => {
+  it('are visible if feature is on', () => {
+    return Promise.all([
+      request(app)
+        .get('/analytics/incentive-levels')
+        .expect(res => {
+          expect(res.text).toContain('Protected characteristics')
+          expect(res.text).toContain('/analytics/protected-characteristics')
+        }),
+      request(app)
+        .get('/analytics/protected-characteristics')
+        .expect(200)
+        .expect(res => {
+          expect(res.text).toContain('Protected characteristics')
+          expect(res.text).not.toContain('Page not found')
+        }),
+    ])
+  })
+
+  it('are hidden if feature is off', () => {
+    app.locals.featureFlags.showPcAnalytics = false
+
+    return Promise.all([
+      request(app)
+        .get('/analytics/incentive-levels')
+        .expect(res => {
+          expect(res.text).not.toContain('Protected characteristics')
+          expect(res.text).not.toContain('/analytics/protected-characteristics')
+        }),
+      request(app)
+        .get('/analytics/protected-characteristics')
+        .expect(404)
+        .expect(res => {
+          expect(res.text).not.toContain('Protected characteristics')
+          expect(res.text).toContain('Page not found')
+        }),
+    ])
+  })
+})

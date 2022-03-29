@@ -205,7 +205,7 @@ describe.each(analyticsPages)(
               subject: `Feedback on chart ${graphId}`,
               comment: { body: expect.any(String) },
               type: 'task',
-              tags: ['hmpps-incentives', 'chart-feedback', 'useful-yes'],
+              tags: ['hmpps-incentives', 'chart-feedback', `chart-${graphId}`, 'useful-yes'],
               custom_fields: [
                 // Service
                 { id: 23757677, value: 'hmpps_incentives' },
@@ -242,7 +242,13 @@ describe.each(analyticsPages)(
               subject: expect.any(String),
               comment: { body: expect.any(String) },
               type: 'task',
-              tags: ['hmpps-incentives', 'chart-feedback', 'useful-no', 'not-useful-do-not-understand'],
+              tags: [
+                'hmpps-incentives',
+                'chart-feedback',
+                `chart-${graphId}`,
+                'useful-no',
+                'not-useful-do-not-understand',
+              ],
               custom_fields: expect.anything(),
             })
             expect(mockedZendeskClientClass).toHaveBeenCalled()

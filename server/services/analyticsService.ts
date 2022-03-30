@@ -97,7 +97,11 @@ export default class AnalyticsService {
     type StitchedRow = [string, string, number, number]
     const stitchedTable = this.stitchTable<CaseEntriesTable, StitchedRow>(table, columnsToStitch)
 
-    const filteredTables = stitchedTable.filter(([somePrison]) => somePrison === prison)
+    const filteredTables = stitchedTable.filter(
+      ([somePrison]) =>
+        // filter only selected prison
+        somePrison === prison
+    )
     if (filteredTables.length === 0) {
       throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered BehaviourEntriesByLocation report has no rows')
     }
@@ -127,7 +131,11 @@ export default class AnalyticsService {
     type StitchedRow = [string, string, number, number]
     const stitchedTable = this.stitchTable<CaseEntriesTable, StitchedRow>(table, columnsToStitch)
 
-    const filteredTables = stitchedTable.filter(([somePrison]) => somePrison === prison)
+    const filteredTables = stitchedTable.filter(
+      ([somePrison]) =>
+        // filter only selected prison
+        somePrison === prison
+    )
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
@@ -173,7 +181,13 @@ export default class AnalyticsService {
 
     const columnSet: Set<string> = new Set()
     const filteredTables = stitchedTable.filter(([somePrison, _wing, incentive, characteristic]) => {
-      const include = somePrison === prison && characteristic === 'age_group_10yr'
+      const include =
+        // filter only selected prison
+        somePrison === prison &&
+        // arbitrarily filter by a characteristic (using one is required)
+        characteristic === 'age_group_10yr' &&
+        // it's possible for incentive level to be null
+        incentive
       if (include) {
         columnSet.add(incentive)
       }
@@ -221,7 +235,15 @@ export default class AnalyticsService {
     const filteredTables = stitchedTable.filter(
       ([somePrison, _wing, incentive, characteristic, characteristicGroup]) => {
         // TODO: null characteristicGroup is excluded; convert to 'Unknown'?
-        const include = somePrison === prison && characteristic === protectedCharacteristic && characteristicGroup
+        const include =
+          // filter only selected prison
+          somePrison === prison &&
+          // filter by selected characteristic
+          characteristic === protectedCharacteristic &&
+          // it's possible for characteristic to be null
+          characteristicGroup &&
+          // it's possible for incentive level to be null
+          incentive
         if (include) {
           columnSet.add(incentive)
         }

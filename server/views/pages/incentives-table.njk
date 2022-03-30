@@ -51,7 +51,6 @@
     </h2>
 
     {% macro table(level) %}
-        {# First 2 columns always shown #}
         {% set commonHeader = [
             {
                 text: ""
@@ -63,32 +62,25 @@
                     "data-ga-category": "Incentives information > Sorted table",
                     "data-ga-action": "by name"
                 }
-            }
-        ] %}
-        {# Only show 'Days on level'/'Days since last review' columns when
-        'hideDaysColumnsInIncentivesTable' flag is off #}
-        {% if not featureFlags.hideDaysColumnsInIncentivesTable %}
-            {% set _ = commonHeader.push(
-                {
-                    text: "Days on level",
-                    attributes: {
-                        "aria-sort": "none",
-                        "data-ga-category": "Incentives information > Sorted table",
-                        "data-ga-action": "by days on level"
-                    }
+            },
+            {
+                text: "Days on level",
+                attributes: {
+                    "aria-sort": "none",
+                    "data-ga-category": "Incentives information > Sorted table",
+                    "data-ga-action": "by days on level"
                 },
-                {
-                    text: "Days since last review",
-                    attributes: {
-                        "aria-sort": "none",
-                        "data-ga-category": "Incentives information > Sorted table",
-                        "data-ga-action": "by days since last review"
-                    }
-                }
-            ) %}
-        {% endif %}
-        {# Rest of the columns always shown #}
-        {% set _ = commonHeader.push(
+                itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
+            },
+            {
+                text: "Days since last review",
+                attributes: {
+                    "aria-sort": "none",
+                    "data-ga-category": "Incentives information > Sorted table",
+                    "data-ga-action": "by days since last review"
+                },
+                itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
+            },
             {
                 text: "Positive behaviours",
                 attributes: {
@@ -129,7 +121,7 @@
                     "data-ga-action": "by proven adjudications"
                 }
             }
-        ) %}
+        ] | rejectattr('itemToRemove') %}
 
         {% set rows = [] %}
         {% for prisoner in level.prisonerBehaviours %}
@@ -151,28 +143,21 @@
                     attributes: {
                         "data-sort-value": prisonerFullName
                     }
-                }
-            ] %}
-            {# Only show 'Days on level'/'Days since last review' columns when
-            'hideDaysColumnsInIncentivesTable' flag is off #}
-            {% if not featureFlags.hideDaysColumnsInIncentivesTable %}
-                {% set _ = row.push(
-                    {
-                        html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days on level">' + prisoner.daysOnLevel + '</a>',
-                        attributes: {
-                            "data-sort-value": prisoner.daysOnLevel
-                        }
+                },
+                {
+                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days on level">' + prisoner.daysOnLevel + '</a>',
+                    attributes: {
+                        "data-sort-value": prisoner.daysOnLevel
                     },
-                    {
-                        html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days since last review">' + prisoner.daysSinceLastReview + '</a>',
-                        attributes: {
-                            "data-sort-value": prisoner.daysSinceLastReview
-                        }
-                    }
-                ) %}
-            {% endif %}
-            {# Rest of the columns always shown #}
-            {% set _ = row.push(
+                    itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
+                },
+                {
+                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days since last review">' + prisoner.daysSinceLastReview + '</a>',
+                    attributes: {
+                        "data-sort-value": prisoner.daysSinceLastReview
+                    },
+                    itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
+                },
                 {
                     html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="positive behaviours">' + prisoner.positiveBehaviours + '</a>',
                     attributes: {
@@ -203,8 +188,7 @@
                         "data-sort-value": prisoner.provenAdjudications
                     }
                 }
-            ) %}
-
+            ] | rejectattr('itemToRemove') %}
             {% set _ = rows.push(row) %}
         {% endfor %}
 

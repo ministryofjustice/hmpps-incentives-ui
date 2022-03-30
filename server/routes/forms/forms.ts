@@ -1,4 +1,4 @@
-export default class Form<Data extends { formId: string }> {
+export default abstract class Form<Data extends { formId: string }> {
   // posted form data; NB: it may be transformed in place by validation
   data: Partial<Data>
 
@@ -8,7 +8,10 @@ export default class Form<Data extends { formId: string }> {
   constructor(data: Partial<Data>) {
     this.data = data
     this.fieldErrors = {}
+    this.validate()
   }
+
+  protected abstract validate(): void
 
   get hasErrors(): boolean {
     return Object.keys(this.fieldErrors).length > 0

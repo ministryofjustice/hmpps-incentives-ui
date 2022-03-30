@@ -9,8 +9,7 @@ import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import AnalyticsService from '../services/analyticsService'
 import { ProtectedCharacteristic } from '../services/analyticsServiceTypes'
-import Form from './forms/forms'
-import { type ChartFeedbackForm, validate } from './forms/chartFeedbackForm'
+import ChartFeedbackForm from './forms/chartFeedbackForm'
 
 /**
  * Shared template variables needed throughout analytics section
@@ -133,16 +132,14 @@ async function chartFeedbackHandler(req: Request, res: Response, next: NextFunct
 
   const activeCaseLoad = res.locals.user.activeCaseload.id
   const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`
-  const data = req.body as Partial<ChartFeedbackForm>
 
-  if (!data.formId) {
+  if (!req.body.formId) {
     logger.error('Form posted without specifying formId')
     next(new BadRequest())
     return
   }
 
-  const form = new Form<ChartFeedbackForm>(data)
-  validate(form)
+  const form = new ChartFeedbackForm(req.body)
   if (form.hasErrors) {
     logger.warn(`Form ${form.data.formId} submitted with errors`)
     res.locals.formsWithErrors = { [form.data.formId]: form }

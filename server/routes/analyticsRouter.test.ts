@@ -7,9 +7,6 @@ import { TableType } from '../services/analyticsServiceTypes'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { MockTable, mockSdkS3ClientReponse } from '../testData/s3Bucket'
 
-jest.mock('@aws-sdk/client-s3')
-jest.mock('../data/zendeskClient')
-
 const s3 = {
   send: jest.fn(),
 }
@@ -22,6 +19,7 @@ jest.mock('@aws-sdk/client-s3', () => {
     ListObjectsV2Command,
   }
 })
+jest.mock('../data/zendeskClient')
 
 let originalPrisonsWithAnalytics: string[]
 let originalUsernamesWithAnalytics: string[]

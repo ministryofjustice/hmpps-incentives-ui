@@ -1,8 +1,7 @@
-import Form from './forms'
-import { type ChartFeedbackForm, validate } from './chartFeedbackForm'
+import ChartFeedbackForm, { type ChartFeedbackData } from './chartFeedbackForm'
 
 describe('ChartFeedbackForm', () => {
-  const correctData: Partial<ChartFeedbackForm>[] = [
+  const correctData: Partial<ChartFeedbackData>[] = [
     { chartUseful: 'yes' },
     { chartUseful: 'yes', yesComments: 'Would be good to see a history too' },
     { chartUseful: 'no', mainNoReason: 'does-not-show-enough' },
@@ -10,15 +9,14 @@ describe('ChartFeedbackForm', () => {
   ]
   describe.each(correctData)('validates correct forms', data => {
     it(`with valid fields: ${Object.keys(data).join(' ')}`, () => {
-      const form = new Form<ChartFeedbackForm>(data)
-      validate(form)
+      const form = new ChartFeedbackForm(data)
       expect(form.hasErrors).toBeFalsy()
       expect(form.fieldErrors).toEqual({})
       expect(form.errorSummary).toEqual([])
     })
   })
 
-  const incorrectData: [unknown, (keyof ChartFeedbackForm)[]][] = [
+  const incorrectData: [unknown, (keyof ChartFeedbackData)[]][] = [
     [{}, ['chartUseful']],
     [{ chartUseful: '' }, ['chartUseful']],
     [{ chartUseful: 'yep' }, ['chartUseful']],
@@ -28,15 +26,14 @@ describe('ChartFeedbackForm', () => {
   ]
   describe.each(incorrectData)('validates incorrect forms', (data, invalidFields) => {
     it(`with invalid fields: ${invalidFields.join(' ')}`, () => {
-      const form = new Form<ChartFeedbackForm>(data)
-      validate(form)
+      const form = new ChartFeedbackForm(data)
       expect(form.hasErrors).toBeTruthy()
       expect(new Set(Object.keys(form.fieldErrors))).toEqual(new Set(invalidFields))
       expect(form.errorSummary).toHaveLength(invalidFields.length)
     })
   })
 
-  const untrimmedData: [Partial<ChartFeedbackForm>, string?, string?][] = [
+  const untrimmedData: [Partial<ChartFeedbackData>, string?, string?][] = [
     [
       { chartUseful: 'yes', yesComments: '\nWould be good to see a history too   ' },
       'Would be good to see a history too',
@@ -48,8 +45,7 @@ describe('ChartFeedbackForm', () => {
     ],
   ]
   describe.each(untrimmedData)('trims comment fields', (data, yesComments, noComments) => {
-    const form = new Form<ChartFeedbackForm>(data)
-    validate(form)
+    const form = new ChartFeedbackForm(data)
     expect(form.hasErrors).toBeFalsy()
     if (typeof yesComments !== 'undefined') {
       expect(form.data.yesComments).toEqual(yesComments)

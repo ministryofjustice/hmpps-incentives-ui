@@ -1,7 +1,6 @@
-/* eslint-disable no-param-reassign */
 import Form from './forms'
 
-export interface ChartFeedbackForm {
+export interface ChartFeedbackData {
   // form
   chartUseful: 'yes' | 'no'
   yesComments: string
@@ -11,23 +10,25 @@ export interface ChartFeedbackForm {
   formId: string
 }
 
-export function validate(form: Form<ChartFeedbackForm>) {
-  const { chartUseful, mainNoReason } = form.data
-  if (!['yes', 'no'].includes(chartUseful)) {
-    form.fieldErrors.chartUseful = 'Tell us if you found the chart useful'
-  } else if (chartUseful === 'yes') {
-    form.data.yesComments = (form.data.yesComments ?? '').trim()
-    delete form.data.noComments
-    delete form.data.mainNoReason
-  } else if (chartUseful === 'no') {
-    form.data.noComments = (form.data.noComments ?? '').trim()
-    delete form.data.yesComments
-    if (
-      !['not-relevant', 'do-not-understand', 'does-not-show-enough', 'what-to-do-with-info', 'other'].includes(
-        mainNoReason
-      )
-    ) {
-      form.fieldErrors.mainNoReason = 'Select a reason for your answer'
+export default class ChartFeedbackForm extends Form<ChartFeedbackData> {
+  protected validate(): void {
+    const { chartUseful, mainNoReason } = this.data
+    if (!['yes', 'no'].includes(chartUseful)) {
+      this.fieldErrors.chartUseful = 'Tell us if you found the chart useful'
+    } else if (chartUseful === 'yes') {
+      this.data.yesComments = (this.data.yesComments ?? '').trim()
+      delete this.data.noComments
+      delete this.data.mainNoReason
+    } else if (chartUseful === 'no') {
+      this.data.noComments = (this.data.noComments ?? '').trim()
+      delete this.data.yesComments
+      if (
+        !['not-relevant', 'do-not-understand', 'does-not-show-enough', 'what-to-do-with-info', 'other'].includes(
+          mainNoReason
+        )
+      ) {
+        this.fieldErrors.mainNoReason = 'Select a reason for your answer'
+      }
     }
   }
 }

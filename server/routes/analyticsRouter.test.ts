@@ -25,10 +25,25 @@ jest.mock('@aws-sdk/client-s3', () => {
 
 let originalPrisonsWithAnalytics: string[]
 let originalUsernamesWithAnalytics: string[]
+let originalZendeskConfig: { url: string; username: string; token: string }
+
+let mockedZendeskClientClass: jest.Mock<ZendeskClient>
 
 beforeAll(() => {
   originalPrisonsWithAnalytics = config.prisonsWithAnalytics
   originalUsernamesWithAnalytics = config.usernamesWithAnalytics
+
+  const { url, username, token } = config.apis.zendesk
+  originalZendeskConfig = { url, username, token }
+  config.apis.zendesk.url = 'http://zendesk.local'
+  config.apis.zendesk.username = 'anonymous@justice.gov.uk'
+  config.apis.zendesk.token = '123456789012345678901234567890'
+
+  mockedZendeskClientClass = ZendeskClient as jest.Mock<ZendeskClient>
+})
+
+afterAll(() => {
+  config.apis.zendesk = { ...config.apis.zendesk, ...originalZendeskConfig }
 })
 
 let app: Express
@@ -174,23 +189,8 @@ describe.each(analyticsPages)(
     }
 
     describe.each(graphIds)('charts have feedback forms', graphId => {
-      let originalZendeskConfig: typeof config.apis.zendesk
-
-      let mockedZendeskClientClass: jest.Mock<ZendeskClient>
-
       beforeAll(() => {
-        originalZendeskConfig = config.apis.zendesk
-        config.apis.zendesk.url = 'http://zendesk.local'
-        config.apis.zendesk.username = 'anonymous@justice.gov.uk'
-        config.apis.zendesk.token = '123456789012345678901234567890'
-
-        mockedZendeskClientClass = ZendeskClient as jest.Mock<ZendeskClient>
-
         mockSdkS3ClientReponse(s3.send, sourceTable)
-      })
-
-      afterAll(() => {
-        config.apis.zendesk = originalZendeskConfig
       })
 
       it(`${name} page can post simple feedback on ${graphId} chart`, () => {
@@ -281,6 +281,17 @@ describe.each(analyticsPages)(
             expect(mockedZendeskClientClass).not.toHaveBeenCalled()
           })
       })
+    })
+
+    it(`${name} page will not accept a post without a formId parameter`, () => {
+      return request(app)
+        .post(url)
+        .send({ chartUseful: 'yes' })
+        .expect(400)
+        .expect(res => {
+          expect(res.text).toContain('Sorry, there is a problem with the service')
+          expect(mockedZendeskClientClass).not.toHaveBeenCalled()
+        })
     })
   }
 )

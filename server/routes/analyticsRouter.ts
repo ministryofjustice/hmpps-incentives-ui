@@ -1,5 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
-import { MethodNotAllowed, NotFound } from 'http-errors'
+import { BadRequest, MethodNotAllowed, NotFound } from 'http-errors'
 
 import config from '../config'
 import logger from '../../logger'
@@ -137,7 +137,7 @@ async function chartFeedbackHandler(req: Request, res: Response, next: NextFunct
 
   if (!data.formId) {
     logger.error('Form posted without specifying formId')
-    next()
+    next(new BadRequest())
     return
   }
 

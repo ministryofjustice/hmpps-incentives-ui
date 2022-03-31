@@ -55,7 +55,9 @@ describe('GET /incentive-summary/:locationPrefix', () => {
           .get('/incentive-summary/MDI-2')
           .expect('Content-Type', /html/)
           .expect(res => {
-            expect(res.text).toContain('Review details have been removed from this table while we work on the data.')
+            expect(res.text).toContain(
+              'Review details have been removed from this table while we investigate the data.'
+            )
           })
       })
 

@@ -186,6 +186,14 @@ describe.each(analyticsPages)(
       })
     }
 
+    it(`shows a disclaimer on ${name} page`, () => {
+      return request(app)
+        .get(url)
+        .expect(res => {
+          expect(res.text).toContain('A note on our data')
+        })
+    })
+
     describe.each(graphIds)('charts have feedback forms', graphId => {
       beforeAll(() => {
         mockSdkS3ClientReponse(s3.send, sourceTable)

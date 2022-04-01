@@ -132,12 +132,16 @@ describe('AnalyticsService', () => {
   describe('comparators and filters', () => {
     describe.each([
       { a: { location: 'All' }, b: { location: '1' }, expected: -1 },
+      { a: { location: 'Unknown' }, b: { location: '1' }, expected: 1 },
+      { a: { location: 'Unknown' }, b: { location: 'All' }, expected: 1 },
       { a: { location: 'A' }, b: { location: 'All' }, expected: 1 },
       { a: { location: '1' }, b: { location: 'A' }, expected: -1 },
+      { a: { location: '1' }, b: { location: 'Unknown' }, expected: -1 },
       { a: { location: 'A' }, b: { location: '1' }, expected: 1 },
       { a: { location: 'A' }, b: { location: 'B' }, expected: -1 },
       { a: { location: 'SEG' }, b: { location: 'X' }, expected: 1 },
       { a: { location: 'RECP' }, b: { location: 'SEG' }, expected: -1 },
+      { a: { location: 'RECP' }, b: { location: 'Unknown' }, expected: -1 },
     ])('compareLocations()', ({ a, b, expected }) => {
       let compares = '='
       if (expected > 0) {
@@ -152,8 +156,10 @@ describe('AnalyticsService', () => {
 
     describe.each([
       { a: { characteristic: 'All' }, b: { characteristic: 'Asian' }, expected: -1 },
+      { a: { characteristic: 'Unknown' }, b: { characteristic: 'All' }, expected: 1 },
       { a: { characteristic: 'White' }, b: { characteristic: 'All' }, expected: 1 },
       { a: { characteristic: 'Asian' }, b: { characteristic: 'Other' }, expected: -1 },
+      { a: { characteristic: 'Asian' }, b: { characteristic: 'Unknown' }, expected: -1 },
     ])('compareCharacteristics()', ({ a, b, expected }) => {
       let compares = '='
       if (expected > 0) {

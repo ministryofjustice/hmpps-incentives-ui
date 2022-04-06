@@ -3,6 +3,7 @@ import request from 'supertest'
 
 import config from '../config'
 import ZendeskClient from '../data/zendeskClient'
+import { StitchedTablesCache } from '../services/analyticsService'
 import { TableType } from '../services/analyticsServiceTypes'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { MockTable, mockSdkS3ClientReponse } from '../testData/s3Bucket'
@@ -134,6 +135,7 @@ describe.each(analyticsPages)(
   ({ name, url, expectedHeading, graphIds, linksToIncentivesTable, sampleLocations, sourceTable }) => {
     beforeEach(() => {
       mockSdkS3ClientReponse(s3.send, sourceTable)
+      StitchedTablesCache.clear()
     })
 
     it(`${name} page loads if feature is turned on`, () => {

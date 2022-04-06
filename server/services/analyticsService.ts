@@ -1,4 +1,6 @@
+// eslint-disable-next-line max-classes-per-file
 import type S3Client from '../data/s3Client'
+import config from '../config'
 import logger from '../../logger'
 
 import type {
@@ -15,6 +17,8 @@ import type {
 import { AnalyticsError, AnalyticsErrorType, TableType, knownGroupsFor } from './analyticsServiceTypes'
 
 export default class AnalyticsService {
+  private readonly cache = StitchedTablesCache
+
   constructor(
     private readonly client: S3Client,
     private readonly urlForLocation: (prison: string, location: string) => string
@@ -91,11 +95,14 @@ export default class AnalyticsService {
   }
 
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation>> {
-    const { table, date: lastUpdated } = await this.findTable<CaseEntriesTable>(TableType.behaviourEntries)
-
     const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
     type StitchedRow = [string, string, number, number]
-    const stitchedTable = this.stitchTable<CaseEntriesTable, StitchedRow>(table, columnsToStitch)
+
+    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
+      this,
+      TableType.behaviourEntries,
+      columnsToStitch
+    )
 
     const filteredTables = stitchedTable.filter(
       ([somePrison]) =>
@@ -125,11 +132,14 @@ export default class AnalyticsService {
   }
 
   async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation>> {
-    const { table, date: lastUpdated } = await this.findTable<CaseEntriesTable>(TableType.behaviourEntries)
-
     const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
     type StitchedRow = [string, string, number, number]
-    const stitchedTable = this.stitchTable<CaseEntriesTable, StitchedRow>(table, columnsToStitch)
+
+    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
+      this,
+      TableType.behaviourEntries,
+      columnsToStitch
+    )
 
     const filteredTables = stitchedTable.filter(
       ([somePrison]) =>
@@ -173,11 +183,14 @@ export default class AnalyticsService {
   }
 
   async getIncentiveLevelsByLocation(prison: string): Promise<Report<PrisonersOnLevelsByLocation>> {
-    const { table, date: lastUpdated } = await this.findTable<IncentiveLevelsTable>(TableType.incentiveLevels)
-
     const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string, string]
-    const stitchedTable = this.stitchTable<IncentiveLevelsTable, StitchedRow>(table, columnsToStitch)
+
+    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
+      this,
+      TableType.incentiveLevels,
+      columnsToStitch
+    )
 
     const columnSet: Set<string> = new Set()
     const filteredTables = stitchedTable.filter(([somePrison, _wing, incentive, characteristic]) => {
@@ -225,11 +238,14 @@ export default class AnalyticsService {
     prison: string,
     protectedCharacteristic: ProtectedCharacteristic
   ): Promise<Report<PrisonersOnLevelsByProtectedCharacteristic>> {
-    const { table, date: lastUpdated } = await this.findTable<IncentiveLevelsTable>(TableType.incentiveLevels)
-
     const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string, string]
-    const stitchedTable = this.stitchTable<IncentiveLevelsTable, StitchedRow>(table, columnsToStitch)
+
+    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
+      this,
+      TableType.incentiveLevels,
+      columnsToStitch
+    )
 
     const columnSet: Set<string> = new Set()
     const filteredTables = stitchedTable.filter(
@@ -352,4 +368,108 @@ export function compareCharacteristics(
  */
 export function removeLevelPrefix(level: string): string {
   return /^[A-Z]+\.\s+(.*)\s*$/.exec(level)?.[1] || level
+}
+
+/**
+ * In-memory cache of the stiched tables values.
+ *
+ * The source tables are stored in S3, these files can be over 100MB
+ * and tranform them into a more useful format is also relatively "slow".
+ *
+ * It's wasteful to transfer these files from S3 and transform them from
+ * JSON to a matrix format for each request.
+ *
+ * A typical value would be ~30MB so small enough to be kept in memory.
+ * This has the advantage of clearing the cache if application is restarted.
+ *
+ * Values are cached based on source filename and list of columns.
+ * This means that potentially two graphs could use the same source table
+ * but different columns and the corresponding stiched tables would not clash.
+ *
+ * NOTE: The cached stiched tables are not filtered. The AnalyticsService
+ * would still filter them by prison or else. This filtering is relatively
+ * fast so we don't store all the small artefacts for each of the prisons.
+ */
+export class StitchedTablesCache {
+  /**
+   * A map-like object where the key is a unique string derived from
+   * the source table name and the columns (e.g. 'incentives_latest_narrow,prison,wing').
+   *
+   * The values contains the `expiresAt` date determining whether the value
+   * is expired or fresh.
+   *
+   * The `value` property contains the actual cached value, including
+   * the `stichedTable` matrix and the `date`/`modified` dates.
+   */
+  private static cache: Record<
+    string, // cacheKey [TableType, ...columnsToStitch].join()
+    {
+      expiresAt: Date
+      value: {
+        date: Date
+        modified: Date
+        stitchedTable: [string, ...(number | string)[]][] // Cached value
+      }
+    }
+  > = {}
+
+  /**
+   * Clears the cache. Particularly useful when running tests when caching
+   * may not be desirable.
+   */
+  static clear() {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key of Object.keys(this.cache)) {
+      delete this.cache[key]
+    }
+  }
+
+  static async getStitchedTable<T extends Table, Row extends [string, ...(number | string)[]]>(
+    analyticsService: AnalyticsService,
+    tableType: TableType,
+    columnsToStitch: string[]
+  ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] }> {
+    const cacheKey = [tableType, ...columnsToStitch].join()
+
+    let value = this.get<Row>(cacheKey)
+    if (value) {
+      return value
+    }
+
+    // No cached value found or it was expired, get/calculate fresh value
+    const { table, date, modified } = await analyticsService.findTable<T>(tableType)
+    const stitchedTable = analyticsService.stitchTable<T, Row>(table, columnsToStitch)
+
+    value = { date, modified, stitchedTable }
+    this.set<Row>(cacheKey, value)
+
+    return value
+  }
+
+  private static get<Row extends [string, ...(number | string)[]]>(
+    cacheKey: string
+  ): { date: Date; modified: Date; stitchedTable: Row[] } | null {
+    // Check if there is a cached value
+    if (cacheKey in this.cache) {
+      // Check whether cached value is still valid
+      if (new Date() < this.cache[cacheKey].expiresAt) {
+        return this.cache[cacheKey].value as { date: Date; modified: Date; stitchedTable: Row[] }
+      }
+
+      // Delete expired cached value
+      delete this.cache[cacheKey]
+    }
+
+    return null
+  }
+
+  private static set<Row extends [string, ...(number | string)[]]>(
+    cacheKey: string,
+    value: { date: Date; modified: Date; stitchedTable: Row[] }
+  ) {
+    const expiresAt = new Date()
+    expiresAt.setMinutes(expiresAt.getMinutes() + config.analyticsCacheExpiryMinutes)
+
+    this.cache[cacheKey] = { expiresAt, value }
+  }
 }

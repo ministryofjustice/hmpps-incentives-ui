@@ -133,6 +133,7 @@ export default {
     showAnalytics: flag('FEATURE_SHOW_ANALYTICS', false),
     showPcAnalytics: flag('FEATURE_SHOW_PC_ANALYTICS', false),
   },
+  analyticsCacheExpiryMinutes: Number(get('ANALYTICS_CACHE_EXPIRY_MINUTES', 120)),
   prisonsWithAnalytics: (get('PRISONS_WITH_ANALYTICS', null, notRequiredInProduction) ?? '').split(','),
   usernamesWithAnalytics: (get('USERNAMES_WITH_ANALYTICS', null, notRequiredInProduction) ?? '').split(','),
   feedbackUrl: get('FEEDBACK_URL', ''),

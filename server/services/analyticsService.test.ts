@@ -1,5 +1,10 @@
 import S3Client from '../data/s3Client'
-import AnalyticsService, { compareLocations, compareCharacteristics, removeLevelPrefix } from './analyticsService'
+import AnalyticsService, {
+  compareLocations,
+  compareCharacteristics,
+  removeLevelPrefix,
+  StitchedTablesCache,
+} from './analyticsService'
 import {
   AnalyticsError,
   TableType,
@@ -32,6 +37,7 @@ describe('AnalyticsService', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    StitchedTablesCache.clear()
     analyticsService = new AnalyticsService(s3Client, () => '')
   })
 

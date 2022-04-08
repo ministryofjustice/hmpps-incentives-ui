@@ -160,7 +160,7 @@ describe.each(analyticsPages)(
         .expect(200)
         .expect(res => {
           expect(res.text).toContain(expectedHeading)
-          expect(res.text).toContain('There is no data available')
+          expect(res.text).toContain('There is a problem with this data – try again later')
         })
     })
 
@@ -172,7 +172,7 @@ describe.each(analyticsPages)(
         .expect(200)
         .expect(res => {
           expect(res.text).toContain(expectedHeading)
-          expect(res.text).toContain('There is no data available')
+          expect(res.text).toContain('There is a problem with this data – try again later')
         })
     })
 

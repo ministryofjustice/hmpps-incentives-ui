@@ -97,7 +97,7 @@ export enum ProtectedCharacteristic {
 /**
  * Known protected characteristic groups
  */
-export const Ethnicities = ['Asian', 'Black', 'Mixed', 'Other', 'White'] as const
+export const Ethnicities = ['Asian or Asian British', 'Black or Black British', 'Mixed', 'Other', 'White'] as const
 
 /**
  * Known protected characteristic groups

@@ -118,7 +118,12 @@ const analyticsPages = [
     expectedHeading: 'Percentage and number of prisoners on each incentive level by ethnicity',
     linksToIncentivesTable: false,
     sourceTable: TableType.incentiveLevels,
-    graphIds: ['incentive-levels-by-ethnicity', 'incentive-levels-by-age-group'],
+    graphIds: [
+      'incentive-levels-by-ethnicity',
+      'incentive-levels-by-age-group',
+      'incentive-levels-by-religion',
+      'incentive-levels-by-disability',
+    ],
   },
 ]
 

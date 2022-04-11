@@ -1,0 +1,136 @@
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "../../../components/dataSource.njk" import dataSource %}
+
+<h2 class="govuk-heading-m">
+  Percentage and number of prisoners on each incentive level by disability
+</h2>
+
+{% if not report.hasErrors %}
+
+{{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {{ govukDetails({
+      summaryText: "How you can use this chart",
+      text: "This chart will help you tell if there is any imbalance in incentive levels between prisoners with a recorded disability on NOMIS or OASys and those without. As the amount of missing data is high, the number of prisoners with unknown information is also provided.",
+      id: "guidance-" + graphId,
+      classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
+      attributes: {
+        "data-qa": "guidance",
+        "data-ga-category": "How you can use this chart > Incentive level by disability",
+        "data-ga-label": user.activeCaseload.id | default("")
+      }
+    }) }}
+
+    {% set form = formsWithErrors[graphId] | default({}) %}
+    {% set chartFeedback %}
+      {% include "../../../partials/analytics/chartFeedbackForm.njk" %}
+    {% endset %}
+    {{ govukDetails({
+      summaryText: "Is this chart useful?",
+      html: chartFeedback,
+      id: "chart-feedback-" + graphId,
+      classes: "govuk-!-display-none-print",
+      open: form.hasErrors,
+      attributes: {
+        "data-qa": "chart-feedback",
+        "data-ga-category": "Is this chart useful > Incentive level by disability",
+        "data-ga-label": user.activeCaseload.id | default("")
+      }
+    }) }}
+  </div>
+</div>
+
+{% set colourChoices = [
+  'app-chart-colour--a', 'app-chart-colour--b', 'app-chart-colour--c', 'app-chart-colour--d', 'app-chart-colour--e'
+] %}
+
+<div class="govuk-!-margin-top-8">
+  {#
+  <a href="?" class="govuk-button govuk-button--secondary govuk-!-margin-right-6">Download chart</a>
+  #}
+
+  <div aria-hidden="true" class="app-chart-legend">
+    {% for level in report.columns %}
+      <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>
+      <span class="app-chart-legend__label">{{ level }}</span>
+    {% endfor %}
+  </div>
+</div>
+
+<table class="app-chart-table app-chart-table--bars" id="table-{{ graphId }}">
+  <caption class="govuk-visually-hidden">
+    Percentage and number of prisoners on each incentive level by disability
+  </caption>
+
+  <thead>
+    <tr>
+      <th scope="col">Disability</th>
+      {% for level in report.columns %}
+        <th scope="col">{{ level }} <span class="govuk-visually-hidden">level</span></th>
+      {% endfor %}
+      <th aria-hidden="true" scope="col"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for row in report.rows %}
+      {% set total = row.prisonersOnLevels | sum %}
+
+      <tr>
+        <td>
+          <strong>
+            {{ row.characteristic }}
+          </strong>
+          <br />
+          {{ total | thousands }} <span class="govuk-visually-hidden">prisoners</span>
+        </td>
+        {% for level in report.columns %}
+          <td>
+            {{ row.prisonersOnLevels[loop.index0] | percentageOf(total) }}
+            <br />
+            {{ row.prisonersOnLevels[loop.index0] | thousands }} <span class="govuk-visually-hidden">prisoners on {{ level }} level</span>
+          </td>
+        {% endfor %}
+        <td aria-hidden="true" class="app-chart-table__percentage-cell">
+          <span class="app-chart-table__axis-midpoint"></span>
+          {% for level in report.columns %}
+            <div class="app-chart-table__percentage-cell-bar {{ colourChoices[loop.index0] }}" data-style-width="{{ row.prisonersOnLevels[loop.index0] | percentageOf(total, false) }}">&nbsp;<br />&nbsp;</div>
+          {% endfor %}
+        </td>
+      </tr>
+
+      {% if loop.first %}
+        <tr aria-hidden="true">
+          <td colspan="{{ (report.columns | length) + 1 }}"></td>
+          <td class="app-chart-table__percentage-cell">
+            <span class="app-chart-table__axis-midpoint"></span>
+          </td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+
+  <tfoot aria-hidden="true">
+    <tr>
+      <td colspan="{{ (report.columns | length) + 1 }}"></td>
+      <td class="app-chart-table__axis-values">
+        <span class="app-chart-table__axis-midpoint"></span>
+        <span class="app-chart-table__axis-value app-chart-table__axis-value--min">0</span>
+        <span class="app-chart-table__axis-value app-chart-table__axis-value--mid">50</span>
+        <span class="app-chart-table__axis-value app-chart-table__axis-value--max">100</span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="{{ (report.columns | length) + 1 }}"></td>
+      <td>Percentage</td>
+    </tr>
+  </tfoot>
+</table>
+
+{% else %}
+
+  {% include "../no-data-partial.njk" %}
+
+{% endif %}

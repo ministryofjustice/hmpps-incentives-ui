@@ -92,17 +92,33 @@ export type PrisonersOnLevelsByProtectedCharacteristic = {
 export enum ProtectedCharacteristic {
   Ethnicity = 'ethnic_group',
   AgeGroup = 'age_group_10yr',
+  Religion = 'religion_group',
+  Disability = 'disability',
 }
 
 /**
  * Known protected characteristic groups
+ * NB: must match source table values
  */
 export const Ethnicities = ['Asian or Asian British', 'Black or Black British', 'Mixed', 'Other', 'White'] as const
 
 /**
  * Known protected characteristic groups
+ * NB: must match source table values
  */
 export const AgeGroups = ['15-17', '18-25', '26-35', '36-45', '46-55', '56-65', '66+'] as const
+
+/**
+ * Known protected characteristic groups
+ * NB: must match source table values
+ */
+export const Religions = ['Buddhist', 'Christian', 'Hindu', 'Jewish', 'Muslim', 'No Religion', 'Other', 'Sikh'] as const
+
+/**
+ * Known protected characteristic groups
+ * NB: must match source table values
+ */
+export const Disabilities = ['NO', 'Unknown', 'YES'] as const
 
 /**
  * Returns list of known groups for given protected characteristic
@@ -113,6 +129,10 @@ export function knownGroupsFor(characteristic: ProtectedCharacteristic): Readonl
       return Ethnicities
     case ProtectedCharacteristic.AgeGroup:
       return AgeGroups
+    case ProtectedCharacteristic.Religion:
+      return Religions
+    case ProtectedCharacteristic.Disability:
+      return Disabilities
     default:
       throw new Error('Unknown characteristic')
   }

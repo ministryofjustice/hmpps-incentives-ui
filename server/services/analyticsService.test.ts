@@ -1,6 +1,14 @@
 import S3Client from '../data/s3Client'
 import AnalyticsService, { compareLocations, compareCharacteristics, removeLevelPrefix } from './analyticsService'
-import { AnalyticsError, TableType, ProtectedCharacteristic, Ethnicities, AgeGroups } from './analyticsServiceTypes'
+import {
+  AnalyticsError,
+  TableType,
+  ProtectedCharacteristic,
+  Ethnicities,
+  AgeGroups,
+  Religions,
+  Disabilities,
+} from './analyticsServiceTypes'
 import type { PrisonersOnLevelsByProtectedCharacteristic } from './analyticsServiceTypes'
 import { MockTable, mockAppS3ClientResponse } from '../testData/s3Bucket'
 
@@ -317,6 +325,8 @@ describe('AnalyticsService', () => {
   describe.each([
     [ProtectedCharacteristic.Ethnicity, ['All', ...Ethnicities]],
     [ProtectedCharacteristic.AgeGroup, ['All', ...AgeGroups]],
+    [ProtectedCharacteristic.Religion, ['All', ...Religions]],
+    [ProtectedCharacteristic.Disability, ['All', ...Disabilities]],
   ])('getIncentiveLevelsByProtectedCharacteristic()', (characteristic, expectedCharacteristics) => {
     beforeEach(() => {
       mockAppS3ClientResponse(s3Client, TableType.incentiveLevels)

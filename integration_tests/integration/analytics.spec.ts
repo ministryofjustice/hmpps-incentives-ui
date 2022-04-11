@@ -196,6 +196,18 @@ context('Analytics section', () => {
         expect(location).to.contain('All')
         expect(location).to.contain('921')
       })
+
+      page.incentivesByReligion.first().then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('921')
+      })
+
+      page.incentivesByDisability.first().then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('921')
+      })
     })
 
     it('guidance box for analytics is tracked', () => {
@@ -225,6 +237,28 @@ context('Analytics section', () => {
         .then(() =>
           gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by age group', 'closed', 'MDI')
         )
+
+      page.incentivesByReligionGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by religion', 'opened', 'MDI')
+        )
+      page.incentivesByReligionGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by religion', 'closed', 'MDI')
+        )
+
+      page.incentivesByDisabilityGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by disability', 'opened', 'MDI')
+        )
+      page.incentivesByDisabilityGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by disability', 'closed', 'MDI')
+        )
     })
 
     it('chart feedback box for analytics is tracked', () => {
@@ -246,12 +280,28 @@ context('Analytics section', () => {
       page.incentivesByAgeGroupFeedback
         .click()
         .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age group', 'closed', 'MDI'))
+
+      page.incentivesByReligionFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by religion', 'opened', 'MDI'))
+      page.incentivesByReligionFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by religion', 'closed', 'MDI'))
+
+      page.incentivesByDisabilityFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by disability', 'opened', 'MDI'))
+      page.incentivesByDisabilityFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by disability', 'closed', 'MDI'))
     })
 
     it('users can submit feedback on charts', () => {
       testValidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
         ['incentivesByEthnicityFeedback', 'incentivesByEthnicityFeedbackForm'],
         ['incentivesByAgeGroupFeedback', 'incentivesByAgeGroupFeedbackForm'],
+        ['incentivesByReligionFeedback', 'incentivesByReligionFeedbackForm'],
+        ['incentivesByDisabilityFeedback', 'incentivesByDisabilityFeedbackForm'],
       ])
     })
 
@@ -259,6 +309,8 @@ context('Analytics section', () => {
       testInvalidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
         ['incentivesByEthnicityFeedback', 'incentivesByEthnicityFeedbackForm'],
         ['incentivesByAgeGroupFeedback', 'incentivesByAgeGroupFeedbackForm'],
+        ['incentivesByReligionFeedback', 'incentivesByReligionFeedbackForm'],
+        ['incentivesByDisabilityFeedback', 'incentivesByDisabilityFeedbackForm'],
       ])
     })
   })

@@ -155,11 +155,12 @@ describe('AnalyticsService', () => {
     })
 
     describe.each([
-      { a: { characteristic: 'All' }, b: { characteristic: 'Asian' }, expected: -1 },
+      { a: { characteristic: 'All' }, b: { characteristic: 'Asian or Asian British' }, expected: -1 },
+      { a: { characteristic: 'Black or Black British' }, b: { characteristic: 'Mixed' }, expected: -1 },
       { a: { characteristic: 'Unknown' }, b: { characteristic: 'All' }, expected: 1 },
       { a: { characteristic: 'White' }, b: { characteristic: 'All' }, expected: 1 },
-      { a: { characteristic: 'Asian' }, b: { characteristic: 'Other' }, expected: -1 },
-      { a: { characteristic: 'Asian' }, b: { characteristic: 'Unknown' }, expected: -1 },
+      { a: { characteristic: 'Asian or Asian British' }, b: { characteristic: 'Other' }, expected: -1 },
+      { a: { characteristic: 'Asian or Asian British' }, b: { characteristic: 'Unknown' }, expected: -1 },
     ])('compareCharacteristics()', ({ a, b, expected }) => {
       let compares = '='
       if (expected > 0) {

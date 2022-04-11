@@ -17,6 +17,22 @@ export enum MockTable {
   Empty,
 }
 
+function mockResponse(
+  tableType: TableType,
+  tableResponse: MockTable
+): { objectList: { key: string; modified: Date }[]; dataPath?: string } {
+  if (tableResponse === MockTable.Missing) {
+    return { objectList: [] }
+  }
+  return {
+    objectList: [{ key: `${tableType}/2022-04-11.json`, modified: new Date('2022-04-12T12:00:00Z') }],
+    dataPath: path.resolve(
+      __dirname,
+      `./s3Bucket/${tableType}/${tableResponse === MockTable.Empty ? 'empty' : '2022-04-11'}.json`
+    ),
+  }
+}
+
 /**
  * Mocks the response for the S3Client in this application (for testing the consumers of this client)
  */
@@ -25,21 +41,10 @@ export function mockAppS3ClientResponse(
   tableType: TableType,
   tableResponse = MockTable.Sample
 ) {
-  s3Client.listObjects.mockResolvedValue(
-    tableResponse === MockTable.Missing
-      ? []
-      : [{ key: `${tableType}/2022-03-24.json`, modified: new Date('2022-03-25T12:00:00Z') }]
-  )
-  if (tableResponse !== MockTable.Missing) {
-    s3Client.getObject.mockReturnValue(
-      fs.readFile(
-        path.resolve(
-          __dirname,
-          `./s3Bucket/${tableType}/${tableResponse === MockTable.Empty ? 'empty' : '2022-03-24'}.json`
-        ),
-        { encoding: 'utf8' }
-      )
-    )
+  const { objectList, dataPath } = mockResponse(tableType, tableResponse)
+  s3Client.listObjects.mockResolvedValue(objectList)
+  if (dataPath) {
+    s3Client.getObject.mockReturnValue(fs.readFile(dataPath, { encoding: 'utf8' }))
   }
 }
 
@@ -51,23 +56,18 @@ export function mockSdkS3ClientReponse(
   tableType: TableType,
   tableResponse = MockTable.Sample
 ) {
+  const { objectList, dataPath } = mockResponse(tableType, tableResponse)
   const listObjectsResponse: ListObjectsV2Output = {
-    Contents:
-      tableResponse === MockTable.Missing
-        ? []
-        : [{ Key: `${tableType}/2022-03-24.json`, LastModified: new Date('2022-03-25T12:00:00Z') }],
+    Contents: objectList.map(({ key, modified }) => {
+      return { Key: key, LastModified: modified }
+    }),
   }
   send.mockImplementation(async command => {
     if (command instanceof ListObjectsV2Command) {
       return listObjectsResponse
     }
-    if (command instanceof GetObjectCommand && tableResponse !== MockTable.Missing) {
-      const stream = createReadStream(
-        path.resolve(
-          __dirname,
-          `../testData/s3Bucket/${tableType}/${tableResponse === MockTable.Empty ? 'empty' : '2022-03-24'}.json`
-        )
-      )
+    if (command instanceof GetObjectCommand && dataPath) {
+      const stream = createReadStream(dataPath)
       return { Body: stream }
     }
     throw new Error('Not implemented')

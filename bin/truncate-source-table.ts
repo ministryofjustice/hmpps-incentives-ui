@@ -29,7 +29,12 @@ if (chosenTableType === 'behaviourEntries') {
   rowFilter = () => true
 } else if (chosenTableType === 'incentiveLevels') {
   columnsToKeep = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
-  const characteristicsToKeep: ReadonlySet<string> = new Set(['ethnic_group', 'age_group_10yr'])
+  const characteristicsToKeep: ReadonlySet<string> = new Set([
+    'ethnic_group',
+    'age_group_10yr',
+    'disability',
+    'religion_group',
+  ])
   rowFilter = (rowIndex, table) => characteristicsToKeep.has(table.characteristic[rowIndex] as string)
 } else {
   throw new Error(`Not implemented for: ${chosenTableType}`)

@@ -37,13 +37,13 @@ context('Analytics section', () => {
       page.entriesByLocation.first().then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('410')
+        expect(location).to.contain('462')
       })
 
       page.prisonersWithEntriesByLocation.first().then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('1,227')
+        expect(location).to.contain('1,194')
       })
     })
 
@@ -131,7 +131,7 @@ context('Analytics section', () => {
       page.incentivesByLocation.first().then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('918')
+        expect(location).to.contain('921')
       })
     })
 
@@ -188,13 +188,13 @@ context('Analytics section', () => {
       page.incentivesByEthnicity.first().then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('915')
+        expect(location).to.contain('920')
       })
 
       page.incentivesByAgeGroup.first().then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('918')
+        expect(location).to.contain('921')
       })
     })
 

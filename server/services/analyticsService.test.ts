@@ -8,20 +8,13 @@ jest.mock('@aws-sdk/client-s3')
 jest.mock('../data/s3Client')
 
 const prisonLocations = {
-  // TODO: it's not yet entirely clear which graphs should filter locations and which should not
-  MDI: {
-    filteredLocations: ['All', '1', '2', '3', '4', '5', '6', '7', '8', 'SEG', 'TAP'],
-    unfilteredLocations: ['All', '1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
-  },
-  BWI: {
-    filteredLocations: ['All', 'A', 'B', 'C', 'CASU'],
-    unfilteredLocations: ['All', 'A', 'B', 'C', 'CASU'],
-  },
+  MDI: ['All', '1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
+  BWI: ['All', 'A', 'B', 'C', 'CASU'],
 }
 
 const prisonLevels = {
-  MDI: { levels: ['Basic', 'Standard', 'Enhanced'] },
-  BWI: { levels: ['Basic', 'Standard', 'Enhanced'] },
+  MDI: ['Basic', 'Standard', 'Enhanced'],
+  BWI: ['Basic', 'Standard', 'Enhanced'],
 }
 
 describe('AnalyticsService', () => {
@@ -195,7 +188,7 @@ describe('AnalyticsService', () => {
 
     it('has a totals row', async () => {
       const { rows: entries } = await analyticsService.getBehaviourEntriesByLocation('MDI')
-      expect(entries).toHaveLength(prisonLocations.MDI.filteredLocations.length)
+      expect(entries).toHaveLength(prisonLocations.MDI.length)
 
       const prisonTotal = entries.shift()
       expect(prisonTotal.location).toEqual('All')
@@ -218,11 +211,11 @@ describe('AnalyticsService', () => {
 
     describe.each(Object.entries(prisonLocations))(
       'lists locations in the correct order',
-      (prison, { filteredLocations }) => {
+      (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
           const { rows } = await analyticsService.getBehaviourEntriesByLocation(prison)
           const locations = rows.map(row => row.location)
-          expect(locations).toEqual(filteredLocations)
+          expect(locations).toEqual(expectedLocations)
         })
       }
     )
@@ -235,7 +228,7 @@ describe('AnalyticsService', () => {
 
     it('has a totals row', async () => {
       const { rows: prisoners } = await analyticsService.getPrisonersWithEntriesByLocation('MDI')
-      expect(prisoners).toHaveLength(prisonLocations.MDI.filteredLocations.length)
+      expect(prisoners).toHaveLength(prisonLocations.MDI.length)
 
       const prisonTotal = prisoners.shift()
       expect(prisonTotal.location).toEqual('All')
@@ -262,11 +255,11 @@ describe('AnalyticsService', () => {
 
     describe.each(Object.entries(prisonLocations))(
       'lists locations in the correct order',
-      (prison, { filteredLocations }) => {
+      (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
           const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(prison)
           const locations = rows.map(row => row.location)
-          expect(locations).toEqual(filteredLocations)
+          expect(locations).toEqual(expectedLocations)
         })
       }
     )
@@ -279,7 +272,7 @@ describe('AnalyticsService', () => {
 
     it('has a totals row', async () => {
       const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation('MDI')
-      expect(prisonersOnLevels).toHaveLength(prisonLocations.MDI.unfilteredLocations.length)
+      expect(prisonersOnLevels).toHaveLength(prisonLocations.MDI.length)
 
       const prisonTotal = prisonersOnLevels.shift()
       expect(prisonTotal.location).toEqual('All')
@@ -304,16 +297,16 @@ describe('AnalyticsService', () => {
 
     describe.each(Object.entries(prisonLocations))(
       'lists locations in the correct order',
-      (prison, { unfilteredLocations }) => {
+      (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
           const { rows } = await analyticsService.getIncentiveLevelsByLocation(prison)
           const locations = rows.map(row => row.location)
-          expect(locations).toEqual(unfilteredLocations)
+          expect(locations).toEqual(expectedLocations)
         })
       }
     )
 
-    describe.each(Object.entries(prisonLevels))('lists levels in the correct order', (prison, { levels }) => {
+    describe.each(Object.entries(prisonLevels))('lists levels in the correct order', (prison, levels) => {
       it(`for ${prison}`, async () => {
         const { columns } = await analyticsService.getIncentiveLevelsByLocation(prison)
         expect(columns).toEqual(levels)
@@ -379,7 +372,7 @@ describe('AnalyticsService', () => {
 
     describe.each(Object.entries(prisonLevels))(
       `[${characteristic}]: lists levels in the correct order`,
-      (prison, { levels }) => {
+      (prison, levels) => {
         it(`for ${prison}`, async () => {
           const { columns } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(prison, characteristic)
           expect(columns).toEqual(levels)

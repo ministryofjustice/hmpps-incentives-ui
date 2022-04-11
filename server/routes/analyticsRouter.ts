@@ -138,14 +138,22 @@ export default function routes(router: Router): Router {
     const prisonersByEthnicity = await transformAnalyticsError(
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Ethnicity)
     )
-    const prisonersInAgeGroups = await transformAnalyticsError(
+    const prisonersByAgeGroup = await transformAnalyticsError(
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.AgeGroup)
+    )
+    const prisonersByReligion = await transformAnalyticsError(
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Religion)
+    )
+    const prisonersByDisability = await transformAnalyticsError(
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Disability)
     )
 
     res.render('pages/analytics/protected-characteristics/index', {
       ...templateContext(req),
       prisonersByEthnicity,
-      prisonersInAgeGroups,
+      prisonersByAgeGroup,
+      prisonersByReligion,
+      prisonersByDisability,
     })
   })
 

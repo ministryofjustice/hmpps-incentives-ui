@@ -14,12 +14,28 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
     return cy.get('#table-incentive-levels-by-age-group tbody tr')
   }
 
+  get incentivesByReligion(): PageElement<HTMLTableRowElement> {
+    return cy.get('#table-incentive-levels-by-religion tbody tr')
+  }
+
+  get incentivesByDisability(): PageElement<HTMLTableRowElement> {
+    return cy.get('#table-incentive-levels-by-disability tbody tr')
+  }
+
   get incentivesByEthnicityGuidance(): PageElement<HTMLDetailsElement> {
     return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-ethnicity').find('.govuk-details__summary')
   }
 
   get incentivesByAgeGroupGuidance(): PageElement<HTMLDetailsElement> {
     return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-age-group').find('.govuk-details__summary')
+  }
+
+  get incentivesByReligionGuidance(): PageElement<HTMLDetailsElement> {
+    return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-religion').find('.govuk-details__summary')
+  }
+
+  get incentivesByDisabilityGuidance(): PageElement<HTMLDetailsElement> {
+    return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-disability').find('.govuk-details__summary')
   }
 
   get incentivesByEthnicityFeedback(): PageElement<HTMLDetailsElement> {
@@ -34,11 +50,31 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
       .find('.govuk-details__summary')
   }
 
+  get incentivesByReligionFeedback(): PageElement<HTMLDetailsElement> {
+    return this.chartFeedbackBoxes
+      .filter('#chart-feedback-incentive-levels-by-religion')
+      .find('.govuk-details__summary')
+  }
+
+  get incentivesByDisabilityFeedback(): PageElement<HTMLDetailsElement> {
+    return this.chartFeedbackBoxes
+      .filter('#chart-feedback-incentive-levels-by-disability')
+      .find('.govuk-details__summary')
+  }
+
   get incentivesByEthnicityFeedbackForm(): PageElement<HTMLFormElement> {
     return cy.get('#form-incentive-levels-by-ethnicity')
   }
 
   get incentivesByAgeGroupFeedbackForm(): PageElement<HTMLFormElement> {
     return cy.get('#form-incentive-levels-by-age-group')
+  }
+
+  get incentivesByReligionFeedbackForm(): PageElement<HTMLFormElement> {
+    return cy.get('#form-incentive-levels-by-religion')
+  }
+
+  get incentivesByDisabilityFeedbackForm(): PageElement<HTMLFormElement> {
+    return cy.get('#form-incentive-levels-by-disability')
   }
 }

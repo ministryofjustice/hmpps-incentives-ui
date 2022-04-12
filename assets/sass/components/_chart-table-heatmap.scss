@@ -3,21 +3,16 @@
     width: 80%;
   }
 
-  th {
-    text-align: left;
+  th, td {
+    width: 20%;
 
     &:first-child {
       text-align: right;
     }
-  }
-
-  th, td {
-    width: 20%;
   }
 }
 
 .app-chart-table--heatmap__cell {
   display: inline-block;
   width: 100%;
-  text-align: left;
 }

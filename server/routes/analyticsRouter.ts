@@ -92,12 +92,12 @@ export default function routes(router: Router): Router {
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
-    const behaviourEntries = await transformAnalyticsError(
-      analyticsService.getBehaviourEntriesByLocation(activeCaseLoad)
-    )
-    const prisonersWithEntries = await transformAnalyticsError(
-      analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad)
-    )
+
+    const charts = [
+      analyticsService.getBehaviourEntriesByLocation(activeCaseLoad),
+      analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad),
+    ].map(transformAnalyticsError)
+    const [behaviourEntries, prisonersWithEntries] = await Promise.all(charts)
 
     res.render('pages/analytics/behaviour-entries/index', {
       ...templateContext(req),
@@ -113,9 +113,9 @@ export default function routes(router: Router): Router {
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
-    const prisonersOnLevels = await transformAnalyticsError(
-      analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)
-    )
+
+    const charts = [analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)].map(transformAnalyticsError)
+    const [prisonersOnLevels] = await Promise.all(charts)
 
     res.render('pages/analytics/incentive-levels/index', {
       ...templateContext(req),
@@ -135,17 +135,15 @@ export default function routes(router: Router): Router {
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
-    const prisonersByEthnicity = await transformAnalyticsError(
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Ethnicity)
-    )
-    const prisonersByAgeGroup = await transformAnalyticsError(
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.AgeGroup)
-    )
-    const prisonersByReligion = await transformAnalyticsError(
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Religion)
-    )
-    const prisonersByDisability = await transformAnalyticsError(
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Disability)
+
+    const charts = [
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Ethnicity),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.AgeGroup),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Religion),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Disability),
+    ].map(transformAnalyticsError)
+    const [prisonersByEthnicity, prisonersByAgeGroup, prisonersByReligion, prisonersByDisability] = await Promise.all(
+      charts
     )
 
     res.render('pages/analytics/protected-characteristics/index', {

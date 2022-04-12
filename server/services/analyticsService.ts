@@ -31,11 +31,7 @@ export default class AnalyticsService {
     private readonly urlForLocation: (prison: string, location: string) => string
   ) {}
 
-  /**
-   * Finds the latest available table (by date) in S3 bucket, returning an object.
-   * The source data hold columns separately
-   */
-  async findTable<T extends Table>(tableType: TableType): Promise<{ table: T; date: Date; modified: Date }> {
+  async findLatestTable(tableType: TableType): Promise<{ key: string; date: Date; modified: Date }> {
     logger.debug(`Finding latest "${tableType}" table`)
     let objects = await this.client.listObjects(`${tableType}/`)
     objects = objects.filter(object => /\/\d\d\d\d-\d\d-\d\d.json$/i.test(object.key))
@@ -46,16 +42,33 @@ export default class AnalyticsService {
     }
     const { key, modified } = objects[objects.length - 1]
     const date = new Date(key.slice(key.length - 15, key.length - 5))
+
+    return { key, date, modified }
+  }
+
+  async getTable<T extends Table>(key: string): Promise<T> {
     const object = await this.client.getObject(key)
     try {
       const table = JSON.parse(object) as T
-      logger.info(`Found latest "${tableType}" table: ${key} (modified ${modified.toISOString()})`)
-      return { table, date, modified }
+      return table
     } catch (e) {
       const errorMessage = `Cannot parse "${key}" table: ${e}`
       logger.error(errorMessage)
       throw new AnalyticsError(AnalyticsErrorType.MalformedTable, errorMessage)
     }
+  }
+
+  /**
+   * Finds the latest available table (by date) in S3 bucket, returning an object.
+   * The source data hold columns separately
+   */
+  async findTable<T extends Table>(tableType: TableType): Promise<{ table: T; date: Date; modified: Date }> {
+    const { key, date, modified } = await this.findLatestTable(tableType)
+    logger.info(`Found latest "${tableType}" table: ${key} (modified ${modified.toISOString()})`)
+
+    const table = await this.getTable<T>(key)
+
+    return { table, date, modified }
   }
 
   /**

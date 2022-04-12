@@ -1,0 +1,106 @@
+/** Styles for trends-timeline-type analytics chart */
+
+$trends-overlay-height: 300px; // NB: must match `trendsOverlayHeight` in nunjucks template
+
+// table containing vertical grouped bar chart with optional "trends" line
+.app-chart-table--trends {
+  thead {
+    th {
+      font-weight: normal;
+    }
+
+    td {
+      position: relative;
+      padding: $chart-cell-pading 0;
+
+      // contains vertical axis label and gridline values
+      &:first-child {
+        padding: 0 $chart-cell-pading 0 0;
+      }
+    }
+  }
+
+  tbody {
+    tr:nth-child(odd) {
+      background: $govuk-canvas-background-colour;
+    }
+
+    th {
+      padding-left: $chart-cell-pading;
+    }
+  }
+}
+
+// group of vertical bars; one bar per series/column of data
+.app-chart-table__group {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: end;
+  justify-content: center;
+  width: 100%;
+  height: $trends-overlay-height;
+
+  span {
+    display: block;
+  }
+
+  &.app-chart-table__group-of-1 span {
+    width: 21px;
+  }
+
+  &.app-chart-table__group-of-2 span {
+    width: 18px;
+  }
+
+  &.app-chart-table__group-of-3 span {
+    width: 15px;
+  }
+
+  &.app-chart-table__group-of-4 span {
+    width: 12px;
+  }
+
+  &.app-chart-table__group-of-5 span {
+    width: 9px;
+  }
+}
+
+// contains gridline values
+.app-chart-trends-vertical-axis {
+  display: grid;
+  grid-auto-flow: row;
+  align-content: space-between;
+  height: ($trends-overlay-height + 2 * $chart-cell-pading);
+  text-align: right;
+
+  span {
+    @include govuk-font($size: 14);
+  }
+}
+
+// table row with overlay containing vertical axis label, horizontal gridlines and totals line
+.app-chart-trends-overlay {
+  height: 0;
+
+  td {
+    height: 0;
+    padding: 0 !important;
+  }
+
+  // vertical axis label
+  span {
+    display: block;
+    position: absolute;
+    top: -1.5em;
+    right: $chart-cell-pading;
+    @include govuk-font($size: 14);
+  }
+
+  // horizontal gridlines and totals line
+  svg {
+    position: absolute;
+    top: $chart-cell-pading;
+    height: $trends-overlay-height;
+    width: 100%;
+  }
+}

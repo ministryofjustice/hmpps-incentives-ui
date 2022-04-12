@@ -40,5 +40,20 @@
     </section>
   </div>
 
+  {% if featureFlags.showAnalyticsTrends %}
+    <div class="govuk-grid-row">
+      <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+        {% set chartTitle = "Comparison of positive and negative behaviour entries in the establishment in the last 12 months" %}
+        {% set chartGuidance = "Use this chart to compare the numbers of positive, negative and total entries with previous months. What do the number of entries and the positive-negative ratios tell you about the incentives policy and the behaviour of prisoners? Be aware of any significant population changes." %}
+        {% set graphId = "trends-entries" %}
+        {% set graphGoogleAnalyticsCategory = "Behaviour entry trends" %}
+        {% set chartFeedbackForm = forms[graphId] %}
+        {% include "../../../partials/analytics/trends.njk" %}
+
+      </section>
+    </div>
+  {% endif %}
+
   {% include "../../../partials/analytics/disclaimer.njk" %}
 {% endblock %}

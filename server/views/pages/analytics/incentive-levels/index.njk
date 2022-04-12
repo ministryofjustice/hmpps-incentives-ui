@@ -32,5 +32,20 @@
     </section>
   </div>
 
+  {% if featureFlags.showAnalyticsTrends %}
+    <div class="govuk-grid-row">
+      <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+        {% set chartTitle = "Incentive levels in the establishment over the last 12 months" %}
+        {% set chartGuidance = "Use this chart to compare incentive levels with previous months. Are there any concerns or surprises that need explored further? Is the incentives scheme producing the levels you would like it to?" %}
+        {% set graphId = "trends-incentive-levels" %}
+        {% set graphGoogleAnalyticsCategory = "Incentive level trends" %}
+        {% set chartFeedbackForm = forms[graphId] %}
+        {% include "../../../partials/analytics/trends.njk" %}
+
+      </section>
+    </div>
+  {% endif %}
+
   {% include "../../../partials/analytics/disclaimer.njk" %}
 {% endblock %}

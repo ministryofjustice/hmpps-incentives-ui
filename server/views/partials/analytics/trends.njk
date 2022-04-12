@@ -1,0 +1,201 @@
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "../../components/dataSource.njk" import dataSource %}
+
+<h2 class="govuk-heading-m">
+  {{ chartTitle }}
+</h2>
+
+{% if not trends.hasErrors %}
+
+{% set trendsOverlayHeight = 300 %} {# NB: must match $trends-overlay-height in SCSS #}
+{% set colourChoices = trends.columns | chartPalette %}
+
+{% set trends = trends | calculateTrendsRange %}
+
+{{ dataSource(trends.dataSource, trends.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {{ govukDetails({
+      summaryText: "How you can use this chart",
+      text: chartGuidance,
+      id: "guidance-" + graphId,
+      classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
+      attributes: {
+        "data-qa": "guidance",
+        "data-ga-category": "How you can use this chart > " + graphGoogleAnalyticsCategory,
+        "data-ga-label": user.activeCaseload.id | default("")
+      }
+    }) }}
+
+    {% set chartFeedback %}
+      {% include "./chartFeedbackForm.njk" %}
+    {% endset %}
+    {{ govukDetails({
+      summaryText: "Is this chart useful?",
+      html: chartFeedback,
+      id: "chart-feedback-" + graphId,
+      classes: "govuk-!-display-none-print",
+      open: chartFeedbackForm.hasErrors,
+      attributes: {
+        "data-qa": "chart-feedback",
+        "data-ga-category": "Is this chart useful > " + graphGoogleAnalyticsCategory,
+        "data-ga-label": user.activeCaseload.id | default("")
+      }
+    }) }}
+  </div>
+</div>
+
+<div class="govuk-!-margin-top-8">
+  {#
+  <a href="?" class="govuk-button govuk-button--secondary govuk-!-margin-right-6">Download chart</a>
+  #}
+
+  <div aria-hidden="true" class="app-chart-legend">
+    {% for column in trends.columns %}
+      <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>
+      <span class="app-chart-legend__label">{{ column }}</span>
+    {% endfor %}
+    {% if not trends.plotPercentage %}
+      <span class="app-chart-legend__swatch app-chart-legend__swatch--trends">&nbsp;</span>
+      <span class="app-chart-legend__label">
+        {% if trends.populationIsTotal %}
+          Prison population
+        {% else %}
+          {{ trends.monthlyTotalName }}
+        {% endif %}
+      </span>
+    {% endif %}
+  </div>
+</div>
+
+<div class="app-chart-container">
+
+  <table class="app-chart-table app-chart-table--trends" id="table-{{ graphId }}">
+    <caption class="govuk-visually-hidden">
+      {{ chartTitle }}
+    </caption>
+    <thead>
+      <tr aria-hidden="true" class="app-chart-trends-overlay">
+        <td>
+          <span>
+            {% if not trends.plotPercentage %}
+              {{ trends.verticalAxisTitle }}
+            {% else %}
+              Percentage
+            {% endif %}
+          </span>
+        </td>
+        <td colspan="{{ trends.rows | length }}">
+          <svg viewbox="0 0 720 {{ trendsOverlayHeight }}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            {% for gridlineValue in trends.range %}
+              {% set gridlineY = trends.range.percentage(gridlineValue) * trendsOverlayHeight / 100 %}
+              {% if gridlineY < 1 %}
+                {% set gridlineY = 0.5 %}
+              {% elseif gridlineY > trendsOverlayHeight - 1 %}
+                {% set gridlineY = trendsOverlayHeight - 0.5 %}
+              {% endif %}
+              <line stroke="#b1b4b6 {#- GDS mid-grey -#}" stroke-width="1" stroke-dasharray="2" x1="0" x2="720" y1="{{ gridlineY }}" y2="{{ gridlineY }}" />
+            {% endfor %}
+
+            {% if not trends.plotPercentage %}
+              {% set columnWidth = 720 / trends.rows.length %}
+              <path stroke="#b1b4b6 {#- GDS mid-grey -#}" stroke-width="3" fill="none" d="
+                {%- for row in trends.rows -%}
+                  {%- if loop.first %} M{% else %} L{% endif -%}
+                  {{- (loop.index0 + 0.5) * columnWidth -}},
+                  {{- trendsOverlayHeight - trends.range.percentage(row.total) * trendsOverlayHeight / 100 -}}
+                {%- endfor -%}
+              " />
+            {% endif %}
+          </svg>
+        </td>
+      </tr>
+      <tr aria-hidden="true">
+        <td>
+          <div class="app-chart-trends-vertical-axis">
+            {% for gridlineValue in trends.range %}
+              <span>{{ gridlineValue | thousands }}</span>
+            {% endfor %}
+          </div>
+        </td>
+        {% for row in trends.rows %}
+          {% set rowIndex = loop.index0 %}
+          <td>
+            <div class="app-chart-table__group app-chart-table__group-of-{{ trends.columns.length }}">
+              {% for column in trends.columns %}
+                {% set columnIndex = loop.index0 %}
+                <span class="{{ colourChoices[columnIndex] }}" data-style-height="
+                  {%- if not trends.plotPercentage -%}
+                    {{ trends.range.percentage(row.values[columnIndex]) }}%
+                  {%- else -%}
+                    {%- if row.total === 0 -%}
+                      0
+                    {%- else -%}
+                      {{ trends.range.percentage(row.values[columnIndex] / row.total * 100) }}%
+                    {%- endif -%}
+                  {%- endif -%}
+                "></span>
+              {% endfor %}
+            </div>
+          </td>
+        {% endfor %}
+      </tr>
+      <tr>
+        <th scope="col">
+          <span class="govuk-visually-hidden">Level</span>
+        </th>
+        {% for row in trends.rows %}
+          <th scope="col">
+            <strong>
+              {{ row.month.toLocaleDateString('en-GB', {
+                month: 'short',
+                timeZone: 'Europe/London'
+              }) }}
+            </strong>
+            <br />
+            {{ row.month.getFullYear() }}
+          </th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      {% for column in trends.columns %}
+        {% set columnIndex = loop.index0 %}
+        <tr>
+          <th scope="row">{{ column }}</th>
+          {% for row in trends.rows %}
+            <td>
+              {{ row.values[columnIndex] | thousands }}
+              <br />
+              {{ row.values[columnIndex] | percentageOf(row.total) }}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      {% if not trends.populationIsTotal %}
+        <tr>
+          <th scope="row">{{ trends.monthlyTotalName }}</th>
+          {% for row in trends.rows %}
+            <td>
+              {{ row.total | thousands }}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endif %}
+      <tr>
+        <th scope="row">Prison population</th>
+        {% for row in trends.rows %}
+          <td>{{ row.population | thousands }}</td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+{% else %}
+
+  {% include "./noData.njk" %}
+
+{% endif %}

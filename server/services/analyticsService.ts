@@ -11,6 +11,8 @@ import type {
   PrisonersWithEntriesByLocation,
   Report,
   Table,
+  TrendsReport,
+  TrendsReportRow,
 } from './analyticsServiceTypes'
 import {
   AgeYoungPeople,
@@ -325,6 +327,72 @@ export default class AnalyticsService {
     })
     rows.sort(compareCharacteristics)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
+  }
+
+  async getBehaviourEntryTrends(_prison: string): Promise<TrendsReport> {
+    // TODO: fake response
+
+    const firstOfTheMonth = (monthsAgo: number): Date => {
+      const month = new Date()
+      month.setDate(1)
+      month.setHours(12, 0, 0, 0)
+      month.setMonth(month.getMonth() - monthsAgo)
+      return month
+    }
+    const trendsRows: TrendsReportRow[] = []
+    for (let monthsAgo = 11; monthsAgo >= 0; monthsAgo -= 1) {
+      const positive = Math.round(Math.random() * 50 + 175)
+      const negative = Math.round(Math.random() * 50 + 275)
+      const total = positive + negative
+      trendsRows.push({
+        month: firstOfTheMonth(monthsAgo),
+        total,
+        population: total * 2,
+        values: [positive, negative],
+      })
+    }
+    return {
+      columns: ['Positive', 'Negative'],
+      dataSource: 'NOMIS',
+      lastUpdated: new Date(),
+      rows: trendsRows,
+      verticalAxisTitle: 'Entries',
+      populationIsTotal: false,
+      monthlyTotalName: 'All entries',
+    }
+  }
+
+  async getIncentiveLevelTrends(_prison: string): Promise<TrendsReport> {
+    // TODO: fake response
+
+    const firstOfTheMonth = (monthsAgo: number): Date => {
+      const month = new Date()
+      month.setDate(1)
+      month.setHours(12, 0, 0, 0)
+      month.setMonth(month.getMonth() - monthsAgo)
+      return month
+    }
+    const trendsRows: TrendsReportRow[] = []
+    for (let monthsAgo = 11; monthsAgo >= 0; monthsAgo -= 1) {
+      const basic = Math.round(Math.random() * 50)
+      const standard = Math.round(Math.random() * 300 + 500)
+      const enhanced = Math.round(Math.random() * 300 + 450)
+      const total = basic + standard + enhanced
+      trendsRows.push({
+        month: firstOfTheMonth(monthsAgo),
+        total,
+        population: total,
+        values: [basic, standard, enhanced],
+      })
+    }
+    return {
+      columns: ['Basic', 'Standard', 'Enhanced'],
+      dataSource: 'NOMIS',
+      lastUpdated: new Date(),
+      rows: trendsRows,
+      plotPercentage: true,
+      populationIsTotal: true,
+    }
   }
 }
 

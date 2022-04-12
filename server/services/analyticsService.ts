@@ -1,6 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
 import type S3Client from '../data/s3Client'
-import config from '../config'
 import logger from '../../logger'
 
 import type {
@@ -408,21 +407,15 @@ export class StitchedTablesCache {
    * A map-like object where the key is a unique string derived from
    * the source table name and the columns (e.g. 'incentives_latest_narrow,prison,wing').
    *
-   * The values contains the `expiresAt` date determining whether the value
-   * is expired or fresh.
-   *
-   * The `value` property contains the actual cached value, including
+   * The value contains the actual cached value, including
    * the `stichedTable` matrix and the `date`/`modified` dates.
    */
   private static cache: Record<
-    string, // cacheKey [TableType, ...columnsToStitch].join()
+    string, // cacheKey [TableType, ...columnsToStitch].join(',')
     {
-      expiresAt: Date
-      value: {
-        date: Date
-        modified: Date
-        stitchedTable: [string, ...(number | string)[]][] // Cached value
-      }
+      date: Date
+      modified: Date
+      stitchedTable: [string, ...(number | string)[]][]
     }
   > = {}
 
@@ -442,47 +435,42 @@ export class StitchedTablesCache {
     tableType: TableType,
     columnsToStitch: string[]
   ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] }> {
-    const cacheKey = [tableType, ...columnsToStitch].join()
+    const cacheKey = [tableType, ...columnsToStitch].join(',')
 
-    let value = this.get<Row>(cacheKey)
+    let value = await this.get<Row>(analyticsService, cacheKey)
     if (value) {
       return value
     }
 
-    // No cached value found or it was expired, get/calculate fresh value
+    // No cached value found or cache is stale: Get/calculate fresh value
     const { table, date, modified } = await analyticsService.findTable<T>(tableType)
     const stitchedTable = analyticsService.stitchTable<T, Row>(table, columnsToStitch)
 
     value = { date, modified, stitchedTable }
-    this.set<Row>(cacheKey, value)
+    this.cache[cacheKey] = value
 
     return value
   }
 
-  private static get<Row extends [string, ...(number | string)[]]>(
+  private static async get<Row extends [string, ...(number | string)[]]>(
+    analyticsService: AnalyticsService,
     cacheKey: string
-  ): { date: Date; modified: Date; stitchedTable: Row[] } | null {
+  ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] } | null> {
     // Check if there is a cached value
     if (cacheKey in this.cache) {
-      // Check whether cached value is still valid
-      if (new Date() < this.cache[cacheKey].expiresAt) {
-        return this.cache[cacheKey].value as { date: Date; modified: Date; stitchedTable: Row[] }
+      // Check whether it matches modified in S3
+      const tableType = cacheKey.split(',')[0] as TableType
+      const { modified: modifiedInCache } = this.cache[cacheKey]
+      const { modified: modifiedInS3 } = await analyticsService.findLatestTable(tableType)
+
+      if (modifiedInCache.toString() === modifiedInS3.toString()) {
+        return this.cache[cacheKey] as { date: Date; modified: Date; stitchedTable: Row[] }
       }
 
-      // Delete expired cached value
+      // Delete stale cached value
       delete this.cache[cacheKey]
     }
 
     return null
-  }
-
-  private static set<Row extends [string, ...(number | string)[]]>(
-    cacheKey: string,
-    value: { date: Date; modified: Date; stitchedTable: Row[] }
-  ) {
-    const expiresAt = new Date()
-    expiresAt.setMinutes(expiresAt.getMinutes() + config.analyticsCacheExpiryMinutes)
-
-    this.cache[cacheKey] = { expiresAt, value }
   }
 }

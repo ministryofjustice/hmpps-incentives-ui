@@ -191,7 +191,7 @@ context('Analytics section', () => {
         expect(location).to.contain('920')
       })
 
-      page.incentivesByAgeGroup.first().then(totalsRow => {
+      page.incentivesByAge.first().then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
         expect(location).to.contain('921')
@@ -227,16 +227,12 @@ context('Analytics section', () => {
           gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'closed', 'MDI')
         )
 
-      page.incentivesByAgeGroupGuidance
+      page.incentivesByAgeGuidance
         .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by age group', 'opened', 'MDI')
-        )
-      page.incentivesByAgeGroupGuidance
+        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by age', 'opened', 'MDI'))
+      page.incentivesByAgeGuidance
         .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by age group', 'closed', 'MDI')
-        )
+        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by age', 'closed', 'MDI'))
 
       page.incentivesByReligionGuidance
         .click()
@@ -274,12 +270,12 @@ context('Analytics section', () => {
         .click()
         .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by ethnicity', 'closed', 'MDI'))
 
-      page.incentivesByAgeGroupFeedback
+      page.incentivesByAgeFeedback
         .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age group', 'opened', 'MDI'))
-      page.incentivesByAgeGroupFeedback
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age', 'opened', 'MDI'))
+      page.incentivesByAgeFeedback
         .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age group', 'closed', 'MDI'))
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age', 'closed', 'MDI'))
 
       page.incentivesByReligionFeedback
         .click()
@@ -299,7 +295,7 @@ context('Analytics section', () => {
     it('users can submit feedback on charts', () => {
       testValidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
         ['incentivesByEthnicityFeedback', 'incentivesByEthnicityFeedbackForm'],
-        ['incentivesByAgeGroupFeedback', 'incentivesByAgeGroupFeedbackForm'],
+        ['incentivesByAgeFeedback', 'incentivesByAgeFeedbackForm'],
         ['incentivesByReligionFeedback', 'incentivesByReligionFeedbackForm'],
         ['incentivesByDisabilityFeedback', 'incentivesByDisabilityFeedbackForm'],
       ])
@@ -308,7 +304,7 @@ context('Analytics section', () => {
     it('users will see errors if they submit invalid feedback on chart', () => {
       testInvalidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
         ['incentivesByEthnicityFeedback', 'incentivesByEthnicityFeedbackForm'],
-        ['incentivesByAgeGroupFeedback', 'incentivesByAgeGroupFeedbackForm'],
+        ['incentivesByAgeFeedback', 'incentivesByAgeFeedbackForm'],
         ['incentivesByReligionFeedback', 'incentivesByReligionFeedbackForm'],
         ['incentivesByDisabilityFeedback', 'incentivesByDisabilityFeedbackForm'],
       ])

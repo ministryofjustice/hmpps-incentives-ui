@@ -10,8 +10,8 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
     return cy.get('#table-incentive-levels-by-ethnicity tbody tr')
   }
 
-  get incentivesByAgeGroup(): PageElement<HTMLTableRowElement> {
-    return cy.get('#table-incentive-levels-by-age-group tbody tr')
+  get incentivesByAge(): PageElement<HTMLTableRowElement> {
+    return cy.get('#table-incentive-levels-by-age tbody tr')
   }
 
   get incentivesByReligion(): PageElement<HTMLTableRowElement> {
@@ -26,8 +26,8 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
     return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-ethnicity').find('.govuk-details__summary')
   }
 
-  get incentivesByAgeGroupGuidance(): PageElement<HTMLDetailsElement> {
-    return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-age-group').find('.govuk-details__summary')
+  get incentivesByAgeGuidance(): PageElement<HTMLDetailsElement> {
+    return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-age').find('.govuk-details__summary')
   }
 
   get incentivesByReligionGuidance(): PageElement<HTMLDetailsElement> {
@@ -44,10 +44,8 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
       .find('.govuk-details__summary')
   }
 
-  get incentivesByAgeGroupFeedback(): PageElement<HTMLDetailsElement> {
-    return this.chartFeedbackBoxes
-      .filter('#chart-feedback-incentive-levels-by-age-group')
-      .find('.govuk-details__summary')
+  get incentivesByAgeFeedback(): PageElement<HTMLDetailsElement> {
+    return this.chartFeedbackBoxes.filter('#chart-feedback-incentive-levels-by-age').find('.govuk-details__summary')
   }
 
   get incentivesByReligionFeedback(): PageElement<HTMLDetailsElement> {
@@ -66,8 +64,8 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
     return cy.get('#form-incentive-levels-by-ethnicity')
   }
 
-  get incentivesByAgeGroupFeedbackForm(): PageElement<HTMLFormElement> {
-    return cy.get('#form-incentive-levels-by-age-group')
+  get incentivesByAgeFeedbackForm(): PageElement<HTMLFormElement> {
+    return cy.get('#form-incentive-levels-by-age')
   }
 
   get incentivesByReligionFeedbackForm(): PageElement<HTMLFormElement> {

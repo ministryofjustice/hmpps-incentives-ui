@@ -13,7 +13,7 @@
 
       {% include "../../../partials/messages.njk" %}
 
-      {% set errorSummary = formsWithErrors["incentive-levels-by-ethnicity"].errorSummary | default(formsWithErrors["incentive-levels-by-age-group"].errorSummary) | default(formsWithErrors["incentive-levels-by-religion"].errorSummary) | default(formsWithErrors["incentive-levels-by-disability"].errorSummary) %}
+      {% set errorSummary = formsWithErrors["incentive-levels-by-ethnicity"].errorSummary | default(formsWithErrors["incentive-levels-by-age"].errorSummary) | default(formsWithErrors["incentive-levels-by-religion"].errorSummary) | default(formsWithErrors["incentive-levels-by-disability"].errorSummary) %}
       {% if errorSummary %}
         {{ govukErrorSummary({
           titleText: "There is a problem",
@@ -41,9 +41,9 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-      {% set graphId = "incentive-levels-by-age-group" %}
-      {% set report = prisonersByAgeGroup %}
-      {% include "./prisoners-by-age-group.njk" %}
+      {% set graphId = "incentive-levels-by-age" %}
+      {% set report = prisonersByAge %}
+      {% include "./prisoners-by-age.njk" %}
 
     </section>
   </div>

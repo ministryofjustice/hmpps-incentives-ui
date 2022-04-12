@@ -120,7 +120,7 @@ const analyticsPages = [
     sourceTable: TableType.incentiveLevels,
     graphIds: [
       'incentive-levels-by-ethnicity',
-      'incentive-levels-by-age-group',
+      'incentive-levels-by-age',
       'incentive-levels-by-religion',
       'incentive-levels-by-disability',
     ],

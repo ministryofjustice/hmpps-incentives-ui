@@ -3,7 +3,7 @@
 {% from "../../../components/palette.njk" import colourChoices %}
 
 <h2 class="govuk-heading-m">
-  Percentage and number of prisoners on each incentive level by age group
+  Percentage and number of prisoners on each incentive level by age
 </h2>
 
 {% if not report.hasErrors %}
@@ -19,7 +19,7 @@
       classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
       attributes: {
         "data-qa": "guidance",
-        "data-ga-category": "How you can use this chart > Incentive level by age group",
+        "data-ga-category": "How you can use this chart > Incentive level by age",
         "data-ga-label": user.activeCaseload.id | default("")
       }
     }) }}
@@ -36,7 +36,7 @@
       open: form.hasErrors,
       attributes: {
         "data-qa": "chart-feedback",
-        "data-ga-category": "Is this chart useful > Incentive level by age group",
+        "data-ga-category": "Is this chart useful > Incentive level by age",
         "data-ga-label": user.activeCaseload.id | default("")
       }
     }) }}
@@ -58,12 +58,12 @@
 
 <table class="app-chart-table app-chart-table--bars" id="table-{{ graphId }}">
   <caption class="govuk-visually-hidden">
-    Percentage and number of prisoners on each incentive level by age group
+    Percentage and number of prisoners on each incentive level by age
   </caption>
 
   <thead>
     <tr>
-      <th scope="col">Age group</th>
+      <th scope="col">Age</th>
       {% for level in report.columns %}
         <th scope="col">{{ level }} <span class="govuk-visually-hidden">level</span></th>
       {% endfor %}

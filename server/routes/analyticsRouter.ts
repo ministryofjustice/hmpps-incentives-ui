@@ -138,18 +138,16 @@ export default function routes(router: Router): Router {
 
     const charts = [
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Ethnicity),
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.AgeGroup),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Age),
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Religion),
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Disability),
     ].map(transformAnalyticsError)
-    const [prisonersByEthnicity, prisonersByAgeGroup, prisonersByReligion, prisonersByDisability] = await Promise.all(
-      charts
-    )
+    const [prisonersByEthnicity, prisonersByAge, prisonersByReligion, prisonersByDisability] = await Promise.all(charts)
 
     res.render('pages/analytics/protected-characteristics/index', {
       ...templateContext(req),
       prisonersByEthnicity,
-      prisonersByAgeGroup,
+      prisonersByAge,
       prisonersByReligion,
       prisonersByDisability,
     })

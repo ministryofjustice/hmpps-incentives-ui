@@ -5,7 +5,7 @@ import {
   TableType,
   ProtectedCharacteristic,
   Ethnicities,
-  AgeGroups,
+  Ages,
   Religions,
   Disabilities,
 } from './analyticsServiceTypes'
@@ -324,7 +324,7 @@ describe('AnalyticsService', () => {
 
   describe.each([
     [ProtectedCharacteristic.Ethnicity, ['All', ...Ethnicities]],
-    [ProtectedCharacteristic.AgeGroup, ['All', ...AgeGroups]],
+    [ProtectedCharacteristic.Age, ['All', ...Ages]],
     [ProtectedCharacteristic.Religion, ['All', ...Religions]],
     [ProtectedCharacteristic.Disability, ['All', ...Disabilities]],
   ])('getIncentiveLevelsByProtectedCharacteristic()', (characteristic, expectedCharacteristics) => {
@@ -367,7 +367,7 @@ describe('AnalyticsService', () => {
       expect(characteristics).toEqual(expectedCharacteristics)
     })
 
-    if (characteristic === ProtectedCharacteristic.AgeGroup) {
+    if (characteristic === ProtectedCharacteristic.Age) {
       it(`[${characteristic}]: adds missing group with all zeros`, async () => {
         const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
         const zeroRows = rows.filter(({ characteristic: someCharacteristic }) => someCharacteristic === '15-17')

@@ -1,5 +1,6 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "../../../components/dataSource.njk" import dataSource %}
+{% from "../../../components/palette.njk" import colourChoices %}
 
 <h2 class="govuk-heading-m">
   Percentage and number of prisoners on each incentive level by ethnicity
@@ -41,10 +42,6 @@
     }) }}
   </div>
 </div>
-
-{% set colourChoices = [
-  'app-chart-colour--a', 'app-chart-colour--b', 'app-chart-colour--c', 'app-chart-colour--d', 'app-chart-colour--e'
-] %}
 
 <div class="govuk-!-margin-top-8">
   {#

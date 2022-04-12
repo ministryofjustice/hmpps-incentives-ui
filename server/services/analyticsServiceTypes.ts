@@ -87,6 +87,42 @@ export type PrisonersOnLevelsByProtectedCharacteristic = {
 }
 
 /**
+ * Type returned by all analytics service monthly trends functions
+ */
+export type TrendsReport = Report<TrendsReportRow> &
+  (
+    | {
+        // when not plotting percentages, the vertical axis title is required
+        plotPercentage?: false
+        verticalAxisTitle: string
+      }
+    | { plotPercentage: true }
+  ) &
+  (
+    | {
+        // when populationIsTotal is true, the monthly trends rows are counting people
+        // and percentages are calculated from total prison population
+        populationIsTotal: true
+      }
+    | {
+        // when populationIsTotal is false, the monthly trends percentages are instead calculated
+        // from each month's values sum
+        populationIsTotal: false
+        monthlyTotalName: string
+      }
+  )
+
+/**
+ * A row in a trends report returned
+ */
+export type TrendsReportRow = {
+  month: Date
+  population: number
+  values: number[]
+  total: number
+}
+
+/**
  * Characteristics values from IncentiveLevelsTable
  */
 export enum ProtectedCharacteristic {

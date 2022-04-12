@@ -85,7 +85,7 @@ export default function routes(router: Router): Router {
       addFeatureGates(handler)
     )
 
-  const behaviourEntryGraphIds = ['entries-by-location', 'prisoners-with-entries-by-location']
+  const behaviourEntryGraphIds = ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries']
   routeWithFeedback('/behaviour-entries', behaviourEntryGraphIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
@@ -100,14 +100,21 @@ export default function routes(router: Router): Router {
     ].map(transformAnalyticsError)
     const [behaviourEntries, prisonersWithEntries] = await Promise.all(charts)
 
+    let trends
+    if (config.featureFlags.showAnalyticsTrends) {
+      // TODO: move into Promise.all above once feature flag is removed
+      trends = await analyticsService.getBehaviourEntryTrends(activeCaseLoad)
+    }
+
     res.render('pages/analytics/behaviour-entries/index', {
       ...templateContext(req),
       behaviourEntries,
       prisonersWithEntries,
+      trends,
     })
   })
 
-  const incentiveLevelGraphIds = ['incentive-levels-by-location']
+  const incentiveLevelGraphIds = ['incentive-levels-by-location', 'trends-incentive-levels']
   routeWithFeedback('/incentive-levels', incentiveLevelGraphIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
@@ -119,9 +126,16 @@ export default function routes(router: Router): Router {
     const charts = [analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)].map(transformAnalyticsError)
     const [prisonersOnLevels] = await Promise.all(charts)
 
+    let trends
+    if (config.featureFlags.showAnalyticsTrends) {
+      // TODO: move into Promise.all above once feature flag is removed
+      trends = await analyticsService.getIncentiveLevelTrends(activeCaseLoad)
+    }
+
     res.render('pages/analytics/incentive-levels/index', {
       ...templateContext(req),
       prisonersOnLevels,
+      trends,
     })
   })
 

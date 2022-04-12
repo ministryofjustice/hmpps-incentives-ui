@@ -22,3 +22,11 @@
   width: govuk-spacing(2);
   padding: govuk-spacing(1) 0;
 }
+
+.app-chart-legend__swatch--trends {
+  width: 30px;
+  height: 3px;
+  padding: 0;
+  margin: 0.8em 0 0 govuk-spacing(2);
+  background: govuk-colour("mid-grey");
+}

@@ -7,4 +7,8 @@ $(() => {
     const $el = $(element)
     $el.css('background', $el.data('style-background'))
   })
+  $('.app-chart-table__group span').each((_, element) => {
+    const $el = $(element)
+    $el.css('height', $el.data('style-height'))
+  })
 })

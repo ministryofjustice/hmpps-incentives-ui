@@ -1,3 +1,14 @@
+/** Base styles for analytics charts */
+
+$chart-cell-pading: govuk-spacing(2);
+
+// chart container that allows horizontal scrolling when the contents are too wide for the screen
+.app-chart-container {
+  margin-top: govuk-spacing(4);
+  overflow-x: scroll;
+}
+
+// base chart-containing table styles
 .app-chart-table {
   margin: govuk-spacing(4) 0 govuk-spacing(6);
   width: 100%;
@@ -7,7 +18,7 @@
   @include govuk-text-colour;
 
   th, td {
-    padding: govuk-spacing(2) govuk-spacing(2) govuk-spacing(2) 0;
+    padding: $chart-cell-pading $chart-cell-pading $chart-cell-pading 0;
     vertical-align: top;
     text-align: left;
   }

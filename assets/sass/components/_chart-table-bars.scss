@@ -1,8 +1,12 @@
+/** Styles for horizontal-stacked-bar-type analytics chart */
+
+// table containing horizontal stacked bar chart
 .app-chart-table--bars {
   th, td {
     width: 12%;
     text-align: right;
 
+    // column containing bars
     &:last-child {
       width: 52%;
     }
@@ -19,6 +23,7 @@
   }
 }
 
+// cell containing bars
 td.app-chart-table__percentage-cell {
   position: relative;
   padding-right: 0;
@@ -26,12 +31,14 @@ td.app-chart-table__percentage-cell {
   border-right: 1px solid $govuk-border-colour;
 }
 
+// stacked bar forming the chart
 .app-chart-table__percentage-cell-bar {
   position: relative;
   float: left;
   width: 0;
 }
 
+// vertical 50% gridline
 .app-chart-table__axis-midpoint {
   display: block;
   position: absolute;
@@ -41,17 +48,19 @@ td.app-chart-table__percentage-cell {
   border-left: 1px solid $govuk-border-colour;
 }
 
+// container for horizontal axis values
 td.app-chart-table__axis-values {
   position: relative;
   border-left: 1px solid $govuk-border-colour;
   border-right: 1px solid $govuk-border-colour;
 }
 
+// values in horizontal axis
 .app-chart-table__axis-value {
   display: block;
   position: absolute;
   top: 0;
-  padding: 0 govuk-spacing(2);
+  padding: 0 $chart-cell-pading;
   @include govuk-font($size: 14);
 }
 

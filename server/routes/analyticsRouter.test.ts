@@ -56,6 +56,7 @@ beforeEach(() => {
   app = appWithAllRoutes({})
   app.locals.featureFlags.showAnalytics = true
   app.locals.featureFlags.showPcAnalytics = true
+  app.locals.featureFlags.showAnalyticsTrends = true
 })
 
 afterAll(() => {
@@ -102,7 +103,7 @@ const analyticsPages = [
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     sourceTable: TableType.behaviourEntries,
-    graphIds: ['entries-by-location', 'prisoners-with-entries-by-location'],
+    graphIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
     name: 'Incentive levels',
@@ -111,7 +112,7 @@ const analyticsPages = [
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     sourceTable: TableType.incentiveLevels,
-    graphIds: ['incentive-levels-by-location'],
+    graphIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
     name: 'Protected characteristics',

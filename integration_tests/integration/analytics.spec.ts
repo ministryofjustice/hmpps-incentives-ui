@@ -82,6 +82,13 @@ context('Analytics section', () => {
             'MDI'
           )
         )
+
+      page.entriesTrendsGuidance
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Behaviour entry trends', 'opened', 'MDI'))
+      page.entriesTrendsGuidance
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Behaviour entry trends', 'closed', 'MDI'))
     })
 
     it('chart feedback box for analytics is tracked', () => {
@@ -107,12 +114,20 @@ context('Analytics section', () => {
         .then(() =>
           gaSpy.shouldHaveSentEvent('Is this chart useful > Prisoners with behaviour entries by wing', 'closed', 'MDI')
         )
+
+      page.entriesTrendsFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Behaviour entry trends', 'opened', 'MDI'))
+      page.entriesTrendsFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Behaviour entry trends', 'closed', 'MDI'))
     })
 
     it('users can submit feedback on charts', () => {
       testValidFeedbackSubmission(AnalyticsBehaviourEntries, [
         ['entriesByLocationFeedback', 'entriesByLocationFeedbackForm'],
         ['prisonersWithEntriesByLocationFeedback', 'prisonersWithEntriesByLocationFeedbackForm'],
+        ['entriesTrendsFeedback', 'entriesTrendsFeedbackForm'],
       ])
     })
 
@@ -120,6 +135,7 @@ context('Analytics section', () => {
       testInvalidFeedbackSubmission(AnalyticsBehaviourEntries, [
         ['entriesByLocationFeedback', 'entriesByLocationFeedbackForm'],
         ['prisonersWithEntriesByLocationFeedback', 'prisonersWithEntriesByLocationFeedbackForm'],
+        ['entriesTrendsFeedback', 'entriesTrendsFeedbackForm'],
       ])
     })
   })
@@ -147,6 +163,13 @@ context('Analytics section', () => {
       page.incentivesByLocationGuidance
         .click()
         .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'closed', 'MDI'))
+
+      page.incentivesTrendsGuidance
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level trends', 'opened', 'MDI'))
+      page.incentivesTrendsGuidance
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level trends', 'closed', 'MDI'))
     })
 
     it('chart feedback box for analytics is tracked', () => {
@@ -161,17 +184,26 @@ context('Analytics section', () => {
       page.incentivesByLocationFeedback
         .click()
         .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by wing', 'closed', 'MDI'))
+
+      page.incentivesTrendsFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level trends', 'opened', 'MDI'))
+      page.incentivesTrendsFeedback
+        .click()
+        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level trends', 'closed', 'MDI'))
     })
 
     it('users can submit feedback on chart', () => {
       testValidFeedbackSubmission(AnalyticsIncentiveLevels, [
         ['incentivesByLocationFeedback', 'incentivesByLocationFeedbackForm'],
+        ['incentivesTrendsFeedback', 'incentivesTrendsFeedbackForm'],
       ])
     })
 
     it('users will see errors if they submit invalid feedback on chart', () => {
       testInvalidFeedbackSubmission(AnalyticsIncentiveLevels, [
         ['incentivesByLocationFeedback', 'incentivesByLocationFeedbackForm'],
+        ['incentivesTrendsFeedback', 'incentivesTrendsFeedbackForm'],
       ])
     })
   })

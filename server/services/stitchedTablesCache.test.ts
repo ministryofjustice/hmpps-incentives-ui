@@ -11,7 +11,7 @@ describe('StitchedTablesCache', () => {
   const modified = new Date('2022-03-14T12:00:00Z')
 
   beforeEach(() => {
-    s3Client.listObjects.mockClear()
+    s3Client.getObject.mockClear()
     s3Client.listObjects.mockResolvedValue([{ key: 'behaviour_entries/2022-03-13.json', modified }])
     s3Client.getObject.mockResolvedValue(`{
       "prison": {"1": "ABC", "2": "DEF"},
@@ -25,13 +25,13 @@ describe('StitchedTablesCache', () => {
     beforeEach(async () => {
       // Warm-up cache
       await StitchedTablesCache.getStitchedTable(analyticsService, TableType.behaviourEntries, columnsToStitch)
-      s3Client.listObjects.mockClear()
+      s3Client.getObject.mockClear()
     })
 
     it('clears the cache', async () => {
       await StitchedTablesCache.getStitchedTable(analyticsService, TableType.behaviourEntries, columnsToStitch)
       // Fresh data in cache, S3 not used
-      expect(s3Client.listObjects).toHaveBeenCalledTimes(0)
+      expect(s3Client.getObject).toHaveBeenCalledTimes(0)
 
       // Clear cache
       StitchedTablesCache.clear()
@@ -42,7 +42,7 @@ describe('StitchedTablesCache', () => {
         TableType.behaviourEntries,
         columnsToStitch
       )
-      expect(s3Client.listObjects).toHaveBeenCalledTimes(1)
+      expect(s3Client.getObject).toHaveBeenCalledTimes(1)
       expect(stitchedTable).toEqual([['ABC'], ['DEF']])
     })
   })
@@ -88,33 +88,35 @@ describe('StitchedTablesCache', () => {
       it('takes fresh data from S3', async () => {
         await StitchedTablesCache.getStitchedTable(analyticsService, TableType.behaviourEntries, ['prison'])
         // Cache is empty, takes fresh data from S3
-        expect(s3Client.listObjects).toHaveBeenCalledTimes(1)
+        expect(s3Client.getObject).toHaveBeenCalledTimes(1)
       })
     })
 
-    describe('when cache is expired', () => {
+    describe('when cache is stale', () => {
       const columnsToStitch = ['prison']
 
       beforeEach(async () => {
         // Warm-up cache
         await StitchedTablesCache.getStitchedTable(analyticsService, TableType.behaviourEntries, columnsToStitch)
-        s3Client.listObjects.mockClear()
+        s3Client.getObject.mockClear()
 
-        // Some time passes
-        jest.useFakeTimers()
-        const now = new Date()
-        const future = now.setHours(now.getHours() + 10)
-        jest.setSystemTime(future)
-      })
-
-      afterEach(() => {
-        jest.useRealTimers()
+        // Fresh data available
+        const differentModified = new Date(modified)
+        // NB: In this case S3 latest table's modified is *older* than one
+        // in cache, but cache is still considered stale.
+        // Cache will always consider latest state on S3 the correct one
+        // (e.g. in this case maybe newer data was bad and was deleted so
+        // that previous day's data was used)
+        differentModified.setDate(differentModified.getDate() - 1)
+        s3Client.listObjects.mockResolvedValue([
+          { key: 'behaviour_entries/2022-03-12.json', modified: differentModified },
+        ])
       })
 
       it('takes fresh data from S3', async () => {
         // Cache is stale, takes fresh data from S3
         await StitchedTablesCache.getStitchedTable(analyticsService, TableType.behaviourEntries, columnsToStitch)
-        expect(s3Client.listObjects).toHaveBeenCalledTimes(1)
+        expect(s3Client.getObject).toHaveBeenCalledTimes(1)
       })
     })
 
@@ -130,8 +132,8 @@ describe('StitchedTablesCache', () => {
           ['ABC', 'Value 1'],
           ['DEF', 'Value 2'],
         ])
-        expect(s3Client.listObjects).toHaveBeenCalledTimes(1)
-        s3Client.listObjects.mockClear()
+        expect(s3Client.getObject).toHaveBeenCalledTimes(1)
+        s3Client.getObject.mockClear()
       })
 
       it('gets fresh data from S3', async () => {
@@ -142,7 +144,7 @@ describe('StitchedTablesCache', () => {
           ['prison']
         )
         expect(stitchedTable2).toEqual([['ABC'], ['DEF']])
-        expect(s3Client.listObjects).toHaveBeenCalledTimes(1)
+        expect(s3Client.getObject).toHaveBeenCalledTimes(1)
       })
     })
 
@@ -158,8 +160,8 @@ describe('StitchedTablesCache', () => {
           ['ABC', 'Value 1'],
           ['DEF', 'Value 2'],
         ])
-        expect(s3Client.listObjects).toHaveBeenCalledTimes(1)
-        s3Client.listObjects.mockClear()
+        expect(s3Client.getObject).toHaveBeenCalledTimes(1)
+        s3Client.getObject.mockClear()
 
         s3Client.listObjects.mockResolvedValue([{ key: 'incentives_latest_narrow/2022-03-13.json', modified }])
         s3Client.getObject.mockResolvedValue(`{
@@ -182,7 +184,7 @@ describe('StitchedTablesCache', () => {
             ['DEF', 'Enhanced'],
           ],
         })
-        expect(s3Client.listObjects).toHaveBeenCalledTimes(1)
+        expect(s3Client.getObject).toHaveBeenCalledTimes(1)
       })
     })
   })

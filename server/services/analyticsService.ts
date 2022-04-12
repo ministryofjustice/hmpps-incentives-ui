@@ -301,6 +301,12 @@ export function compareLocations({ location: location1 }: LocationRow, { locatio
   if (location2 === 'All') {
     return 1
   }
+  if (location1 === 'Unknown') {
+    return 1
+  }
+  if (location2 === 'Unknown') {
+    return -1
+  }
   if (location1.length === 1 && location2.length !== 1) {
     return -1
   }
@@ -324,6 +330,12 @@ export function compareCharacteristics(
   }
   if (characteristic2 === 'All') {
     return 1
+  }
+  if (characteristic1 === 'Unknown') {
+    return 1
+  }
+  if (characteristic2 === 'Unknown') {
+    return -1
   }
   return characteristic1.localeCompare(characteristic2)
 }

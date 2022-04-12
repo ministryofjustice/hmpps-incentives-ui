@@ -162,6 +162,7 @@ describe('AnalyticsService', () => {
       { a: { characteristic: 'White' }, b: { characteristic: 'All' }, expected: 1 },
       { a: { characteristic: 'Asian or Asian British' }, b: { characteristic: 'Other' }, expected: -1 },
       { a: { characteristic: 'Asian or Asian British' }, b: { characteristic: 'Unknown' }, expected: -1 },
+      { a: { characteristic: 'Yes' }, b: { characteristic: 'Unknown' }, expected: -1 },
     ])('compareCharacteristics()', ({ a, b, expected }) => {
       let compares = '='
       if (expected > 0) {

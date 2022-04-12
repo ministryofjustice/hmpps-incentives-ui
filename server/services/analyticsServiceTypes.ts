@@ -118,7 +118,7 @@ export const Religions = ['Buddhist', 'Christian', 'Hindu', 'Jewish', 'Muslim', 
  * Known protected characteristic groups
  * NB: must match source table values
  */
-export const Disabilities = ['NO', 'Unknown', 'YES'] as const
+export const Disabilities = ['NO', 'YES', 'Unknown'] as const
 
 /**
  * Returns list of known groups for given protected characteristic

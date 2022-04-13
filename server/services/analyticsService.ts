@@ -337,6 +337,12 @@ export function compareCharacteristics(
   if (characteristic2 === 'Unknown') {
     return -1
   }
+  if (characteristic1 === 'Other') {
+    return 1
+  }
+  if (characteristic2 === 'Other') {
+    return -1
+  }
   return characteristic1.localeCompare(characteristic2)
 }
 

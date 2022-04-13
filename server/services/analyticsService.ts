@@ -35,6 +35,8 @@ export default class AnalyticsService {
     const { key, modified } = objects[objects.length - 1]
     const date = new Date(key.slice(key.length - 15, key.length - 5))
 
+    logger.info(`Found latest "${tableType}" table: ${key} (modified ${modified.toISOString()})`)
+
     return { key, date, modified }
   }
 
@@ -42,6 +44,7 @@ export default class AnalyticsService {
     const object = await this.client.getObject(key)
     try {
       const table = JSON.parse(object) as T
+      logger.info(`Downloaded table: "${key}"`)
       return table
     } catch (e) {
       const errorMessage = `Cannot parse "${key}" table: ${e}`
@@ -56,8 +59,6 @@ export default class AnalyticsService {
    */
   async findTable<T extends Table>(tableType: TableType): Promise<{ table: T; date: Date; modified: Date }> {
     const { key, date, modified } = await this.findLatestTable(tableType)
-    logger.info(`Found latest "${tableType}" table: ${key} (modified ${modified.toISOString()})`)
-
     const table = await this.getTable<T>(key)
 
     return { table, date, modified }

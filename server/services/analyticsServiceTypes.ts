@@ -100,7 +100,7 @@ export enum ProtectedCharacteristic {
  * Known protected characteristic groups
  * NB: must match source table values
  */
-export const Ethnicities = ['Asian or Asian British', 'Black or Black British', 'Mixed', 'Other', 'White'] as const
+export const Ethnicities = ['Asian or Asian British', 'Black or Black British', 'Mixed', 'White', 'Other'] as const
 
 /**
  * Known protected characteristic groups
@@ -112,7 +112,7 @@ export const Ages = ['15-17', '18-25', '26-35', '36-45', '46-55', '56-65', '66+'
  * Known protected characteristic groups
  * NB: must match source table values
  */
-export const Religions = ['Buddhist', 'Christian', 'Hindu', 'Jewish', 'Muslim', 'No Religion', 'Other', 'Sikh'] as const
+export const Religions = ['Buddhist', 'Christian', 'Hindu', 'Jewish', 'Muslim', 'No Religion', 'Sikh', 'Other'] as const
 
 /**
  * Known protected characteristic groups

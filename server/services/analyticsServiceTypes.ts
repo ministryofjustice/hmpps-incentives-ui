@@ -112,13 +112,13 @@ export const Ages = ['15-17', '18-25', '26-35', '36-45', '46-55', '56-65', '66+'
  * Known protected characteristic groups
  * NB: must match source table values
  */
-export const Religions = ['Buddhist', 'Christian', 'Hindu', 'Jewish', 'Muslim', 'No Religion', 'Sikh', 'Other'] as const
+export const Religions = ['Buddhist', 'Christian', 'Hindu', 'Jewish', 'Muslim', 'No religion', 'Sikh', 'Other'] as const
 
 /**
  * Known protected characteristic groups
  * NB: must match source table values
  */
-export const Disabilities = ['NO', 'YES', 'Unknown'] as const
+export const Disabilities = ['No recorded disability', 'Recorded disability', 'Unknown'] as const
 
 /**
  * Returns list of known groups for given protected characteristic

@@ -1,4 +1,4 @@
-import { youthCustodyServicePrisons } from '../data/prisonRegister'
+import PrisonRegister from '../data/prisonRegister'
 import S3Client from '../data/s3Client'
 import AnalyticsService, { compareLocations, compareCharacteristics, removeLevelPrefix } from './analyticsService'
 import {
@@ -15,6 +15,8 @@ import { MockTable, mockAppS3ClientResponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
 jest.mock('../data/s3Client')
+
+const isYouthCustodyServiceOriginal = PrisonRegister.isYouthCustodyService
 
 const prisonLocations = {
   MDI: ['All', '1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
@@ -337,10 +339,7 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client, TableType.incentiveLevels)
 
       // pretend that MDI is a YCS
-      if (!youthCustodyServicePrisons.includes('MDI')) {
-        const ycsPrisons = youthCustodyServicePrisons as string[]
-        ycsPrisons.push('MDI')
-      }
+      PrisonRegister.isYouthCustodyService = (prisonId: string) => prisonId === 'MDI'
     })
 
     it(`[${characteristic}]: has a totals row`, async () => {
@@ -391,15 +390,8 @@ describe('AnalyticsService', () => {
       })
 
       it(`[${characteristic}]: skips 15-17 group in non-YCS prison`, async () => {
-        // make MDI not a YCS
-        if (youthCustodyServicePrisons.includes('MDI')) {
-          const ycsPrisonsEcludingMDI = youthCustodyServicePrisons.filter(prison => prison !== 'MDI')
-          const ycsPrisons = youthCustodyServicePrisons as string[]
-          while (ycsPrisons.length) {
-            ycsPrisons.pop()
-          }
-          ycsPrisons.push(...ycsPrisonsEcludingMDI)
-        }
+        // make MDI not a YCS by restoring isYouthCustodyService()
+        PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
 
         const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
         const zeroRows = rows.filter(({ characteristic: someCharacteristic }) => someCharacteristic === '15-17')

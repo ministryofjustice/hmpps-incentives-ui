@@ -24,7 +24,6 @@
       }
     }) }}
 
-    {% set form = formsWithErrors[graphId] | default({}) %}
     {% set chartFeedback %}
       {% include "../../../partials/analytics/chartFeedbackForm.njk" %}
     {% endset %}
@@ -33,7 +32,7 @@
       html: chartFeedback,
       id: "chart-feedback-" + graphId,
       classes: "govuk-!-display-none-print",
-      open: form.hasErrors,
+      open: chartFeedbackForm.hasErrors,
       attributes: {
         "data-qa": "chart-feedback",
         "data-ga-category": "Is this chart useful > Incentive level by ethnicity",

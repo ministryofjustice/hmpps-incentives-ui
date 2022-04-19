@@ -1,5 +1,4 @@
 {% extends "../graph-layout.njk" %}
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set graphPageId = "protected-characteristics" %}
 {% set graphTitle = "Protected characteristics" %}
@@ -13,13 +12,7 @@
 
       {% include "../../../partials/messages.njk" %}
 
-      {% set errorSummary = formsWithErrors["incentive-levels-by-ethnicity"].errorSummary | default(formsWithErrors["incentive-levels-by-age"].errorSummary) | default(formsWithErrors["incentive-levels-by-religion"].errorSummary) | default(formsWithErrors["incentive-levels-by-disability"].errorSummary) %}
-      {% if errorSummary %}
-        {{ govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: errorSummary
-        }) }}
-      {% endif %}
+      {% include "../../../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl">
         {{ graphTitle }}
@@ -32,6 +25,7 @@
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
       {% set graphId = "incentive-levels-by-ethnicity" %}
+      {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersByEthnicity %}
       {% include "./prisoners-by-ethnicity.njk" %}
 
@@ -42,6 +36,7 @@
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
       {% set graphId = "incentive-levels-by-age" %}
+      {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersByAge %}
       {% include "./prisoners-by-age.njk" %}
 
@@ -52,6 +47,7 @@
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
       {% set graphId = "incentive-levels-by-religion" %}
+      {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersByReligion %}
       {% include "./prisoners-by-religion.njk" %}
 
@@ -62,6 +58,7 @@
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
       {% set graphId = "incentive-levels-by-disability" %}
+      {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersByDisability %}
       {% include "./prisoners-by-disability.njk" %}
 

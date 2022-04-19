@@ -1,5 +1,4 @@
 {% extends "../graph-layout.njk" %}
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% set graphPageId = "behaviour-entries" %}
 {% set graphTitle = "Behaviour entries in the last 28 days" %}
@@ -13,13 +12,7 @@
 
       {% include "../../../partials/messages.njk" %}
 
-      {% set errorSummary = formsWithErrors["entries-by-location"].errorSummary | default(formsWithErrors["prisoners-with-entries-by-location"].errorSummary) %}
-      {% if errorSummary.length %}
-        {{ govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: errorSummary
-        }) }}
-      {% endif %}
+      {% include "../../../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl">
         {{ graphTitle }}
@@ -32,6 +25,7 @@
     <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
 
       {% set graphId = "entries-by-location" %}
+      {% set chartFeedbackForm = forms[graphId] %}
       {% set report = behaviourEntries %}
       {% include "./entries-by-location.njk" %}
 
@@ -39,6 +33,7 @@
     <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
 
       {% set graphId = "prisoners-with-entries-by-location" %}
+      {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersWithEntries %}
       {% include "./prisoners-with-entries-by-location.njk" %}
 

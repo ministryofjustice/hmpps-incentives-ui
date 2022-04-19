@@ -2,7 +2,7 @@ export const youthCustodyServicePrisons: ReadonlyArray<string> = [
   // Youth Custody Service, all YOIs
   // 15-17 year olds - young people
   'CKI', // HMYOI Cookham Wood
-  'FYI', // HMYOI Feltham
+  'FYI', // HMYOI Feltham A
   'PYI', // HMP/YOI Parc A
   'WNI', // HMYOI Werrington
   'WYI', // HMYOI Wetherby

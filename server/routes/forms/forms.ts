@@ -1,26 +1,91 @@
-export default abstract class Form<Data extends { formId: string }> {
-  // posted form data; NB: it may be transformed in place by validation
-  data: Partial<Data>
+export interface BaseFormData {
+  /**
+   * Unique identifier to distinguish multiple forms on one page
+   */
+  formId: string
+}
 
-  // fields with error messages; for use with error message components
-  fieldErrors: Partial<Record<keyof Data, string>>
+/**
+ * Base form providing simple validation extension points and per-field error messages
+ */
+export default abstract class Form<Data extends BaseFormData> {
+  /**
+   * Posted form data, undefined indicates that the form has not been submitted/POSTed
+   * NB: it may be transformed in place by validation
+   */
+  protected data?: Partial<Data>
 
-  constructor(data: Partial<Data>) {
-    this.data = data
+  /**
+   * Holds per-field error messages
+   */
+  private readonly fieldErrors: Partial<Record<keyof Data, string>>
+
+  constructor(
+    /**
+     * Unique identifier to distinguish multiple forms on one page
+     */
+    readonly formId: string
+  ) {
     this.fieldErrors = {}
+  }
+
+  public toString(): string {
+    return `[Form formId=${this.formId} submitted=${this.submitted} hasErrors=${this.hasErrors}]`
+  }
+
+  /**
+   * Set the submitted/POSTed form data triggering validation
+   */
+  public submit(data: Partial<Data>): void {
+    if (data.formId !== this.formId) {
+      throw new Error('Data not submitted by this form')
+    }
+    this.data = data
     this.validate()
   }
 
+  /**
+   * Whether the form was submitted/POSTed or is blank
+   */
+  public get submitted() {
+    return typeof this.data !== 'undefined'
+  }
+
+  /**
+   * Extension point: subclasses perform validation and manupulation of `this.data`
+   */
   protected abstract validate(): void
 
-  get hasErrors(): boolean {
+  /**
+   * Subclasses set errors on fields
+   */
+  protected addError(field: keyof Data, error: string): void {
+    this.fieldErrors[field] = error
+  }
+
+  /**
+   * Whether the form has validation errors
+   */
+  public get hasErrors(): boolean {
     return Object.keys(this.fieldErrors).length > 0
   }
 
-  // for use with error summary component
-  get errorSummary(): { text: string; href: string }[] {
+  /**
+   * List of errors in the form used by GOV.UK error summary component
+   */
+  public get errorList(): Readonly<{ text: string; href: string }>[] {
     return Object.entries(this.fieldErrors).map(([field, error]) => {
-      return { text: error, href: `#${this.data.formId}-${field}` }
+      return { text: error, href: `#${this.formId}-${field}` }
     })
+  }
+
+  /**
+   * Field information: value if submitted and error message if any
+   */
+  public getField<Field extends keyof Data>(field: Field): Readonly<{ value?: Data[Field]; error?: string }> {
+    return {
+      value: this.data?.[field],
+      error: this.fieldErrors[field],
+    }
   }
 }

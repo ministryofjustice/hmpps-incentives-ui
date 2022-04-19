@@ -1,0 +1,12 @@
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% set errorList = [] %}
+{% for formId, form in forms %}
+  {% set errorList = errorList.concat(form.errorList) %}
+{% endfor %}
+{% if errorList.length %}
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: errorList
+  }) }}
+{% endif %}

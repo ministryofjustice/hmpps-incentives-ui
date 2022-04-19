@@ -2,14 +2,13 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 
-{# Required variables: graphId, csrfToken #}
-{# Optional variables: form (if there are errors) #}
+{# Required variables: chartFeedbackForm, csrfToken #}
 
-{% macro commentTextarea(graphId, id) %}
+{% macro commentTextarea(chartFeedbackForm, id) %}
   {{ govukTextarea({
-    id: graphId + "-" + id + "Comments",
+    id: chartFeedbackForm.formId + "-" + id + "Comments",
     name: id + "Comments",
-    value: form.data[id + "Comments"] | default(""),
+    value: chartFeedbackForm.getField(id + "Comments").value,
     label: {
       text: "Comments (optional)"
     },
@@ -18,12 +17,13 @@
 {% endmacro %}
 
 {% set chartUsefulHtml %}
-  {{ commentTextarea(graphId, "yes") }}
+  {{ commentTextarea(chartFeedbackForm, "yes") }}
 {% endset %}
 
 {% set chartNotUsefulHtml %}
+  {% set mainNoReasonField = chartFeedbackForm.getField("mainNoReason") %}
   {{ govukRadios({
-    idPrefix: graphId + "-mainNoReason",
+    idPrefix: chartFeedbackForm.formId + "-mainNoReason",
     name: "mainNoReason",
     classes: "govuk-radios--small",
     fieldset: {
@@ -36,37 +36,39 @@
       {
         value: "not-relevant",
         text: "It’s not relevant to me",
-        checked: form.data.mainReason === "not-relevant"
+        checked: mainNoReasonField.value === "not-relevant"
       },
       {
         value: "do-not-understand",
         text: "I don’t understand it",
-        checked: form.data.mainReason === "do-not-understand"
+        checked: mainNoReasonField.value === "do-not-understand"
       },
       {
         value: "does-not-show-enough",
         text: "It doesn’t show me enough",
-        checked: form.data.mainReason === "does-not-show-enough"
+        checked: mainNoReasonField.value === "does-not-show-enough"
       },
       {
         value: "what-to-do-with-info",
         text: "I don’t know what to do with the information",
-        checked: form.data.mainReason === "what-to-do-with-info"
+        checked: mainNoReasonField.value === "what-to-do-with-info"
       },
       {
         value: "other",
         text: "Other",
-        checked: form.data.mainReason === "other"
+        checked: mainNoReasonField.value === "other"
       }
     ],
-    errorMessage: { text: form.fieldErrors.mainNoReason } if form.fieldErrors.mainNoReason else undefined
+    errorMessage: { text: mainNoReasonField.error } if mainNoReasonField.error else undefined
   }) }}
-  {{ commentTextarea(graphId, "no") }}
+
+  {{ commentTextarea(chartFeedbackForm, "no") }}
 {% endset %}
 
-<form id="form-{{ graphId }}" method="post" novalidate>
+<form id="form-{{ chartFeedbackForm.formId }}" method="post" novalidate>
+  {% set chartUsefulField = chartFeedbackForm.getField("chartUseful") %}
   {{ govukRadios({
-    idPrefix: graphId + "-chartUseful",
+    idPrefix: chartFeedbackForm.formId + "-chartUseful",
     name: "chartUseful",
     fieldset: {
       legend: {
@@ -78,7 +80,7 @@
       {
         value: "yes",
         text: "Yes",
-        checked: form.data.chartUseful === "yes",
+        checked: chartUsefulField.value === "yes",
         conditional: {
           html: chartUsefulHtml
         }
@@ -86,16 +88,16 @@
       {
         value: "no",
         text: "No",
-        checked: form.data.chartUseful === "no",
+        checked: chartUsefulField.value === "no",
         conditional: {
           html: chartNotUsefulHtml
         }
       }
     ],
-    errorMessage: { text: form.fieldErrors.chartUseful } if form.fieldErrors.chartUseful else undefined
+    errorMessage: { text: chartUsefulField.error } if chartUsefulField.error else undefined
   }) }}
 
-  <input type="hidden" name="formId" value="{{ graphId }}" />
+  <input type="hidden" name="formId" value="{{ chartFeedbackForm.formId }}" />
   <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
   {{ govukButton({

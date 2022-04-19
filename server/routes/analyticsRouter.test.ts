@@ -293,6 +293,7 @@ describe.each(analyticsPages)(
             expect(res.text).toContain(`#${graphId}-mainNoReason`) // link to field
             expect(res.text).toContain('Select a reason for your answer') // error message
             expect(res.text).toContain(`id="${graphId}-mainNoReason"`) // field with error
+            expect(res.text).toContain('Do I have to choose only one reason?') // comment not forgotten
             expect(mockedZendeskClientClass).not.toHaveBeenCalled()
           })
       })

@@ -3,7 +3,7 @@ import AnalyticsPage from './analytics'
 
 export default class AnalyticsBehaviourEntries extends AnalyticsPage {
   constructor() {
-    super('Behaviour entries in the last 28 days')
+    super('Behaviour entries')
   }
 
   get entriesByLocation(): PageElement<HTMLTableRowElement> {

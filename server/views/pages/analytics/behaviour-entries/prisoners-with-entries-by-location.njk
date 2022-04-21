@@ -2,7 +2,7 @@
 {% from "../../../components/dataSource.njk" import dataSource %}
 
 <h2 class="govuk-heading-m">
-  Prisoners – percentage and number of prisoners by behaviour entry on each wing
+  Percentage and number of prisoners on each behaviour entry by wing in the last last 28 days
 </h2>
 
 {% if not report.hasErrors %}
@@ -73,7 +73,7 @@
 
 <table class="app-chart-table app-chart-table--heatmap" id="table-{{ graphId }}">
   <caption class="govuk-visually-hidden">
-    Prisoners – percentage and number of prisoners by behaviour entry on each wing in the last 28 days
+    Percentage and number of prisoners on each behaviour entry by wing in the last last 28 days
   </caption>
 
   <thead>

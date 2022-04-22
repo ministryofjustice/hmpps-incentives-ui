@@ -130,6 +130,7 @@ export default function routes(router: Router): Router {
     'incentive-levels-by-age',
     'incentive-levels-by-religion',
     'incentive-levels-by-disability',
+    'incentive-levels-by-sexual-orientation',
   ]
   routeWithFeedback('/protected-characteristics', protectedCharacteristicGraphIds, async (req, res, next) => {
     if (!config.featureFlags.showPcAnalytics) {
@@ -149,8 +150,18 @@ export default function routes(router: Router): Router {
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Age),
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Religion),
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Disability),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(
+        activeCaseLoad,
+        ProtectedCharacteristic.SexualOrientation
+      ),
     ].map(transformAnalyticsError)
-    const [prisonersByEthnicity, prisonersByAge, prisonersByReligion, prisonersByDisability] = await Promise.all(charts)
+    const [
+      prisonersByEthnicity,
+      prisonersByAge,
+      prisonersByReligion,
+      prisonersByDisability,
+      prisonersBySexualOrientation,
+    ] = await Promise.all(charts)
 
     res.render('pages/analytics/protected-characteristics/index', {
       ...templateContext(req),
@@ -158,6 +169,7 @@ export default function routes(router: Router): Router {
       prisonersByAge,
       prisonersByReligion,
       prisonersByDisability,
+      prisonersBySexualOrientation,
     })
   })
 

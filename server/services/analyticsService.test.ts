@@ -14,6 +14,7 @@ import {
   Ages,
   Religions,
   Disabilities,
+  SexualOrientations,
 } from './analyticsServiceTypes'
 import type { PrisonersOnLevelsByProtectedCharacteristic } from './analyticsServiceTypes'
 import { MockTable, mockAppS3ClientResponse } from '../testData/s3Bucket'
@@ -340,6 +341,7 @@ describe('AnalyticsService', () => {
     [ProtectedCharacteristic.Age, ['All', ...Ages]],
     [ProtectedCharacteristic.Religion, ['All', ...Religions]],
     [ProtectedCharacteristic.Disability, ['All', ...Disabilities]],
+    [ProtectedCharacteristic.SexualOrientation, ['All', ...SexualOrientations]],
   ])('getIncentiveLevelsByProtectedCharacteristic()', (characteristic, expectedCharacteristics) => {
     beforeEach(() => {
       mockAppS3ClientResponse(s3Client, TableType.incentiveLevels)

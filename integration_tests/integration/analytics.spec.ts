@@ -208,6 +208,12 @@ context('Analytics section', () => {
         expect(location).to.contain('All')
         expect(location).to.contain('921')
       })
+
+      page.incentivesBySexualOrientation.first().then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('921')
+      })
     })
 
     it('guidance box for analytics is tracked', () => {
@@ -255,6 +261,25 @@ context('Analytics section', () => {
         .then(() =>
           gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by disability', 'closed', 'MDI')
         )
+
+      page.incentivesBySexualOrientationGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent(
+            'How you can use this chart > Incentive level by sexual orientation',
+            'opened',
+            'MDI'
+          )
+        )
+      page.incentivesBySexualOrientationGuidance
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent(
+            'How you can use this chart > Incentive level by sexual orientation',
+            'closed',
+            'MDI'
+          )
+        )
     })
 
     it('chart feedback box for analytics is tracked', () => {
@@ -290,6 +315,17 @@ context('Analytics section', () => {
       page.incentivesByDisabilityFeedback
         .click()
         .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by disability', 'closed', 'MDI'))
+
+      page.incentivesBySexualOrientationFeedback
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by sexual orientation', 'opened', 'MDI')
+        )
+      page.incentivesBySexualOrientationFeedback
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by sexual orientation', 'closed', 'MDI')
+        )
     })
 
     it('users can submit feedback on charts', () => {
@@ -298,6 +334,7 @@ context('Analytics section', () => {
         ['incentivesByAgeFeedback', 'incentivesByAgeFeedbackForm'],
         ['incentivesByReligionFeedback', 'incentivesByReligionFeedbackForm'],
         ['incentivesByDisabilityFeedback', 'incentivesByDisabilityFeedbackForm'],
+        ['incentivesBySexualOrientationFeedback', 'incentivesBySexualOrientationFeedbackForm'],
       ])
     })
 
@@ -307,6 +344,7 @@ context('Analytics section', () => {
         ['incentivesByAgeFeedback', 'incentivesByAgeFeedbackForm'],
         ['incentivesByReligionFeedback', 'incentivesByReligionFeedbackForm'],
         ['incentivesByDisabilityFeedback', 'incentivesByDisabilityFeedbackForm'],
+        ['incentivesBySexualOrientationFeedback', 'incentivesBySexualOrientationFeedbackForm'],
       ])
     })
   })

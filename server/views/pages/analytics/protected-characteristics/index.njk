@@ -65,5 +65,16 @@
     </section>
   </div>
 
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+      {% set graphId = "incentive-levels-by-sexual-orientation" %}
+      {% set chartFeedbackForm = forms[graphId] %}
+      {% set report = prisonersBySexualOrientation %}
+      {% include "./prisoners-by-sexual-orientation.njk" %}
+
+    </section>
+  </div>
+
   {% include "../../../partials/analytics/disclaimer.njk" %}
 {% endblock %}

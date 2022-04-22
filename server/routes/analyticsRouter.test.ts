@@ -124,6 +124,7 @@ const analyticsPages = [
       'incentive-levels-by-age',
       'incentive-levels-by-religion',
       'incentive-levels-by-disability',
+      'incentive-levels-by-sexual-orientation',
     ],
   },
 ]

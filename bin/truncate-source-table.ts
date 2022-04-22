@@ -32,8 +32,9 @@ if (chosenTableType === 'behaviourEntries') {
   const characteristicsToKeep: ReadonlySet<string> = new Set([
     'ethnic_group',
     'age_group_10yr',
-    'disability',
     'religion_group',
+    'disability',
+    'sex_orientation',
   ])
   rowFilter = (rowIndex, table) => characteristicsToKeep.has(table.characteristic[rowIndex] as string)
 } else {

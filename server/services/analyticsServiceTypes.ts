@@ -94,6 +94,7 @@ export enum ProtectedCharacteristic {
   Age = 'age_group_10yr',
   Religion = 'religion_group',
   Disability = 'disability',
+  SexualOrientation = 'sex_orientation',
 }
 
 /**
@@ -122,6 +123,12 @@ export const Religions = ['Buddhist', 'Christian', 'Hindu', 'Jewish', 'Muslim', 
 export const Disabilities = ['No recorded disability', 'Recorded disability', 'Unknown'] as const
 
 /**
+ * Known protected characteristic groups
+ * NB: must match source table values
+ */
+export const SexualOrientations = ['Bisexual', 'Heterosexual', 'Homosexual', 'Other', 'Unknown'] as const
+
+/**
  * Returns list of known groups for given protected characteristic
  */
 export function knownGroupsFor(characteristic: ProtectedCharacteristic): ReadonlyArray<string> {
@@ -134,6 +141,8 @@ export function knownGroupsFor(characteristic: ProtectedCharacteristic): Readonl
       return Religions
     case ProtectedCharacteristic.Disability:
       return Disabilities
+    case ProtectedCharacteristic.SexualOrientation:
+      return SexualOrientations
     default:
       throw new Error('Unknown characteristic')
   }

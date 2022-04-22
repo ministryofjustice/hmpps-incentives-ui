@@ -22,6 +22,10 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
     return cy.get('#table-incentive-levels-by-disability tbody tr')
   }
 
+  get incentivesBySexualOrientation(): PageElement<HTMLTableRowElement> {
+    return cy.get('#table-incentive-levels-by-sexual-orientation tbody tr')
+  }
+
   get incentivesByEthnicityGuidance(): PageElement<HTMLDetailsElement> {
     return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-ethnicity').find('.govuk-details__summary')
   }
@@ -36,6 +40,12 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
 
   get incentivesByDisabilityGuidance(): PageElement<HTMLDetailsElement> {
     return this.chartGuidanceBoxes.filter('#guidance-incentive-levels-by-disability').find('.govuk-details__summary')
+  }
+
+  get incentivesBySexualOrientationGuidance(): PageElement<HTMLDetailsElement> {
+    return this.chartGuidanceBoxes
+      .filter('#guidance-incentive-levels-by-sexual-orientation')
+      .find('.govuk-details__summary')
   }
 
   get incentivesByEthnicityFeedback(): PageElement<HTMLDetailsElement> {
@@ -60,6 +70,12 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
       .find('.govuk-details__summary')
   }
 
+  get incentivesBySexualOrientationFeedback(): PageElement<HTMLDetailsElement> {
+    return this.chartFeedbackBoxes
+      .filter('#chart-feedback-incentive-levels-by-sexual-orientation')
+      .find('.govuk-details__summary')
+  }
+
   get incentivesByEthnicityFeedbackForm(): PageElement<HTMLFormElement> {
     return cy.get('#form-incentive-levels-by-ethnicity')
   }
@@ -74,5 +90,9 @@ export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {
 
   get incentivesByDisabilityFeedbackForm(): PageElement<HTMLFormElement> {
     return cy.get('#form-incentive-levels-by-disability')
+  }
+
+  get incentivesBySexualOrientationFeedbackForm(): PageElement<HTMLFormElement> {
+    return cy.get('#form-incentive-levels-by-sexual-orientation')
   }
 }

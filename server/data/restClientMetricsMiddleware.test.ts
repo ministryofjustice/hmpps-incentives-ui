@@ -1,4 +1,6 @@
+import nock from 'nock'
 import superagent from 'superagent'
+
 import {
   restClientMetricsMiddleware,
   normalizePath,
@@ -32,6 +34,8 @@ describe('restClientMetricsMiddleware', () => {
 
   describe('request timers', () => {
     it('times the whole request', async () => {
+      const fakeApi = nock('https://httpbin.org/')
+      fakeApi.get('/', '').reply(200)
       const requestHistogramLabelsSpy = jest.spyOn(requestHistogram, 'labels').mockReturnValue(requestHistogram)
       const requestHistogramStartSpy = jest.spyOn(requestHistogram, 'observe')
 
@@ -49,6 +53,7 @@ describe('restClientMetricsMiddleware', () => {
       expect(requestHistogramLabelsSpy).toHaveBeenCalledTimes(1)
       expect(requestHistogramLabelsSpy).toHaveBeenCalledWith('httpbin.org', 'GET', '/', '200')
       expect(requestHistogramStartSpy).toHaveBeenCalledTimes(1)
+      nock.cleanAll()
     })
   })
 

@@ -4,6 +4,7 @@ import express from 'express'
 import * as pathModule from 'path'
 
 import config from '../config'
+import { makeChartPalette } from './analytics'
 import format from './format'
 
 const production = process.env.NODE_ENV === 'production'
@@ -67,4 +68,6 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   njkEnv.addFilter('shortDate', format.shortDate)
   njkEnv.addFilter('thousands', format.thousands)
   njkEnv.addFilter('percentageOf', format.percentage)
+
+  njkEnv.addFilter('chartPalette', makeChartPalette)
 }

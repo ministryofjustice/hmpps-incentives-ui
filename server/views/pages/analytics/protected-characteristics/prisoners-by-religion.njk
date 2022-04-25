@@ -1,12 +1,13 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "../../../components/dataSource.njk" import dataSource %}
-{% from "../../../components/palette.njk" import colourChoices %}
 
 <h2 class="govuk-heading-m">
   Percentage and number of prisoners on each incentive level by religion
 </h2>
 
 {% if not report.hasErrors %}
+
+{% set colourChoices = report.columns | chartPalette %}
 
 {{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
 

@@ -40,3 +40,22 @@
   <script src="/assets/moj/all.js"></script>
   <script src="/assets/application.js"></script>
 {% endblock %}
+
+{% block footer %}
+  {% from "govuk/components/footer/macro.njk" import govukFooter %}
+
+  {{ govukFooter({
+    meta: {
+      items: [
+        {
+          href: supportUrl + "/feedback-and-support",
+          text: "Get help"
+        },
+        {
+          href: dpsHome + "/content/terms-conditions",
+          text: "Terms and conditions"
+        }
+      ]
+    }
+  }) }}
+{% endblock %}

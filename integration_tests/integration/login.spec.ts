@@ -38,4 +38,19 @@ context('SignIn', () => {
     homePage.manageDetails().click()
     Page.verifyOnPage(AuthManageDetailsPage)
   })
+
+  it('User sees links in footer but not Open Government Licence', () => {
+    cy.signIn()
+    Page.verifyOnPage(HomePage)
+
+    cy.get('.govuk-footer__inline-list .govuk-footer__link:visible').then(footerLinks => {
+      expect(footerLinks.length).equal(2)
+
+      const getHelpLink = footerLinks.first()
+      const TsAndCsLink = footerLinks.last()
+
+      expect(getHelpLink).to.contain('Get help')
+      expect(TsAndCsLink).to.contain('Terms and conditions')
+    })
+  })
 })

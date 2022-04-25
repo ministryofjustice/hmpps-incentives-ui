@@ -21,7 +21,7 @@ executors:
   # same as hmpps/node_redis executor with the addition of minio containers
   integration-tests:
     docker:
-      - image: cimg/node:16.13-browsers
+      - image: cimg/node:16.14-browsers
       - image: cimg/redis:5.0
       - image: minio/minio
         command: server --address :9000 /data

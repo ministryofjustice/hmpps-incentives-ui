@@ -52,7 +52,5 @@ context('SignIn', () => {
       expect(getHelpLink).to.contain('Get help')
       expect(TsAndCsLink).to.contain('Terms and conditions')
     })
-
-    cy.get('.govuk-footer').find('.govuk-footer__licence-description:visible').should('have.length', 0)
   })
 })

@@ -14,6 +14,7 @@ generic-service:
     S3_REGION: eu-west-2
     INGRESS_URL: "https://incentives-ui-preprod.hmpps.service.justice.gov.uk"
     DPS_URL: "https://digital-preprod.prison.service.justice.gov.uk"
+    SUPPORT_URL: "https://support-preprod.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
     HMPPS_INCENTIVES_API_URL: "https://incentives-api-preprod.hmpps.service.justice.gov.uk"
     HMPPS_PRISON_API_URL: "https://api-preprod.prison.service.justice.gov.uk"

@@ -11,6 +11,7 @@ generic-service:
     ENVIRONMENT: prod
     INGRESS_URL: "https://incentives-ui.hmpps.service.justice.gov.uk"
     DPS_URL: "https://digital.prison.service.justice.gov.uk"
+    SUPPORT_URL: "https://support.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
     HMPPS_INCENTIVES_API_URL: "https://incentives-api.hmpps.service.justice.gov.uk"
     HMPPS_PRISON_API_URL: "https://api.prison.service.justice.gov.uk"

@@ -26,7 +26,7 @@
     "watch-node-feature": "export $(cat feature.env) && nodemon --watch dist/ $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
     "start-feature:dev": "npm run build && concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node,Sass\" -c \"yellow.bold,cyan.bold,green.bold,blue.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node-feature\" \"npm run watch-sass\"",
     "record-build-info": "node ./bin/record-build-info",
-    "lint": "eslint . --cache --max-warnings 0",
+    "lint": "eslint . --cache --max-warnings 0 && stylelint \"assets/sass/**/*.scss\"",
     "typecheck": "tsc && tsc -p integration_tests",
     "test": "jest --detectOpenHandles --restoreMocks",
     "security_audit": "npx audit-ci --config audit-ci.json",
@@ -167,6 +167,8 @@
     "nodemon": "^2.0.19",
     "prettier": "^2.7.1",
     "sass": "^1.54.4",
+    "stylelint": "^14.11.0",
+    "stylelint-config-standard-scss": "^5.0.0",
     "supertest": "^6.2.4",
     "ts-jest": "^28.0.8",
     "typescript": "^4.7.4"

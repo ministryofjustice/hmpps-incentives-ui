@@ -39,7 +39,11 @@
       <tr>
         <td>
           <strong>
-            {{ row.characteristic }}
+            {% if row.href %}
+              <a href="{{ row.href }}">{{ row.label }}</a>
+            {% else %}
+              {{ row.label }}
+            {% endif %}
           </strong>
           <br />
           {{ total | thousands }} <span class="govuk-visually-hidden">prisoners</span>

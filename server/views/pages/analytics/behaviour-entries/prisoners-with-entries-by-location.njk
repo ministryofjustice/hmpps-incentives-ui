@@ -47,8 +47,8 @@
   <thead>
     <tr>
       <th scope="col">Location</th>
-      {% for entryType in report.columns %}
-        <th scope="col" aria-label="{{ columnsLongName[loop.index0] }}">{{ entryType }}</th>
+      {% for column in report.columns %}
+        <th scope="col" aria-label="{{ columnsLongName[loop.index0] }}">{{ column }}</th>
       {% endfor %}
     </tr>
   </thead>
@@ -70,7 +70,7 @@
           {{ total | thousands }} <span class="govuk-visually-hidden">prisoners</span>
         </td>
 
-        {% for entryType in report.columns %}
+        {% for column in report.columns %}
           {% set value = row.values[loop.index0] %}
           {% set percentage = value | percentageOf(total) %}
 

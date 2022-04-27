@@ -24,7 +24,10 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
+      {% set chartTitle = "Percentage and number of prisoners on each incentive level by wing" %}
+      {% set chartGuidance = "Use this chart to see incentive level splits for the prison and wings. What does it tell you about how the incentives policy is applied, the population and possible actions for your prison?" %}
       {% set graphId = "incentive-levels-by-location" %}
+      {% set graphGoogleAnalyticsCategory = "Incentive level by wing" %}
       {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersOnLevels %}
       {% include "./prisoners-by-location.njk" %}
@@ -41,6 +44,7 @@
         {% set graphId = "trends-incentive-levels" %}
         {% set graphGoogleAnalyticsCategory = "Incentive level trends" %}
         {% set chartFeedbackForm = forms[graphId] %}
+        {% set report = trends %}
         {% include "../../../partials/analytics/chartTrends.njk" %}
 
       </section>

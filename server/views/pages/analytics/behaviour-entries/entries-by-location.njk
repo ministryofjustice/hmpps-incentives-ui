@@ -1,45 +1,6 @@
-{% from "govuk/components/details/macro.njk" import govukDetails %}
-{% from "../../../components/dataSource.njk" import dataSource %}
+{% extends "../../../partials/analytics/chartBase.njk" %}
 
-<h2 class="govuk-heading-m">
-  Comparison of positive and negative behaviour entries by wing in the last 28 days
-</h2>
-
-{% if not report.hasErrors %}
-
-{{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
-
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    {{ govukDetails({
-      summaryText: "How you can use this chart",
-      text: "This chart lets you see the balance of positive to negative entries across the prison and at wing level. Do these splits suggest a fair and consistent application of incentives?",
-      id: "guidance-" + graphId,
-      classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
-      attributes: {
-        "data-qa": "guidance",
-        "data-ga-category": "How you can use this chart > Behaviour entries by wing",
-        "data-ga-label": user.activeCaseload.id | default("")
-      }
-    }) }}
-
-    {% set chartFeedback %}
-      {% include "../../../partials/analytics/formFeedback.njk" %}
-    {% endset %}
-    {{ govukDetails({
-      summaryText: "Is this chart useful?",
-      html: chartFeedback,
-      id: "chart-feedback-" + graphId,
-      classes: "govuk-!-display-none-print",
-      open: chartFeedbackForm.hasErrors,
-      attributes: {
-        "data-qa": "chart-feedback",
-        "data-ga-category": "Is this chart useful > Behaviour entries by wing",
-        "data-ga-label": user.activeCaseload.id | default("")
-      }
-    }) }}
-  </div>
-</div>
+{% block chart %}
 
 <div class="govuk-!-margin-top-8">
   {#
@@ -56,7 +17,7 @@
 
 <table class="app-chart-table app-chart-table--bars" id="table-{{ graphId }}">
   <caption class="govuk-visually-hidden">
-    Comparison of positive and negative behaviour entries by wing in the last 28 days
+    {{ chartTitle }}
   </caption>
 
   <thead>
@@ -129,8 +90,4 @@
   </tfoot>
 </table>
 
-{% else %}
-
-  {% include "../../../partials/analytics/reportError.njk" %}
-
-{% endif %}
+{% endblock chart %}

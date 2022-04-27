@@ -217,12 +217,13 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.href).toBeUndefined()
 
       let [sumPositive, sumNegative] = [0, 0]
-      entries.forEach(({ entriesPositive, entriesNegative }) => {
+      entries.forEach(({ values }) => {
+        const [entriesPositive, entriesNegative] = values
         sumPositive += entriesPositive
         sumNegative += entriesNegative
       })
-      expect(prisonTotal.entriesPositive).toEqual(sumPositive)
-      expect(prisonTotal.entriesNegative).toEqual(sumNegative)
+      expect(prisonTotal.values[0]).toEqual(sumPositive)
+      expect(prisonTotal.values[1]).toEqual(sumNegative)
     })
 
     it('throws an error when the table is empty', async () => {
@@ -257,16 +258,17 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.href).toBeUndefined()
 
       let [sumPositive, sumNegative, sumBoth, sumNeither] = [0, 0, 0, 0]
-      prisoners.forEach(({ prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither }) => {
+      prisoners.forEach(({ values }) => {
+        const [prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither] = values
         sumPositive += prisonersWithPositive
         sumNegative += prisonersWithNegative
         sumBoth += prisonersWithBoth
         sumNeither += prisonersWithNeither
       })
-      expect(prisonTotal.prisonersWithPositive).toEqual(sumPositive)
-      expect(prisonTotal.prisonersWithNegative).toEqual(sumNegative)
-      expect(prisonTotal.prisonersWithBoth).toEqual(sumBoth)
-      expect(prisonTotal.prisonersWithNeither).toEqual(sumNeither)
+      expect(prisonTotal.values[0]).toEqual(sumPositive)
+      expect(prisonTotal.values[1]).toEqual(sumNegative)
+      expect(prisonTotal.values[2]).toEqual(sumBoth)
+      expect(prisonTotal.values[3]).toEqual(sumNeither)
     })
 
     it('throws an error when the table is empty', async () => {
@@ -301,13 +303,13 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.href).toBeUndefined()
 
       const totals = [0, 0, 0, 0]
-      prisonersOnLevels.forEach(({ prisonersOnLevels: prisoners }) => {
+      prisonersOnLevels.forEach(({ values }) => {
         for (let i = 0; i < columns.length; i += 1) {
-          totals[i] += prisoners[i]
+          totals[i] += values[i]
         }
       })
       for (let i = 0; i < columns.length; i += 1) {
-        expect(prisonTotal.prisonersOnLevels[i]).toEqual(totals[i])
+        expect(prisonTotal.values[i]).toEqual(totals[i])
       }
     })
 
@@ -361,13 +363,13 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.characteristic).toEqual('All')
 
       const totals = [0, 0, 0, 0]
-      prisonersOnLevels.forEach(({ prisonersOnLevels: prisoners }) => {
+      prisonersOnLevels.forEach(({ values }) => {
         for (let i = 0; i < columns.length; i += 1) {
-          totals[i] += prisoners[i]
+          totals[i] += values[i]
         }
       })
       for (let i = 0; i < columns.length; i += 1) {
-        expect(prisonTotal.prisonersOnLevels[i]).toEqual(totals[i])
+        expect(prisonTotal.values[i]).toEqual(totals[i])
       }
     })
 
@@ -392,7 +394,7 @@ describe('AnalyticsService', () => {
         expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([
           {
             characteristic: '15-17',
-            prisonersOnLevels: [0, 0, 0],
+            values: [0, 0, 0],
           },
         ])
       })

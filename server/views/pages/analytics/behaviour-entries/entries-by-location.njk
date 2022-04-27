@@ -34,7 +34,7 @@
 
   <tbody>
     {% for row in report.rows %}
-      {% set totalEntries = row.entriesPositive + row.entriesNegative %}
+      {% set total = row.values | sum %}
 
       <tr>
         <td>
@@ -46,22 +46,20 @@
             {% endif %}
           </strong>
           <br />
-          {{ totalEntries | thousands }} <span class="govuk-visually-hidden">entries</span>
+          {{ total | thousands }} <span class="govuk-visually-hidden">entries</span>
         </td>
-        <td>
-          {{ row.entriesPositive | percentageOf(totalEntries) }}
-          <br />
-          {{ row.entriesPositive | thousands }} <span class="govuk-visually-hidden">entries</span>
-        </td>
-        <td>
-          {{ row.entriesNegative | percentageOf(totalEntries) }}
-          <br />
-          {{ row.entriesNegative | thousands}} <span class="govuk-visually-hidden">entries</span>
-        </td>
+        {% for entryType in report.columns %}
+          <td>
+            {{ row.values[loop.index0] | percentageOf(total) }}
+            <br />
+            {{ row.values[loop.index0] | thousands }} <span class="govuk-visually-hidden">entries</span>
+          </td>
+        {% endfor %}
         <td aria-hidden="true" class="app-chart-table__percentage-cell">
           <span class="app-chart-table__axis-midpoint"></span>
-          <div class="app-chart-table__percentage-cell-bar app-chart-colour--a" data-style-width="{{ row.entriesPositive | percentageOf(totalEntries, false) }}">&nbsp;<br />&nbsp;</div>
-          <div class="app-chart-table__percentage-cell-bar app-chart-colour--b" data-style-width="{{ row.entriesNegative | percentageOf(totalEntries, false) }}">&nbsp;<br />&nbsp;</div>
+          {% for entryType in report.columns %}
+            <div class="app-chart-table__percentage-cell-bar {{ colourChoices[loop.index0] }}" data-style-width="{{ row.values[loop.index0] | percentageOf(total, false) }}">&nbsp;<br />&nbsp;</div>
+          {% endfor %}
         </td>
       </tr>
 

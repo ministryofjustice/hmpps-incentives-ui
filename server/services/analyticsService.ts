@@ -143,12 +143,10 @@ export default class AnalyticsService {
       2
     )
 
-    const rows: BehaviourEntriesByLocation[] = aggregateTable.map(
-      ([location, entriesPositive, entriesNegative], index) => {
-        const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
-        return { location, href, entriesPositive, entriesNegative }
-      }
-    )
+    const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([location, ...values], index) => {
+      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
+      return { location, href, values }
+    })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
@@ -194,12 +192,10 @@ export default class AnalyticsService {
       4
     )
 
-    const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(
-      ([location, prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither], index) => {
-        const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
-        return { location, href, prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither }
-      }
-    )
+    const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([location, ...values], index) => {
+      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
+      return { location, href, values }
+    })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
@@ -248,9 +244,9 @@ export default class AnalyticsService {
     )
     columns = columns.map(removeLevelPrefix)
 
-    const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([location, ...prisonersOnLevels], index) => {
+    const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([location, ...values], index) => {
       const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
-      return { location, href, prisonersOnLevels }
+      return { location, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
@@ -311,11 +307,9 @@ export default class AnalyticsService {
     )
     columns = columns.map(removeLevelPrefix)
 
-    const rows: PrisonersOnLevelsByProtectedCharacteristic[] = aggregateTable.map(
-      ([characteristic, ...prisonersOnLevels]) => {
-        return { characteristic, prisonersOnLevels }
-      }
-    )
+    const rows: PrisonersOnLevelsByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
+      return { characteristic, values }
+    })
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(prison)) {
@@ -323,7 +317,7 @@ export default class AnalyticsService {
     }
     rows.forEach(({ characteristic }) => missingCharacteristics.delete(characteristic))
     missingCharacteristics.forEach(characteristic => {
-      rows.push({ characteristic, prisonersOnLevels: Array(columns.length).fill(0) })
+      rows.push({ characteristic, values: Array(columns.length).fill(0) })
     })
     rows.sort(compareCharacteristics)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }

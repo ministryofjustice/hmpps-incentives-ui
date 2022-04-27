@@ -53,8 +53,7 @@ export type Report<Row extends Record<string, unknown>> = {
 export type BehaviourEntriesByLocation = {
   location: string
   href?: string
-  entriesPositive: number
-  entriesNegative: number
+  values: [number, number]
 }
 
 /**
@@ -63,10 +62,7 @@ export type BehaviourEntriesByLocation = {
 export type PrisonersWithEntriesByLocation = {
   location: string
   href?: string
-  prisonersWithPositive: number
-  prisonersWithNegative: number
-  prisonersWithBoth: number
-  prisonersWithNeither: number
+  values: [number, number, number, number]
 }
 
 /**
@@ -75,7 +71,7 @@ export type PrisonersWithEntriesByLocation = {
 export type PrisonersOnLevelsByLocation = {
   location: string
   href?: string
-  prisonersOnLevels: number[]
+  values: number[]
 }
 
 /**
@@ -83,7 +79,7 @@ export type PrisonersOnLevelsByLocation = {
  */
 export type PrisonersOnLevelsByProtectedCharacteristic = {
   characteristic: string
-  prisonersOnLevels: number[]
+  values: number[]
 }
 
 /**

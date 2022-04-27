@@ -1,5 +1,10 @@
 {% extends "./chartBase.njk" %}
 
+{#
+Required variables (in addition to base template):
+- (none yet)
+#}
+
 {% block chart %}
 
 {% set trendsOverlayHeight = 300 %} {# NB: must match $trends-overlay-height in SCSS #}
@@ -103,9 +108,7 @@
         {% endfor %}
       </tr>
       <tr>
-        <th scope="col">
-          <span class="govuk-visually-hidden">Level</span>
-        </th>
+        <th></th>
         {% for row in report.rows %}
           <th scope="col">
             <strong>

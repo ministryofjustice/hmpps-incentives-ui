@@ -1,4 +1,9 @@
-{% extends "../../../partials/analytics/chartBase.njk" %}
+{% extends "./chartBase.njk" %}
+
+{#
+Required variables (in addition to base template):
+- labelColumn
+#}
 
 {% block chart %}
 
@@ -24,9 +29,13 @@
 
   <thead>
     <tr>
-      <th scope="col">Ethnicity</th>
+      <th scope="col">{{ labelColumn }}</th>
       {% for column in report.columns %}
-        <th scope="col">{{ column }} <span class="govuk-visually-hidden">level</span></th>
+        <th scope="col">
+          {% block valueColumn %}
+            {{ column }}
+          {% endblock %}
+        </th>
       {% endfor %}
       <th aria-hidden="true" scope="col"></th>
     </tr>
@@ -46,13 +55,17 @@
             {% endif %}
           </strong>
           <br />
-          {{ total | thousands }} <span class="govuk-visually-hidden">prisoners</span>
+          {% block rowTotalValue %}
+            {{ total | thousands }}
+          {% endblock %}
         </td>
         {% for column in report.columns %}
           <td>
             {{ row.values[loop.index0] | percentageOf(total) }}
             <br />
-            {{ row.values[loop.index0] | thousands }} <span class="govuk-visually-hidden">prisoners on {{ column }} level</span>
+            {% block rowValue %}
+              {{ row.values[loop.index0] | thousands }}
+            {% endblock %}
           </td>
         {% endfor %}
         <td aria-hidden="true" class="app-chart-table__percentage-cell">

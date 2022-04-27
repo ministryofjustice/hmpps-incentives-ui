@@ -1,0 +1,16 @@
+{% extends "./chartBaseStackedPercentageBars.njk" %}
+
+{% block valueColumn %}
+  {{ super() }}
+  <span class="govuk-visually-hidden">level</span>
+{% endblock %}
+
+{% block rowTotalValue %}
+  {{ super() }}
+  <span class="govuk-visually-hidden">prisoners</span>
+{% endblock %}
+
+{% block rowValue %}
+  {{ super() }}
+  <span class="govuk-visually-hidden">prisoners on {{ column | lower }} level</span>
+{% endblock %}

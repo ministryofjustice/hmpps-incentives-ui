@@ -51,8 +51,11 @@ export type Report<Row extends Record<string, unknown>> = {
  * A row in a report returned
  */
 export type BehaviourEntriesByLocation = {
+  /** location */
   label: string
+  /** link */
   href?: string
+  /** number of positive entries, number of negative entries */
   values: [number, number]
 }
 
@@ -60,8 +63,11 @@ export type BehaviourEntriesByLocation = {
  * A row in a report returned
  */
 export type PrisonersWithEntriesByLocation = {
+  /** location */
   label: string
+  /** link */
   href?: string
+  /** prisoners with: positive entries, negative entries, both types of entries, neither type of entry */
   values: [number, number, number, number]
 }
 
@@ -69,8 +75,11 @@ export type PrisonersWithEntriesByLocation = {
  * A row in a report returned
  */
 export type PrisonersOnLevelsByLocation = {
+  /** location */
   label: string
+  /** link */
   href?: string
+  /** number of prisoners on each level */
   values: number[]
 }
 
@@ -78,8 +87,11 @@ export type PrisonersOnLevelsByLocation = {
  * A row in a report returned
  */
 export type PrisonersOnLevelsByProtectedCharacteristic = {
+  /** protected characteristic */
   label: string
+  /** link */
   href?: string
+  /** number of prisoners on each level */
   values: number[]
 }
 
@@ -115,7 +127,9 @@ export type TrendsReport = Report<TrendsReportRow> &
 export type TrendsReportRow = {
   month: Date
   population: number
+  /** row of values; length matches report columns */
   values: number[]
+  /** sum of values */
   total: number
 }
 

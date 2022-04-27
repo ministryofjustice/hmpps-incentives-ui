@@ -1,4 +1,9 @@
-{% extends "../../../partials/analytics/chartBase.njk" %}
+{% extends "./chartBase.njk" %}
+
+{#
+Required variables (in addition to base template):
+- labelColumn
+#}
 
 {% block chart %}
 
@@ -13,13 +18,6 @@
     hsl(237,29%,{{ 65 + 32 * (100 - percentage) / 100 }}%)
   {%- endif -%}
 {%- endmacro %}
-
-{% set columnsLongName = [
-  "Prisoners with positive entries",
-  "Prisoners with negative entries",
-  "Prisoners with both kinds of entries",
-  "Prisoners with no positive or negative entries"
-] %}
 
 <div class="govuk-!-margin-top-8">
   {#
@@ -46,9 +44,13 @@
 
   <thead>
     <tr>
-      <th scope="col">Location</th>
+      <th scope="col">{{ labelColumn }}</th>
       {% for column in report.columns %}
-        <th scope="col" aria-label="{{ columnsLongName[loop.index0] }}">{{ column }}</th>
+        <th scope="col">
+          {% block valueColumn %}
+            {{ column }}
+          {% endblock %}
+        </th>
       {% endfor %}
     </tr>
   </thead>
@@ -67,7 +69,9 @@
             {% endif %}
           </strong>
           <br />
-          {{ total | thousands }} <span class="govuk-visually-hidden">prisoners</span>
+          {% block rowTotalValue %}
+            {{ total | thousands }}
+          {% endblock %}
         </td>
 
         {% for column in report.columns %}
@@ -78,7 +82,9 @@
             <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentage | float) }}">
               {{ percentage }}
               <br />
-              {{ value | thousands }} <span class="govuk-visually-hidden">{{ columnsLongName[loop.index0] | lower }}</span>
+              {% block rowValue %}
+                {{ value | thousands }}
+              {% endblock %}
             </span>
           </td>
         {% endfor %}

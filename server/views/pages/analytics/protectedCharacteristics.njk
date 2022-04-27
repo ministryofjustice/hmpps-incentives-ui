@@ -1,4 +1,4 @@
-{% extends "../../../partials/analytics/layout.njk" %}
+{% extends "../../partials/analytics/layout.njk" %}
 
 {% set graphPageId = "protected-characteristics" %}
 {% set graphTitle = "Protected characteristics" %}
@@ -10,9 +10,9 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      {% include "../../../partials/messages.njk" %}
+      {% include "../../partials/messages.njk" %}
 
-      {% include "../../../partials/formErrorSummary.njk" %}
+      {% include "../../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl">
         {{ graphTitle }}
@@ -31,7 +31,7 @@
       {% set graphGoogleAnalyticsCategory = "Incentive level by ethnicity" %}
       {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersByEthnicity %}
-      {% include "../../../partials/analytics/chartPrisonersOnLevels.njk" %}
+      {% include "../../partials/analytics/chartPrisonersOnLevels.njk" %}
 
     </section>
   </div>
@@ -46,7 +46,7 @@
       {% set graphGoogleAnalyticsCategory = "Incentive level by age" %}
       {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersByAge %}
-      {% include "../../../partials/analytics/chartPrisonersOnLevels.njk" %}
+      {% include "../../partials/analytics/chartPrisonersOnLevels.njk" %}
 
     </section>
   </div>
@@ -61,7 +61,7 @@
       {% set graphGoogleAnalyticsCategory = "Incentive level by religion" %}
       {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersByReligion %}
-      {% include "../../../partials/analytics/chartPrisonersOnLevels.njk" %}
+      {% include "../../partials/analytics/chartPrisonersOnLevels.njk" %}
 
     </section>
   </div>
@@ -76,7 +76,7 @@
       {% set graphGoogleAnalyticsCategory = "Incentive level by disability" %}
       {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersByDisability %}
-      {% include "../../../partials/analytics/chartPrisonersOnLevels.njk" %}
+      {% include "../../partials/analytics/chartPrisonersOnLevels.njk" %}
 
     </section>
   </div>
@@ -91,10 +91,10 @@
       {% set graphGoogleAnalyticsCategory = "Incentive level by sexual orientation" %}
       {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersBySexualOrientation %}
-      {% include "../../../partials/analytics/chartPrisonersOnLevels.njk" %}
+      {% include "../../partials/analytics/chartPrisonersOnLevels.njk" %}
 
     </section>
   </div>
 
-  {% include "../../../partials/analytics/disclaimer.njk" %}
+  {% include "../../partials/analytics/disclaimer.njk" %}
 {% endblock %}

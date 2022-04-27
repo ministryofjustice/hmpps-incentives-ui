@@ -1,0 +1,22 @@
+{% extends "./chartBaseHeatmap.njk" %}
+
+{% set columnsLongName = [
+  "Prisoners with positive entries",
+  "Prisoners with negative entries",
+  "Prisoners with both kinds of entries",
+  "Prisoners with no positive or negative entries"
+] %}
+
+{% block valueColumn %}
+  <span aria-label="{{ columnsLongName[loop.index0] }}">{{ column }}</span>
+{% endblock %}
+
+{% block rowTotalValue %}
+  {{ super() }}
+  <span class="govuk-visually-hidden">prisoners</span>
+{% endblock %}
+
+{% block rowValue %}
+  {{ super() }}
+  <span class="govuk-visually-hidden">{{ columnsLongName[loop.index0] | lower }}</span>
+{% endblock %}

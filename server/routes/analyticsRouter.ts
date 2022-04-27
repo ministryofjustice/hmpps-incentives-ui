@@ -106,7 +106,7 @@ export default function routes(router: Router): Router {
       trends = await analyticsService.getBehaviourEntryTrends(activeCaseLoad)
     }
 
-    res.render('pages/analytics/behaviour-entries/index', {
+    res.render('pages/analytics/behaviourEntries', {
       ...templateContext(req),
       behaviourEntries,
       prisonersWithEntries,
@@ -132,7 +132,7 @@ export default function routes(router: Router): Router {
       trends = await analyticsService.getIncentiveLevelTrends(activeCaseLoad)
     }
 
-    res.render('pages/analytics/incentive-levels/index', {
+    res.render('pages/analytics/incentiveLevels', {
       ...templateContext(req),
       prisonersOnLevels,
       trends,
@@ -177,7 +177,7 @@ export default function routes(router: Router): Router {
       prisonersBySexualOrientation,
     ] = await Promise.all(charts)
 
-    res.render('pages/analytics/protected-characteristics/index', {
+    res.render('pages/analytics/protectedCharacteristics', {
       ...templateContext(req),
       prisonersByEthnicity,
       prisonersByAge,

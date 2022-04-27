@@ -1,47 +1,8 @@
-{% from "govuk/components/details/macro.njk" import govukDetails %}
-{% from "../../../components/dataSource.njk" import dataSource %}
+{% extends "../../../partials/analytics/chartBase.njk" %}
 
-<h2 class="govuk-heading-m">
-  Percentage and number of prisoners on each incentive level by recorded disability
-</h2>
-
-{% if not report.hasErrors %}
+{% block chart %}
 
 {% set colourChoices = report.columns | chartPalette %}
-
-{{ dataSource(report.dataSource, report.lastUpdated, {"classes": "govuk-!-margin-bottom-6"}) }}
-
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    {{ govukDetails({
-      summaryText: "How you can use this chart",
-      text: "This chart will help you tell if there is any imbalance in incentive levels between prisoners with a recorded disability on NOMIS or OASys and those without. As the amount of missing data is high, the number of prisoners with unknown information is also provided.",
-      id: "guidance-" + graphId,
-      classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
-      attributes: {
-        "data-qa": "guidance",
-        "data-ga-category": "How you can use this chart > Incentive level by disability",
-        "data-ga-label": user.activeCaseload.id | default("")
-      }
-    }) }}
-
-    {% set chartFeedback %}
-      {% include "../../../partials/analytics/formFeedback.njk" %}
-    {% endset %}
-    {{ govukDetails({
-      summaryText: "Is this chart useful?",
-      html: chartFeedback,
-      id: "chart-feedback-" + graphId,
-      classes: "govuk-!-display-none-print",
-      open: chartFeedbackForm.hasErrors,
-      attributes: {
-        "data-qa": "chart-feedback",
-        "data-ga-category": "Is this chart useful > Incentive level by disability",
-        "data-ga-label": user.activeCaseload.id | default("")
-      }
-    }) }}
-  </div>
-</div>
 
 <div class="govuk-!-margin-top-8">
   {#
@@ -58,7 +19,7 @@
 
 <table class="app-chart-table app-chart-table--bars" id="table-{{ graphId }}">
   <caption class="govuk-visually-hidden">
-    Percentage and number of prisoners on each incentive level by recorded disability
+    {{ chartTitle }}
   </caption>
 
   <thead>
@@ -126,8 +87,4 @@
   </tfoot>
 </table>
 
-{% else %}
-
-  {% include "../../../partials/analytics/reportError.njk" %}
-
-{% endif %}
+{% endblock chart %}

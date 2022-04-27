@@ -1,4 +1,4 @@
-{% extends "../../../partials/analytics/layout.njk" %}
+{% extends "../../partials/analytics/layout.njk" %}
 
 {% set graphPageId = "behaviour-entries" %}
 {% set graphTitle = "Behaviour entries" %}
@@ -10,9 +10,9 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      {% include "../../../partials/messages.njk" %}
+      {% include "../../partials/messages.njk" %}
 
-      {% include "../../../partials/formErrorSummary.njk" %}
+      {% include "../../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl">
         {{ graphTitle }}
@@ -31,18 +31,19 @@
       {% set graphGoogleAnalyticsCategory = "Behaviour entries by wing" %}
       {% set chartFeedbackForm = forms[graphId] %}
       {% set report = behaviourEntries %}
-      {% include "../../../partials/analytics/chartBehaviourEntries.njk" %}
+      {% include "../../partials/analytics/chartBehaviourEntries.njk" %}
 
     </section>
     <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
 
       {% set chartTitle = "Percentage and number of prisoners on each behaviour entry by wing in the last last 28 days" %}
       {% set chartGuidance = "Individual prisoner behaviours can give you a fuller picture. Are you happy with how many prisoners have no entries and how many have both? Positive entries can help lead to behaviour improvements." %}
+      {% set labelColumn = "Location" %}
       {% set graphId = "prisoners-with-entries-by-location" %}
       {% set graphGoogleAnalyticsCategory = "Prisoners with behaviour entries by wing" %}
       {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersWithEntries %}
-      {% include "./prisoners-with-entries-by-location.njk" %}
+      {% include "../../partials/analytics/chartPrisonersWithBehaviourEntries.njk" %}
 
     </section>
   </div>
@@ -57,11 +58,11 @@
         {% set graphGoogleAnalyticsCategory = "Behaviour entry trends" %}
         {% set chartFeedbackForm = forms[graphId] %}
         {% set report = trends %}
-        {% include "../../../partials/analytics/chartTrends.njk" %}
+        {% include "../../partials/analytics/chartTrends.njk" %}
 
       </section>
     </div>
   {% endif %}
 
-  {% include "../../../partials/analytics/disclaimer.njk" %}
+  {% include "../../partials/analytics/disclaimer.njk" %}
 {% endblock %}

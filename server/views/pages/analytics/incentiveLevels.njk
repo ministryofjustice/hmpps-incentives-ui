@@ -1,4 +1,4 @@
-{% extends "../../../partials/analytics/layout.njk" %}
+{% extends "../../partials/analytics/layout.njk" %}
 
 {% set graphPageId = "incentive-levels" %}
 {% set graphTitle = "Incentive levels" %}
@@ -10,9 +10,9 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      {% include "../../../partials/messages.njk" %}
+      {% include "../../partials/messages.njk" %}
 
-      {% include "../../../partials/formErrorSummary.njk" %}
+      {% include "../../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl">
         {{ graphTitle }}
@@ -31,7 +31,7 @@
       {% set graphGoogleAnalyticsCategory = "Incentive level by wing" %}
       {% set chartFeedbackForm = forms[graphId] %}
       {% set report = prisonersOnLevels %}
-      {% include "../../../partials/analytics/chartPrisonersOnLevels.njk" %}
+      {% include "../../partials/analytics/chartPrisonersOnLevels.njk" %}
 
     </section>
   </div>
@@ -46,11 +46,11 @@
         {% set graphGoogleAnalyticsCategory = "Incentive level trends" %}
         {% set chartFeedbackForm = forms[graphId] %}
         {% set report = trends %}
-        {% include "../../../partials/analytics/chartTrends.njk" %}
+        {% include "../../partials/analytics/chartTrends.njk" %}
 
       </section>
     </div>
   {% endif %}
 
-  {% include "../../../partials/analytics/disclaimer.njk" %}
+  {% include "../../partials/analytics/disclaimer.njk" %}
 {% endblock %}

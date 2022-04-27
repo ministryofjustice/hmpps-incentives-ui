@@ -2,16 +2,18 @@
 
 {% block chart %}
 
+{% set colourChoices = report.columns | chartPalette %}
+
 <div class="govuk-!-margin-top-8">
   {#
   <a href="?" class="govuk-button govuk-button--secondary govuk-!-margin-right-6">Download chart</a>
   #}
 
   <div aria-hidden="true" class="app-chart-legend">
-    <span class="app-chart-legend__swatch app-chart-colour--a">&nbsp;</span>
-    <span class="app-chart-legend__label">Positive</span>
-    <span class="app-chart-legend__swatch app-chart-colour--b">&nbsp;</span>
-    <span class="app-chart-legend__label">Negative</span>
+    {% for level in report.columns %}
+      <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>
+      <span class="app-chart-legend__label">{{ level }}</span>
+    {% endfor %}
   </div>
 </div>
 
@@ -23,8 +25,9 @@
   <thead>
     <tr>
       <th scope="col">Location</th>
-      <th scope="col">Positive <span class="govuk-visually-hidden">entries</span></th>
-      <th scope="col">Negative <span class="govuk-visually-hidden">entries</span></th>
+      {% for entryType in report.columns %}
+        <th scope="col">{{ entryType }} <span class="govuk-visually-hidden">entries</span></th>
+      {% endfor %}
       <th aria-hidden="true" scope="col"></th>
     </tr>
   </thead>
@@ -64,7 +67,7 @@
 
       {% if loop.first %}
         <tr aria-hidden="true">
-          <td colspan="3"></td>
+          <td colspan="{{ (report.columns | length) + 1 }}"></td>
           <td class="app-chart-table__percentage-cell">
             <span class="app-chart-table__axis-midpoint"></span>
           </td>
@@ -75,7 +78,7 @@
 
   <tfoot aria-hidden="true">
     <tr>
-      <td colspan="3"></td>
+      <td colspan="{{ (report.columns | length) + 1 }}"></td>
       <td class="app-chart-table__axis-values">
         <span class="app-chart-table__axis-midpoint"></span>
         <span class="app-chart-table__axis-value app-chart-table__axis-value--min">0</span>
@@ -84,7 +87,7 @@
       </td>
     </tr>
     <tr>
-      <td colspan="3"></td>
+      <td colspan="{{ (report.columns | length) + 1 }}"></td>
       <td>Percentage</td>
     </tr>
   </tfoot>

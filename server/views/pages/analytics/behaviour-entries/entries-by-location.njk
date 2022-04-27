@@ -10,9 +10,9 @@
   #}
 
   <div aria-hidden="true" class="app-chart-legend">
-    {% for level in report.columns %}
+    {% for column in report.columns %}
       <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>
-      <span class="app-chart-legend__label">{{ level }}</span>
+      <span class="app-chart-legend__label">{{ column }}</span>
     {% endfor %}
   </div>
 </div>
@@ -25,8 +25,8 @@
   <thead>
     <tr>
       <th scope="col">Location</th>
-      {% for entryType in report.columns %}
-        <th scope="col">{{ entryType }} <span class="govuk-visually-hidden">entries</span></th>
+      {% for column in report.columns %}
+        <th scope="col">{{ column }} <span class="govuk-visually-hidden">entries</span></th>
       {% endfor %}
       <th aria-hidden="true" scope="col"></th>
     </tr>
@@ -48,7 +48,7 @@
           <br />
           {{ total | thousands }} <span class="govuk-visually-hidden">entries</span>
         </td>
-        {% for entryType in report.columns %}
+        {% for column in report.columns %}
           <td>
             {{ row.values[loop.index0] | percentageOf(total) }}
             <br />
@@ -57,7 +57,7 @@
         {% endfor %}
         <td aria-hidden="true" class="app-chart-table__percentage-cell">
           <span class="app-chart-table__axis-midpoint"></span>
-          {% for entryType in report.columns %}
+          {% for column in report.columns %}
             <div class="app-chart-table__percentage-cell-bar {{ colourChoices[loop.index0] }}" data-style-width="{{ row.values[loop.index0] | percentageOf(total, false) }}">&nbsp;<br />&nbsp;</div>
           {% endfor %}
         </td>

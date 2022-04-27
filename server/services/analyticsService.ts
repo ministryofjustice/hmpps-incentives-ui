@@ -145,7 +145,7 @@ export default class AnalyticsService {
 
     const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([location, ...values], index) => {
       const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
-      return { location, href, values }
+      return { label: location, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
@@ -194,7 +194,7 @@ export default class AnalyticsService {
 
     const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([location, ...values], index) => {
       const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
-      return { location, href, values }
+      return { label: location, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
@@ -246,7 +246,7 @@ export default class AnalyticsService {
 
     const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([location, ...values], index) => {
       const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
-      return { location, href, values }
+      return { label: location, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
@@ -308,16 +308,16 @@ export default class AnalyticsService {
     columns = columns.map(removeLevelPrefix)
 
     const rows: PrisonersOnLevelsByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
-      return { characteristic, values }
+      return { label: characteristic, values }
     })
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(prison)) {
       missingCharacteristics.delete(AgeYoungPeople)
     }
-    rows.forEach(({ characteristic }) => missingCharacteristics.delete(characteristic))
+    rows.forEach(({ label: characteristic }) => missingCharacteristics.delete(characteristic))
     missingCharacteristics.forEach(characteristic => {
-      rows.push({ characteristic, values: Array(columns.length).fill(0) })
+      rows.push({ label: characteristic, values: Array(columns.length).fill(0) })
     })
     rows.sort(compareCharacteristics)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
@@ -390,12 +390,12 @@ export default class AnalyticsService {
   }
 }
 
-type LocationRow = { location: string }
+type BaseReportRow = { label: string }
 
 /**
  * Used to sort rows with locations
  */
-export function compareLocations({ location: location1 }: LocationRow, { location: location2 }: LocationRow) {
+export function compareLocations({ label: location1 }: BaseReportRow, { label: location2 }: BaseReportRow) {
   if (location1 === 'All') {
     return -1
   }
@@ -417,14 +417,12 @@ export function compareLocations({ location: location1 }: LocationRow, { locatio
   return location1.localeCompare(location2)
 }
 
-type ProtectedCharacteristicRow = { characteristic: string }
-
 /**
  * Used to sort rows with protected characteristics
  */
 export function compareCharacteristics(
-  { characteristic: characteristic1 }: ProtectedCharacteristicRow,
-  { characteristic: characteristic2 }: ProtectedCharacteristicRow
+  { label: characteristic1 }: BaseReportRow,
+  { label: characteristic2 }: BaseReportRow
 ) {
   if (characteristic1 === 'All') {
     return -1

@@ -142,17 +142,17 @@ describe('AnalyticsService', () => {
 
   describe('comparators and filters', () => {
     describe.each([
-      { a: { location: 'All' }, b: { location: '1' }, expected: -1 },
-      { a: { location: 'Unknown' }, b: { location: '1' }, expected: 1 },
-      { a: { location: 'Unknown' }, b: { location: 'All' }, expected: 1 },
-      { a: { location: 'A' }, b: { location: 'All' }, expected: 1 },
-      { a: { location: '1' }, b: { location: 'A' }, expected: -1 },
-      { a: { location: '1' }, b: { location: 'Unknown' }, expected: -1 },
-      { a: { location: 'A' }, b: { location: '1' }, expected: 1 },
-      { a: { location: 'A' }, b: { location: 'B' }, expected: -1 },
-      { a: { location: 'SEG' }, b: { location: 'X' }, expected: 1 },
-      { a: { location: 'RECP' }, b: { location: 'SEG' }, expected: -1 },
-      { a: { location: 'RECP' }, b: { location: 'Unknown' }, expected: -1 },
+      { a: { label: 'All' }, b: { label: '1' }, expected: -1 },
+      { a: { label: 'Unknown' }, b: { label: '1' }, expected: 1 },
+      { a: { label: 'Unknown' }, b: { label: 'All' }, expected: 1 },
+      { a: { label: 'A' }, b: { label: 'All' }, expected: 1 },
+      { a: { label: '1' }, b: { label: 'A' }, expected: -1 },
+      { a: { label: '1' }, b: { label: 'Unknown' }, expected: -1 },
+      { a: { label: 'A' }, b: { label: '1' }, expected: 1 },
+      { a: { label: 'A' }, b: { label: 'B' }, expected: -1 },
+      { a: { label: 'SEG' }, b: { label: 'X' }, expected: 1 },
+      { a: { label: 'RECP' }, b: { label: 'SEG' }, expected: -1 },
+      { a: { label: 'RECP' }, b: { label: 'Unknown' }, expected: -1 },
     ])('compareLocations()', ({ a, b, expected }) => {
       let compares = '='
       if (expected > 0) {
@@ -160,22 +160,22 @@ describe('AnalyticsService', () => {
       } else if (expected < 0) {
         compares = '<'
       }
-      it(`${a.location} ${compares} ${b.location}`, () => {
+      it(`${a.label} ${compares} ${b.label}`, () => {
         expect(compareLocations(a, b)).toEqual(expected)
       })
     })
 
     describe.each([
-      { a: { characteristic: 'All' }, b: { characteristic: 'Asian or Asian British' }, expected: -1 },
-      { a: { characteristic: 'Black or Black British' }, b: { characteristic: 'Mixed' }, expected: -1 },
-      { a: { characteristic: 'Unknown' }, b: { characteristic: 'All' }, expected: 1 },
-      { a: { characteristic: 'Other' }, b: { characteristic: 'All' }, expected: 1 },
-      { a: { characteristic: 'White' }, b: { characteristic: 'All' }, expected: 1 },
-      { a: { characteristic: 'Asian or Asian British' }, b: { characteristic: 'Other' }, expected: -1 },
-      { a: { characteristic: 'Asian or Asian British' }, b: { characteristic: 'Unknown' }, expected: -1 },
-      { a: { characteristic: 'Yes' }, b: { characteristic: 'Unknown' }, expected: -1 },
-      { a: { characteristic: 'Other' }, b: { characteristic: 'Yes' }, expected: 1 },
-      { a: { characteristic: 'Unknown' }, b: { characteristic: 'Other' }, expected: 1 },
+      { a: { label: 'All' }, b: { label: 'Asian or Asian British' }, expected: -1 },
+      { a: { label: 'Black or Black British' }, b: { label: 'Mixed' }, expected: -1 },
+      { a: { label: 'Unknown' }, b: { label: 'All' }, expected: 1 },
+      { a: { label: 'Other' }, b: { label: 'All' }, expected: 1 },
+      { a: { label: 'White' }, b: { label: 'All' }, expected: 1 },
+      { a: { label: 'Asian or Asian British' }, b: { label: 'Other' }, expected: -1 },
+      { a: { label: 'Asian or Asian British' }, b: { label: 'Unknown' }, expected: -1 },
+      { a: { label: 'Yes' }, b: { label: 'Unknown' }, expected: -1 },
+      { a: { label: 'Other' }, b: { label: 'Yes' }, expected: 1 },
+      { a: { label: 'Unknown' }, b: { label: 'Other' }, expected: 1 },
     ])('compareCharacteristics()', ({ a, b, expected }) => {
       let compares = '='
       if (expected > 0) {
@@ -183,7 +183,7 @@ describe('AnalyticsService', () => {
       } else if (expected < 0) {
         compares = '<'
       }
-      it(`${a.characteristic} ${compares} ${b.characteristic}`, () => {
+      it(`${a.label} ${compares} ${b.label}`, () => {
         expect(compareCharacteristics(a, b)).toEqual(expected)
       })
     })
@@ -213,7 +213,7 @@ describe('AnalyticsService', () => {
       expect(entries).toHaveLength(prisonLocations.MDI.length)
 
       const prisonTotal = entries.shift()
-      expect(prisonTotal.location).toEqual('All')
+      expect(prisonTotal.label).toEqual('All')
       expect(prisonTotal.href).toBeUndefined()
 
       let [sumPositive, sumNegative] = [0, 0]
@@ -237,7 +237,7 @@ describe('AnalyticsService', () => {
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
           const { rows } = await analyticsService.getBehaviourEntriesByLocation(prison)
-          const locations = rows.map(row => row.location)
+          const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })
       }
@@ -254,7 +254,7 @@ describe('AnalyticsService', () => {
       expect(prisoners).toHaveLength(prisonLocations.MDI.length)
 
       const prisonTotal = prisoners.shift()
-      expect(prisonTotal.location).toEqual('All')
+      expect(prisonTotal.label).toEqual('All')
       expect(prisonTotal.href).toBeUndefined()
 
       let [sumPositive, sumNegative, sumBoth, sumNeither] = [0, 0, 0, 0]
@@ -282,7 +282,7 @@ describe('AnalyticsService', () => {
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
           const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(prison)
-          const locations = rows.map(row => row.location)
+          const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })
       }
@@ -299,7 +299,7 @@ describe('AnalyticsService', () => {
       expect(prisonersOnLevels).toHaveLength(prisonLocations.MDI.length)
 
       const prisonTotal = prisonersOnLevels.shift()
-      expect(prisonTotal.location).toEqual('All')
+      expect(prisonTotal.label).toEqual('All')
       expect(prisonTotal.href).toBeUndefined()
 
       const totals = [0, 0, 0, 0]
@@ -324,7 +324,7 @@ describe('AnalyticsService', () => {
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
           const { rows } = await analyticsService.getIncentiveLevelsByLocation(prison)
-          const locations = rows.map(row => row.location)
+          const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })
       }
@@ -360,7 +360,7 @@ describe('AnalyticsService', () => {
       expect(prisonersOnLevels).toHaveLength(expectedCharacteristics.length)
 
       const prisonTotal = prisonersOnLevels.shift()
-      expect(prisonTotal.characteristic).toEqual('All')
+      expect(prisonTotal.label).toEqual('All')
 
       const totals = [0, 0, 0, 0]
       prisonersOnLevels.forEach(({ values }) => {
@@ -383,17 +383,17 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristic}]: lists groups in the correct order`, async () => {
       const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
-      const characteristics = rows.map(row => row.characteristic)
+      const characteristics = rows.map(row => row.label)
       expect(characteristics).toEqual(expectedCharacteristics)
     })
 
     if (characteristic === ProtectedCharacteristic.Age) {
       it(`[${characteristic}]: adds missing 15-17 group with all zeros in YCS prison`, async () => {
         const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
-        const zeroRows = rows.filter(({ characteristic: someCharacteristic }) => someCharacteristic === '15-17')
+        const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
         expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([
           {
-            characteristic: '15-17',
+            label: '15-17',
             values: [0, 0, 0],
           },
         ])
@@ -404,7 +404,7 @@ describe('AnalyticsService', () => {
         PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
 
         const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
-        const zeroRows = rows.filter(({ characteristic: someCharacteristic }) => someCharacteristic === '15-17')
+        const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
         expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([])
       })
     }

@@ -1,11 +1,11 @@
 {% extends "govuk/template.njk" %}
 
 {% block head %}
-  {% if googleAnalyticsId %}
+  {% if googleAnalyticsUaId %}
     <!-- Google Analytics -->
     <script nonce="{{ cspNonce }}">
     window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-    ga('create', '{{ googleAnalyticsId }}', 'auto');
+    ga('create', '{{ googleAnalyticsUaId }}', 'auto');
     {# GA custom dimension 1 is "Active Case Load" -#}
     {% if user.activeCaseload.id -%}
       ga('set', 'dimension1', '{{ user.activeCaseload.id }}');

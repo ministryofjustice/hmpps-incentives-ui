@@ -335,8 +335,12 @@ export default class AnalyticsService {
     }
     const trendsRows: TrendsReportRow[] = []
     for (let monthsAgo = 11; monthsAgo >= 0; monthsAgo -= 1) {
-      const positive = Math.round(Math.random() * 50 + 175)
-      const negative = Math.round(Math.random() * 50 + 275)
+      let positive = Math.round(Math.random() * 50 + 175)
+      let negative = Math.round(Math.random() * 50 + 275)
+      if (monthsAgo === 0) {
+        positive /= 3
+        negative /= 3
+      }
       const total = positive + negative
       trendsRows.push({
         month: firstOfTheMonth(monthsAgo),
@@ -368,9 +372,14 @@ export default class AnalyticsService {
     }
     const trendsRows: TrendsReportRow[] = []
     for (let monthsAgo = 11; monthsAgo >= 0; monthsAgo -= 1) {
-      const basic = Math.round(Math.random() * 50)
-      const standard = Math.round(Math.random() * 300 + 500)
-      const enhanced = Math.round(Math.random() * 300 + 450)
+      let basic = Math.round(Math.random() * 50)
+      let standard = Math.round(Math.random() * 300 + 500)
+      let enhanced = Math.round(Math.random() * 300 + 450)
+      if (monthsAgo === 0) {
+        basic /= 3
+        standard /= 3
+        enhanced /= 3
+      }
       const total = basic + standard + enhanced
       trendsRows.push({
         month: firstOfTheMonth(monthsAgo),

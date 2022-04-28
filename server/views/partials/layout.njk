@@ -1,6 +1,7 @@
 {% extends "govuk/template.njk" %}
 
 {% block head %}
+  {# Google Analytics: Universal Analytics (UA) #}
   {% if googleAnalyticsUaId %}
     <!-- Google Analytics -->
     <script nonce="{{ cspNonce }}">
@@ -14,6 +15,19 @@
     </script>
     <script async src='https://www.google-analytics.com/analytics.js'></script>
     <!-- End Google Analytics -->
+  {% endif %}
+
+  {# Google Analytics: Google Analytics 4 (GA4) #}
+  {% if googleAnalyticsGa4Id %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ googleAnalyticsGa4Id }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', '{{ googleAnalyticsGa4Id }}');
+    </script>
   {% endif %}
 
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet" />

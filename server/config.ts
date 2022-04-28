@@ -125,8 +125,10 @@ export default {
   dpsUrl: get('DPS_URL', 'http://localhost:3000', requiredInProduction),
   supportUrl: get('SUPPORT_URL', 'http://localhost:3000', requiredInProduction),
   googleAnalytics: {
-    uaTrackingId: get('GOOGLE_ANALYTICS_UA_TRACKING_ID', ''), // Starts with `UA-`
-    ga4MeasurementId: get('GOOGLE_ANALYTICS_GA4_MEASUREMENT_ID', ''), // Starts with `G-`
+    // Universal Analytics (UA) tracking ID - soon to be legacy. Starts with `UA-`.
+    uaTrackingId: get('GOOGLE_ANALYTICS_UA_TRACKING_ID', ''),
+    // Google Analytics 4 (GA4) measurement ID. Starts with `G-`.
+    ga4MeasurementId: get('GOOGLE_ANALYTICS_GA4_MEASUREMENT_ID', ''),
   },
   featureFlags: {
     addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),

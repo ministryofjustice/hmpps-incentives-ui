@@ -124,8 +124,9 @@ export default {
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   dpsUrl: get('DPS_URL', 'http://localhost:3000', requiredInProduction),
   supportUrl: get('SUPPORT_URL', 'http://localhost:3000', requiredInProduction),
-  analytics: {
-    googleAnalyticsId: get('GOOGLE_ANALYTICS_ID', ''),
+  googleAnalytics: {
+    uaTrackingId: get('GOOGLE_ANALYTICS_UA_TRACKING_ID', ''), // Starts with `UA-`
+    ga4MeasurementId: get('GOOGLE_ANALYTICS_GA4_MEASUREMENT_ID', ''), // Starts with `G-`
   },
   featureFlags: {
     addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),

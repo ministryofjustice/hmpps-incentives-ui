@@ -67,7 +67,7 @@ export type PrisonersWithEntriesByLocation = {
   label: string
   /** link */
   href?: string
-  /** prisoners with: positive entries, negative entries, both types of entries, neither type of entry */
+  /** number of prisoners with: positive entries, negative entries, both types of entries, neither type of entry */
   values: [number, number, number, number]
 }
 

@@ -1,4 +1,4 @@
-{% extends "./chartBaseHeatmap.njk" %}
+{% from "./chartBaseHeatmap.njk" import chartBaseHeatmap %}
 
 {% set columnsLongName = [
   "Prisoners with positive entries",
@@ -7,16 +7,45 @@
   "Prisoners with no positive or negative entries"
 ] %}
 
-{% block valueColumn %}
-  <span aria-label="{{ columnsLongName[loop.index0] }}">{{ column }}</span>
-{% endblock %}
+{% macro valueColumn(column, columnIndex) %}
+  <span aria-label="{{ columnsLongName[columnIndex] }}">{{ column }}</span>
+{% endmacro %}
 
-{% block rowTotalValue %}
-  {{ super() }}
+{% macro rowTotalValue(total, rowIndex) %}
+  {{- total | thousands }}
   <span class="govuk-visually-hidden">prisoners</span>
-{% endblock %}
+{% endmacro %}
 
-{% block rowValue %}
-  {{ super() }}
-  <span class="govuk-visually-hidden">{{ columnsLongName[loop.index0] | lower }}</span>
-{% endblock %}
+{% macro rowValue(value, column, columnIndex) %}
+  {{- value | thousands }}
+  <span class="govuk-visually-hidden">{{ columnsLongName[columnIndex] | lower }}</span>
+{% endmacro %}
+
+{% macro chartPrisonersWithBehaviourEntries(
+  title,
+  guidance,
+  labelColumn,
+  graphId,
+  graphGoogleAnalyticsCategory,
+  activeCaseload,
+  form,
+  csrfToken,
+  report
+) %}
+
+  {{ chartBaseHeatmap(
+    title=title,
+    guidance=guidance,
+    labelColumn=labelColumn,
+    graphId=graphId,
+    graphGoogleAnalyticsCategory=graphGoogleAnalyticsCategory,
+    activeCaseload=activeCaseload,
+    form=form,
+    csrfToken=csrfToken,
+    report=report,
+    valueColumn=valueColumn,
+    rowTotalValue=rowTotalValue,
+    rowValue=rowValue
+  ) }}
+
+{% endmacro %}

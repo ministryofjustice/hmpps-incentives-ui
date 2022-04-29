@@ -1,5 +1,8 @@
 {% extends "../../partials/analytics/layout.njk" %}
 
+{% from "../../partials/analytics/chartPrisonersOnLevels.njk" import chartPrisonersOnLevels %}
+{% from "../../partials/analytics/chartTrends.njk" import chartTrends %}
+
 {% set graphPageId = "incentive-levels" %}
 {% set graphTitle = "Incentive levels" %}
 {% set pageTitle = applicationName + " – " + graphTitle %}
@@ -24,15 +27,18 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-      {% set chartTitle = "Percentage and number of prisoners on each incentive level by residential location" %}
-      {% set chartGuidance = "Use this chart to see incentive level splits for the prison and residential location. What does it tell you about how the incentives policy is applied, the population and possible actions for your prison?" %}
-      {% set labelColumn = "Location" %}
-      {% set wideLabel = false %}
       {% set graphId = "incentive-levels-by-location" %}
-      {% set graphGoogleAnalyticsCategory = "Incentive level by wing" %}
-      {% set chartFeedbackForm = forms[graphId] %}
-      {% set report = prisonersOnLevels %}
-      {% include "../../partials/analytics/chartPrisonersOnLevels.njk" %}
+      {{ chartPrisonersOnLevels(
+        title="Percentage and number of prisoners on each incentive level by residential location",
+        guidance="Use this chart to see incentive level splits for the prison and residential location. What does it tell you about how the incentives policy is applied, the population and possible actions for your prison?",
+        labelColumn="Location",
+        graphId=graphId,
+        graphGoogleAnalyticsCategory="Incentive level by wing",
+        activeCaseload=user.activeCaseload.id | default(""),
+        form=forms[graphId],
+        csrfToken=csrfToken,
+        report=prisonersOnLevels
+      ) }}
 
     </section>
   </div>
@@ -41,13 +47,17 @@
     <div class="govuk-grid-row">
       <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-        {% set chartTitle = "Incentive levels in the establishment over the last 12 months" %}
-        {% set chartGuidance = "Use this chart to compare incentive levels with previous months. Are there any concerns or surprises that need explored further? Is the incentives scheme producing the levels you would like it to?" %}
         {% set graphId = "trends-incentive-levels" %}
-        {% set graphGoogleAnalyticsCategory = "Incentive level trends" %}
-        {% set chartFeedbackForm = forms[graphId] %}
-        {% set report = trends %}
-        {% include "../../partials/analytics/chartTrends.njk" %}
+        {{ chartTrends(
+          title="Incentive levels in the establishment over the last 12 months",
+          guidance="Use this chart to compare incentive levels with previous months. Are there any concerns or surprises that need explored further? Is the incentives scheme producing the levels you would like it to?",
+          graphId=graphId,
+          graphGoogleAnalyticsCategory="Incentive level trends",
+          activeCaseload=user.activeCaseload.id | default(""),
+          form=forms[graphId],
+          csrfToken=csrfToken,
+          report=trends
+        ) }}
 
       </section>
     </div>

@@ -1,11 +1,26 @@
 {% extends "./chartBase.njk" %}
 
-{#
-Required variables (in addition to base template):
-- (none yet)
-#}
+{% macro chartTrends(
+  title,
+  guidance,
+  graphId,
+  graphGoogleAnalyticsCategory,
+  activeCaseload,
+  form,
+  csrfToken,
+  report
+) %}
 
-{% block chart %}
+{% call chartBase(
+  title=title,
+  guidance=guidance,
+  graphId=graphId,
+  graphGoogleAnalyticsCategory=graphGoogleAnalyticsCategory,
+  activeCaseload=activeCaseload,
+  form=form,
+  csrfToken=csrfToken,
+  report=report
+) %}
 
 {% set trendsOverlayHeight = 300 %} {# NB: must match $trends-overlay-height in SCSS #}
 {% set colourChoices = report.columns | chartPalette %}
@@ -39,7 +54,7 @@ Required variables (in addition to base template):
 
   <table class="app-chart-table app-chart-table--trends" id="table-{{ graphId }}">
     <caption class="govuk-visually-hidden">
-      {{ chartTitle }}
+      {{ title }}
     </caption>
     <thead>
       <tr aria-hidden="true" class="app-chart-trends-overlay">
@@ -87,6 +102,7 @@ Required variables (in addition to base template):
         </td>
         {% for row in report.rows %}
           {% set rowIndex = loop.index0 %}
+
           <td>
             <div class="app-chart-table__group app-chart-table__group-of-{{ report.columns.length }}">
               {% for column in report.columns %}
@@ -126,6 +142,7 @@ Required variables (in addition to base template):
     <tbody class="govuk-table__body">
       {% for column in report.columns %}
         {% set columnIndex = loop.index0 %}
+
         <tr>
           <th scope="row">{{ column }}</th>
           {% for row in report.rows %}
@@ -158,4 +175,6 @@ Required variables (in addition to base template):
 
 </div>
 
-{% endblock %}
+{% endcall %}
+
+{% endmacro %}

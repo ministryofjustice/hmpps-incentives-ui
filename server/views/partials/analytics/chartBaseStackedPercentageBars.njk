@@ -22,7 +22,7 @@ Required variables (in addition to base template):
   </div>
 </div>
 
-<table class="app-chart-table app-chart-table--bars" id="table-{{ graphId }}">
+<table class="app-chart-table app-chart-table--bars app-chart-table--bars-with-{{ report.columns.length + 1 }}-columns" id="table-{{ graphId }}">
   <caption class="govuk-visually-hidden">
     {{ chartTitle }}
   </caption>

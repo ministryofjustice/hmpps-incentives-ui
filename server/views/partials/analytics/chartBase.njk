@@ -1,17 +1,19 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "./formFeedback.njk" import formFeedback %}
 
-{#
-Required variables:
-- graphId
-- chartFeedbackForm
-- chartGuidance
-- graphGoogleAnalyticsCategory
-- report
-- user
-#}
+{% macro chartBase(
+  title,
+  guidance,
+  graphId,
+  graphGoogleAnalyticsCategory,
+  activeCaseload,
+  form,
+  csrfToken,
+  report
+) %}
 
 <h2 class="govuk-heading-m">
-  {{ chartTitle }}
+  {{ title }}
 </h2>
 
 {% if not report.hasErrors %}
@@ -26,38 +28,37 @@ Required variables:
     <div class="govuk-grid-column-two-thirds">
       {{ govukDetails({
         summaryText: "How you can use this chart",
-        text: chartGuidance,
+        text: guidance,
         id: "guidance-" + graphId,
         classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
         attributes: {
           "data-qa": "guidance",
           "data-ga-category": "How you can use this chart > " + graphGoogleAnalyticsCategory,
-          "data-ga-label": user.activeCaseload.id | default("")
+          "data-ga-label": activeCaseload
         }
       }) }}
 
-      {% set chartFeedbackHtml %}
-        {% include "./formFeedback.njk" %}
-      {% endset %}
       {{ govukDetails({
         summaryText: "Is this chart useful?",
-        html: chartFeedbackHtml,
+        html: formFeedback(form=form, csrfToken=csrfToken),
         id: "chart-feedback-" + graphId,
         classes: "govuk-!-display-none-print",
-        open: chartFeedbackForm.hasErrors,
+        open: form.hasErrors,
         attributes: {
           "data-qa": "chart-feedback",
           "data-ga-category": "Is this chart useful > " + graphGoogleAnalyticsCategory,
-          "data-ga-label": user.activeCaseload.id | default("")
+          "data-ga-label": activeCaseload
         }
       }) }}
     </div>
   </div>
 
-  {% block chart %}TEMPLATE HIERARCHY ERROR{% endblock %}
+  {{ caller() }}
 
 {% else %}
 
   {% include "./reportError.njk" %}
 
 {% endif %}
+
+{% endmacro %}

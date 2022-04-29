@@ -2,13 +2,11 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 
-{# Required variables: chartFeedbackForm, csrfToken #}
-
-{% macro commentTextarea(chartFeedbackForm, id) %}
+{% macro _commentTextarea(form, id) %}
   {{ govukTextarea({
-    id: chartFeedbackForm.formId + "-" + id + "Comments",
+    id: form.formId + "-" + id + "Comments",
     name: id + "Comments",
-    value: chartFeedbackForm.getField(id + "Comments").value,
+    value: form.getField(id + "Comments").value,
     label: {
       text: "Comments (optional)"
     },
@@ -16,14 +14,16 @@
   }) }}
 {% endmacro %}
 
+{% macro formFeedback(form, csrfToken) %}
+
 {% set chartUsefulHtml %}
-  {{ commentTextarea(chartFeedbackForm, "yes") }}
+  {{ _commentTextarea(form, "yes") }}
 {% endset %}
 
 {% set chartNotUsefulHtml %}
-  {% set mainNoReasonField = chartFeedbackForm.getField("mainNoReason") %}
+  {% set mainNoReasonField = form.getField("mainNoReason") %}
   {{ govukRadios({
-    idPrefix: chartFeedbackForm.formId + "-mainNoReason",
+    idPrefix: form.formId + "-mainNoReason",
     name: "mainNoReason",
     classes: "govuk-radios--small",
     fieldset: {
@@ -62,13 +62,13 @@
     errorMessage: { text: mainNoReasonField.error } if mainNoReasonField.error else undefined
   }) }}
 
-  {{ commentTextarea(chartFeedbackForm, "no") }}
+  {{ _commentTextarea(form, "no") }}
 {% endset %}
 
-<form id="form-{{ chartFeedbackForm.formId }}" method="post" novalidate>
-  {% set chartUsefulField = chartFeedbackForm.getField("chartUseful") %}
+<form id="form-{{ form.formId }}" method="post" novalidate>
+  {% set chartUsefulField = form.getField("chartUseful") %}
   {{ govukRadios({
-    idPrefix: chartFeedbackForm.formId + "-chartUseful",
+    idPrefix: form.formId + "-chartUseful",
     name: "chartUseful",
     fieldset: {
       legend: {
@@ -97,7 +97,7 @@
     errorMessage: { text: chartUsefulField.error } if chartUsefulField.error else undefined
   }) }}
 
-  <input type="hidden" name="formId" value="{{ chartFeedbackForm.formId }}" />
+  <input type="hidden" name="formId" value="{{ form.formId }}" />
   <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
   {{ govukButton({
@@ -106,3 +106,5 @@
     preventDoubleClick: true
   }) }}
 </form>
+
+{% endmacro %}

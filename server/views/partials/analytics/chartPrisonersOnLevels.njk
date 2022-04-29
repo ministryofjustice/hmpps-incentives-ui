@@ -1,16 +1,47 @@
-{% extends "./chartBaseStackedPercentageBars.njk" %}
+{% from "./chartBaseStackedPercentageBars.njk" import chartBaseStackedPercentageBars %}
 
-{% block valueColumn %}
-  {{ super() }}
+{% macro valueColumn(column, columnIndex) %}
+  {{- column }}
   <span class="govuk-visually-hidden">level</span>
-{% endblock %}
+{% endmacro %}
 
-{% block rowTotalValue %}
-  {{ super() }}
+{% macro rowTotalValue(total, rowIndex) %}
+  {{- total | thousands }}
   <span class="govuk-visually-hidden">prisoners</span>
-{% endblock %}
+{% endmacro %}
 
-{% block rowValue %}
-  {{ super() }}
+{% macro rowValue(value, column, columnIndex) %}
+  {{- value | thousands }}
   <span class="govuk-visually-hidden">prisoners on {{ column | lower }} level</span>
-{% endblock %}
+{% endmacro %}
+
+{% macro chartPrisonersOnLevels(
+  title,
+  guidance,
+  labelColumn,
+  graphId,
+  graphGoogleAnalyticsCategory,
+  activeCaseload,
+  form,
+  csrfToken,
+  report,
+  wideLabel=false
+) %}
+
+  {{ chartBaseStackedPercentageBars(
+    title=title,
+    guidance=guidance,
+    labelColumn=labelColumn,
+    graphId=graphId,
+    graphGoogleAnalyticsCategory=graphGoogleAnalyticsCategory,
+    activeCaseload=activeCaseload,
+    form=form,
+    csrfToken=csrfToken,
+    report=report,
+    wideLabel=wideLabel,
+    valueColumn=valueColumn,
+    rowTotalValue=rowTotalValue,
+    rowValue=rowValue
+  ) }}
+
+{% endmacro %}

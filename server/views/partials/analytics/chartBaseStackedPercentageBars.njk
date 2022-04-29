@@ -1,14 +1,45 @@
-{% extends "./chartBase.njk" %}
+{% from "./chartBase.njk" import chartBase %}
 
-{#
-Required variables (in addition to base template):
-- labelColumn
-- wideLabel
-#}
+{% macro valueColumn(column, columnIndex) %}
+  {{- column -}}
+{% endmacro %}
 
-{% block chart %}
+{% macro rowTotalValue(total, rowIndex) %}
+  {{- total | thousands -}}
+{% endmacro %}
+
+{% macro rowValue(value, column, columnIndex) %}
+  {{- value | thousands -}}
+{% endmacro %}
+
+{% macro chartBaseStackedPercentageBars(
+  title,
+  guidance,
+  labelColumn,
+  graphId,
+  graphGoogleAnalyticsCategory,
+  activeCaseload,
+  form,
+  csrfToken,
+  report,
+  wideLabel=false,
+  valueColumn=valueColumn,
+  rowTotalValue=rowTotalValue,
+  rowValue=rowValue
+) %}
 
 {% set colourChoices = report.columns | chartPalette %}
+
+{% call chartBase(
+  title=title,
+  guidance=guidance,
+  graphId=graphId,
+  graphGoogleAnalyticsCategory=graphGoogleAnalyticsCategory,
+  activeCaseload=activeCaseload,
+  form=form,
+  csrfToken=csrfToken,
+  report=report
+) %}
 
 <div class="govuk-!-margin-top-8">
   {#
@@ -25,7 +56,7 @@ Required variables (in addition to base template):
 
 <table class="app-chart-table app-chart-table--bars app-chart-table--bars-with-{{ report.columns.length + 1 }}-columns {% if wideLabel %}app-chart-table--bars-wide-label{% endif %}" id="table-{{ graphId }}">
   <caption class="govuk-visually-hidden">
-    {{ chartTitle }}
+    {{ title }}
   </caption>
 
   <thead>
@@ -33,9 +64,7 @@ Required variables (in addition to base template):
       <th scope="col">{{ labelColumn }}</th>
       {% for column in report.columns %}
         <th scope="col">
-          {% block valueColumn %}
-            {{ column }}
-          {% endblock %}
+          {{ valueColumn(column=column, columnIndex=loop.index0) }}
         </th>
       {% endfor %}
       <th aria-hidden="true" scope="col"></th>
@@ -44,6 +73,7 @@ Required variables (in addition to base template):
 
   <tbody>
     {% for row in report.rows %}
+      {% set rowIndex = loop.index0 %}
       {% set total = row.values | sum %}
 
       <tr>
@@ -56,17 +86,16 @@ Required variables (in addition to base template):
             {% endif %}
           </strong>
           <br />
-          {% block rowTotalValue %}
-            {{ total | thousands }}
-          {% endblock %}
+          {{ rowTotalValue(total=total, rowIndex=rowIndex) }}
         </td>
         {% for column in report.columns %}
+          {% set columnIndex = loop.index0 %}
+          {% set value = row.values[columnIndex] %}
+
           <td>
-            {{ row.values[loop.index0] | percentageOf(total) }}
+            {{ value | percentageOf(total) }}
             <br />
-            {% block rowValue %}
-              {{ row.values[loop.index0] | thousands }}
-            {% endblock %}
+            {{ rowValue(value=value, column=column, columnIndex=columnIndex) }}
           </td>
         {% endfor %}
         <td aria-hidden="true" class="app-chart-table__percentage-cell">
@@ -105,4 +134,6 @@ Required variables (in addition to base template):
   </tfoot>
 </table>
 
-{% endblock chart %}
+{% endcall %}
+
+{% endmacro %}

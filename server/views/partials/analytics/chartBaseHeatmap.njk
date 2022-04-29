@@ -1,11 +1,4 @@
-{% extends "./chartBase.njk" %}
-
-{#
-Required variables (in addition to base template):
-- labelColumn
-#}
-
-{% block chart %}
+{% from "./chartBase.njk" import chartBase %}
 
 {% macro heatMapColour(percentage) -%}
   {#- heat map ranges from white at 0% to (almost) GDS light purple at 100% -#}
@@ -18,6 +11,44 @@ Required variables (in addition to base template):
     hsl(237,29%,{{ 65 + 32 * (100 - percentage) / 100 }}%)
   {%- endif -%}
 {%- endmacro %}
+
+{% macro valueColumn(column, columnIndex) %}
+  {{- column -}}
+{% endmacro %}
+
+{% macro rowTotalValue(total, rowIndex) %}
+  {{- total | thousands -}}
+{% endmacro %}
+
+{% macro rowValue(value, column, columnIndex) %}
+  {{- value | thousands -}}
+{% endmacro %}
+
+{% macro chartBaseHeatmap(
+  title,
+  guidance,
+  labelColumn,
+  graphId,
+  graphGoogleAnalyticsCategory,
+  activeCaseload,
+  form,
+  csrfToken,
+  report,
+  valueColumn=valueColumn,
+  rowTotalValue=rowTotalValue,
+  rowValue=rowValue
+) %}
+
+{% call chartBase(
+  title=title,
+  guidance=guidance,
+  graphId=graphId,
+  graphGoogleAnalyticsCategory=graphGoogleAnalyticsCategory,
+  activeCaseload=activeCaseload,
+  form=form,
+  csrfToken=csrfToken,
+  report=report
+) %}
 
 <div class="govuk-!-margin-top-8">
   {#
@@ -39,7 +70,7 @@ Required variables (in addition to base template):
 
 <table class="app-chart-table app-chart-table--heatmap" id="table-{{ graphId }}">
   <caption class="govuk-visually-hidden">
-    {{ chartTitle }}
+    {{ title }}
   </caption>
 
   <thead>
@@ -47,9 +78,7 @@ Required variables (in addition to base template):
       <th scope="col">{{ labelColumn }}</th>
       {% for column in report.columns %}
         <th scope="col">
-          {% block valueColumn %}
-            {{ column }}
-          {% endblock %}
+          {{ valueColumn(column=column, columnIndex=loop.index0) }}
         </th>
       {% endfor %}
     </tr>
@@ -57,6 +86,7 @@ Required variables (in addition to base template):
 
   <tbody>
     {% for row in report.rows %}
+      {% set rowIndex = loop.index0 %}
       {% set total = row.values | sum %}
 
       <tr>
@@ -69,22 +99,19 @@ Required variables (in addition to base template):
             {% endif %}
           </strong>
           <br />
-          {% block rowTotalValue %}
-            {{ total | thousands }}
-          {% endblock %}
+          {{ rowTotalValue(total=total, rowIndex=rowIndex) }}
         </td>
 
         {% for column in report.columns %}
-          {% set value = row.values[loop.index0] %}
+          {% set columnIndex = loop.index0 %}
+          {% set value = row.values[columnIndex] %}
           {% set percentage = value | percentageOf(total) %}
 
           <td>
             <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentage | float) }}">
               {{ percentage }}
               <br />
-              {% block rowValue %}
-                {{ value | thousands }}
-              {% endblock %}
+              {{ rowValue(value=value, column=column, columnIndex=columnIndex) }}
             </span>
           </td>
         {% endfor %}
@@ -97,4 +124,6 @@ Required variables (in addition to base template):
   </tbody>
 </table>
 
-{% endblock chart %}
+{% endcall %}
+
+{% endmacro %}

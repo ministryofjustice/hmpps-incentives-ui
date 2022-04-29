@@ -3,22 +3,50 @@
 // table containing horizontal stacked bar chart
 .app-chart-table--bars {
   th, td {
-    width: 12%;
     text-align: right;
+  }
+}
 
-    // column containing bars
+.app-chart-table--bars-with-2-columns {
+  th, td {
+    width: 18%;
+
+    // column containing chart bars
+    &:last-child {
+      width: 64%;
+    }
+  }
+}
+
+.app-chart-table--bars-with-3-columns {
+  th, td {
+    width: 13%;
+
+    // column containing chart bars
+    &:last-child {
+      width: 61%;
+    }
+  }
+}
+
+.app-chart-table--bars-with-4-columns {
+  th, td {
+    width: 12%;
+
+    // column containing chart bars
     &:last-child {
       width: 52%;
     }
   }
+}
 
-  .govuk-grid-column-one-half & {
-    th, td {
-      width: 13%;
+.app-chart-table--bars-with-5-columns {
+  th, td {
+    width: 10%;
 
-      &:last-child {
-        width: 61%;
-      }
+    // column containing chart bars
+    &:last-child {
+      width: 50%;
     }
   }
 }

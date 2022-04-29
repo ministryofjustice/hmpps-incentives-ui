@@ -4,6 +4,11 @@
 .app-chart-table--bars {
   th, td {
     text-align: right;
+
+    // column containing chart bars
+    &:last-child {
+      min-width: 38%;
+    }
   }
 }
 
@@ -14,6 +19,22 @@
     // column containing chart bars
     &:last-child {
       width: 64%;
+    }
+  }
+
+  &.app-chart-table--bars-wide-label {
+    th, td {
+      width: 25%;
+
+      // column containing row label (e.g. location or protected characteristic)
+      &:first-child {
+        width: 25%;
+      }
+
+      // column containing chart bars
+      &:last-child {
+        width: 50%;
+      }
     }
   }
 }
@@ -27,6 +48,22 @@
       width: 61%;
     }
   }
+
+  &.app-chart-table--bars-wide-label {
+    th, td {
+      width: 17%;
+
+      // column containing row label (e.g. location or protected characteristic)
+      &:first-child {
+        width: 22%;
+      }
+
+      // column containing chart bars
+      &:last-child {
+        width: 44%;
+      }
+    }
+  }
 }
 
 .app-chart-table--bars-with-4-columns {
@@ -38,6 +75,22 @@
       width: 52%;
     }
   }
+
+  &.app-chart-table--bars-wide-label {
+    th, td {
+      width: 13%;
+
+      // column containing row label (e.g. location or protected characteristic)
+      &:first-child {
+        width: 21%;
+      }
+
+      // column containing chart bars
+      &:last-child {
+        width: 40%;
+      }
+    }
+  }
 }
 
 .app-chart-table--bars-with-5-columns {
@@ -47,6 +100,22 @@
     // column containing chart bars
     &:last-child {
       width: 50%;
+    }
+  }
+
+  &.app-chart-table--bars-wide-label {
+    th, td {
+      width: 10%;
+
+      // column containing row label (e.g. location or protected characteristic)
+      &:first-child {
+        width: 21%;
+      }
+
+      // column containing chart bars
+      &:last-child {
+        width: 39%;
+      }
     }
   }
 }

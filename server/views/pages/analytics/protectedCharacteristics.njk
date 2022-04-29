@@ -27,6 +27,7 @@
       {% set chartTitle = "Percentage and number of prisoners on each incentive level by ethnicity" %}
       {% set chartGuidance = "Use this chart to see incentive levels for the main ethnicity groups and compare them to prison levels. Are there patterns or imbalances that you might want to explore further?" %}
       {% set labelColumn = "Ethnicity" %}
+      {% set wideLabel = true %}
       {% set graphId = "incentive-levels-by-ethnicity" %}
       {% set graphGoogleAnalyticsCategory = "Incentive level by ethnicity" %}
       {% set chartFeedbackForm = forms[graphId] %}
@@ -42,6 +43,7 @@
       {% set chartTitle = "Percentage and number of prisoners on each incentive level by age" %}
       {% set chartGuidance = "Use this chart to see incentive levels for the main age groups and compare them to prison levels. Are there patterns that suggest the incentives policy isn’t working as well for some groups?" %}
       {% set labelColumn = "Age" %}
+      {% set wideLabel = false %}
       {% set graphId = "incentive-levels-by-age" %}
       {% set graphGoogleAnalyticsCategory = "Incentive level by age" %}
       {% set chartFeedbackForm = forms[graphId] %}
@@ -57,6 +59,7 @@
       {% set chartTitle = "Percentage and number of prisoners on each incentive level by religion" %}
       {% set chartGuidance = "Use this chart to see how incentive levels might vary for prisoners of different religions. Comparing to the overall prison levels should help you to spot any imbalances, but be aware of generalising from small numbers." %}
       {% set labelColumn = "Religion" %}
+      {% set wideLabel = false %}
       {% set graphId = "incentive-levels-by-religion" %}
       {% set graphGoogleAnalyticsCategory = "Incentive level by religion" %}
       {% set chartFeedbackForm = forms[graphId] %}
@@ -72,6 +75,7 @@
       {% set chartTitle = "Percentage and number of prisoners on each incentive level by recorded disability" %}
       {% set chartGuidance = "This chart will help you tell if there is any imbalance in incentive levels between prisoners with a disability recorded on NOMIS and those without. As the amount of missing data is high, the number of prisoners with unknown information is also provided." %}
       {% set labelColumn = "Disability" %}
+      {% set wideLabel = true %}
       {% set graphId = "incentive-levels-by-disability" %}
       {% set graphGoogleAnalyticsCategory = "Incentive level by disability" %}
       {% set chartFeedbackForm = forms[graphId] %}
@@ -87,6 +91,7 @@
       {% set chartTitle = "Percentage and number of prisoners on each incentive level by sexual orientation" %}
       {% set chartGuidance = "Use this chart to see incentive levels for prisoners of different sexual orientation and compare them to the overall prison levels. Are there any patterns or imbalances that you might want to explore further?" %}
       {% set labelColumn = "Sexual orientation" %}
+      {% set wideLabel = false %}
       {% set graphId = "incentive-levels-by-sexual-orientation" %}
       {% set graphGoogleAnalyticsCategory = "Incentive level by sexual orientation" %}
       {% set chartFeedbackForm = forms[graphId] %}

@@ -5,12 +5,13 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { createRedisClient } from '../data/redisClient'
 import config from '../config'
+import logger from '../../logger'
 
 const RedisStore = connectRedis(session)
 
 export default function setUpWebSession(): Router {
   const client = createRedisClient(`middleware/setUpWebSession.ts`, true)
-  client.connect()
+  client.connect().catch((err: Error) => logger.error('Error connecting to [middleware/setUpWebSession.ts] Redis', err))
 
   const router = express.Router()
   router.use(

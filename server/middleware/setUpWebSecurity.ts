@@ -20,6 +20,7 @@ export default function setUpWebSecurity(): Router {
           scriptSrc: [
             "'self'",
             'https://www.google-analytics.com',
+            'https://www.googletagmanager.com',
             (req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
           ],
           styleSrc: ["'self'", (req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],

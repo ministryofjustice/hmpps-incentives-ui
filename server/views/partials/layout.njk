@@ -26,7 +26,9 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', '{{ googleAnalyticsGa4Id }}');
+      gtag('config', '{{ googleAnalyticsGa4Id }}', {
+        active_case_load: '{{ user.activeCaseload.id | default('') }}',
+      });
     </script>
   {% endif %}
 

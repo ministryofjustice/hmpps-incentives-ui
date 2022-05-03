@@ -235,6 +235,7 @@
 
             const gaCategory = elem.data('ga-category')
             let gaAction = elem.data('ga-action')
+            const gaLabel = '{{ locationPrefix }}'
 
             // for sorting events, add sort order to GA action
             const previousSortOrder = elem.attr('aria-sort')
@@ -246,7 +247,15 @@
                 }
             }
 
-            if (typeof ga === typeof Function) ga('send', 'event', gaCategory, gaAction, '{{ locationPrefix }}')
+            if (typeof ga === typeof Function) ga('send', 'event', gaCategory, gaAction, gaLabel)
+
+            if (typeof gtag === typeof Function) {
+                gtag('event', 'incentives_event', {
+                    category: gaCategory,
+                    action: gaAction,
+                    label: gaLabel,
+                })
+            }
         }
 
         $('.govuk-tabs__tab[data-ga-category]').on('focus', gaSendEvent)

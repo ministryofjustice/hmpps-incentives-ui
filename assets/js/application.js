@@ -11,5 +11,12 @@ $(() => {
     if (eventCategory && typeof ga === 'function') {
       ga('send', 'event', eventCategory, eventAction, eventLabel)
     }
+    if (eventCategory && typeof gtag === 'function') {
+      gtag('event', 'incentives_event', {
+        category: eventCategory,
+        action: eventAction,
+        label: eventLabel,
+      })
+    }
   })
 })

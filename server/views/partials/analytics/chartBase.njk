@@ -34,7 +34,7 @@
         attributes: {
           "data-qa": "guidance",
           "data-ga-category": "How you can use this chart > " + graphGoogleAnalyticsCategory,
-          "data-ga-label": activeCaseload
+          "data-ga-label": activeCaseload | default("")
         }
       }) }}
 
@@ -47,7 +47,7 @@
         attributes: {
           "data-qa": "chart-feedback",
           "data-ga-category": "Is this chart useful > " + graphGoogleAnalyticsCategory,
-          "data-ga-label": activeCaseload
+          "data-ga-label": activeCaseload | default("")
         }
       }) }}
     </div>

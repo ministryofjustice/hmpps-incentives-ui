@@ -28,10 +28,6 @@
 {% set report = report | calculateTrendsRange %}
 
 <div class="govuk-!-margin-top-8">
-  {#
-  <a href="?" class="govuk-button govuk-button--secondary govuk-!-margin-right-6">Download chart</a>
-  #}
-
   <div aria-hidden="true" class="app-chart-legend">
     {% for column in report.columns %}
       <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>

@@ -34,7 +34,7 @@
         labelColumn="Location",
         graphId=graphId,
         graphGoogleAnalyticsCategory="Incentive level by wing",
-        activeCaseload=user.activeCaseload.id | default(""),
+        activeCaseload=user.activeCaseload.id,
         form=forms[graphId],
         csrfToken=csrfToken,
         report=prisonersOnLevels
@@ -53,7 +53,7 @@
           guidance="Use this chart to compare incentive levels with previous months. Are there any concerns or surprises that need explored further? Is the incentives scheme producing the levels you would like it to?",
           graphId=graphId,
           graphGoogleAnalyticsCategory="Incentive level trends",
-          activeCaseload=user.activeCaseload.id | default(""),
+          activeCaseload=user.activeCaseload.id,
           form=forms[graphId],
           csrfToken=csrfToken,
           report=trends

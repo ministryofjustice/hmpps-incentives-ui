@@ -10,6 +10,7 @@ export type Table = Record<string, Record<string, number | string>>
 export enum TableType {
   behaviourEntries = 'behaviour_entries_28d',
   incentiveLevels = 'incentives_latest_narrow',
+  trends = 'incentives_trends',
 }
 
 /**
@@ -34,6 +35,25 @@ export interface IncentiveLevelsTable extends Table {
   incentive: Record<string, string>
   characteristic: Record<string, string>
   charac_group: Record<string, string>
+}
+
+/**
+ * Source data table from Analytical Platform
+ * NB: other unused columns exist
+ */
+export interface TrendsTable extends Table {
+  year_month_str: Record<string, string>
+  snapshots: Record<string, number>
+  prison: Record<string, string>
+  offenders: Record<string, number>
+  incentive: Record<string, string>
+  positives: Record<string, number>
+  negatives: Record<string, number>
+  ethnic_group: Record<string, string>
+  age_group_10yr: Record<string, string>
+  religion_group: Record<string, string>
+  disability: Record<string, string>
+  // TODO: sexual orientation appears to be missing
 }
 
 /**

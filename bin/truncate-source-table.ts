@@ -37,6 +37,21 @@ if (chosenTableType === 'behaviourEntries') {
     'sex_orientation',
   ])
   rowFilter = (rowIndex, table) => characteristicsToKeep.has(table.characteristic[rowIndex] as string)
+} else if (chosenTableType === 'trends') {
+  columnsToKeep = [
+    'year_month_str',
+    'snapshots',
+    'prison',
+    'offenders',
+    'incentive',
+    'positives',
+    'negatives',
+    'ethnic_group',
+    'age_group_10yr',
+    'religion_group',
+    'disability',
+  ]
+  rowFilter = () => true
 } else {
   throw new Error(`Not implemented for: ${chosenTableType}`)
 }

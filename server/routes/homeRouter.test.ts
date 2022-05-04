@@ -22,8 +22,11 @@ describe('Home page', () => {
         return request(app)
           .get('/')
           .expect(res => {
-            expect(res.text).toContain('View incentive levels and behaviour entries')
-            expect(res.text).toContain('See incentive levels and behaviour entries by residential location.')
+            expect(res.text).toContain('Prisoner incentive information')
+            expect(res.text).toContain(
+              'See incentive levels and behaviour entries for the prison population, by residential location.'
+            )
+            expect(res.text).not.toContain('review date')
           })
       })
     })
@@ -37,7 +40,7 @@ describe('Home page', () => {
         return request(app)
           .get('/')
           .expect(res => {
-            expect(res.text).toContain('View review dates and incentive information')
+            expect(res.text).toContain('Prisoner incentive information')
             expect(res.text).toContain(
               'See review dates, incentive levels and behaviour entries by residential location.'
             )

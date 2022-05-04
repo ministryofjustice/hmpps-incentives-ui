@@ -162,17 +162,29 @@ context('Wing incentives table page', () => {
     cy.get('a#tab_BAS')
       .click()
       .then(() =>
-        gaSpy.shouldHaveSentEvent('Incentives information > Clicked on incentive level tab', 'Basic', 'MDI-42')
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Incentives information > Clicked on incentive level tab',
+          action: 'Basic',
+          label: 'MDI-42',
+        })
       )
     cy.get('a#tab_STD')
       .click()
       .then(() =>
-        gaSpy.shouldHaveSentEvent('Incentives information > Clicked on incentive level tab', 'Standard', 'MDI-42')
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Incentives information > Clicked on incentive level tab',
+          action: 'Standard',
+          label: 'MDI-42',
+        })
       )
     cy.get('a#tab_STD')
       .type('{leftarrow}')
       .then(() =>
-        gaSpy.shouldHaveSentEvent('Incentives information > Clicked on incentive level tab', 'Basic', 'MDI-42')
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Incentives information > Clicked on incentive level tab',
+          action: 'Basic',
+          label: 'MDI-42',
+        })
       )
 
     // sorting table send events
@@ -183,16 +195,21 @@ context('Wing incentives table page', () => {
       .spread((...$ths) =>
         $ths.map($th => cy.wrap($th).click()).reduce((thClick, thNextClick) => thClick.then(() => thNextClick))
       )
-      .then(() =>
-        gaSpy.shouldHaveSentEvents(
+      .then(() => {
+        const eventsCalls: [string, Record<string, string>][] = [
           ['Incentives information > Sorted table', 'by name (descending)', 'MDI-42'],
           ['Incentives information > Sorted table', 'by positive behaviours (ascending)', 'MDI-42'],
           ['Incentives information > Sorted table', 'by incentive encouragements (ascending)', 'MDI-42'],
           ['Incentives information > Sorted table', 'by negative behaviours (ascending)', 'MDI-42'],
           ['Incentives information > Sorted table', 'by incentive warnings (ascending)', 'MDI-42'],
-          ['Incentives information > Sorted table', 'by proven adjudications (ascending)', 'MDI-42']
-        )
-      )
+          ['Incentives information > Sorted table', 'by proven adjudications (ascending)', 'MDI-42'],
+        ].map(([category, action, label]: [string, string, string]) => [
+          'incentives_event',
+          { category, action, label },
+        ])
+
+        gaSpy.shouldHaveSentEvents(...eventsCalls)
+      })
 
     // links in table send events
     cy.get('.app-table--striped:visible .govuk-table__body tr:first-child a[data-ga-category]')
@@ -201,7 +218,13 @@ context('Wing incentives table page', () => {
         cy
           .wrap($th)
           .click()
-          .then(() => gaSpy.shouldHaveSentEvent('Incentives information > Clicked on link', 'prisoner name', 'MDI-42'))
+          .then(() =>
+            gaSpy.shouldHaveSentEvent('incentives_event', {
+              category: 'Incentives information > Clicked on link',
+              action: 'prisoner name',
+              label: 'MDI-42',
+            })
+          )
       )
   })
 })

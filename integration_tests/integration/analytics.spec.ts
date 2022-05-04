@@ -53,42 +53,50 @@ context('Analytics section', () => {
       const gaSpy = new GoogleAnalyticsSpy()
       gaSpy.install()
 
-      page.entriesByLocationGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('How you can use this chart > Behaviour entries by wing', 'opened', 'MDI')
-        )
-      page.entriesByLocationGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('How you can use this chart > Behaviour entries by wing', 'closed', 'MDI')
-        )
+      page.entriesByLocationGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Behaviour entries by wing',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.entriesByLocationGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Behaviour entries by wing',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.prisonersWithEntriesByLocationGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent(
-            'How you can use this chart > Prisoners with behaviour entries by wing',
-            'opened',
-            'MDI'
-          )
-        )
-      page.prisonersWithEntriesByLocationGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent(
-            'How you can use this chart > Prisoners with behaviour entries by wing',
-            'closed',
-            'MDI'
-          )
-        )
+      page.prisonersWithEntriesByLocationGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Prisoners with behaviour entries by wing',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.prisonersWithEntriesByLocationGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Prisoners with behaviour entries by wing',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.entriesTrendsGuidance
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Behaviour entry trends', 'opened', 'MDI'))
-      page.entriesTrendsGuidance
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Behaviour entry trends', 'closed', 'MDI'))
+      page.entriesTrendsGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Behaviour entry trends',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.entriesTrendsGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Behaviour entry trends',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
     })
 
     it('chart feedback box for analytics is tracked', () => {
@@ -97,30 +105,50 @@ context('Analytics section', () => {
       const gaSpy = new GoogleAnalyticsSpy()
       gaSpy.install()
 
-      page.entriesByLocationFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Behaviour entries by wing', 'opened', 'MDI'))
-      page.entriesByLocationFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Behaviour entries by wing', 'closed', 'MDI'))
+      page.entriesByLocationFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Behaviour entries by wing',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.entriesByLocationFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Behaviour entries by wing',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.prisonersWithEntriesByLocationFeedback
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('Is this chart useful > Prisoners with behaviour entries by wing', 'opened', 'MDI')
-        )
-      page.prisonersWithEntriesByLocationFeedback
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('Is this chart useful > Prisoners with behaviour entries by wing', 'closed', 'MDI')
-        )
+      page.prisonersWithEntriesByLocationFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Prisoners with behaviour entries by wing',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.prisonersWithEntriesByLocationFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Prisoners with behaviour entries by wing',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.entriesTrendsFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Behaviour entry trends', 'opened', 'MDI'))
-      page.entriesTrendsFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Behaviour entry trends', 'closed', 'MDI'))
+      page.entriesTrendsFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Behaviour entry trends',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.entriesTrendsFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Behaviour entry trends',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
     })
 
     it('users can submit feedback on charts', () => {
@@ -157,19 +185,35 @@ context('Analytics section', () => {
       const gaSpy = new GoogleAnalyticsSpy()
       gaSpy.install()
 
-      page.incentivesByLocationGuidance
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'opened', 'MDI'))
-      page.incentivesByLocationGuidance
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by wing', 'closed', 'MDI'))
+      page.incentivesByLocationGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by wing',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesByLocationGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by wing',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.incentivesTrendsGuidance
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level trends', 'opened', 'MDI'))
-      page.incentivesTrendsGuidance
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level trends', 'closed', 'MDI'))
+      page.incentivesTrendsGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level trends',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesTrendsGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level trends',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
     })
 
     it('chart feedback box for analytics is tracked', () => {
@@ -178,19 +222,35 @@ context('Analytics section', () => {
       const gaSpy = new GoogleAnalyticsSpy()
       gaSpy.install()
 
-      page.incentivesByLocationFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by wing', 'opened', 'MDI'))
-      page.incentivesByLocationFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by wing', 'closed', 'MDI'))
+      page.incentivesByLocationFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by wing',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesByLocationFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by wing',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.incentivesTrendsFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level trends', 'opened', 'MDI'))
-      page.incentivesTrendsFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level trends', 'closed', 'MDI'))
+      page.incentivesTrendsFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level trends',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesTrendsFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level trends',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
     })
 
     it('users can submit feedback on chart', () => {
@@ -254,64 +314,80 @@ context('Analytics section', () => {
       const gaSpy = new GoogleAnalyticsSpy()
       gaSpy.install()
 
-      page.incentivesByEthnicityGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'opened', 'MDI')
-        )
-      page.incentivesByEthnicityGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by ethnicity', 'closed', 'MDI')
-        )
+      page.incentivesByEthnicityGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by ethnicity',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesByEthnicityGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by ethnicity',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.incentivesByAgeGuidance
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by age', 'opened', 'MDI'))
-      page.incentivesByAgeGuidance
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by age', 'closed', 'MDI'))
+      page.incentivesByAgeGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by age',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesByAgeGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by age',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.incentivesByReligionGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by religion', 'opened', 'MDI')
-        )
-      page.incentivesByReligionGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by religion', 'closed', 'MDI')
-        )
+      page.incentivesByReligionGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by religion',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesByReligionGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by religion',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.incentivesByDisabilityGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by disability', 'opened', 'MDI')
-        )
-      page.incentivesByDisabilityGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('How you can use this chart > Incentive level by disability', 'closed', 'MDI')
-        )
+      page.incentivesByDisabilityGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by disability',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesByDisabilityGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by disability',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.incentivesBySexualOrientationGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent(
-            'How you can use this chart > Incentive level by sexual orientation',
-            'opened',
-            'MDI'
-          )
-        )
-      page.incentivesBySexualOrientationGuidance
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent(
-            'How you can use this chart > Incentive level by sexual orientation',
-            'closed',
-            'MDI'
-          )
-        )
+      page.incentivesBySexualOrientationGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by sexual orientation',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesBySexualOrientationGuidance.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by sexual orientation',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
     })
 
     it('chart feedback box for analytics is tracked', () => {
@@ -320,44 +396,80 @@ context('Analytics section', () => {
       const gaSpy = new GoogleAnalyticsSpy()
       gaSpy.install()
 
-      page.incentivesByEthnicityFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by ethnicity', 'opened', 'MDI'))
-      page.incentivesByEthnicityFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by ethnicity', 'closed', 'MDI'))
+      page.incentivesByEthnicityFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by ethnicity',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesByEthnicityFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by ethnicity',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.incentivesByAgeFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age', 'opened', 'MDI'))
-      page.incentivesByAgeFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by age', 'closed', 'MDI'))
+      page.incentivesByAgeFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by age',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesByAgeFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by age',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.incentivesByReligionFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by religion', 'opened', 'MDI'))
-      page.incentivesByReligionFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by religion', 'closed', 'MDI'))
+      page.incentivesByReligionFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by religion',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesByReligionFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by religion',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.incentivesByDisabilityFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by disability', 'opened', 'MDI'))
-      page.incentivesByDisabilityFeedback
-        .click()
-        .then(() => gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by disability', 'closed', 'MDI'))
+      page.incentivesByDisabilityFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by disability',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesByDisabilityFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by disability',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
 
-      page.incentivesBySexualOrientationFeedback
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by sexual orientation', 'opened', 'MDI')
-        )
-      page.incentivesBySexualOrientationFeedback
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('Is this chart useful > Incentive level by sexual orientation', 'closed', 'MDI')
-        )
+      page.incentivesBySexualOrientationFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by sexual orientation',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+      page.incentivesBySexualOrientationFeedback.click().then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by sexual orientation',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
     })
 
     it('users can submit feedback on charts', () => {

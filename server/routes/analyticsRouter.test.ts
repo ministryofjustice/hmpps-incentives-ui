@@ -99,8 +99,7 @@ const analyticsPages = [
   {
     name: 'Behaviour entries',
     url: '/analytics/behaviour-entries',
-    expectedHeading:
-      'Comparison of positive and negative behaviour entries by residential location in the last 28 days',
+    expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     sourceTable: TableType.behaviourEntries,

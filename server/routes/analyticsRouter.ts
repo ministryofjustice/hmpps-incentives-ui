@@ -1,5 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
-import { BadRequest, MethodNotAllowed, NotFound } from 'http-errors'
+import { BadRequest, MethodNotAllowed, NotFound, Unauthorized } from 'http-errors'
 
 import config from '../config'
 import logger from '../../logger'
@@ -126,6 +126,10 @@ export default function routes(router: Router): Router {
         if (req.method !== 'GET' && req.method !== 'POST') {
           next(new MethodNotAllowed())
           return
+        }
+        if (!res.locals?.user?.activeCaseload?.id) {
+          logger.warn(`User (${res.locals?.user?.username}) does not have active caseload`)
+          next(new Unauthorized())
         }
         next()
       },

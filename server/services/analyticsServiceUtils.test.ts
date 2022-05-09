@@ -1,4 +1,4 @@
-import { compareLocations, compareCharacteristics, removeLevelPrefix } from './analyticsServiceUtils'
+import { compareLocations, compareCharacteristics, compareMonths, removeLevelPrefix } from './analyticsServiceUtils'
 
 describe('comparators and filters', () => {
   describe.each([
@@ -45,6 +45,22 @@ describe('comparators and filters', () => {
     }
     it(`${a.label} ${compares} ${b.label}`, () => {
       expect(compareCharacteristics(a, b)).toEqual(expected)
+    })
+  })
+
+  describe.each([
+    { a: { month: new Date('2022-05-01T12:00:00') }, b: { month: new Date('2022-06-01T12:00:00') }, expected: -1 },
+    { a: { month: new Date('2022-05-01T12:00:00') }, b: { month: new Date('2021-05-01T12:00:00') }, expected: 1 },
+    { a: { month: new Date('2022-05-01T12:00:00') }, b: { month: new Date('2022-05-01T12:00:00') }, expected: 0 },
+  ])('compareMonths()', ({ a, b, expected }) => {
+    let compares = '='
+    if (expected > 0) {
+      compares = '>'
+    } else if (expected < 0) {
+      compares = '<'
+    }
+    it(`${a.month} ${compares} ${b.month}`, () => {
+      expect(compareMonths(a, b)).toEqual(expected)
     })
   })
 

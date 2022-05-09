@@ -1,3 +1,5 @@
+import { TrendsReportRow } from './analyticsServiceTypes'
+
 type BaseReportRow = { label: string }
 
 /**
@@ -51,6 +53,22 @@ export function compareCharacteristics(
     return -1
   }
   return characteristic1.localeCompare(characteristic2)
+}
+
+/**
+ * Used to sort trends table rows
+ */
+export function compareMonths(
+  { month: month1 }: Pick<TrendsReportRow, 'month'>,
+  { month: month2 }: Pick<TrendsReportRow, 'month'>
+): number {
+  if (month1 < month2) {
+    return -1
+  }
+  if (month1 > month2) {
+    return 1
+  }
+  return 0
 }
 
 /**

@@ -36,6 +36,61 @@ export function mapRowsAndSumTotals<
   return rows
 }
 
+/**
+ * Ensures that months without data are still present for last 12 months (excluding this month)
+ */
+export function addMissingMonths(rows: TrendsReportRow[], valueCount: number) {
+  const month = new Date()
+  month.setDate(1)
+  month.setHours(12, 0, 0, 0)
+  for (let monthsAgo = 1; monthsAgo <= 12; monthsAgo += 1) {
+    month.setMonth(month.getMonth() - 1)
+    if (
+      !rows.some(
+        ({ month: someMonth }) =>
+          someMonth.getFullYear() === month.getFullYear() && someMonth.getMonth() === month.getMonth()
+      )
+    ) {
+      rows.push({
+        month: new Date(month),
+        values: Array(valueCount).fill(0),
+        total: 0,
+        population: 0,
+      })
+    }
+  }
+  rows.sort(compareMonths)
+}
+
+/**
+ * Removes data that is not from last 12 months (excluding this month)
+ */
+export function removeMonthsOutsideBounds(rows: TrendsReportRow[]): TrendsReportRow[] {
+  const previousMonth = new Date()
+  previousMonth.setDate(1)
+  previousMonth.setHours(12, 0, 0, 0)
+  previousMonth.setMonth(previousMonth.getMonth() - 1)
+  const latestYear = previousMonth.getFullYear()
+  const latestMonth = previousMonth.getMonth()
+
+  const yearAgo = new Date()
+  yearAgo.setDate(1)
+  yearAgo.setHours(12, 0, 0, 0)
+  yearAgo.setMonth(yearAgo.getMonth() - 12)
+  const oldestYear = yearAgo.getFullYear()
+  const oldestMonth = yearAgo.getMonth()
+
+  return rows.filter(({ month: rowMonth }) => {
+    const year = rowMonth.getFullYear()
+    const month = rowMonth.getMonth()
+    return (
+      (year > oldestYear && year < latestYear) ||
+      (year === oldestYear && month >= oldestMonth) ||
+      (year === latestYear && month <= latestMonth)
+    )
+  })
+}
+
 type BaseReportRow = { label: string }
 
 /**

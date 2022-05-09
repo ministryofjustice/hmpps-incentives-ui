@@ -12,6 +12,7 @@ import {
   SexualOrientations,
 } from './analyticsServiceTypes'
 import type { PrisonersOnLevelsByProtectedCharacteristic } from './analyticsServiceTypes'
+import { mapRowsAndSumTotals } from './analyticsServiceUtils'
 import { MockTable, mockAppS3ClientResponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
@@ -121,7 +122,7 @@ describe('AnalyticsService', () => {
 
     it('mapRowsAndSumTotals() maps rows of a stitched table and sums them into a grand total', () => {
       const stitchedTable = analyticsService.stitchTable<Table, StitchedRow>(sampleInputTable, columnsToPluck)
-      const output = analyticsService.mapRowsAndSumTotals<StitchedRow, MappedRow>(
+      const output = mapRowsAndSumTotals<StitchedRow, MappedRow>(
         stitchedTable,
         ([category, valA, valB]) => [category, valA + valB],
         1

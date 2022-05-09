@@ -22,7 +22,12 @@ import {
   TableType,
   knownGroupsFor,
 } from './analyticsServiceTypes'
-import { compareCharacteristics, compareLocations, removeLevelPrefix } from './analyticsServiceUtils'
+import {
+  compareCharacteristics,
+  compareLocations,
+  mapRowsAndSumTotals,
+  removeLevelPrefix,
+} from './analyticsServiceUtils'
 import PrisonRegister from '../data/prisonRegister'
 
 export default class AnalyticsService {
@@ -84,39 +89,6 @@ export default class AnalyticsService {
     })
   }
 
-  /**
-   * Maps each row in a stitched table and sums up totals
-   */
-  mapRowsAndSumTotals<RowIn extends [string, ...(number | string)[]], RowOut extends [string, ...number[]]>(
-    stitchedTable: RowIn[],
-    mapRow: (row: RowIn) => RowOut,
-    summedColumnCount: number // the number of number columns at the end of RowOut
-  ): RowOut[] {
-    const groups: Record<string, RowOut> = {}
-    const grandTotals: number[] = Array(summedColumnCount).fill(0)
-    stitchedTable.forEach(rowIn => {
-      const rowOut = mapRow(rowIn)
-      const [groupId, ...rest] = rowOut
-      const rowValues = rest as number[]
-      if (typeof groups[groupId] === 'undefined') {
-        groups[groupId] = rowOut
-      } else {
-        const group = groups[groupId]
-        rowValues.forEach((value, index) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          group[index + 1] += value
-        })
-      }
-      rowValues.forEach((value, index) => {
-        grandTotals[index] += value
-      })
-    })
-    const rows = Object.values(groups)
-    rows.push(['All', ...grandTotals] as RowOut)
-    return rows
-  }
-
   async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation>> {
     const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
     type StitchedRow = [string, string, number, number]
@@ -138,7 +110,7 @@ export default class AnalyticsService {
 
     const columns = ['Positive', 'Negative']
     type AggregateRow = [string, number, number]
-    const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
       ([_prison, wing, positives, negatives]) => [wing, positives, negatives],
       2
@@ -176,7 +148,7 @@ export default class AnalyticsService {
 
     const columns = ['Positive', 'Negative', 'Both', 'None']
     type AggregateRow = [string, number, number, number, number]
-    const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
       ([_prison, wing, positives, negatives]) => {
         if (positives > 0 && negatives > 0) {
@@ -233,7 +205,7 @@ export default class AnalyticsService {
     columns.sort() // NB: levels sort naturally because they include a prefix
 
     type AggregateRow = [string, ...number[]]
-    const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
       ([_prison, wing, incentive]) => {
         const levels = Array(columns.length).fill(0)
@@ -296,7 +268,7 @@ export default class AnalyticsService {
     columns.sort() // NB: levels sort naturally because they include a prefix
 
     type AggregateRow = [string, ...number[]]
-    const aggregateTable = this.mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
       ([_prison, _wing, incentive, _characteristic, characteristicGroup]) => {
         const levels = Array(columns.length).fill(0)

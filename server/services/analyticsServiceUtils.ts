@@ -1,5 +1,41 @@
 import { TrendsReportRow } from './analyticsServiceTypes'
 
+/**
+ * Maps each row in a stitched table and sums up totals
+ */
+export function mapRowsAndSumTotals<
+  RowIn extends [string, ...(number | string)[]],
+  RowOut extends [string, ...number[]]
+>(
+  stitchedTable: RowIn[],
+  rowMapper: (row: RowIn) => RowOut,
+  summedColumnCount: number // the number of number columns at the end of RowOut
+): RowOut[] {
+  const groups: Record<string, RowOut> = {}
+  const grandTotals: number[] = Array(summedColumnCount).fill(0)
+  stitchedTable.forEach(rowIn => {
+    const rowOut = rowMapper(rowIn)
+    const [groupId, ...rest] = rowOut
+    const rowValues = rest as number[]
+    if (typeof groups[groupId] === 'undefined') {
+      groups[groupId] = rowOut
+    } else {
+      const group = groups[groupId]
+      rowValues.forEach((value, index) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        group[index + 1] += value
+      })
+    }
+    rowValues.forEach((value, index) => {
+      grandTotals[index] += value
+    })
+  })
+  const rows = Object.values(groups)
+  rows.push(['All', ...grandTotals] as RowOut)
+  return rows
+}
+
 type BaseReportRow = { label: string }
 
 /**

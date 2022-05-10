@@ -22,16 +22,11 @@ jest.mock('@aws-sdk/client-s3', () => {
 })
 jest.mock('../data/zendeskClient')
 
-let originalPrisonsWithAnalytics: string[]
-let originalUsernamesWithAnalytics: string[]
 let originalZendeskConfig: { url: string; username: string; token: string }
 
 let mockedZendeskClientClass: jest.Mock<ZendeskClient>
 
 beforeAll(() => {
-  originalPrisonsWithAnalytics = config.prisonsWithAnalytics
-  originalUsernamesWithAnalytics = config.usernamesWithAnalytics
-
   const { url, username, token } = config.apis.zendesk
   originalZendeskConfig = { url, username, token }
   config.apis.zendesk.url = 'http://zendesk.local'
@@ -50,48 +45,15 @@ let app: Express
 beforeEach(() => {
   jest.clearAllMocks()
 
-  config.prisonsWithAnalytics = ['MDI']
-  config.usernamesWithAnalytics = ['user1']
-
   app = appWithAllRoutes({})
-  app.locals.featureFlags.showAnalytics = true
-  app.locals.featureFlags.showPcAnalytics = true
   app.locals.featureFlags.showAnalyticsTrends = true
 })
 
-afterAll(() => {
-  config.prisonsWithAnalytics = originalPrisonsWithAnalytics
-  config.usernamesWithAnalytics = originalUsernamesWithAnalytics
-})
-
-describe('Home page shows card linking to incentives analytics', () => {
-  it('if feature is turned on', () => {
+describe('Home page', () => {
+  it('shows card linking to incentives analytics', () => {
     return request(app)
       .get('/')
       .expect(res => expect(res.text).toContain('/analytics'))
-  })
-
-  it('otherwise it is hidden', () => {
-    app.locals.featureFlags.showAnalytics = false
-    return request(app)
-      .get('/')
-      .expect(res => expect(res.text).not.toContain('/analytics'))
-  })
-
-  it('it is also hidden when user does not have appropriate case load', () => {
-    config.prisonsWithAnalytics.pop()
-    config.prisonsWithAnalytics.push('LEI')
-    return request(app)
-      .get('/')
-      .expect(res => expect(res.text).not.toContain('/analytics'))
-  })
-
-  it('it is also hidden when username is not explicitly allowed', () => {
-    config.usernamesWithAnalytics.pop()
-    config.usernamesWithAnalytics.push('user5')
-    return request(app)
-      .get('/')
-      .expect(res => expect(res.text).not.toContain('/analytics'))
   })
 })
 
@@ -140,24 +102,13 @@ describe.each(analyticsPages)(
       StitchedTablesCache.clear()
     })
 
-    it(`${name} page loads if feature is turned on`, () => {
+    it(`${name} page loads`, () => {
       return request(app)
         .get(url)
         .expect(200)
         .expect(res => {
           expect(res.text).toContain(expectedHeading)
           expect(res.text).not.toContain('Page not found')
-        })
-    })
-
-    it(`otherwise ${name} page responds with a 404`, () => {
-      app.locals.featureFlags.showAnalytics = false
-      return request(app)
-        .get(url)
-        .expect(404)
-        .expect(res => {
-          expect(res.text).not.toContain(expectedHeading)
-          expect(res.text).toContain('Page not found')
         })
     })
 
@@ -315,7 +266,7 @@ describe.each(analyticsPages)(
 )
 
 describe('Protected characteristics', () => {
-  it('are visible if feature is on', () => {
+  it('are visible', () => {
     return Promise.all([
       request(app)
         .get('/analytics/incentive-levels')
@@ -329,26 +280,6 @@ describe('Protected characteristics', () => {
         .expect(res => {
           expect(res.text).toContain('Protected characteristics')
           expect(res.text).not.toContain('Page not found')
-        }),
-    ])
-  })
-
-  it('are hidden if feature is off', () => {
-    app.locals.featureFlags.showPcAnalytics = false
-
-    return Promise.all([
-      request(app)
-        .get('/analytics/incentive-levels')
-        .expect(res => {
-          expect(res.text).not.toContain('Protected characteristics')
-          expect(res.text).not.toContain('/analytics/protected-characteristics')
-        }),
-      request(app)
-        .get('/analytics/protected-characteristics')
-        .expect(404)
-        .expect(res => {
-          expect(res.text).not.toContain('Protected characteristics')
-          expect(res.text).toContain('Page not found')
         }),
     ])
   })

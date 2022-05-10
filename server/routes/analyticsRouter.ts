@@ -29,19 +29,6 @@ function urlForLocation(prison: string, location: string): string {
 }
 
 /**
- * Adds global, per-prison and per-user feature gates to an analytics request handler
- */
-function addFeatureGates(asyncHandler: RequestHandler): RequestHandler {
-  return featureGate(
-    'showAnalytics',
-    activeCaseloadGate(
-      config.prisonsWithAnalytics,
-      usernameGate(config.usernamesWithAnalytics, asyncMiddleware(asyncHandler))
-    )
-  )
-}
-
-/**
  * Makes an empty report object indicating errors occurred
  * if the promise is rejected with an AnalyticsError
  */
@@ -66,7 +53,7 @@ async function transformAnalyticsError<Row extends Record<string, unknown>>(
 }
 
 export default function routes(router: Router): Router {
-  const get = (path: string, handler: RequestHandler) => router.get(path, addFeatureGates(handler))
+  const get = (path: string, handler: RequestHandler) => router.get(path, handler)
 
   get('/', (req, res) => {
     res.redirect('/analytics/incentive-levels')
@@ -75,14 +62,14 @@ export default function routes(router: Router): Router {
   const routeWithFeedback = (path: string, graphIds: ReadonlyArray<string>, handler: RequestHandler) =>
     router.all(
       path,
-      addFeatureGates((req, res, next) => {
+      (req, res, next) => {
         if (req.method !== 'GET' && req.method !== 'POST') {
           next(new MethodNotAllowed())
         }
         next()
-      }),
-      addFeatureGates(chartFeedbackHandler(graphIds)),
-      addFeatureGates(handler)
+      },
+      chartFeedbackHandler(graphIds),
+      handler
     )
 
   const behaviourEntryGraphIds = ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries']
@@ -147,11 +134,6 @@ export default function routes(router: Router): Router {
     'incentive-levels-by-sexual-orientation',
   ]
   routeWithFeedback('/protected-characteristics', protectedCharacteristicGraphIds, async (req, res, next) => {
-    if (!config.featureFlags.showPcAnalytics) {
-      next(new NotFound())
-      return
-    }
-
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
     const activeCaseLoad = res.locals.user.activeCaseload.id

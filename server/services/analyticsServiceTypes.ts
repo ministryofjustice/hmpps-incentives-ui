@@ -122,7 +122,7 @@ export type TrendsReport = Report<TrendsReportRow> &
   (
     | {
         // when not plotting percentages, the vertical axis title is required
-        plotPercentage?: false
+        plotPercentage: false
         verticalAxisTitle: string
       }
     | { plotPercentage: true }

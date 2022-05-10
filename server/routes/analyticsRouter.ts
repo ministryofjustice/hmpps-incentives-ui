@@ -89,7 +89,7 @@ export default function routes(router: Router): Router {
     let trends
     if (config.featureFlags.showAnalyticsTrends) {
       // TODO: move into Promise.all above once feature flag is removed
-      trends = await analyticsService.getBehaviourEntryTrends(activeCaseLoad)
+      trends = await transformAnalyticsError(analyticsService.getBehaviourEntryTrends(activeCaseLoad))
     }
 
     res.render('pages/analytics/behaviourEntries', {
@@ -115,7 +115,7 @@ export default function routes(router: Router): Router {
     let trends
     if (config.featureFlags.showAnalyticsTrends) {
       // TODO: move into Promise.all above once feature flag is removed
-      trends = await analyticsService.getIncentiveLevelTrends(activeCaseLoad)
+      trends = await transformAnalyticsError(analyticsService.getIncentiveLevelTrends(activeCaseLoad))
     }
 
     res.render('pages/analytics/incentiveLevels', {

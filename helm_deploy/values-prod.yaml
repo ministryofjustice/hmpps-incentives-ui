@@ -18,3 +18,4 @@ generic-service:
     NOMIS_USER_ROLES_API_URL: "https://nomis-user.aks-live-1.studio-hosting.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
     FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE: "true"
+    FEATURE_SHOW_ANALYTICS_PC_DROPDOWN: "false"

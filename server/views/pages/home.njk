@@ -26,17 +26,15 @@
         "id": "incentive-information"
       }) }}
     </li>
-    {% if showAnalytics %}
-      <li class="govuk-grid-column-one-third card-group__item">
-        {{ card({
-          "href": "/analytics/incentive-levels",
-          "clickable": "true",
-          "heading": "Incentive levels and behaviour entry charts",
-          "description": "See data visualisations for incentive levels and behaviour entries, including protected characteristics.",
-          "id": "incentive-analytics"
-        }) }}
-      </li>
-    {% endif %}
+    <li class="govuk-grid-column-one-third card-group__item">
+      {{ card({
+        "href": "/analytics/incentive-levels",
+        "clickable": "true",
+        "heading": "Incentive levels and behaviour entry charts",
+        "description": "See data visualisations for incentive levels and behaviour entries, including protected characteristics.",
+        "id": "incentive-analytics"
+      }) }}
+    </li>
   </ul>
 
 {% endblock %}

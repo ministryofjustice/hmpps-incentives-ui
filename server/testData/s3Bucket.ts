@@ -6,7 +6,7 @@ import { GetObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3'
 import type { GetObjectOutput, ListObjectsV2Output } from '@aws-sdk/client-s3'
 
 import type S3Client from '../data/s3Client'
-import type { TableType } from '../services/analyticsServiceTypes'
+import { TableType } from '../services/analyticsServiceTypes'
 
 export enum MockTable {
   /** mimics a normal table */
@@ -17,35 +17,53 @@ export enum MockTable {
   Empty,
 }
 
-function mockResponse(
-  tableType: TableType,
-  tableResponse: MockTable
-): { objectList: { key: string; modified: Date }[]; dataPath?: string } {
+function mockedListObjects(prefix: string, tableResponse: MockTable): { key: string; modified: Date }[] {
   if (tableResponse === MockTable.Missing) {
-    return { objectList: [] }
+    return []
   }
-  return {
-    objectList: [{ key: `${tableType}/2022-04-11.json`, modified: new Date('2022-04-12T12:00:00Z') }],
-    dataPath: path.resolve(
-      __dirname,
-      `./s3Bucket/${tableType}/${tableResponse === MockTable.Empty ? 'empty' : '2022-04-11'}.json`
-    ),
+  if (prefix === `${TableType.behaviourEntries}/`) {
+    return [{ key: `${TableType.behaviourEntries}/2022-04-11.json`, modified: new Date('2022-04-12T12:00:00Z') }]
   }
+  if (prefix === `${TableType.incentiveLevels}/`) {
+    return [{ key: `${TableType.incentiveLevels}/2022-04-11.json`, modified: new Date('2022-04-12T12:00:00Z') }]
+  }
+  if (prefix === `${TableType.trends}/`) {
+    return [{ key: `${TableType.trends}/2022-05-03.json`, modified: new Date('2022-05-03T21:10:00Z') }]
+  }
+  throw new Error('Not implemented')
+}
+
+function mockedGetObject(key: string, tableResponse: MockTable): string {
+  if (tableResponse === MockTable.Missing) {
+    throw new Error('Not implemented')
+  }
+  const [tableType] = key.split('/', 1)
+  let fileName = 'empty.json'
+  if (tableResponse !== MockTable.Empty) {
+    if (tableType === TableType.behaviourEntries) {
+      fileName = '2022-04-11.json'
+    } else if (tableType === TableType.incentiveLevels) {
+      fileName = '2022-04-11.json'
+    } else if (tableType === TableType.trends) {
+      fileName = '2022-05-03.json'
+    } else {
+      throw new Error('Not implemented')
+    }
+  }
+  return path.resolve(__dirname, `./s3Bucket/${tableType}/${fileName}`)
 }
 
 /**
  * Mocks the response for the S3Client in this application (for testing the consumers of this client)
  */
-export function mockAppS3ClientResponse(
-  s3Client: jest.Mocked<S3Client>,
-  tableType: TableType,
-  tableResponse = MockTable.Sample
-) {
-  const { objectList, dataPath } = mockResponse(tableType, tableResponse)
-  s3Client.listObjects.mockResolvedValue(objectList)
-  if (dataPath) {
-    s3Client.getObject.mockReturnValue(fs.readFile(dataPath, { encoding: 'utf8' }))
-  }
+export function mockAppS3ClientResponse(s3Client: jest.Mocked<S3Client>, tableResponse = MockTable.Sample) {
+  s3Client.listObjects.mockImplementation(async prefix => {
+    return mockedListObjects(prefix, tableResponse)
+  })
+  s3Client.getObject.mockImplementation(async key => {
+    const dataPath = mockedGetObject(key, tableResponse)
+    return fs.readFile(dataPath, { encoding: 'utf8' })
+  })
 }
 
 /**
@@ -53,20 +71,18 @@ export function mockAppS3ClientResponse(
  */
 export function mockSdkS3ClientReponse(
   send: jest.Mock<Promise<GetObjectOutput | ListObjectsV2Output>, [GetObjectCommand | ListObjectsV2Command]>,
-  tableType: TableType,
   tableResponse = MockTable.Sample
 ) {
-  const { objectList, dataPath } = mockResponse(tableType, tableResponse)
-  const listObjectsResponse: ListObjectsV2Output = {
-    Contents: objectList.map(({ key, modified }) => {
-      return { Key: key, LastModified: modified }
-    }),
-  }
   send.mockImplementation(async command => {
     if (command instanceof ListObjectsV2Command) {
-      return listObjectsResponse
+      return {
+        Contents: mockedListObjects(command.input.Prefix, tableResponse).map(({ key, modified }) => {
+          return { Key: key, LastModified: modified }
+        }),
+      }
     }
-    if (command instanceof GetObjectCommand && dataPath) {
+    if (command instanceof GetObjectCommand) {
+      const dataPath = mockedGetObject(command.input.Key, tableResponse)
       const stream = createReadStream(dataPath)
       return { Body: stream }
     }

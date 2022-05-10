@@ -138,7 +138,7 @@ describe('AnalyticsService', () => {
 
   describe('getBehaviourEntriesByLocation()', () => {
     beforeEach(() => {
-      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries)
+      mockAppS3ClientResponse(s3Client)
     })
 
     it('has a totals row', async () => {
@@ -160,7 +160,7 @@ describe('AnalyticsService', () => {
     })
 
     it('throws an error when the table is empty', async () => {
-      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries, MockTable.Empty)
+      mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
       await expect(analyticsService.getBehaviourEntriesByLocation('MDI')).rejects.toThrow(AnalyticsError)
     })
@@ -179,7 +179,7 @@ describe('AnalyticsService', () => {
 
   describe('getPrisonersWithEntriesByLocation()', () => {
     beforeEach(() => {
-      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries)
+      mockAppS3ClientResponse(s3Client)
     })
 
     it('has a totals row', async () => {
@@ -205,7 +205,7 @@ describe('AnalyticsService', () => {
     })
 
     it('throws an error when the table is empty', async () => {
-      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries, MockTable.Empty)
+      mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
       await expect(analyticsService.getPrisonersWithEntriesByLocation('MDI')).rejects.toThrow(AnalyticsError)
     })
@@ -224,7 +224,7 @@ describe('AnalyticsService', () => {
 
   describe('getIncentiveLevelsByLocation()', () => {
     beforeEach(() => {
-      mockAppS3ClientResponse(s3Client, TableType.incentiveLevels)
+      mockAppS3ClientResponse(s3Client)
     })
 
     it('has a totals row', async () => {
@@ -247,7 +247,7 @@ describe('AnalyticsService', () => {
     })
 
     it('throws an error when the table is empty', async () => {
-      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries, MockTable.Empty)
+      mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
       await expect(analyticsService.getIncentiveLevelsByLocation('MDI')).rejects.toThrow(AnalyticsError)
     })
@@ -279,7 +279,7 @@ describe('AnalyticsService', () => {
     [ProtectedCharacteristic.SexualOrientation, ['All', ...SexualOrientations]],
   ])('getIncentiveLevelsByProtectedCharacteristic()', (characteristic, expectedCharacteristics) => {
     beforeEach(() => {
-      mockAppS3ClientResponse(s3Client, TableType.incentiveLevels)
+      mockAppS3ClientResponse(s3Client)
 
       // pretend that MDI is a YCS
       PrisonRegister.isYouthCustodyService = (prisonId: string) => prisonId === 'MDI'
@@ -307,7 +307,7 @@ describe('AnalyticsService', () => {
     })
 
     it(`[${characteristic}]: throws an error when the table is empty`, async () => {
-      mockAppS3ClientResponse(s3Client, TableType.behaviourEntries, MockTable.Empty)
+      mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
       await expect(analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)).rejects.toThrow(
         AnalyticsError

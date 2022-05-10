@@ -1,10 +1,9 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
-import { BadRequest, MethodNotAllowed, NotFound } from 'http-errors'
+import { BadRequest, MethodNotAllowed } from 'http-errors'
 
 import config from '../config'
 import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { featureGate, activeCaseloadGate, usernameGate } from '../middleware/featureGate'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import AnalyticsService from '../services/analyticsService'
@@ -53,7 +52,7 @@ async function transformAnalyticsError<Row extends Record<string, unknown>>(
 }
 
 export default function routes(router: Router): Router {
-  const get = (path: string, handler: RequestHandler) => router.get(path, handler)
+  const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', (req, res) => {
     res.redirect('/analytics/incentive-levels')
@@ -68,8 +67,8 @@ export default function routes(router: Router): Router {
         }
         next()
       },
-      chartFeedbackHandler(graphIds),
-      handler
+      asyncMiddleware(chartFeedbackHandler(graphIds)),
+      asyncMiddleware(handler)
     )
 
   const behaviourEntryGraphIds = ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries']

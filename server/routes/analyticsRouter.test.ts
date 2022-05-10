@@ -4,7 +4,6 @@ import request from 'supertest'
 import config from '../config'
 import ZendeskClient from '../data/zendeskClient'
 import { StitchedTablesCache } from '../services/analyticsService'
-import { TableType } from '../services/analyticsServiceTypes'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { MockTable, mockSdkS3ClientReponse } from '../testData/s3Bucket'
 
@@ -64,7 +63,6 @@ const analyticsPages = [
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
-    sourceTable: TableType.behaviourEntries,
     graphIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
@@ -73,7 +71,6 @@ const analyticsPages = [
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
-    sourceTable: TableType.incentiveLevels,
     graphIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
@@ -81,7 +78,6 @@ const analyticsPages = [
     url: '/analytics/protected-characteristics',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by ethnicity',
     linksToIncentivesTable: false,
-    sourceTable: TableType.incentiveLevels,
     graphIds: [
       'incentive-levels-by-ethnicity',
       'incentive-levels-by-age',
@@ -96,9 +92,9 @@ const samplePrison = 'MDI'
 
 describe.each(analyticsPages)(
   'Analytics data pages',
-  ({ name, url, expectedHeading, graphIds, linksToIncentivesTable, sampleLocations, sourceTable }) => {
+  ({ name, url, expectedHeading, graphIds, linksToIncentivesTable, sampleLocations }) => {
     beforeEach(() => {
-      mockSdkS3ClientReponse(s3.send, sourceTable)
+      mockSdkS3ClientReponse(s3.send)
       StitchedTablesCache.clear()
     })
 
@@ -113,7 +109,7 @@ describe.each(analyticsPages)(
     })
 
     it(`error is presented on ${name} page if no source table was found`, () => {
-      mockSdkS3ClientReponse(s3.send, sourceTable, MockTable.Missing)
+      mockSdkS3ClientReponse(s3.send, MockTable.Missing)
 
       return request(app)
         .get(url)
@@ -125,7 +121,7 @@ describe.each(analyticsPages)(
     })
 
     it(`error is presented on ${name} page if source table contains no data`, () => {
-      mockSdkS3ClientReponse(s3.send, sourceTable, MockTable.Empty)
+      mockSdkS3ClientReponse(s3.send, MockTable.Empty)
 
       return request(app)
         .get(url)
@@ -158,7 +154,7 @@ describe.each(analyticsPages)(
 
     describe.each(graphIds)('charts have feedback forms', graphId => {
       beforeAll(() => {
-        mockSdkS3ClientReponse(s3.send, sourceTable)
+        mockSdkS3ClientReponse(s3.send)
       })
 
       it(`${name} page can post simple feedback on ${graphId} chart`, () => {

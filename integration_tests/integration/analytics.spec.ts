@@ -1,6 +1,6 @@
 import Page from '../pages/page'
 import HomePage from '../pages/home'
-import type AnalyticsPage from '../pages/analytics'
+import { type AnalyticsPage, getTextFromTable } from '../pages/analytics'
 import AnalyticsBehaviourEntries from '../pages/analyticsBehaviourEntries'
 import AnalyticsIncentiveLevels from '../pages/analyticsIncentiveLevels'
 import AnalyticsProtectedCharacteristics from '../pages/analyticsProtectedCharacteristics'
@@ -44,6 +44,28 @@ context('Analytics section', () => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
         expect(location).to.contain('1,194')
+      })
+
+      getTextFromTable(page.entriesTrends).then(rows => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [positivesRow, negativesRow, _totalRow, populationRow] = rows
+        // remove header column
+        positivesRow.shift()
+        negativesRow.shift()
+        populationRow.shift()
+
+        expect(positivesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
+          // TODO: change first column once 12 months of sample data provided
+          ['0', '194', '173', '191', '205', '155', '209', '160', '254', '176', '170', '130']
+        )
+        expect(negativesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
+          // TODO: change first column once 12 months of sample data provided
+          ['0', '248', '243', '267', '310', '295', '322', '307', '277', '333', '353', '315']
+        )
+        expect(populationRow).to.deep.equal(
+          // TODO: change first column once 12 months of sample data provided
+          ['0', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922']
+        )
       })
     })
 
@@ -176,6 +198,23 @@ context('Analytics section', () => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
         expect(location).to.contain('921')
+      })
+
+      getTextFromTable(page.incentivesTrends).then(rows => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_basicRow, standardRow, _enhancedRow, populationRow] = rows
+        // remove header column
+        standardRow.shift()
+        populationRow.shift()
+
+        expect(standardRow.map(text => text.split(/\s/)[0])).to.deep.equal(
+          // TODO: change first column once 12 months of sample data provided
+          ['0', '568', '572', '567', '554', '552', '555', '568', '561', '534', '533', '543']
+        )
+        expect(populationRow).to.deep.equal(
+          // TODO: change first column once 12 months of sample data provided
+          ['0', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922']
+        )
       })
     })
 

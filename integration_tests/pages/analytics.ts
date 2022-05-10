@@ -1,6 +1,6 @@
 import Page, { type PageElement } from './page'
 
-export default abstract class AnalyticsPage extends Page {
+export abstract class AnalyticsPage extends Page {
   get subNavigation(): PageElement<HTMLUListElement> {
     return cy.get('.moj-sub-navigation__list')
   }
@@ -40,4 +40,19 @@ export default abstract class AnalyticsPage extends Page {
   get chartFeedbackBoxes(): PageElement<HTMLDetailsElement> {
     return cy.get('.govuk-details[data-qa=chart-feedback]')
   }
+}
+
+export function getTextFromTable(chainable: PageElement<HTMLTableRowElement>): Cypress.Chainable<string[][]> {
+  return chainable.then(rows => {
+    const rowsAndValues = rows
+      .map((_, row) => {
+        const rowValues: string[] = []
+        for (let index = 0; index <= 12; index += 1) {
+          rowValues.push(row.children[index]?.textContent?.trim())
+        }
+        return { rowValues }
+      })
+      .toArray()
+    return cy.wrap(rowsAndValues.map(({ rowValues }) => rowValues))
+  })
 }

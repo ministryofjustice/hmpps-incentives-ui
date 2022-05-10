@@ -135,6 +135,7 @@ export default {
     // Whether to hide the 'Days since last review'/'Days on level' columns
     hideDaysColumnsInIncentivesTable: flag('FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE', false),
     showAnalyticsTrends: flag('FEATURE_SHOW_ANALYTICS_TRENDS', false),
+    showAnalyticsPcDropdown: flag('FEATURE_SHOW_ANALYTICS_PC_DROPDOWN', false),
   },
   feedbackUrl: get('FEEDBACK_URL', ''),
   feedbackUrlForAnalytics: get('FEEDBACK_URL_ANALYTICS', ''),

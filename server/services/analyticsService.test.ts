@@ -11,8 +11,8 @@ import {
   Disabilities,
   SexualOrientations,
 } from './analyticsServiceTypes'
-import type { PrisonersOnLevelsByProtectedCharacteristic } from './analyticsServiceTypes'
-import { mapRowsAndSumTotals } from './analyticsServiceUtils'
+import type { PrisonersOnLevelsByProtectedCharacteristic, TrendsReportRow, TrendsTable } from './analyticsServiceTypes'
+import { mapRowsAndSumTotals, mapRowsForMonthlyTrends } from './analyticsServiceUtils'
 import { MockTable, mockAppS3ClientResponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
@@ -132,6 +132,128 @@ describe('AnalyticsService', () => {
         ['B', 20],
         ['C', 10],
         ['All', 36],
+      ])
+    })
+  })
+
+  describe('trends table manipulation', () => {
+    type StitchedRow = [string, string, number, number, string]
+
+    const sampleInputTable = {
+      year_month_str: { '1': '2022-02', '2': '2022-03', '3': '2022-04', '4': '2022-05' },
+      snapshots: { '1': 1, '2': 1, '3': 1, '4': 1 },
+      prison: { '1': 'A', '2': 'A', '3': 'A', '4': 'A' },
+      offenders: { '1': 1800, '2': 1790, '3': 1805, '4': 1800 },
+      incentive: { '1': 'B. Standard', '2': 'B. Standard', '3': 'B. Standard', '4': 'B. Standard' },
+    } as unknown as TrendsTable // ignore missing columns; they're not used
+    const columnsToPluck: (keyof TrendsTable)[] = ['prison', 'year_month_str', 'snapshots', 'offenders', 'incentive']
+
+    it('stitchTable() stitches a column-based source table into rows', () => {
+      const stitchedTable = analyticsService.stitchTable<TrendsTable, StitchedRow>(sampleInputTable, columnsToPluck)
+      expect(stitchedTable).toEqual<StitchedRow[]>([
+        ['A', '2022-02', 1, 1800, 'B. Standard'],
+        ['A', '2022-03', 1, 1790, 'B. Standard'],
+        ['A', '2022-04', 1, 1805, 'B. Standard'],
+        ['A', '2022-05', 1, 1800, 'B. Standard'],
+      ])
+    })
+
+    it('mapRowsForMonthlyTrends() maps simple rows', () => {
+      const stitchedTable = analyticsService.stitchTable<TrendsTable, StitchedRow>(sampleInputTable, columnsToPluck)
+      const output = mapRowsForMonthlyTrends<StitchedRow>(
+        stitchedTable,
+        ([_prison, yearAndMonth, _snapshots, offenders, _incentive]) => {
+          return [
+            {
+              yearAndMonth,
+              columnIndex: 0,
+              value: offenders,
+              population: offenders,
+            },
+          ]
+        },
+        1
+      )
+      expect(output).toEqual<TrendsReportRow[]>([
+        { month: new Date('2022-02-01T12:00:00'), population: 1800, values: [1800], total: 1800 },
+        { month: new Date('2022-03-01T12:00:00'), population: 1790, values: [1790], total: 1790 },
+        { month: new Date('2022-04-01T12:00:00'), population: 1805, values: [1805], total: 1805 },
+        { month: new Date('2022-05-01T12:00:00'), population: 1800, values: [1800], total: 1800 },
+      ])
+    })
+
+    it('mapRowsForMonthlyTrends() maps multiple rows into months', () => {
+      const sampleInputTable2 = {
+        year_month_str: { '1': '2022-02', '2': '2022-02', '3': '2022-03', '4': '2022-03' },
+        snapshots: { '1': 1, '2': 1, '3': 1, '4': 1 },
+        prison: { '1': 'A', '2': 'A', '3': 'A', '4': 'A' },
+        offenders: { '1': 1800, '2': 1790, '3': 1805, '4': 1800 },
+        incentive: { '1': 'B. Standard', '2': 'B. Standard', '3': 'B. Standard', '4': 'B. Standard' },
+      } as unknown as TrendsTable // ignore missing columns; they're not used
+
+      const stitchedTable = analyticsService.stitchTable<TrendsTable, StitchedRow>(sampleInputTable2, columnsToPluck)
+      const output = mapRowsForMonthlyTrends<StitchedRow>(
+        stitchedTable,
+        ([_prison, yearAndMonth, _snapshots, offenders, _incentive]) => {
+          return [
+            {
+              yearAndMonth,
+              columnIndex: 0,
+              value: offenders,
+              population: offenders,
+            },
+          ]
+        },
+        1
+      )
+      expect(output).toEqual<TrendsReportRow[]>([
+        { month: new Date('2022-02-01T12:00:00'), population: 3590, values: [3590], total: 3590 },
+        { month: new Date('2022-03-01T12:00:00'), population: 3605, values: [3605], total: 3605 },
+      ])
+    })
+
+    it('mapRowsForMonthlyTrends() maps rows with multiple values and calculates total', () => {
+      const sampleInputTable3 = {
+        year_month_str: { '1': '2022-02', '2': '2022-02', '3': '2022-03', '4': '2022-03' },
+        snapshots: { '1': 1, '2': 1, '3': 1, '4': 1 },
+        prison: { '1': 'A', '2': 'A', '3': 'A', '4': 'A' },
+        offenders: { '1': 1800, '2': 1790, '3': 1805, '4': 1800 },
+        positives: { '1': 1, '2': 3, '3': 5, '4': 7 },
+        negatives: { '1': 11, '2': 13, '3': 17, '4': 21 },
+      } as unknown as TrendsTable // ignore missing columns; they're not used
+      type StitchedRow2 = [string, string, number, number, number, number]
+
+      const stitchedTable = analyticsService.stitchTable<TrendsTable, StitchedRow2>(sampleInputTable3, [
+        'prison',
+        'year_month_str',
+        'snapshots',
+        'offenders',
+        'positives',
+        'negatives',
+      ])
+      const output = mapRowsForMonthlyTrends<StitchedRow2>(
+        stitchedTable,
+        ([_prison, yearAndMonth, _snapshots, offenders, positives, negatives]) => {
+          return [
+            {
+              yearAndMonth,
+              columnIndex: 0,
+              value: positives,
+              population: offenders,
+            },
+            {
+              yearAndMonth,
+              columnIndex: 1,
+              value: negatives,
+              population: 0,
+            },
+          ]
+        },
+        2
+      )
+      expect(output).toEqual<TrendsReportRow[]>([
+        { month: new Date('2022-02-01T12:00:00'), population: 3590, values: [4, 24], total: 28 },
+        { month: new Date('2022-03-01T12:00:00'), population: 3605, values: [12, 38], total: 50 },
       ])
     })
   })
@@ -351,5 +473,71 @@ describe('AnalyticsService', () => {
         })
       }
     )
+  })
+
+  describe('getBehaviourEntryTrends()', () => {
+    beforeEach(() => {
+      mockAppS3ClientResponse(s3Client)
+    })
+
+    it('returns 12 months', async () => {
+      const report = await analyticsService.getBehaviourEntryTrends('MDI')
+      expect(report.rows).toHaveLength(12)
+    })
+
+    it('plots percentage values', async () => {
+      const report = await analyticsService.getBehaviourEntryTrends('MDI')
+      expect(report.plotPercentage).toBeFalsy()
+      expect(report).toHaveProperty('verticalAxisTitle')
+    })
+
+    it('shows population', async () => {
+      const report = await analyticsService.getBehaviourEntryTrends('MDI')
+      expect(report.populationIsTotal).toBeFalsy()
+      expect(report).toHaveProperty('monthlyTotalName')
+      report.rows
+        // TODO: remove filter when full 12 months provided in sample data
+        .filter(row => row.population !== 0)
+        .forEach(row => expect(row.total).not.toBeCloseTo(row.population))
+    })
+
+    it('throws an error when the table is empty', async () => {
+      mockAppS3ClientResponse(s3Client, MockTable.Empty)
+
+      await expect(analyticsService.getBehaviourEntryTrends('MDI')).rejects.toThrow(AnalyticsError)
+    })
+  })
+
+  describe('getIncentiveLevelTrends()', () => {
+    beforeEach(() => {
+      mockAppS3ClientResponse(s3Client)
+    })
+
+    it('returns 12 months', async () => {
+      const report = await analyticsService.getIncentiveLevelTrends('MDI')
+      expect(report.rows).toHaveLength(12)
+    })
+
+    it('plots absolute values', async () => {
+      const report = await analyticsService.getIncentiveLevelTrends('MDI')
+      expect(report.plotPercentage).toBeTruthy()
+      expect(report).not.toHaveProperty('verticalAxisTitle')
+    })
+
+    it('does not show population', async () => {
+      const report = await analyticsService.getIncentiveLevelTrends('MDI')
+      expect(report.populationIsTotal).toBeTruthy()
+      expect(report).not.toHaveProperty('monthlyTotalName')
+      report.rows
+        // TODO: remove filter when full 12 months provided in sample data
+        .filter(row => row.population !== 0)
+        .forEach(row => expect(row.total).toBeCloseTo(row.population))
+    })
+
+    it('throws an error when the table is empty', async () => {
+      mockAppS3ClientResponse(s3Client, MockTable.Empty)
+
+      await expect(analyticsService.getIncentiveLevelTrends('MDI')).rejects.toThrow(AnalyticsError)
+    })
   })
 })

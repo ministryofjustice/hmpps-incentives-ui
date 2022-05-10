@@ -12,7 +12,7 @@ import type {
   Report,
   Table,
   TrendsReport,
-  TrendsReportRow,
+  TrendsTable,
 } from './analyticsServiceTypes'
 import {
   AgeYoungPeople,
@@ -23,10 +23,13 @@ import {
   knownGroupsFor,
 } from './analyticsServiceTypes'
 import {
+  addMissingMonths,
   compareCharacteristics,
   compareLocations,
   mapRowsAndSumTotals,
+  mapRowsForMonthlyTrends,
   removeLevelPrefix,
+  removeMonthsOutsideBounds,
 } from './analyticsServiceUtils'
 import PrisonRegister from '../data/prisonRegister'
 
@@ -296,76 +299,117 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
   }
 
-  async getBehaviourEntryTrends(_prison: string): Promise<TrendsReport> {
-    // TODO: fake response
+  async getBehaviourEntryTrends(prison: string): Promise<TrendsReport> {
+    const columnsToStitch = ['prison', 'year_month_str', 'snapshots', 'offenders', 'positives', 'negatives']
+    type StitchedRow = [string, string, number, number, number, number]
 
-    const firstOfTheMonth = (monthsAgo: number): Date => {
-      const month = new Date()
-      month.setDate(1)
-      month.setHours(12, 0, 0, 0)
-      month.setMonth(month.getMonth() - monthsAgo)
-      return month
+    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
+      this,
+      TableType.trends,
+      columnsToStitch
+    )
+
+    const filteredTables = stitchedTable.filter(
+      ([somePrison]) =>
+        // filter only selected prison
+        somePrison === prison
+    )
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(
+        AnalyticsErrorType.EmptyTable,
+        'Filtered trends report for behaviour entries has no rows'
+      )
     }
-    const trendsRows: TrendsReportRow[] = []
-    for (let monthsAgo = 11; monthsAgo >= 0; monthsAgo -= 1) {
-      let positive = Math.round(Math.random() * 50 + 175)
-      let negative = Math.round(Math.random() * 50 + 275)
-      if (monthsAgo === 0) {
-        positive /= 3
-        negative /= 3
-      }
-      const total = positive + negative
-      trendsRows.push({
-        month: firstOfTheMonth(monthsAgo),
-        total,
-        population: total * 2,
-        values: [positive, negative],
-      })
-    }
+
+    const columns = ['Positive', 'Negative']
+    let rows = mapRowsForMonthlyTrends<StitchedRow>(
+      filteredTables,
+      ([_prison, yearAndMonth, snapshots, offenders, positives, negatives]) => {
+        return [
+          {
+            yearAndMonth,
+            columnIndex: 0, // positive entries
+            value: positives,
+            population: offenders / snapshots,
+          },
+          {
+            yearAndMonth,
+            columnIndex: 1, // negative entries
+            value: negatives,
+            population: 0, // so that population isn't double-counted
+          },
+        ]
+      },
+      2
+    )
+    addMissingMonths(rows, 2)
+    rows = removeMonthsOutsideBounds(rows)
+
     return {
-      columns: ['Positive', 'Negative'],
+      columns,
+      rows,
+      lastUpdated,
       dataSource: 'NOMIS',
-      lastUpdated: new Date(),
-      rows: trendsRows,
-      verticalAxisTitle: 'Entries',
+      plotPercentage: false,
       populationIsTotal: false,
+      verticalAxisTitle: 'Entries',
       monthlyTotalName: 'All entries',
     }
   }
 
-  async getIncentiveLevelTrends(_prison: string): Promise<TrendsReport> {
-    // TODO: fake response
+  async getIncentiveLevelTrends(prison: string): Promise<TrendsReport> {
+    const columnsToStitch = ['prison', 'year_month_str', 'snapshots', 'offenders', 'incentive']
+    type StitchedRow = [string, string, number, number, string]
 
-    const firstOfTheMonth = (monthsAgo: number): Date => {
-      const month = new Date()
-      month.setDate(1)
-      month.setHours(12, 0, 0, 0)
-      month.setMonth(month.getMonth() - monthsAgo)
-      return month
-    }
-    const trendsRows: TrendsReportRow[] = []
-    for (let monthsAgo = 11; monthsAgo >= 0; monthsAgo -= 1) {
-      let basic = Math.round(Math.random() * 50)
-      let standard = Math.round(Math.random() * 300 + 500)
-      let enhanced = Math.round(Math.random() * 300 + 450)
-      if (monthsAgo === 0) {
-        basic /= 3
-        standard /= 3
-        enhanced /= 3
+    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
+      this,
+      TableType.trends,
+      columnsToStitch
+    )
+
+    const columnSet: Set<string> = new Set()
+    const filteredTables = stitchedTable.filter(([somePrison, _yearAndMonth, _snapshots, _offenders, incentive]) => {
+      const include =
+        // filter only selected prison
+        somePrison === prison &&
+        // it's possible for incentive level to be null
+        incentive
+      if (include) {
+        columnSet.add(incentive)
       }
-      const total = basic + standard + enhanced
-      trendsRows.push({
-        month: firstOfTheMonth(monthsAgo),
-        total,
-        population: total,
-        values: [basic, standard, enhanced],
-      })
+      return include
+    })
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered trends report for incentive levels has no rows')
     }
+
+    let columns = Array.from(columnSet)
+    columns.sort() // NB: levels sort naturally because they include a prefix
+
+    let rows = mapRowsForMonthlyTrends<StitchedRow>(
+      filteredTables,
+      ([_prison, yearAndMonth, snapshots, offenders, incentive]) => {
+        const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
+        return [
+          {
+            yearAndMonth,
+            columnIndex: levelIndex,
+            value: offenders / snapshots,
+            population: offenders / snapshots,
+          },
+        ]
+      },
+      columns.length
+    )
+    addMissingMonths(rows, columns.length)
+    rows = removeMonthsOutsideBounds(rows)
+    columns = columns.map(removeLevelPrefix)
+
     return {
-      columns: ['Basic', 'Standard', 'Enhanced'],
+      columns,
+      rows,
+      lastUpdated,
       dataSource: 'NOMIS',
-      lastUpdated: new Date(),
-      rows: trendsRows,
       plotPercentage: true,
       populationIsTotal: true,
     }

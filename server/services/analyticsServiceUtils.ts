@@ -37,6 +37,39 @@ export function mapRowsAndSumTotals<
 }
 
 /**
+ * Maps each row in a stitched table grouping values into months
+ */
+export function mapRowsForMonthlyTrends<RowIn extends [string, ...(number | string)[]]>(
+  stitchedTable: RowIn[],
+  rowMapper: (row: RowIn) => { yearAndMonth: string; columnIndex: number; value: number; population: number }[],
+  valueCount: number
+): TrendsReportRow[] {
+  const groups: Record<string, Omit<TrendsReportRow, 'total'>> = {}
+  stitchedTable.forEach(rowIn => {
+    rowMapper(rowIn).forEach(({ yearAndMonth, columnIndex, value, population }) => {
+      if (typeof groups[yearAndMonth] === 'undefined') {
+        const month = new Date(`${yearAndMonth}-01T12:00:00`)
+        groups[yearAndMonth] = {
+          month,
+          values: Array(valueCount).fill(0),
+          population: 0,
+        }
+      }
+      groups[yearAndMonth].values[columnIndex] += value
+      groups[yearAndMonth].population += population
+    })
+  })
+  return Object.values(groups).map(({ month, values, population }) => {
+    // eslint-disable-next-line no-param-reassign
+    population = Math.round(population)
+    const total = Math.round(values.reduce((v1, v2) => v1 + v2, 0))
+    // eslint-disable-next-line no-param-reassign
+    values = values.map(v => Math.round(v))
+    return { month, values, population, total }
+  })
+}
+
+/**
  * Ensures that months without data are still present for last 12 months (excluding this month)
  */
 export function addMissingMonths(rows: TrendsReportRow[], valueCount: number) {

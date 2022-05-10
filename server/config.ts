@@ -134,12 +134,8 @@ export default {
     addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),
     // Whether to hide the 'Days since last review'/'Days on level' columns
     hideDaysColumnsInIncentivesTable: flag('FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE', false),
-    showAnalytics: flag('FEATURE_SHOW_ANALYTICS', false),
-    showPcAnalytics: flag('FEATURE_SHOW_PC_ANALYTICS', false),
     showAnalyticsTrends: flag('FEATURE_SHOW_ANALYTICS_TRENDS', false),
   },
-  prisonsWithAnalytics: (get('PRISONS_WITH_ANALYTICS', null, notRequiredInProduction) ?? '').split(','),
-  usernamesWithAnalytics: (get('USERNAMES_WITH_ANALYTICS', null, notRequiredInProduction) ?? '').split(','),
   feedbackUrl: get('FEEDBACK_URL', ''),
   feedbackUrlForAnalytics: get('FEEDBACK_URL_ANALYTICS', ''),
   feedbackUrlForTable: get('FEEDBACK_URL_TABLE', ''),

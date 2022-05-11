@@ -145,7 +145,8 @@ export type TrendsReport = Report<TrendsReportRow> &
  * A row in a trends report returned
  */
 export type TrendsReportRow = {
-  month: Date
+  /** in the form 'YYYY-MM' */
+  yearAndMonth: string
   population: number
   /** row of values; length matches report columns */
   values: number[]

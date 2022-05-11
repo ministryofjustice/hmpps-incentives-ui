@@ -122,15 +122,13 @@
       <tr>
         <th></th>
         {% for row in report.rows %}
+          {% set yearAndMonth = row.yearAndMonth | splitYearAndMonth %}
           <th scope="col">
             <strong>
-              {{ row.month.toLocaleDateString('en-GB', {
-                month: 'short',
-                timeZone: 'Europe/London'
-              }) }}
+              {{ yearAndMonth.month }}
             </strong>
             <br />
-            {{ row.month.getFullYear() }}
+            {{ yearAndMonth.year }}
           </th>
         {% endfor %}
       </tr>

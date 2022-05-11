@@ -48,9 +48,8 @@ export function mapRowsForMonthlyTrends<RowIn extends [string, ...(number | stri
   stitchedTable.forEach(rowIn => {
     rowMapper(rowIn).forEach(({ yearAndMonth, columnIndex, value, population }) => {
       if (typeof groups[yearAndMonth] === 'undefined') {
-        const month = new Date(`${yearAndMonth}-01T12:00:00`)
         groups[yearAndMonth] = {
-          month,
+          yearAndMonth,
           values: Array(valueCount).fill(0),
           population: 0,
         }
@@ -59,39 +58,42 @@ export function mapRowsForMonthlyTrends<RowIn extends [string, ...(number | stri
       groups[yearAndMonth].population += population
     })
   })
-  return Object.values(groups).map(({ month, values, population }) => {
+  return Object.values(groups).map(({ yearAndMonth, values, population }) => {
     // eslint-disable-next-line no-param-reassign
     population = Math.round(population)
     const total = Math.round(values.reduce((v1, v2) => v1 + v2, 0))
     // eslint-disable-next-line no-param-reassign
     values = values.map(v => Math.round(v))
-    return { month, values, population, total }
+    return { yearAndMonth, values, population, total }
   })
+}
+
+function yearAndMonthString(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
 }
 
 /**
  * Ensures that months without data are still present for last 12 months (excluding this month)
  */
 export function addMissingMonths(rows: TrendsReportRow[], valueCount: number) {
-  const month = new Date()
-  month.setDate(1)
-  month.setHours(12, 0, 0, 0)
+  const existingYearsAndMonths = new Set(rows.map(({ yearAndMonth }) => yearAndMonth))
+
+  const monthCounter = new Date()
+  monthCounter.setDate(1)
+  monthCounter.setHours(12, 0, 0, 0)
   for (let monthsAgo = 1; monthsAgo <= 12; monthsAgo += 1) {
-    month.setMonth(month.getMonth() - 1)
-    if (
-      !rows.some(
-        ({ month: someMonth }) =>
-          someMonth.getFullYear() === month.getFullYear() && someMonth.getMonth() === month.getMonth()
-      )
-    ) {
+    monthCounter.setMonth(monthCounter.getMonth() - 1)
+    const yearAndMonth = yearAndMonthString(monthCounter)
+    if (!existingYearsAndMonths.has(yearAndMonth)) {
       rows.push({
-        month: new Date(month),
+        yearAndMonth,
         values: Array(valueCount).fill(0),
         total: 0,
         population: 0,
       })
     }
   }
+
   rows.sort(compareMonths)
 }
 
@@ -103,25 +105,15 @@ export function removeMonthsOutsideBounds(rows: TrendsReportRow[]): TrendsReport
   previousMonth.setDate(1)
   previousMonth.setHours(12, 0, 0, 0)
   previousMonth.setMonth(previousMonth.getMonth() - 1)
-  const latestYear = previousMonth.getFullYear()
-  const latestMonth = previousMonth.getMonth()
+  const latest = yearAndMonthString(previousMonth)
 
   const yearAgo = new Date()
   yearAgo.setDate(1)
   yearAgo.setHours(12, 0, 0, 0)
   yearAgo.setMonth(yearAgo.getMonth() - 12)
-  const oldestYear = yearAgo.getFullYear()
-  const oldestMonth = yearAgo.getMonth()
+  const oldest = yearAndMonthString(yearAgo)
 
-  return rows.filter(({ month: rowMonth }) => {
-    const year = rowMonth.getFullYear()
-    const month = rowMonth.getMonth()
-    return (
-      (year > oldestYear && year < latestYear) ||
-      (year === oldestYear && month >= oldestMonth) ||
-      (year === latestYear && month <= latestMonth)
-    )
-  })
+  return rows.filter(({ yearAndMonth }) => yearAndMonth >= oldest && yearAndMonth <= latest)
 }
 
 type BaseReportRow = { label: string }
@@ -183,8 +175,8 @@ export function compareCharacteristics(
  * Used to sort trends table rows
  */
 export function compareMonths(
-  { month: month1 }: Pick<TrendsReportRow, 'month'>,
-  { month: month2 }: Pick<TrendsReportRow, 'month'>
+  { yearAndMonth: month1 }: Pick<TrendsReportRow, 'yearAndMonth'>,
+  { yearAndMonth: month2 }: Pick<TrendsReportRow, 'yearAndMonth'>
 ): number {
   if (month1 < month2) {
     return -1

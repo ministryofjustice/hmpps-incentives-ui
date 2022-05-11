@@ -12,6 +12,12 @@
   "enabledManagers": ["npm", "nvm", "dockerfile", "docker-compose", "helmv3", "helm-values", "circleci"],
   "packageRules": [
     {
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@types/node"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
       "matchDatasources": ["docker"],
       "allowedVersions": "16.14-bullseye-slim"
     },

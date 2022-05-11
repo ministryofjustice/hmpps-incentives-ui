@@ -55,6 +55,26 @@ describe.each([
 })
 
 describe.each([
+  ['2022-05', 2022, 'May'],
+  ['2021-01', 2021, 'Jan'],
+  ['2022-12', 2022, 'Dec'],
+  // non-standard, but works still
+  ['2022-5', 2022, 'May'],
+  ['2021-1', 2021, 'Jan'],
+  // invalid
+  ['2021-', 2021, undefined],
+  ['2021-13', 2021, undefined],
+  ['', undefined, undefined],
+  [null, undefined, undefined],
+])('Split year-and-month strings', (yearAndMonth: string, expectedYear: number, expectedMonth: string) => {
+  it(`${yearAndMonth} splits into ${expectedYear} and ${expectedMonth}`, () => {
+    const { year, month } = format.splitYearAndMonth(yearAndMonth)
+    expect(year).toEqual(expectedYear)
+    expect(month).toEqual(expectedMonth)
+  })
+})
+
+describe.each([
   [0, '0'],
   [1, '1'],
   [123, '123'],

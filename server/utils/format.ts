@@ -22,6 +22,12 @@ export default {
     })
   },
 
+  splitYearAndMonth(yearAndMonth: string) {
+    const [year, month] = (yearAndMonth ?? '').split('-')
+    const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    return { year: parseInt(year, 10) || undefined, month: months[parseInt(month, 10)] }
+  },
+
   thousands(integer: number) {
     if (notNumber(integer)) return '?'
     return Math.round(integer).toLocaleString('en-GB')

@@ -175,10 +175,10 @@ describe('AnalyticsService', () => {
         1
       )
       expect(output).toEqual<TrendsReportRow[]>([
-        { month: new Date('2022-02-01T12:00:00'), population: 1800, values: [1800], total: 1800 },
-        { month: new Date('2022-03-01T12:00:00'), population: 1790, values: [1790], total: 1790 },
-        { month: new Date('2022-04-01T12:00:00'), population: 1805, values: [1805], total: 1805 },
-        { month: new Date('2022-05-01T12:00:00'), population: 1800, values: [1800], total: 1800 },
+        { yearAndMonth: '2022-02', population: 1800, values: [1800], total: 1800 },
+        { yearAndMonth: '2022-03', population: 1790, values: [1790], total: 1790 },
+        { yearAndMonth: '2022-04', population: 1805, values: [1805], total: 1805 },
+        { yearAndMonth: '2022-05', population: 1800, values: [1800], total: 1800 },
       ])
     })
 
@@ -207,8 +207,8 @@ describe('AnalyticsService', () => {
         1
       )
       expect(output).toEqual<TrendsReportRow[]>([
-        { month: new Date('2022-02-01T12:00:00'), population: 3590, values: [3590], total: 3590 },
-        { month: new Date('2022-03-01T12:00:00'), population: 3605, values: [3605], total: 3605 },
+        { yearAndMonth: '2022-02', population: 3590, values: [3590], total: 3590 },
+        { yearAndMonth: '2022-03', population: 3605, values: [3605], total: 3605 },
       ])
     })
 
@@ -252,8 +252,8 @@ describe('AnalyticsService', () => {
         2
       )
       expect(output).toEqual<TrendsReportRow[]>([
-        { month: new Date('2022-02-01T12:00:00'), population: 3590, values: [4, 24], total: 28 },
-        { month: new Date('2022-03-01T12:00:00'), population: 3605, values: [12, 38], total: 50 },
+        { yearAndMonth: '2022-02', population: 3590, values: [4, 24], total: 28 },
+        { yearAndMonth: '2022-03', population: 3605, values: [12, 38], total: 50 },
       ])
     })
   })

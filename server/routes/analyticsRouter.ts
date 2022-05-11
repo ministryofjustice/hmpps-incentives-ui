@@ -1,5 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
-import { BadRequest, MethodNotAllowed } from 'http-errors'
+import { BadRequest, MethodNotAllowed, NotFound } from 'http-errors'
 
 import config from '../config'
 import logger from '../../logger'
@@ -102,6 +102,7 @@ export default function routes(router: Router): Router {
       (req, res, next) => {
         if (req.method !== 'GET' && req.method !== 'POST') {
           next(new MethodNotAllowed())
+          return
         }
         next()
       },
@@ -231,7 +232,6 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicGraphIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
-    const characteristicName = (req.query.characteristic || 'age') as string
     const protectedCharacteristicsMap = {
       age: ProtectedCharacteristic.Age,
       disability: ProtectedCharacteristic.Disability,
@@ -239,6 +239,13 @@ export default function routes(router: Router): Router {
       religion: ProtectedCharacteristic.Religion,
       'sexual-orientation': ProtectedCharacteristic.SexualOrientation,
     }
+
+    const characteristicName = (req.query.characteristic || 'age') as string
+    if (!Object.keys(protectedCharacteristicsMap).includes(characteristicName)) {
+      next(new NotFound())
+      return
+    }
+
     const protectedCharacteristic: ProtectedCharacteristic = protectedCharacteristicsMap[characteristicName]
 
     const activeCaseLoad = res.locals.user.activeCaseload.id

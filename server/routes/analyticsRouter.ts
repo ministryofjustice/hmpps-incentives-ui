@@ -173,6 +173,11 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristics', protectedCharacteristicsGraphIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
+    // Redirect to new Protected characteristics page when feature flag is on
+    if (config.featureFlags.showAnalyticsPcDropdown) {
+      res.redirect('/analytics/protected-characteristics?characteristic=age')
+    }
+
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
@@ -207,21 +212,21 @@ export default function routes(router: Router): Router {
   })
 
   const protectedCharacteristicGraphIds = [
-    'entries-by-age',
-    'entries-by-disability',
-    'entries-by-ethnicity',
-    'entries-by-religion',
-    'entries-by-sexual-orientation',
+    // 'prison-population-age',
+    // 'prison-population-disability',
+    // 'prison-population-ethnicity',
+    // 'prison-population-religion',
+    // 'prison-population-sexual-orientation',
     'incentive-levels-by-age',
     'incentive-levels-by-disability',
     'incentive-levels-by-ethnicity',
     'incentive-levels-by-religion',
     'incentive-levels-by-sexual-orientation',
-    'prison-population-age',
-    'prison-population-disability',
-    'prison-population-ethnicity',
-    'prison-population-religion',
-    'prison-population-sexual-orientation',
+    // 'entries-by-age',
+    // 'entries-by-disability',
+    // 'entries-by-ethnicity',
+    // 'entries-by-religion',
+    // 'entries-by-sexual-orientation',
   ]
   routeWithFeedback('/protected-characteristic', protectedCharacteristicGraphIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })

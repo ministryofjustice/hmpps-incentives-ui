@@ -1,0 +1,47 @@
+{% extends "../../partials/analytics/layout.njk" %}
+
+{% from "../../partials/analytics/chartPrisonersOnLevels.njk" import chartPrisonersOnLevels %}
+
+{% set graphPageId = "protected-characteristics" %}
+{% set graphTitle = "Protected characteristics" %}
+{% set pageTitle = applicationName + " – " + graphTitle %}
+
+{% block content %}
+  {{ super() }}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "../../partials/messages.njk" %}
+
+      {% include "../../partials/formErrorSummary.njk" %}
+
+      <h1 class="govuk-heading-xl">
+        {{ graphTitle }}
+      </h1>
+
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+      {% set graphId = "incentive-levels-by-" + characteristicName %}
+      {{ chartPrisonersOnLevels(
+        title=protectedCharacteristicsChartContent[graphId].title,
+        guidance=protectedCharacteristicsChartContent[graphId].guidance,
+        labelColumn=protectedCharacteristicsChartContent[graphId].labelColumn,
+        wideLabel=true,
+        graphId=graphId,
+        graphGoogleAnalyticsCategory=protectedCharacteristicsChartContent[graphId].graphGoogleAnalyticsCategory,
+        activeCaseload=user.activeCaseload.id,
+        form=forms[graphId],
+        csrfToken=csrfToken,
+        report=incentiveLevelsByCharacteristic
+      ) }}
+
+    </section>
+  </div>
+
+  {% include "../../partials/analytics/disclaimer.njk" %}
+{% endblock %}

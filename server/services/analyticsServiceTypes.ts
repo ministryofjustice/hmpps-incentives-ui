@@ -33,6 +33,7 @@ export interface IncentiveLevelsTable extends Table {
   prison: Record<string, string>
   wing: Record<string, string>
   incentive: Record<string, string>
+  behaviour_profile: Record<string, string>
   characteristic: Record<string, string>
   charac_group: Record<string, string>
 }

@@ -133,7 +133,7 @@
     "@types/csurf": "^1.11.2",
     "@types/express-session": "^1.17.4",
     "@types/http-errors": "^1.8.2",
-    "@types/jest": "^27.4.1",
+    "@types/jest": "27.5.1",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^16.11.26",
     "@types/nunjucks": "^3.2.1",

@@ -17,6 +17,10 @@ parameters:
     type: string
     default: 16.15-browsers
 
+  python-version:
+    type: string
+    default: '3.10'
+
 executors:
   # same as hmpps/node_redis executor with the addition of minio containers
   integration-tests:
@@ -159,6 +163,7 @@ jobs:
   upload_test_data_to_s3:
     executor:
       name: hmpps/default_small
+      tag: << pipeline.parameters.python-version >>
     steps:
       - checkout
       - hmpps/k8s_setup

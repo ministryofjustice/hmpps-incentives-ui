@@ -1,3 +1,6 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
 {% extends "../../partials/analytics/layout.njk" %}
 
 {% from "../../partials/analytics/chartPrisonersOnLevels.njk" import chartPrisonersOnLevels %}
@@ -20,6 +23,27 @@
         {{ graphTitle }}
       </h1>
 
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form id="form-select-characteristic" method="get" novalidate>
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="sort">
+            Select a protected characteristic
+          </label>
+          <select class="govuk-select" id="characteristic" name="characteristic">
+              {%- for option in characteristicOptions -%}
+                <option value="{{ option.value }}" {%- if option.selected -%}selected{%- endif -%}>{{ option.label }}</option>
+              {%- endfor %}
+          </select>
+
+          <button class="govuk-button govuk-!-margin-left-2" data-module="govuk-button">
+            Show results
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 

@@ -53,7 +53,7 @@ export interface TrendsTable extends Table {
   age_group_10yr: Record<string, string>
   religion_group: Record<string, string>
   disability: Record<string, string>
-  // TODO: sexual orientation appears to be missing
+  sex_orientation: Record<string, string>
 }
 
 /**

@@ -28,7 +28,7 @@ function mockedListObjects(prefix: string, tableResponse: MockTable): { key: str
     return [{ key: `${TableType.incentiveLevels}/2022-04-11.json`, modified: new Date('2022-04-12T12:00:00Z') }]
   }
   if (prefix === `${TableType.trends}/`) {
-    return [{ key: `${TableType.trends}/2022-05-03.json`, modified: new Date('2022-05-03T21:10:00Z') }]
+    return [{ key: `${TableType.trends}/2022-05-11.json`, modified: new Date('2022-05-11T21:10:00Z') }]
   }
   throw new Error('Not implemented')
 }
@@ -45,7 +45,7 @@ function mockedGetObject(key: string, tableResponse: MockTable): string {
     } else if (tableType === TableType.incentiveLevels) {
       fileName = '2022-04-11.json'
     } else if (tableType === TableType.trends) {
-      fileName = '2022-05-03.json'
+      fileName = '2022-05-11.json'
     } else {
       throw new Error('Not implemented')
     }

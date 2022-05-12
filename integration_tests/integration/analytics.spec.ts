@@ -55,16 +55,16 @@ context('Analytics section', () => {
         populationRow.shift()
 
         expect(positivesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
-          // TODO: change first column once 12 months of sample data provided
-          ['0', '194', '173', '191', '205', '155', '209', '160', '254', '176', '170', '130']
+          // monthly positive entries
+          ['145', '194', '173', '191', '205', '155', '209', '160', '254', '176', '170', '131']
         )
         expect(negativesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
-          // TODO: change first column once 12 months of sample data provided
-          ['0', '248', '243', '267', '310', '295', '322', '307', '277', '333', '353', '315']
+          // monthly negative entries
+          ['301', '248', '243', '267', '310', '295', '322', '307', '277', '333', '353', '318']
         )
         expect(populationRow).to.deep.equal(
-          // TODO: change first column once 12 months of sample data provided
-          ['0', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922']
+          // monthly average population
+          ['929', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922']
         )
       })
     })
@@ -208,12 +208,12 @@ context('Analytics section', () => {
         populationRow.shift()
 
         expect(standardRow.map(text => text.split(/\s/)[0])).to.deep.equal(
-          // TODO: change first column once 12 months of sample data provided
-          ['0', '568', '572', '567', '554', '552', '555', '568', '561', '534', '533', '543']
+          // monthly average population on standard level
+          ['571', '568', '572', '567', '554', '552', '555', '568', '561', '534', '533', '543']
         )
         expect(populationRow).to.deep.equal(
-          // TODO: change first column once 12 months of sample data provided
-          ['0', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922']
+          // monthly average population
+          ['929', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922']
         )
       })
     })

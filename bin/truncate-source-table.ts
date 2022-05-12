@@ -50,6 +50,7 @@ if (chosenTableType === 'behaviourEntries') {
     'age_group_10yr',
     'religion_group',
     'disability',
+    'sex_orientation',
   ]
   rowFilter = () => true
 } else {

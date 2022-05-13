@@ -24,6 +24,27 @@
   </div>
 
   <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form id="form-select-characteristic" method="get" novalidate>
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="characteristic">
+            Select a protected characteristic
+          </label>
+          <select class="govuk-select" id="characteristic" name="characteristic">
+              {%- for option in characteristicOptions -%}
+                <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.label }}</option>
+              {%- endfor %}
+          </select>
+
+          <button class="govuk-button govuk-!-margin-left-2" data-module="govuk-button" data-prevent-double-click="true">
+            Show results
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
       {% set graphId = "incentive-levels-by-" + characteristicName %}

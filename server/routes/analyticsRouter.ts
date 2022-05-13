@@ -222,6 +222,24 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicGraphIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
+    const characteristicName = (req.query.characteristic || 'age') as string
+
+    const characteristicNames = ['age', 'ethnicity', 'disability', 'religion', 'sexual-orientation']
+    const characteristicLabels = ['Age', 'Ethnicity', 'Recorded disability', 'Religion', 'Sexual orientation']
+
+    if (!characteristicNames.includes(characteristicName)) {
+      next(new NotFound())
+      return
+    }
+
+    const characteristicOptions = characteristicNames.map((name, index) => {
+      return {
+        value: name,
+        label: characteristicLabels[index],
+        selected: name === characteristicName,
+      }
+    })
+
     const protectedCharacteristicsMap = {
       age: ProtectedCharacteristic.Age,
       disability: ProtectedCharacteristic.Disability,
@@ -229,13 +247,6 @@ export default function routes(router: Router): Router {
       religion: ProtectedCharacteristic.Religion,
       'sexual-orientation': ProtectedCharacteristic.SexualOrientation,
     }
-
-    const characteristicName = (req.query.characteristic || 'age') as string
-    if (!Object.keys(protectedCharacteristicsMap).includes(characteristicName)) {
-      next(new NotFound())
-      return
-    }
-
     const protectedCharacteristic: ProtectedCharacteristic = protectedCharacteristicsMap[characteristicName]
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
@@ -251,6 +262,7 @@ export default function routes(router: Router): Router {
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
       characteristicName,
+      characteristicOptions,
       incentiveLevelsByCharacteristic,
       protectedCharacteristicsChartContent,
     })

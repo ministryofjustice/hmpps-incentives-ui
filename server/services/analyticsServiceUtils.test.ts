@@ -3,7 +3,7 @@ import {
   compareLocations,
   compareCharacteristics,
   compareMonths,
-  removeLevelPrefix,
+  removeSortingPrefix,
   removeMonthsOutsideBounds,
 } from './analyticsServiceUtils'
 import type { TrendsReportRow } from './analyticsServiceTypes'
@@ -80,9 +80,9 @@ describe('comparators and filters', () => {
     // Prefixes are expected to always be "[letter]. ", so don't mangle other formats
     ['Enhanced 2', 'Enhanced 2'],
     ['A Entry', 'A Entry'],
-  ])('removeLevelPrefix()', (levelWithPrefix, expectedLevelWithoutPrefix) => {
-    it(`Level "${levelWithPrefix}" becomes "${expectedLevelWithoutPrefix}" without prefix`, () => {
-      expect(removeLevelPrefix(levelWithPrefix)).toEqual(expectedLevelWithoutPrefix)
+  ])('removeSortingPrefix()', (valueWithPrefix, expectedValueWithoutPrefix) => {
+    it(`Level "${valueWithPrefix}" becomes "${expectedValueWithoutPrefix}" without prefix`, () => {
+      expect(removeSortingPrefix(valueWithPrefix)).toEqual(expectedValueWithoutPrefix)
     })
   })
 })

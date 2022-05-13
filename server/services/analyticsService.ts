@@ -29,7 +29,7 @@ import {
   compareLocations,
   mapRowsAndSumTotals,
   mapRowsForMonthlyTrends,
-  removeLevelPrefix,
+  removeSortingPrefix,
   removeMonthsOutsideBounds,
 } from './analyticsServiceUtils'
 import PrisonRegister from '../data/prisonRegister'
@@ -219,7 +219,7 @@ export default class AnalyticsService {
       },
       columns.length
     )
-    columns = columns.map(removeLevelPrefix)
+    columns = columns.map(removeSortingPrefix)
 
     const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([location, ...values], index) => {
       const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
@@ -282,7 +282,7 @@ export default class AnalyticsService {
       },
       columns.length
     )
-    columns = columns.map(removeLevelPrefix)
+    columns = columns.map(removeSortingPrefix)
 
     const rows: PrisonersOnLevelsByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
       return { label: characteristic, values }
@@ -338,7 +338,7 @@ export default class AnalyticsService {
       filteredTables,
       ([_prison, behaviourProfile, _characteristic, characteristicGroup]) => {
         // eslint-disable-next-line no-param-reassign
-        behaviourProfile = removeLevelPrefix(behaviourProfile)
+        behaviourProfile = removeSortingPrefix(behaviourProfile)
         const behaviourProfiles = Array(columns.length).fill(0)
         const behaviourProfileIndex = columns.findIndex(
           someBehaviourProfile => someBehaviourProfile === behaviourProfile
@@ -469,7 +469,7 @@ export default class AnalyticsService {
     )
     addMissingMonths(rows, columns.length)
     rows = removeMonthsOutsideBounds(rows)
-    columns = columns.map(removeLevelPrefix)
+    columns = columns.map(removeSortingPrefix)
 
     return {
       columns,

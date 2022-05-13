@@ -1,5 +1,6 @@
 {% extends "../../partials/analytics/layout.njk" %}
 
+{% from "../../partials/analytics/chartPopulation.njk" import chartPopulation %}
 {% from "../../partials/analytics/chartPrisonersOnLevels.njk" import chartPrisonersOnLevels %}
 
 {% set graphPageId = "protected-characteristics" %}
@@ -42,6 +43,25 @@
         </div>
       </form>
     </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+      {% set graphId = "population-by-" + characteristicName %}
+      {{ chartPopulation(
+        title=protectedCharacteristicsChartContent[graphId].title,
+        guidance=protectedCharacteristicsChartContent[graphId].guidance,
+        labelColumn=protectedCharacteristicsChartContent[graphId].labelColumn,
+        graphId=graphId,
+        graphGoogleAnalyticsCategory=protectedCharacteristicsChartContent[graphId].graphGoogleAnalyticsCategory,
+        activeCaseload=user.activeCaseload.id,
+        form=forms[graphId],
+        csrfToken=csrfToken,
+        report=incentiveLevelsByCharacteristic
+      ) }}
+
+    </section>
   </div>
 
   <div class="govuk-grid-row">

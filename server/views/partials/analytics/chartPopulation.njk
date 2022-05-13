@@ -1,0 +1,49 @@
+{% from "./chartBasePercentageBars.njk" import chartBasePercentageBars %}
+
+{% macro valueColumn(column, columnIndex) %}
+  {% if columnIndex == 0 %}
+    {{ column }}
+    <span class="govuk-visually-hidden">of establishment</span>
+  {% elif columnIndex == 1 %}
+    {{ column }}
+    <span class="govuk-visually-hidden">of prisoners</span>
+  {% endif%}
+{% endmacro %}
+
+{% macro rowValue(value, column, columnIndex) %}
+  {% if columnIndex == 0 %}
+    {{ value }}
+    <span class="govuk-visually-hidden">of establishment</span>
+  {% elif columnIndex == 1 %}
+    {{ value }}
+    <span class="govuk-visually-hidden">prisoners</span>
+  {% endif%}
+{% endmacro %}
+
+{% macro chartPopulation(
+  title,
+  guidance,
+  labelColumn,
+  graphId,
+  graphGoogleAnalyticsCategory,
+  activeCaseload,
+  form,
+  csrfToken,
+  report
+) %}
+
+  {{ chartBasePercentageBars(
+    title=title,
+    guidance=guidance,
+    labelColumn=labelColumn,
+    graphId=graphId,
+    graphGoogleAnalyticsCategory=graphGoogleAnalyticsCategory,
+    activeCaseload=activeCaseload,
+    form=form,
+    csrfToken=csrfToken,
+    report=report,
+    valueColumn=valueColumn,
+    rowValue=rowValue
+  ) }}
+
+{% endmacro %}

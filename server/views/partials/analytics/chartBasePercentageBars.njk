@@ -1,0 +1,111 @@
+{% from "./chartBase.njk" import chartBase %}
+
+{% macro valueColumn(column, columnIndex) %}
+  {{- column -}}
+{% endmacro %}
+
+{% macro rowValue(value, column, columnIndex) %}
+  {{- value -}}
+{% endmacro %}
+
+{% macro chartBasePercentageBars(
+  title,
+  guidance,
+  labelColumn,
+  graphId,
+  graphGoogleAnalyticsCategory,
+  activeCaseload,
+  form,
+  csrfToken,
+  report,
+  valueColumn=valueColumn,
+  rowValue=rowValue
+) %}
+
+{% call chartBase(
+  title=title,
+  guidance=guidance,
+  graphId=graphId,
+  graphGoogleAnalyticsCategory=graphGoogleAnalyticsCategory,
+  activeCaseload=activeCaseload,
+  form=form,
+  csrfToken=csrfToken,
+  report=report
+) %}
+
+<table class="app-chart-table app-chart-table--bars app-chart-table--bars-with-3-columns" id="table-{{ graphId }}">
+  <caption class="govuk-visually-hidden">
+    {{ title }}
+  </caption>
+
+  <thead>
+    <tr>
+      <th scope="col">{{ labelColumn }}</th>
+      <th scope="col">{{ valueColumn(column="Percentage", columnIndex=0) }}</th>
+      <th scope="col">{{ valueColumn(column="Number", columnIndex=1) }}</th>
+      <th aria-hidden="true" scope="col"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% set grandTotal = 0 %}
+    {% for row in report.rows %}
+      {% set total = row.values | sum %}
+      {% if loop.first %}
+        {% set grandTotal = total %}
+      {% endif %}
+
+      <tr>
+        <td>
+          <strong>
+            {% if row.href %}
+              <a href="{{ row.href }}">{{ row.label }}</a>
+            {% else %}
+              {{ row.label }}
+            {% endif %}
+          </strong>
+        </td>
+        <td>
+          {{ rowValue(value=total | percentageOf(grandTotal), column="Percentage", columnIndex=0) }}
+        </td>
+        <td>
+          {{ rowValue(value=total | thousands, column="Number", columnIndex=1) }}
+        </td>
+        <td aria-hidden="true" class="app-chart-table__percentage-cell">
+          <span class="app-chart-table__axis-midpoint"></span>
+          <div class="app-chart-table__percentage-cell-bar app-chart-colour--a" data-style-width="{{ total | percentageOf(grandTotal, false) }}">&nbsp;</div>
+        </td>
+      </tr>
+
+      {% if loop.first %}
+        <tr aria-hidden="true">
+          <td colspan="3"></td>
+          <td class="app-chart-table__percentage-cell">
+            <span class="app-chart-table__axis-midpoint"></span>
+          </td>
+        </tr>
+      {% endif %}
+
+    {% endfor %}
+  </tbody>
+
+  <tfoot aria-hidden="true">
+    <tr>
+      <td colspan="3"></td>
+      <td class="app-chart-table__axis-values">
+        <span class="app-chart-table__axis-midpoint"></span>
+        <span class="app-chart-table__axis-value app-chart-table__axis-value--min">0</span>
+        <span class="app-chart-table__axis-value app-chart-table__axis-value--mid">50</span>
+        <span class="app-chart-table__axis-value app-chart-table__axis-value--max">100</span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3"></td>
+      <td>Percentage</td>
+    </tr>
+  </tfoot>
+</table>
+
+{% endcall %}
+
+{% endmacro %}

@@ -18,9 +18,10 @@ import {
   AgeYoungPeople,
   AnalyticsError,
   AnalyticsErrorType,
+  BehaviourEntriesByProtectedCharacteristic,
+  knownGroupsFor,
   ProtectedCharacteristic,
   TableType,
-  knownGroupsFor,
 } from './analyticsServiceTypes'
 import {
   addMissingMonths,
@@ -284,6 +285,71 @@ export default class AnalyticsService {
     columns = columns.map(removeLevelPrefix)
 
     const rows: PrisonersOnLevelsByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
+      return { label: characteristic, values }
+    })
+    const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
+    // Don't show empty young people ('15-17') group in non-YCS prisons
+    if (protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(prison)) {
+      missingCharacteristics.delete(AgeYoungPeople)
+    }
+    rows.forEach(({ label: characteristic }) => missingCharacteristics.delete(characteristic))
+    missingCharacteristics.forEach(characteristic => {
+      rows.push({ label: characteristic, values: Array(columns.length).fill(0) })
+    })
+    rows.sort(compareCharacteristics)
+    return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
+  }
+
+  async getBehaviourEntriesByProtectedCharacteristic(
+    prison: string,
+    protectedCharacteristic: ProtectedCharacteristic
+  ): Promise<Report<BehaviourEntriesByProtectedCharacteristic>> {
+    const columnsToStitch = ['prison', 'behaviour_profile', 'characteristic', 'charac_group']
+    type StitchedRow = [string, string, string, string]
+
+    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
+      this,
+      TableType.incentiveLevels,
+      columnsToStitch
+    )
+
+    const filteredTables = stitchedTable.filter(
+      ([somePrison, _behaviourProfile, characteristic, characteristicGroup]) => {
+        // TODO: null characteristicGroup is excluded; convert to 'Unknown'?
+        return (
+          somePrison === prison &&
+          // filter by selected characteristic
+          characteristic === protectedCharacteristic &&
+          // it's possible for characteristic to be null
+          characteristicGroup
+        )
+      }
+    )
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(
+        AnalyticsErrorType.EmptyTable,
+        `Filtered BehaviourEntriesByProtectedCharacteristic report for ${protectedCharacteristic} has no rows`
+      )
+    }
+
+    const columns = ['Positive', 'Negative', 'Both', 'None']
+    type AggregateRow = [string, ...number[]]
+    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+      filteredTables,
+      ([_prison, behaviourProfile, _characteristic, characteristicGroup]) => {
+        // eslint-disable-next-line no-param-reassign
+        behaviourProfile = removeLevelPrefix(behaviourProfile)
+        const behaviourProfiles = Array(columns.length).fill(0)
+        const behaviourProfileIndex = columns.findIndex(
+          someBehaviourProfile => someBehaviourProfile === behaviourProfile
+        )
+        behaviourProfiles[behaviourProfileIndex] = 1
+        return [characteristicGroup.trim(), ...behaviourProfiles]
+      },
+      columns.length
+    )
+
+    const rows: BehaviourEntriesByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
       return { label: characteristic, values }
     })
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))

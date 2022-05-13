@@ -155,9 +155,9 @@ const stubUserRoles = () =>
 
 export default {
   getSignInUrl,
-  stubPing: (): Promise<[Response, Response]> => Promise.all([ping(), tokenVerification.stubPing()]),
+  stubAuthPing: ping,
   stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
-  stubUser: (): Promise<[Response, Response, Response]> =>
+  stubAuthUser: (): Promise<[Response, Response, Response]> =>
     Promise.all([stubUser(), stubUserRoles(), nomisUserRolesApi.stubGetUserCaseloads()]),
 }

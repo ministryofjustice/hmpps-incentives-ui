@@ -26,17 +26,19 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {{ govukDetails({
-        summaryText: "How you can use this chart",
-        text: guidance,
-        id: "guidance-" + graphId,
-        classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
-        attributes: {
-          "data-qa": "guidance",
-          "data-ga-category": "How you can use this chart > " + graphGoogleAnalyticsCategory,
-          "data-ga-label": activeCaseload | default("")
-        }
-      }) }}
+      {% if guidance %}
+        {{ govukDetails({
+          summaryText: "How you can use this chart",
+          text: guidance,
+          id: "guidance-" + graphId,
+          classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
+          attributes: {
+            "data-qa": "guidance",
+            "data-ga-category": "How you can use this chart > " + graphGoogleAnalyticsCategory,
+            "data-ga-label": activeCaseload | default("")
+          }
+        }) }}
+      {% endif %}
 
       {{ govukDetails({
         summaryText: "Is this chart useful?",

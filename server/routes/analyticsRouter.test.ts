@@ -306,21 +306,35 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
       config.featureFlags.showAnalyticsPcDropdown = false
     })
 
-    it(`${label} page is accessible and drop-down has expected list`, () => {
+    beforeEach(() => {
+      mockSdkS3ClientReponse(s3.send)
+      StitchedTablesCache.clear()
+    })
+
+    const url = `/analytics/protected-characteristic?characteristic=${characteristicName}`
+
+    it(`${label} page shows correct charts`, () => {
       return request(app)
-        .get(`/analytics/protected-characteristic?characteristic=${characteristicName}`)
+        .get(url)
         .expect(200)
         .expect(res => {
           const pageContent = res.text
           expect(pageContent).not.toContain('Page not found')
           // correct template
           expect(pageContent).toContain('Protected characteristics')
-          // correct characteristic
-          expect(pageContent).toContain(`table-incentive-levels-by-${characteristicName}`)
-          // correct characteristic selected in drop-down
-          expect(pageContent).toContain(`value="${characteristicName}" selected`)
 
-          // correct order of drop-down options
+          // correct characteristic charts
+          expect(pageContent).toContain(`table-population-by-${characteristicName}`)
+          expect(pageContent).toContain(`table-incentive-levels-by-${characteristicName}`)
+        })
+    })
+
+    it(`${label} page drop-down has expected list of characteristics options`, () => {
+      return request(app)
+        .get(url)
+        .expect(200)
+        .expect(res => {
+          const pageContent = res.text
           const selectElementHtml = pageContent.slice(pageContent.indexOf('<select'), pageContent.indexOf('</select>'))
           let lastCharacteristicPosition = 0
           Object.keys(protectedCharacteristicRoutes).forEach(someCharacteristicName => {
@@ -330,5 +344,11 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
           })
         })
     })
+
+    // TODO: merge into main analytics page test suite
+
+    // TODO: error is presented with source table is missing or empty
+    // TODO: feedback boxes & submissions
+    // TODO: shows disclaimer
   }
 )

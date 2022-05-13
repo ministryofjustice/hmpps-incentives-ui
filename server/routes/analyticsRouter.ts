@@ -18,7 +18,38 @@ export const protectedCharacteristicRoutes = {
   'sexual-orientation': { label: 'Sexual orientation', characteristic: ProtectedCharacteristic.SexualOrientation },
 } as const
 
-const protectedCharacteristicsChartContent = {
+type CharacteristicsChartContent = {
+  title: string
+  guidance?: string
+  labelColumn: string
+  graphGoogleAnalyticsCategory: string
+}
+const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartContent> = {
+  'population-by-age': {
+    title: 'Percentage and number of prisoners in the establishment by age',
+    labelColumn: 'Age',
+    graphGoogleAnalyticsCategory: 'Population by age',
+  },
+  'population-by-disability': {
+    title: 'Percentage and number of prisoners in the establishment by recorded disability',
+    labelColumn: 'Disability',
+    graphGoogleAnalyticsCategory: 'Population by disability',
+  },
+  'population-by-ethnicity': {
+    title: 'Percentage and number of prisoners in the establishment by ethnicity',
+    labelColumn: 'Ethnicity',
+    graphGoogleAnalyticsCategory: 'Population by ethnicity',
+  },
+  'population-by-religion': {
+    title: 'Percentage and number of prisoners in the establishment by religion',
+    labelColumn: 'Religion',
+    graphGoogleAnalyticsCategory: 'Population by religion',
+  },
+  'population-by-sexual-orientation': {
+    title: 'Percentage and number of prisoners in the establishment by sexual orientation',
+    labelColumn: 'Sexual orientation',
+    graphGoogleAnalyticsCategory: 'Population by sexual orientation',
+  },
   'incentive-levels-by-age': {
     title: 'Percentage and number of prisoners on each incentive level by age',
     guidance:
@@ -211,11 +242,11 @@ export default function routes(router: Router): Router {
   })
 
   const protectedCharacteristicGraphIds = [
-    // 'prison-population-age',
-    // 'prison-population-disability',
-    // 'prison-population-ethnicity',
-    // 'prison-population-religion',
-    // 'prison-population-sexual-orientation',
+    'population-by-age',
+    'population-by-disability',
+    'population-by-ethnicity',
+    'population-by-religion',
+    'population-by-sexual-orientation',
     'incentive-levels-by-age',
     'incentive-levels-by-disability',
     'incentive-levels-by-ethnicity',

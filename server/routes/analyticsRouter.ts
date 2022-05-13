@@ -10,6 +10,14 @@ import AnalyticsService from '../services/analyticsService'
 import { AnalyticsError, ProtectedCharacteristic } from '../services/analyticsServiceTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 
+export const protectedCharacteristicRoutes = {
+  age: { label: 'Age', characteristic: ProtectedCharacteristic.Age },
+  ethnicity: { label: 'Ethnicity', characteristic: ProtectedCharacteristic.Ethnicity },
+  disability: { label: 'Recorded disability', characteristic: ProtectedCharacteristic.Disability },
+  religion: { label: 'Religion', characteristic: ProtectedCharacteristic.Religion },
+  'sexual-orientation': { label: 'Sexual orientation', characteristic: ProtectedCharacteristic.SexualOrientation },
+} as const
+
 const protectedCharacteristicsChartContent = {
   'incentive-levels-by-age': {
     title: 'Percentage and number of prisoners on each incentive level by age',
@@ -224,30 +232,20 @@ export default function routes(router: Router): Router {
 
     const characteristicName = (req.query.characteristic || 'age') as string
 
-    const characteristicNames = ['age', 'ethnicity', 'disability', 'religion', 'sexual-orientation']
-    const characteristicLabels = ['Age', 'Ethnicity', 'Recorded disability', 'Religion', 'Sexual orientation']
-
-    if (!characteristicNames.includes(characteristicName)) {
+    if (!(characteristicName in protectedCharacteristicRoutes)) {
       next(new NotFound())
       return
     }
 
-    const characteristicOptions = characteristicNames.map((name, index) => {
+    const characteristicOptions = Object.entries(protectedCharacteristicRoutes).map(([name, { label }]) => {
       return {
         value: name,
-        label: characteristicLabels[index],
+        label,
         selected: name === characteristicName,
       }
     })
 
-    const protectedCharacteristicsMap = {
-      age: ProtectedCharacteristic.Age,
-      disability: ProtectedCharacteristic.Disability,
-      ethnicity: ProtectedCharacteristic.Ethnicity,
-      religion: ProtectedCharacteristic.Religion,
-      'sexual-orientation': ProtectedCharacteristic.SexualOrientation,
-    }
-    const protectedCharacteristic: ProtectedCharacteristic = protectedCharacteristicsMap[characteristicName]
+    const protectedCharacteristic = protectedCharacteristicRoutes[characteristicName].characteristic
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 

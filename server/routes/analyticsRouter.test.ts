@@ -4,6 +4,7 @@ import request from 'supertest'
 import config from '../config'
 import ZendeskClient from '../data/zendeskClient'
 import { StitchedTablesCache } from '../services/analyticsService'
+import { protectedCharacteristicRoutes } from './analyticsRouter'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { MockTable, mockSdkS3ClientReponse } from '../testData/s3Bucket'
 
@@ -92,6 +93,10 @@ const samplePrison = 'MDI'
 describe.each(analyticsPages)(
   'Analytics data pages',
   ({ name, url, expectedHeading, graphIds, linksToIncentivesTable, sampleLocations }) => {
+    beforeAll(() => {
+      config.featureFlags.showAnalyticsPcDropdown = false
+    })
+
     beforeEach(() => {
       mockSdkS3ClientReponse(s3.send)
       StitchedTablesCache.clear()
@@ -260,22 +265,70 @@ describe.each(analyticsPages)(
   }
 )
 
-describe('Protected characteristics', () => {
-  it('are visible', () => {
-    return Promise.all([
-      request(app)
-        .get('/analytics/incentive-levels')
-        .expect(res => {
-          expect(res.text).toContain('Protected characteristics')
-          expect(res.text).toContain('/analytics/protected-characteristics')
-        }),
-      request(app)
-        .get('/analytics/protected-characteristics')
-        .expect(200)
-        .expect(res => {
-          expect(res.text).toContain('Protected characteristics')
-          expect(res.text).not.toContain('Page not found')
-        }),
-    ])
+describe('Protected characteristic pages', () => {
+  beforeAll(() => {
+    config.featureFlags.showAnalyticsPcDropdown = true
+  })
+  afterAll(() => {
+    config.featureFlags.showAnalyticsPcDropdown = false
+  })
+
+  it('Age page is the default when none is explicitly selected', () => {
+    return request(app)
+      .get('/analytics/protected-characteristic')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).not.toContain('Page not found')
+        // correct template
+        expect(res.text).toContain('Protected characteristics')
+        // correct characteristic
+        expect(res.text).toContain('table-incentive-levels-by-age')
+      })
+  })
+
+  it('Invalid characteristic name results in 404', () => {
+    return request(app)
+      .get('/analytics/protected-characteristic?characteristic=invalid')
+      .expect(404)
+      .expect(res => {
+        expect(res.text).toContain('Page not found')
+      })
   })
 })
+
+describe.each(Object.entries(protectedCharacteristicRoutes))(
+  'Protected characteristic pages',
+  (characteristicName, { label }) => {
+    beforeAll(() => {
+      config.featureFlags.showAnalyticsPcDropdown = true
+    })
+    afterAll(() => {
+      config.featureFlags.showAnalyticsPcDropdown = false
+    })
+
+    it(`${label} page is accessible and drop-down has expected list`, () => {
+      return request(app)
+        .get(`/analytics/protected-characteristic?characteristic=${characteristicName}`)
+        .expect(200)
+        .expect(res => {
+          const pageContent = res.text
+          expect(pageContent).not.toContain('Page not found')
+          // correct template
+          expect(pageContent).toContain('Protected characteristics')
+          // correct characteristic
+          expect(pageContent).toContain(`table-incentive-levels-by-${characteristicName}`)
+          // correct characteristic selected in drop-down
+          expect(pageContent).toContain(`value="${characteristicName}" selected`)
+
+          // correct order of drop-down options
+          const selectElementHtml = pageContent.slice(pageContent.indexOf('<select'), pageContent.indexOf('</select>'))
+          let lastCharacteristicPosition = 0
+          Object.keys(protectedCharacteristicRoutes).forEach(someCharacteristicName => {
+            const characteristicPosition = selectElementHtml.indexOf(`value="${someCharacteristicName}"`)
+            expect(characteristicPosition).toBeGreaterThan(lastCharacteristicPosition)
+            lastCharacteristicPosition = characteristicPosition
+          })
+        })
+    })
+  }
+)

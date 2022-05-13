@@ -9,6 +9,7 @@ export const palette = [
   'app-chart-colour--c',
   'app-chart-colour--d',
   'app-chart-colour--e',
+  'app-chart-colour--f',
 ] as const
 export type Colour = typeof palette[number]
 
@@ -28,8 +29,11 @@ export function makeChartPalette(columns: string[]): Colour[] {
     if (column === 'Enhanced') {
       return takeColour('app-chart-colour--c')
     }
-    if (column === 'Enhanced 2') {
+    if (column === 'Enhanced 2' || column === 'Both') {
       return takeColour('app-chart-colour--d')
+    }
+    if (column === 'None') {
+      return takeColour('app-chart-colour--f')
     }
     return availableColours.shift() ?? 'app-chart-colour--e'
   })

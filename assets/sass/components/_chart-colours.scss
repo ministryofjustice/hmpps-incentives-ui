@@ -3,6 +3,7 @@ $chart-colour-b: govuk-colour("dark-blue"); // miro ~ #003078
 $chart-colour-c: govuk-colour("turquoise"); // miro ~ #27a197
 $chart-colour-d: govuk-colour("yellow"); // miro ~ #ffdd04
 $chart-colour-e: govuk-colour("pink"); // not expected to be used: presence in chart indicates unforeseen column set
+$chart-colour-f: govuk-colour("mid-grey");
 
 .app-chart-colour--a {
   background: $chart-colour-a;
@@ -22,4 +23,8 @@ $chart-colour-e: govuk-colour("pink"); // not expected to be used: presence in c
 
 .app-chart-colour--e {
   background: $chart-colour-e;
+}
+
+.app-chart-colour--f {
+  background: $chart-colour-f;
 }

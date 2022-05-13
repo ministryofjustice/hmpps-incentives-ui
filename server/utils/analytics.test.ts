@@ -41,7 +41,7 @@ describe.each([
       'app-chart-colour--c',
       'app-chart-colour--d',
       'app-chart-colour--e',
-      'app-chart-colour--e',
+      'app-chart-colour--f',
       'app-chart-colour--e',
     ],
   ],
@@ -49,6 +49,11 @@ describe.each([
     'with behaviour entry types', // NB: types are hard-coded so variations do not require testing
     ['Positive', 'Negative'],
     ['app-chart-colour--a', 'app-chart-colour--b'],
+  ],
+  [
+    'with behaviour profile types',
+    ['Positive', 'Negative', 'Both', 'None'],
+    ['app-chart-colour--a', 'app-chart-colour--b', 'app-chart-colour--d', 'app-chart-colour--f'],
   ],
 ])('chartPalette filter', (name: string, columns: string[], expectedPalette: Colour[]) => {
   it(name, () => {

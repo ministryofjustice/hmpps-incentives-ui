@@ -72,13 +72,33 @@
         title=protectedCharacteristicsChartContent[graphId].title,
         guidance=protectedCharacteristicsChartContent[graphId].guidance,
         labelColumn=protectedCharacteristicsChartContent[graphId].labelColumn,
-        wideLabel=true,
         graphId=graphId,
         graphGoogleAnalyticsCategory=protectedCharacteristicsChartContent[graphId].graphGoogleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[graphId],
         csrfToken=csrfToken,
-        report=incentiveLevelsByCharacteristic
+        report=incentiveLevelsByCharacteristic,
+        wideLabel=protectedCharacteristicsChartContent[graphId].wideLabel
+      ) }}
+
+    </section>
+  </div>
+
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+      {% set graphId = "entries-by-" + characteristicName %}
+      {{ chartPrisonersOnLevels(
+        title=protectedCharacteristicsChartContent[graphId].title,
+        guidance=protectedCharacteristicsChartContent[graphId].guidance,
+        labelColumn=protectedCharacteristicsChartContent[graphId].labelColumn,
+        graphId=graphId,
+        graphGoogleAnalyticsCategory=protectedCharacteristicsChartContent[graphId].graphGoogleAnalyticsCategory,
+        activeCaseload=user.activeCaseload.id,
+        form=forms[graphId],
+        csrfToken=csrfToken,
+        report=behaviourEntriesByCharacteristic,
+        wideLabel=protectedCharacteristicsChartContent[graphId].wideLabel
       ) }}
 
     </section>

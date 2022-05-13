@@ -7,7 +7,7 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import AnalyticsService from '../services/analyticsService'
-import { AnalyticsError, ProtectedCharacteristic, Report } from '../services/analyticsServiceTypes'
+import { AnalyticsError, ProtectedCharacteristic } from '../services/analyticsServiceTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 
 const protectedCharacteristicsChartContent = {
@@ -69,9 +69,7 @@ function urlForLocation(prison: string, location: string): string {
  * Makes an empty report object indicating errors occurred
  * if the promise is rejected with an AnalyticsError
  */
-async function transformAnalyticsError<Row extends Record<string, unknown>>(
-  reportPromise: Promise<Report<Row>>
-): Promise<Report<Row>> {
+async function transformAnalyticsError<R>(reportPromise: Promise<R>): Promise<R> {
   try {
     return await reportPromise
   } catch (error) {
@@ -83,7 +81,7 @@ async function transformAnalyticsError<Row extends Record<string, unknown>>(
         lastUpdated: undefined,
         rows: [],
         hasErrors: true,
-      }
+      } as unknown as R
     }
     throw error
   }
@@ -122,14 +120,9 @@ export default function routes(router: Router): Router {
     const charts = [
       analyticsService.getBehaviourEntriesByLocation(activeCaseLoad),
       analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad),
+      analyticsService.getBehaviourEntryTrends(activeCaseLoad),
     ].map(transformAnalyticsError)
-    const [behaviourEntries, prisonersWithEntries] = await Promise.all(charts)
-
-    let trends
-    if (config.featureFlags.showAnalyticsTrends) {
-      // TODO: move into Promise.all above once feature flag is removed
-      trends = await transformAnalyticsError(analyticsService.getBehaviourEntryTrends(activeCaseLoad))
-    }
+    const [behaviourEntries, prisonersWithEntries, trends] = await Promise.all(charts)
 
     res.render('pages/analytics/behaviourEntries', {
       ...templateContext(req),
@@ -148,14 +141,11 @@ export default function routes(router: Router): Router {
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
-    const charts = [analyticsService.getIncentiveLevelsByLocation(activeCaseLoad)].map(transformAnalyticsError)
-    const [prisonersOnLevels] = await Promise.all(charts)
-
-    let trends
-    if (config.featureFlags.showAnalyticsTrends) {
-      // TODO: move into Promise.all above once feature flag is removed
-      trends = await transformAnalyticsError(analyticsService.getIncentiveLevelTrends(activeCaseLoad))
-    }
+    const charts = [
+      analyticsService.getIncentiveLevelsByLocation(activeCaseLoad),
+      analyticsService.getIncentiveLevelTrends(activeCaseLoad),
+    ].map(transformAnalyticsError)
+    const [prisonersOnLevels, trends] = await Promise.all(charts)
 
     res.render('pages/analytics/incentiveLevels', {
       ...templateContext(req),

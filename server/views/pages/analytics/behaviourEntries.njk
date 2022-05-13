@@ -60,25 +60,23 @@
     </section>
   </div>
 
-  {% if featureFlags.showAnalyticsTrends %}
-    <div class="govuk-grid-row">
-      <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-        {% set graphId = "trends-entries" %}
-        {{ chartTrends(
-          title="Comparison of positive and negative behaviour entries in the establishment – last 12 months",
-          guidance="Use this chart to compare the numbers of positive, negative and total entries with previous months. What do the number of entries and the positive-negative ratios tell you about the incentives policy and the behaviour of prisoners? Be aware of any significant population changes.",
-          graphId=graphId,
-          graphGoogleAnalyticsCategory="Behaviour entry trends",
-          activeCaseload=user.activeCaseload.id,
-          form=forms[graphId],
-          csrfToken=csrfToken,
-          report=trends
-        ) }}
+      {% set graphId = "trends-entries" %}
+      {{ chartTrends(
+        title="Comparison of positive and negative behaviour entries in the establishment – last 12 months",
+        guidance="Use this chart to compare the numbers of positive, negative and total entries with previous months. What do the number of entries and the positive-negative ratios tell you about the incentives policy and the behaviour of prisoners? Be aware of any significant population changes.",
+        graphId=graphId,
+        graphGoogleAnalyticsCategory="Behaviour entry trends",
+        activeCaseload=user.activeCaseload.id,
+        form=forms[graphId],
+        csrfToken=csrfToken,
+        report=trends
+      ) }}
 
-      </section>
-    </div>
-  {% endif %}
+    </section>
+  </div>
 
   {% include "../../partials/analytics/disclaimer.njk" %}
 {% endblock %}

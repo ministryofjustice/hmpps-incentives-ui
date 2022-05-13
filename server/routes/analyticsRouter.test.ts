@@ -45,7 +45,6 @@ beforeEach(() => {
   jest.clearAllMocks()
 
   app = appWithAllRoutes({})
-  app.locals.featureFlags.showAnalyticsTrends = true
 })
 
 describe('Home page', () => {

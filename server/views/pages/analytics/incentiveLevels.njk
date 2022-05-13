@@ -43,25 +43,23 @@
     </section>
   </div>
 
-  {% if featureFlags.showAnalyticsTrends %}
-    <div class="govuk-grid-row">
-      <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-        {% set graphId = "trends-incentive-levels" %}
-        {{ chartTrends(
-          title="Incentive levels in the establishment – last 12 months",
-          guidance="Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?",
-          graphId=graphId,
-          graphGoogleAnalyticsCategory="Incentive level trends",
-          activeCaseload=user.activeCaseload.id,
-          form=forms[graphId],
-          csrfToken=csrfToken,
-          report=trends
-        ) }}
+      {% set graphId = "trends-incentive-levels" %}
+      {{ chartTrends(
+        title="Incentive levels in the establishment – last 12 months",
+        guidance="Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?",
+        graphId=graphId,
+        graphGoogleAnalyticsCategory="Incentive level trends",
+        activeCaseload=user.activeCaseload.id,
+        form=forms[graphId],
+        csrfToken=csrfToken,
+        report=trends
+      ) }}
 
-      </section>
-    </div>
-  {% endif %}
+    </section>
+  </div>
 
   {% include "../../partials/analytics/disclaimer.njk" %}
 {% endblock %}

@@ -326,6 +326,7 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
           // correct characteristic charts
           expect(pageContent).toContain(`table-population-by-${characteristicName}`)
           expect(pageContent).toContain(`table-incentive-levels-by-${characteristicName}`)
+          expect(pageContent).toContain(`table-entries-by-${characteristicName}`)
         })
     })
 
@@ -347,8 +348,145 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
 
     // TODO: merge into main analytics page test suite
 
-    // TODO: error is presented with source table is missing or empty
-    // TODO: feedback boxes & submissions
-    // TODO: shows disclaimer
+    it(`error is presented on ${label} Protected characteristic page if no source table was found`, () => {
+      mockSdkS3ClientReponse(s3.send, MockTable.Missing)
+
+      return request(app)
+        .get(url)
+        .expect(200)
+        .expect(res => {
+          expect(res.text).toContain('There is a problem with this data – try again later')
+        })
+    })
+
+    it(`error is presented on ${label} Protected characteristic page if source table contains no data`, () => {
+      mockSdkS3ClientReponse(s3.send, MockTable.Empty)
+
+      return request(app)
+        .get(url)
+        .expect(200)
+        .expect(res => {
+          expect(res.text).toContain('There is a problem with this data – try again later')
+        })
+    })
+
+    const graphIds = [
+      `population-by-${characteristicName}`,
+      `incentive-levels-by-${characteristicName}`,
+      `entries-by-${characteristicName}`,
+    ]
+    describe.each(graphIds)('charts have feedback forms', graphId => {
+      beforeAll(() => {
+        mockSdkS3ClientReponse(s3.send)
+      })
+
+      it(`${label} Protected characteristic page can post simple feedback on ${graphId} chart`, () => {
+        return request(app)
+          .post(url)
+          .send({ formId: graphId, chartUseful: 'yes' })
+          .expect(200)
+          .expect(res => {
+            // expect(res.text).toContain(expectedHeading)
+            expect(mockedZendeskClientClass).toHaveBeenCalled()
+            const mockedZendeskClient = mockedZendeskClientClass.mock.instances[0] as jest.Mocked<ZendeskClient>
+            expect(mockedZendeskClient.createTicket).toHaveBeenCalledWith({
+              subject: `Feedback on chart ${graphId}`,
+              comment: { body: expect.any(String) },
+              type: 'task',
+              tags: ['hmpps-incentives', 'chart-feedback', `chart-${graphId}`, 'useful-yes'],
+              custom_fields: [
+                // Service
+                { id: 23757677, value: 'hmpps_incentives' },
+                // Environment
+                { id: 32342378, value: config.environment },
+                // URL
+                { id: 23730083, value: expect.stringContaining(url) },
+                // Prison
+                { id: 23984153, value: 'MDI' },
+              ],
+            })
+            const createTicketRequest = mockedZendeskClient.createTicket.mock.calls[0][0]
+            expect(createTicketRequest.comment.body).toContain('Is this chart useful? yes')
+            expect(createTicketRequest.comment.body).toContain('Prison: MDI')
+            expect(createTicketRequest.comment.body).not.toContain('Comments:')
+          })
+      })
+
+      it(`${label} Protected characteristic page can post more complex feedback on ${graphId} chart`, () => {
+        return request(app)
+          .post(url)
+          .send({
+            formId: graphId,
+            chartUseful: 'no',
+            mainNoReason: 'do-not-understand',
+            noComments: 'How do I use this?',
+          })
+          .expect(200)
+          .expect(res => {
+            // expect(res.text).toContain(expectedHeading)
+            expect(res.text).toContain('Your feedback has been submitted')
+            const mockedZendeskClient = mockedZendeskClientClass.mock.instances[0] as jest.Mocked<ZendeskClient>
+            expect(mockedZendeskClient.createTicket).toHaveBeenCalledWith({
+              subject: expect.any(String),
+              comment: { body: expect.any(String) },
+              type: 'task',
+              tags: [
+                'hmpps-incentives',
+                'chart-feedback',
+                `chart-${graphId}`,
+                'useful-no',
+                'not-useful-do-not-understand',
+              ],
+              custom_fields: expect.anything(),
+            })
+            expect(mockedZendeskClientClass).toHaveBeenCalled()
+            const createTicketRequest = mockedZendeskClient.createTicket.mock.calls[0][0]
+            expect(createTicketRequest.comment.body).toContain('Is this chart useful? no')
+            expect(createTicketRequest.comment.body).toContain('Prison: MDI')
+            expect(createTicketRequest.comment.body).toContain('Main reason: do-not-understand')
+            expect(createTicketRequest.comment.body).toContain('Comments:')
+            expect(createTicketRequest.comment.body).toContain('How do I use this?')
+          })
+      })
+
+      it(`${label} Protected characteristic page will not post invalid feedback on ${graphId} chart`, () => {
+        return request(app)
+          .post(url)
+          .send({
+            formId: graphId,
+            chartUseful: 'no',
+            noComments: 'Do I have to choose only one reason?',
+          })
+          .expect(200)
+          .expect(res => {
+            expect(res.text).not.toContain('Your feedback has been submitted')
+            expect(res.text).toContain('There is a problem') // error summary
+            expect(res.text).toContain(`#${graphId}-mainNoReason`) // link to field
+            expect(res.text).toContain('Select a reason for your answer') // error message
+            expect(res.text).toContain(`id="${graphId}-mainNoReason"`) // field with error
+            expect(res.text).toContain('Do I have to choose only one reason?') // comment not forgotten
+            expect(mockedZendeskClientClass).not.toHaveBeenCalled()
+          })
+      })
+    })
+
+    it(`${label} Protected characteristic page will not accept a post without a formId parameter`, () => {
+      return request(app)
+        .post(url)
+        .send({ chartUseful: 'yes' })
+        .expect(400)
+        .expect(res => {
+          expect(res.text).toContain('Sorry, there is a problem with the service')
+          expect(mockedZendeskClientClass).not.toHaveBeenCalled()
+        })
+    })
+
+    it(`shows a disclaimer on ${label} Protected characteristic page`, () => {
+      return request(app)
+        .get(url)
+        .expect(res => {
+          expect(res.text).toContain('A note on our data')
+        })
+    })
   }
 )

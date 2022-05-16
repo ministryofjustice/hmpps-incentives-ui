@@ -35,11 +35,13 @@ const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartC
     title: 'Percentage and number of prisoners in the establishment by recorded disability',
     labelColumn: 'Disability',
     graphGoogleAnalyticsCategory: 'Population by disability',
+    wideLabel: true,
   },
   'population-by-ethnicity': {
     title: 'Percentage and number of prisoners in the establishment by ethnicity',
     labelColumn: 'Ethnicity',
     graphGoogleAnalyticsCategory: 'Population by ethnicity',
+    wideLabel: true,
   },
   'population-by-religion': {
     title: 'Percentage and number of prisoners in the establishment by religion',

@@ -29,7 +29,8 @@
   activeCaseload,
   form,
   csrfToken,
-  report
+  report,
+  wideLabel=false
 ) %}
 
   {{ chartBasePercentageBars(
@@ -42,6 +43,7 @@
     form=form,
     csrfToken=csrfToken,
     report=report,
+    wideLabel=wideLabel,
     valueColumn=valueColumn,
     rowValue=rowValue
   ) }}

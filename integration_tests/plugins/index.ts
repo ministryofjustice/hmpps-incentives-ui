@@ -11,11 +11,8 @@ export default (on: (string, Record) => void): void => {
   on('task', {
     reset: resetStubs,
 
-    getSignInUrl: auth.getSignInUrl,
-    stubSignIn: auth.stubSignIn,
-
-    stubAuthUser: auth.stubUser,
-    stubAuthPing: auth.stubPing,
+    ...auth,
+    ...tokenVerification,
 
     stubIncentivesApiPing: incentivesApi.stubPing,
     stubIncentivesApiGetLocationSummary: incentivesApi.stubGetLocationSummary,
@@ -26,8 +23,6 @@ export default (on: (string, Record) => void): void => {
     stubPrisonApiPing: prisonApi.stubPing,
     stubPrisonApiImages: prisonApi.stubGetImage,
     stubPrisonApiLocations: prisonApi.stubGetUserLocations,
-
-    stubTokenVerificationPing: tokenVerification.stubPing,
 
     stubCreateZendeskTicket: zendeskApi.stubCreateTicket,
   })

@@ -23,6 +23,7 @@ type CharacteristicsChartContent = {
   guidance?: string
   labelColumn: string
   graphGoogleAnalyticsCategory: string
+  wideLabel?: boolean
 }
 const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartContent> = {
   'population-by-age': {
@@ -63,6 +64,7 @@ const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartC
       'This chart will help you tell if there is any imbalance in incentive levels between prisoners with a disability recorded on NOMIS and those without. As the amount of missing data is high, the number of prisoners with unknown information is also provided.',
     labelColumn: 'Disability',
     graphGoogleAnalyticsCategory: 'Incentive level by disability',
+    wideLabel: true,
   },
   'incentive-levels-by-ethnicity': {
     title: 'Percentage and number of prisoners on each incentive level by ethnicity',
@@ -70,6 +72,7 @@ const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartC
       'Use this chart to see incentive levels for the main ethnicity groups and compare them to prison levels. Are there patterns or imbalances that you might want to explore further?',
     labelColumn: 'Ethnicity',
     graphGoogleAnalyticsCategory: 'Incentive level by ethnicity',
+    wideLabel: true,
   },
   'incentive-levels-by-religion': {
     title: 'Percentage and number of prisoners on each incentive level by religion',
@@ -84,6 +87,43 @@ const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartC
       'Use this chart to see incentive levels for prisoners of different sexual orientation and compare them to the overall prison levels. Are there any patterns or imbalances that you might want to explore further?',
     labelColumn: 'Sexual orientation',
     graphGoogleAnalyticsCategory: 'Incentive level by sexual orientation',
+  },
+  'entries-by-age': {
+    title: 'Percentage and number of prisoners on each behaviour entry by age - last 28 days',
+    guidance:
+      'Use this chart to see the number of prisoners with different types of behaviour entries for each age grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
+    labelColumn: 'Age',
+    graphGoogleAnalyticsCategory: 'Behaviour entries by age',
+  },
+  'entries-by-disability': {
+    title: 'Percentage and number of prisoners on each behaviour entry by recorded disability - last 28 days',
+    guidance:
+      'Use this chart to see the number of prisoners with different types of behaviour entries for each disability grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
+    labelColumn: 'Disability',
+    graphGoogleAnalyticsCategory: 'Behaviour entries by disability',
+    wideLabel: true,
+  },
+  'entries-by-ethnicity': {
+    title: 'Percentage and number of prisoners on each behaviour entry by ethnicity - last 28 days',
+    guidance:
+      'Use this chart to see the number of prisoners with different types of behaviour entries for each ethnic grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
+    labelColumn: 'Ethnicity',
+    graphGoogleAnalyticsCategory: 'Behaviour entries by ethnicity',
+    wideLabel: true,
+  },
+  'entries-by-religion': {
+    title: 'Percentage and number of prisoners on each behaviour entry by religion - last 28 days',
+    guidance:
+      'Use this chart to see the number of prisoners with different types of behaviour entries for each religious grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
+    labelColumn: 'Religion',
+    graphGoogleAnalyticsCategory: 'Behaviour entries by religion',
+  },
+  'entries-by-sexual-orientation': {
+    title: 'Percentage and number of prisoners on each behaviour entry by sexual orientation - last 28 days',
+    guidance:
+      'Use this chart to see the number of prisoners with different types of behaviour entries for each sexual orientation grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
+    labelColumn: 'Sexual orientation',
+    graphGoogleAnalyticsCategory: 'Behaviour entries by sexual orientation',
   },
 }
 
@@ -252,11 +292,11 @@ export default function routes(router: Router): Router {
     'incentive-levels-by-ethnicity',
     'incentive-levels-by-religion',
     'incentive-levels-by-sexual-orientation',
-    // 'entries-by-age',
-    // 'entries-by-disability',
-    // 'entries-by-ethnicity',
-    // 'entries-by-religion',
-    // 'entries-by-sexual-orientation',
+    'entries-by-age',
+    'entries-by-disability',
+    'entries-by-ethnicity',
+    'entries-by-religion',
+    'entries-by-sexual-orientation',
   ]
   routeWithFeedback('/protected-characteristic', protectedCharacteristicGraphIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
@@ -285,14 +325,16 @@ export default function routes(router: Router): Router {
 
     const charts = [
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getBehaviourEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
     ].map(transformAnalyticsError)
-    const [incentiveLevelsByCharacteristic] = await Promise.all(charts)
+    const [incentiveLevelsByCharacteristic, behaviourEntriesByCharacteristic] = await Promise.all(charts)
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
       characteristicName,
       characteristicOptions,
       incentiveLevelsByCharacteristic,
+      behaviourEntriesByCharacteristic,
       protectedCharacteristicsChartContent,
     })
   })

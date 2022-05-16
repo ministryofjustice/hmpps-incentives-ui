@@ -117,6 +117,18 @@ export type PrisonersOnLevelsByProtectedCharacteristic = {
 }
 
 /**
+ * A row in a report returned
+ */
+export type BehaviourEntriesByProtectedCharacteristic = {
+  /** protected characteristic */
+  label: string
+  /** link */
+  href?: string
+  /** number of prisoners on each level */
+  values: number[]
+}
+
+/**
  * Type returned by all analytics service monthly trends functions
  */
 export type TrendsReport = Report<TrendsReportRow> &

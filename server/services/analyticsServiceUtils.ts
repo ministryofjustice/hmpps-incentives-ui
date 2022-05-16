@@ -188,9 +188,9 @@ export function compareMonths(
 }
 
 /**
- * Strips prefix from level
+ * Strips prefix the data scientists provide in the source table
  * e.g. "C. Standard" → "Standard"
  */
-export function removeLevelPrefix(level: string): string {
-  return /^[A-Z]+\.\s+(.*)\s*$/.exec(level)?.[1] || level
+export function removeSortingPrefix(value: string): string {
+  return /^[A-Z]+\.\s+(.*)\s*$/.exec(value)?.[1] || value
 }

@@ -4,11 +4,12 @@ import type { TrendsReport } from '../services/analyticsServiceTypes'
 
 export const palette = [
   // match classes in chart-colours SCSS
-  'app-chart-colour--a',
-  'app-chart-colour--b',
-  'app-chart-colour--c',
-  'app-chart-colour--d',
-  'app-chart-colour--e',
+  'app-chart-colour--light-blue',
+  'app-chart-colour--dark-blue',
+  'app-chart-colour--turquoise',
+  'app-chart-colour--yellow',
+  'app-chart-colour--pink',
+  'app-chart-colour--mid-grey',
 ] as const
 export type Colour = typeof palette[number]
 
@@ -20,18 +21,21 @@ export function makeChartPalette(columns: string[]): Colour[] {
   }
   return columns.map(column => {
     if (column === 'Basic' || column === 'Positive') {
-      return takeColour('app-chart-colour--a')
+      return takeColour('app-chart-colour--light-blue')
     }
     if (column === 'Standard' || column === 'Negative') {
-      return takeColour('app-chart-colour--b')
+      return takeColour('app-chart-colour--dark-blue')
     }
     if (column === 'Enhanced') {
-      return takeColour('app-chart-colour--c')
+      return takeColour('app-chart-colour--turquoise')
     }
-    if (column === 'Enhanced 2') {
-      return takeColour('app-chart-colour--d')
+    if (column === 'Enhanced 2' || column === 'Both') {
+      return takeColour('app-chart-colour--yellow')
     }
-    return availableColours.shift() ?? 'app-chart-colour--e'
+    if (column === 'None') {
+      return takeColour('app-chart-colour--mid-grey')
+    }
+    return availableColours.shift() ?? 'app-chart-colour--pink'
   })
 }
 

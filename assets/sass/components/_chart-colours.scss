@@ -1,25 +1,23 @@
-$chart-colour-a: govuk-colour("light-blue"); // miro ~ #5695ca
-$chart-colour-b: govuk-colour("dark-blue"); // miro ~ #003078
-$chart-colour-c: govuk-colour("turquoise"); // miro ~ #27a197
-$chart-colour-d: govuk-colour("yellow"); // miro ~ #ffdd04
-$chart-colour-e: govuk-colour("pink"); // not expected to be used: presence in chart indicates unforeseen column set
-
-.app-chart-colour--a {
-  background: $chart-colour-a;
+.app-chart-colour--light-blue {
+  background: govuk-colour("light-blue"); // miro ~ #5695ca
 }
 
-.app-chart-colour--b {
-  background: $chart-colour-b;
+.app-chart-colour--dark-blue {
+  background: govuk-colour("dark-blue"); // miro ~ #003078
 }
 
-.app-chart-colour--c {
-  background: $chart-colour-c;
+.app-chart-colour--turquoise {
+  background: govuk-colour("turquoise"); // miro ~ #27a197
 }
 
-.app-chart-colour--d {
-  background: $chart-colour-d;
+.app-chart-colour--yellow {
+  background: govuk-colour("yellow"); // miro ~ #ffdd04
 }
 
-.app-chart-colour--e {
-  background: $chart-colour-e;
+.app-chart-colour--pink {
+  background: govuk-colour("pink"); // not expected to be used: presence in chart indicates unforeseen column set
+}
+
+.app-chart-colour--mid-grey {
+  background: govuk-colour("mid-grey");
 }

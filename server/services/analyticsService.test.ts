@@ -540,4 +540,79 @@ describe('AnalyticsService', () => {
       await expect(analyticsService.getIncentiveLevelTrends('MDI')).rejects.toThrow(AnalyticsError)
     })
   })
+
+  describe.each([
+    [ProtectedCharacteristic.Ethnicity, ['All', ...Ethnicities]],
+    [ProtectedCharacteristic.Age, ['All', ...Ages]],
+    [ProtectedCharacteristic.Religion, ['All', ...Religions]],
+    [ProtectedCharacteristic.Disability, ['All', ...Disabilities]],
+    [ProtectedCharacteristic.SexualOrientation, ['All', ...SexualOrientations]],
+  ])('getBehaviourEntriesByProtectedCharacteristic()', (characteristic, expectedCharacteristics) => {
+    beforeEach(() => {
+      mockAppS3ClientResponse(s3Client)
+
+      // pretend that MDI is a YCS
+      PrisonRegister.isYouthCustodyService = (prisonId: string) => prisonId === 'MDI'
+    })
+
+    it(`[${characteristic}]: has a totals row`, async () => {
+      const { columns, rows: behaviourEntriesByPc } =
+        await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+      expect(behaviourEntriesByPc).toHaveLength(expectedCharacteristics.length)
+
+      const all = behaviourEntriesByPc.shift()
+      expect(all.label).toEqual('All')
+
+      const expectedTotals = [0, 0, 0, 0]
+      behaviourEntriesByPc.forEach(({ values }) => {
+        for (let i = 0; i < columns.length; i += 1) {
+          expectedTotals[i] += values[i]
+        }
+      })
+      for (let i = 0; i < columns.length; i += 1) {
+        expect(all.values[i]).toEqual(expectedTotals[i])
+      }
+    })
+
+    it(`[${characteristic}]: throws an error when the table is empty`, async () => {
+      mockAppS3ClientResponse(s3Client, MockTable.Empty)
+
+      await expect(
+        analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+      ).rejects.toThrow(AnalyticsError)
+    })
+
+    it(`[${characteristic}]: lists groups in the correct order`, async () => {
+      const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+      const characteristics = rows.map(row => row.label)
+      expect(characteristics).toEqual(expectedCharacteristics)
+    })
+
+    if (characteristic === ProtectedCharacteristic.Age) {
+      it(`[${characteristic}]: adds missing 15-17 group with all zeros in YCS prison`, async () => {
+        const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+        const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
+        expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([
+          {
+            label: '15-17',
+            values: [0, 0, 0, 0],
+          },
+        ])
+      })
+
+      it(`[${characteristic}]: skips 15-17 group in non-YCS prison`, async () => {
+        // make MDI not a YCS by restoring isYouthCustodyService()
+        PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
+
+        const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+        const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
+        expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([])
+      })
+    }
+
+    it(`[${characteristic}]: lists profiles in the correct order`, async () => {
+      const { columns } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+      expect(columns).toEqual(['Positive', 'Negative', 'Both', 'None'])
+    })
+  })
 })

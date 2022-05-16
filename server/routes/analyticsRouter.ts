@@ -23,6 +23,7 @@ type CharacteristicsChartContent = {
   guidance?: string
   labelColumn: string
   graphGoogleAnalyticsCategory: string
+  wideLabel?: boolean
 }
 const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartContent> = {
   'population-by-age': {

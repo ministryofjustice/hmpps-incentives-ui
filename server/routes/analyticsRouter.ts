@@ -247,7 +247,7 @@ export default function routes(router: Router): Router {
 
     // Redirect to new Protected characteristics page when feature flag is on
     if (config.featureFlags.showAnalyticsPcDropdown) {
-      res.redirect('/analytics/protected-characteristics?characteristic=age')
+      res.redirect('/analytics/protected-characteristic?characteristic=age')
     }
 
     const activeCaseLoad = res.locals.user.activeCaseload.id

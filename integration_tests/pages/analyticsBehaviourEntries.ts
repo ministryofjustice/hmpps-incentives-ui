@@ -17,44 +17,4 @@ export default class AnalyticsBehaviourEntries extends AnalyticsPage {
   get entriesTrends(): PageElement<HTMLTableRowElement> {
     return cy.get('#table-trends-entries tbody tr')
   }
-
-  get entriesByLocationGuidance(): PageElement<HTMLDetailsElement> {
-    return this.chartGuidanceBoxes.filter('#guidance-entries-by-location').find('.govuk-details__summary')
-  }
-
-  get prisonersWithEntriesByLocationGuidance(): PageElement<HTMLDetailsElement> {
-    return this.chartGuidanceBoxes
-      .filter('#guidance-prisoners-with-entries-by-location')
-      .find('.govuk-details__summary')
-  }
-
-  get entriesTrendsGuidance(): PageElement<HTMLDetailsElement> {
-    return this.chartGuidanceBoxes.filter('#guidance-trends-entries').find('.govuk-details__summary')
-  }
-
-  get entriesByLocationFeedback(): PageElement<HTMLDetailsElement> {
-    return this.chartFeedbackBoxes.filter('#chart-feedback-entries-by-location').find('.govuk-details__summary')
-  }
-
-  get prisonersWithEntriesByLocationFeedback(): PageElement<HTMLDetailsElement> {
-    return this.chartFeedbackBoxes
-      .filter('#chart-feedback-prisoners-with-entries-by-location')
-      .find('.govuk-details__summary')
-  }
-
-  get entriesTrendsFeedback(): PageElement<HTMLDetailsElement> {
-    return this.chartFeedbackBoxes.filter('#chart-feedback-trends-entries').find('.govuk-details__summary')
-  }
-
-  get entriesByLocationFeedbackForm(): PageElement<HTMLFormElement> {
-    return cy.get('#form-entries-by-location')
-  }
-
-  get prisonersWithEntriesByLocationFeedbackForm(): PageElement<HTMLFormElement> {
-    return cy.get('#form-prisoners-with-entries-by-location')
-  }
-
-  get entriesTrendsFeedbackForm(): PageElement<HTMLFormElement> {
-    return cy.get('#form-trends-entries')
-  }
 }

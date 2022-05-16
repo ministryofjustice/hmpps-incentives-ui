@@ -40,6 +40,18 @@ export abstract class AnalyticsPage extends Page {
   get chartFeedbackBoxes(): PageElement<HTMLDetailsElement> {
     return cy.get('.govuk-details[data-qa=chart-feedback]')
   }
+
+  getGraphGuidance(graphId: string): PageElement<HTMLDetailsElement> {
+    return this.chartGuidanceBoxes.filter(`#guidance-${graphId}`).find('.govuk-details__summary')
+  }
+
+  getGraphFeedback(graphId: string): PageElement<HTMLDetailsElement> {
+    return this.chartFeedbackBoxes.filter(`#chart-feedback-${graphId}`).find('.govuk-details__summary')
+  }
+
+  getGraphFeedbackForm(graphId: string): PageElement<HTMLDetailsElement> {
+    return cy.get(`#form-${graphId}`)
+  }
 }
 
 export function getTextFromTable(chainable: PageElement<HTMLTableRowElement>): Cypress.Chainable<string[][]> {

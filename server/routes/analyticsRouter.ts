@@ -97,7 +97,7 @@ const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartC
   'entries-by-disability': {
     title: 'Percentage and number of prisoners on each behaviour entry by recorded disability - last 28 days',
     guidance:
-      'Use this chart to see the number of prisoners with different types of behaviour entries for each disability grouping. Are there Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
+      'Use this chart to see the number of prisoners with different types of behaviour entries for each disability grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
     labelColumn: 'Disability',
     graphGoogleAnalyticsCategory: 'Behaviour entries by disability',
     wideLabel: true,

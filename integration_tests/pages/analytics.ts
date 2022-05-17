@@ -59,7 +59,7 @@ export function getTextFromTable(chainable: PageElement<HTMLTableRowElement>): C
     const rowsAndValues = rows
       .map((_, row) => {
         const rowValues: string[] = []
-        for (let index = 0; index <= 12; index += 1) {
+        for (let index = 0; index < row.children.length; index += 1) {
           rowValues.push(row.children[index]?.textContent?.trim())
         }
         return { rowValues }

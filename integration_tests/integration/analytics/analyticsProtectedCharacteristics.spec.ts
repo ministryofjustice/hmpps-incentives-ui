@@ -1,4 +1,4 @@
-import { testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
+import { getTextFromTable, testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analyticsIncentiveLevels'
@@ -30,27 +30,6 @@ context('Analytics section', () => {
       somePage.protectedCharacteristicsNavItem.click()
     })
 
-    it('users see analytics', () => {
-      const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
-
-      page.populationByAge.first().then(totalsRow => {
-        const location = totalsRow.find('td:nth-child(3)').text()
-        expect(location).to.contain('921')
-      })
-
-      page.incentivesByAge.first().then(totalsRow => {
-        const location = totalsRow.find('td:first-child').text()
-        expect(location).to.contain('All')
-        expect(location).to.contain('921')
-      })
-
-      page.entriesByAge.first().then(totalsRow => {
-        const location = totalsRow.find('td:first-child').text()
-        expect(location).to.contain('All')
-        expect(location).to.contain('921')
-      })
-    })
-
     it('selector allows user to change protected characteristic', () => {
       cy.get('#characteristic').select('Sexual orientation')
       cy.get('#form-select-characteristic button').click()
@@ -58,6 +37,59 @@ context('Analytics section', () => {
       cy.get('h2.govuk-heading-m')
         .first()
         .contains('Percentage and number of prisoners in the establishment by sexual orientation')
+    })
+
+    it('users see analytics', () => {
+      const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+
+      const cleanRows = (rows: string[][]) => {
+        return rows.map(row => {
+          row.pop() // remove last column as it's empty
+          return row.map(cell => cell.split(/\s/)[0])
+        })
+      }
+
+      getTextFromTable(page.populationByAge).then(rows => {
+        const cleanedRows = cleanRows(rows)
+        expect(cleanedRows).to.deep.equal([
+          ['All', '100%', '921'],
+          [''],
+          ['18-25', '21%', '189'],
+          ['26-35', '32%', '297'],
+          ['36-45', '23%', '212'],
+          ['46-55', '12%', '108'],
+          ['56-65', '6%', '52'],
+          ['66+', '7%', '63'],
+        ])
+      })
+
+      getTextFromTable(page.incentivesByAge).then(rows => {
+        const cleanedRows = cleanRows(rows)
+        expect(cleanedRows).to.deep.equal([
+          ['All', '2%', '58%', '40%'],
+          [''],
+          ['18-25', '3%', '78%', '19%'],
+          ['26-35', '2%', '61%', '37%'],
+          ['36-45', '2%', '56%', '42%'],
+          ['46-55', '0%', '45%', '55%'],
+          ['56-65', '2%', '33%', '65%'],
+          ['66+', '0%', '37%', '63%'],
+        ])
+      })
+
+      getTextFromTable(page.entriesByAge).then(rows => {
+        const cleanedRows = cleanRows(rows)
+        expect(cleanedRows).to.deep.equal([
+          ['All', '11%', '17%', '2%', '69%'],
+          [''],
+          ['18-25', '14%', '30%', '2%', '54%'],
+          ['26-35', '13%', '18%', '3%', '66%'],
+          ['36-45', '12%', '17%', '2%', '68%'],
+          ['46-55', '8%', '8%', '2%', '81%'],
+          ['56-65', '6%', '2%', '0%', '92%'],
+          ['66+', '0%', '5%', '0%', '95%'],
+        ])
+      })
     })
 
     it('guidance box for analytics is tracked', () => {

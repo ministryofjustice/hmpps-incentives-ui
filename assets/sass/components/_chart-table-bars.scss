@@ -12,6 +12,13 @@
   }
 }
 
+// tables packing rows more closely together; 1 line of text per row
+.app-chart-table--tight-bars {
+  tbody tr:not(:last-child) td {
+    padding-bottom: 0;
+  }
+}
+
 .app-chart-table--bars-with-2-columns {
   th, td {
     width: 18%;
@@ -128,11 +135,15 @@ td.app-chart-table__percentage-cell {
   border-right: 1px solid $govuk-border-colour;
 }
 
-// stacked bar forming the chart
+// bars forming the chart; stackable
 .app-chart-table__percentage-cell-bar {
   position: relative;
   float: left;
   width: 0;
+
+  .app-chart-table--tight-bars & {
+    padding-bottom: $chart-cell-pading;
+  }
 }
 
 // vertical 50% gridline

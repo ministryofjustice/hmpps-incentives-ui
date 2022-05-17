@@ -1,5 +1,6 @@
-import Page, { type PageElement } from './page'
+import Page, { PageElement } from './page'
 
+// eslint-disable-next-line import/prefer-default-export
 export abstract class AnalyticsPage extends Page {
   get subNavigation(): PageElement<HTMLUListElement> {
     return cy.get('.moj-sub-navigation__list')
@@ -52,19 +53,4 @@ export abstract class AnalyticsPage extends Page {
   getGraphFeedbackForm(graphId: string): PageElement<HTMLDetailsElement> {
     return cy.get(`#form-${graphId}`)
   }
-}
-
-export function getTextFromTable(chainable: PageElement<HTMLTableRowElement>): Cypress.Chainable<string[][]> {
-  return chainable.then(rows => {
-    const rowsAndValues = rows
-      .map((_, row) => {
-        const rowValues: string[] = []
-        for (let index = 0; index < row.children.length; index += 1) {
-          rowValues.push(row.children[index]?.textContent?.trim())
-        }
-        return { rowValues }
-      })
-      .toArray()
-    return cy.wrap(rowsAndValues.map(({ rowValues }) => rowValues))
-  })
 }

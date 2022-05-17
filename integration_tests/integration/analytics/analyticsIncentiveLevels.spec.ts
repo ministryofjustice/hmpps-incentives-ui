@@ -1,7 +1,6 @@
-import { testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './feedbackFormsAssertions'
+import { getTextFromTable, testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
-import { getTextFromTable } from '../../pages/analytics'
 import AnalyticsIncentiveLevels from '../../pages/analyticsIncentiveLevels'
 import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 

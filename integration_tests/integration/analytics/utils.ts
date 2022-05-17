@@ -1,4 +1,4 @@
-import Page from '../../pages/page'
+import Page, { PageElement } from '../../pages/page'
 import { AnalyticsPage } from '../../pages/analytics'
 
 export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(
@@ -54,5 +54,20 @@ export function testInvalidFeedbackSubmission<PageClass extends AnalyticsPage>(
     page.getGraphFeedbackForm(graphId).find('[name=noComments]').should('have.value', 'I’m confused')
     // same error message should show
     page.getGraphFeedbackForm(graphId).find('p.govuk-error-message').contains('Select a reason for your answer')
+  })
+}
+
+export function getTextFromTable(chainable: PageElement<HTMLTableRowElement>): Cypress.Chainable<string[][]> {
+  return chainable.then(rows => {
+    const rowsAndValues = rows
+      .map((_, row) => {
+        const rowValues: string[] = []
+        for (let index = 0; index < row.children.length; index += 1) {
+          rowValues.push(row.children[index]?.textContent?.trim())
+        }
+        return { rowValues }
+      })
+      .toArray()
+    return cy.wrap(rowsAndValues.map(({ rowValues }) => rowValues))
   })
 }

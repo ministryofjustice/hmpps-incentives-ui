@@ -1,4 +1,4 @@
-import { testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './feedbackFormsAssertions'
+import { testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analyticsIncentiveLevels'

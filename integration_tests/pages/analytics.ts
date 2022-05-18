@@ -53,4 +53,8 @@ export abstract class AnalyticsPage extends Page {
   getGraphFeedbackForm(graphId: string): PageElement<HTMLDetailsElement> {
     return cy.get(`#form-${graphId}`)
   }
+
+  getChartTable(graphId: string): PageElement<HTMLTableRowElement> {
+    return cy.get(`#table-${graphId} tbody tr`)
+  }
 }

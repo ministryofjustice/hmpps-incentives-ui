@@ -1,4 +1,4 @@
-import { type PageElement } from './page'
+import { PageElement } from './page'
 import { AnalyticsPage } from './analytics'
 
 export default class AnalyticsProtectedCharacteristics extends AnalyticsPage {

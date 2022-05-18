@@ -1,11 +1,8 @@
 import Page, { PageElement } from '../../pages/page'
 import { AnalyticsPage } from '../../pages/analytics'
 
-export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(
-  pageClass: new () => PageClass,
-  feedbackBoxes
-) {
-  feedbackBoxes.forEach(graphId => {
+export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(pageClass: new () => PageClass, graphIds) {
+  graphIds.forEach(graphId => {
     let page = Page.verifyOnPage(pageClass)
 
     // open feedback box and select "yes"
@@ -25,9 +22,9 @@ export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(
 
 export function testInvalidFeedbackSubmission<PageClass extends AnalyticsPage>(
   pageClass: new () => PageClass,
-  feedbackBoxes
+  graphIds
 ) {
-  feedbackBoxes.forEach(graphId => {
+  graphIds.forEach(graphId => {
     let page = Page.verifyOnPage(pageClass)
 
     // open feedback box and select "no", typing some comments

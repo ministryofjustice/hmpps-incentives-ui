@@ -26,13 +26,16 @@ context('Analytics section > Incentive levels page', () => {
   it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
 
-    page.incentivesByLocation.first().then(totalsRow => {
-      const location = totalsRow.find('td:first-child').text()
-      expect(location).to.contain('All')
-      expect(location).to.contain('921')
-    })
+    page
+      .getChartTable('incentive-levels-by-location')
+      .first()
+      .then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('921')
+      })
 
-    getTextFromTable(page.incentivesTrends).then(rows => {
+    getTextFromTable(page.getChartTable('trends-incentive-levels')).then(rows => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [_basicRow, standardRow, _enhancedRow, populationRow] = rows
       // remove header column

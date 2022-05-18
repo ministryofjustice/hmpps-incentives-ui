@@ -44,7 +44,7 @@ context('Analytics section > Protected characteristics page', () => {
       })
     }
 
-    getTextFromTable(page.populationByAge).then(rows => {
+    getTextFromTable(page.getChartTable('population-by-age')).then(rows => {
       const cleanedRows = cleanRows(rows)
       expect(cleanedRows).to.deep.equal([
         ['All', '100%', '921'],
@@ -58,7 +58,7 @@ context('Analytics section > Protected characteristics page', () => {
       ])
     })
 
-    getTextFromTable(page.incentivesByAge).then(rows => {
+    getTextFromTable(page.getChartTable('incentive-levels-by-age')).then(rows => {
       const cleanedRows = cleanRows(rows)
       expect(cleanedRows).to.deep.equal([
         ['All', '2%', '58%', '40%'],
@@ -72,7 +72,7 @@ context('Analytics section > Protected characteristics page', () => {
       ])
     })
 
-    getTextFromTable(page.entriesByAge).then(rows => {
+    getTextFromTable(page.getChartTable('entries-by-age')).then(rows => {
       const cleanedRows = cleanRows(rows)
       expect(cleanedRows).to.deep.equal([
         ['All', '11%', '17%', '2%', '69%'],

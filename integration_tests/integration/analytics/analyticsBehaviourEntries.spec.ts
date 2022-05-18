@@ -28,19 +28,25 @@ context('Analytics section > Behaviour entries page', () => {
   it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
 
-    page.entriesByLocation.first().then(totalsRow => {
-      const location = totalsRow.find('td:first-child').text()
-      expect(location).to.contain('All')
-      expect(location).to.contain('462')
-    })
+    page
+      .getChartTable('entries-by-location')
+      .first()
+      .then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('462')
+      })
 
-    page.prisonersWithEntriesByLocation.first().then(totalsRow => {
-      const location = totalsRow.find('td:first-child').text()
-      expect(location).to.contain('All')
-      expect(location).to.contain('1,194')
-    })
+    page
+      .getChartTable('prisoners-with-entries-by-location')
+      .first()
+      .then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('1,194')
+      })
 
-    getTextFromTable(page.entriesTrends).then(rows => {
+    getTextFromTable(page.getChartTable('trends-entries')).then(rows => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [positivesRow, negativesRow, _totalRow, populationRow] = rows
       // remove header column

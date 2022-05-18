@@ -61,6 +61,7 @@ const analyticsPages = [
     name: 'Behaviour entries',
     url: '/analytics/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
+    showAnalyticsPcDropdown: true, // It doesn't matter for this page
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     graphIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
@@ -69,14 +70,16 @@ const analyticsPages = [
     name: 'Incentive levels',
     url: '/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
+    showAnalyticsPcDropdown: true, // It doesn't matter for this page
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     graphIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
-    name: 'Protected characteristics',
+    name: 'Protected characteristics', // Old 'all in one' PC page
     url: '/analytics/protected-characteristics',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by ethnicity',
+    showAnalyticsPcDropdown: false,
     linksToIncentivesTable: false,
     graphIds: [
       'incentive-levels-by-ethnicity',
@@ -86,14 +89,26 @@ const analyticsPages = [
       'incentive-levels-by-sexual-orientation',
     ],
   },
+  {
+    name: 'Protected characteristics', // New PC page
+    url: '/analytics/protected-characteristic?characteristic=disability',
+    expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
+    showAnalyticsPcDropdown: true,
+    linksToIncentivesTable: false,
+    graphIds: ['population-by-disability', 'incentive-levels-by-disability', 'entries-by-disability'],
+  },
 ]
 
 const samplePrison = 'MDI'
 
 describe.each(analyticsPages)(
   'Analytics data pages',
-  ({ name, url, expectedHeading, graphIds, linksToIncentivesTable, sampleLocations }) => {
+  ({ name, url, expectedHeading, graphIds, linksToIncentivesTable, sampleLocations, showAnalyticsPcDropdown }) => {
     beforeAll(() => {
+      config.featureFlags.showAnalyticsPcDropdown = showAnalyticsPcDropdown
+    })
+
+    afterAll(() => {
       config.featureFlags.showAnalyticsPcDropdown = false
     })
 
@@ -265,6 +280,7 @@ describe.each(analyticsPages)(
   }
 )
 
+// Tests specific of Protected Characteristic pages
 describe('Protected characteristic pages', () => {
   beforeAll(() => {
     config.featureFlags.showAnalyticsPcDropdown = true
@@ -326,6 +342,7 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
           // correct characteristic charts
           expect(pageContent).toContain(`table-population-by-${characteristicName}`)
           expect(pageContent).toContain(`table-incentive-levels-by-${characteristicName}`)
+          expect(pageContent).toContain(`table-entries-by-${characteristicName}`)
         })
     })
 
@@ -344,11 +361,5 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
           })
         })
     })
-
-    // TODO: merge into main analytics page test suite
-
-    // TODO: error is presented with source table is missing or empty
-    // TODO: feedback boxes & submissions
-    // TODO: shows disclaimer
   }
 )

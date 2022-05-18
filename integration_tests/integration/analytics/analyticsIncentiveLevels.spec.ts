@@ -153,9 +153,6 @@ context('Analytics section > Incentive levels page', () => {
   })
 
   it('users will see errors if they submit invalid feedback on chart', () => {
-    testInvalidFeedbackSubmission(AnalyticsIncentiveLevels, [
-      'incentive-levels-by-location',
-      'trends-incentive-levels',
-    ])
+    testInvalidFeedbackSubmission(AnalyticsIncentiveLevels, ['incentive-levels-by-location', 'trends-incentive-levels'])
   })
 })

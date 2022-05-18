@@ -1,4 +1,4 @@
-import { PageElement } from './page'
+import { type PageElement } from './page'
 import { AnalyticsPage } from './analytics'
 
 export default class AnalyticsIncentiveLevels extends AnalyticsPage {

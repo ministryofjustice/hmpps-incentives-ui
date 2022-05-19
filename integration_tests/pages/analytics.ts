@@ -42,15 +42,15 @@ export abstract class AnalyticsPage extends Page {
     return cy.get('.govuk-details[data-qa=chart-feedback]')
   }
 
-  getGraphGuidance(chartId: string): PageElement<HTMLDetailsElement> {
+  getChartGuidance(chartId: string): PageElement<HTMLDetailsElement> {
     return this.chartGuidanceBoxes.filter(`#guidance-${chartId}`).find('.govuk-details__summary')
   }
 
-  getGraphFeedback(chartId: string): PageElement<HTMLDetailsElement> {
+  getChartFeedback(chartId: string): PageElement<HTMLDetailsElement> {
     return this.chartFeedbackBoxes.filter(`#chart-feedback-${chartId}`).find('.govuk-details__summary')
   }
 
-  getGraphFeedbackForm(chartId: string): PageElement<HTMLDetailsElement> {
+  getChartFeedbackForm(chartId: string): PageElement<HTMLDetailsElement> {
     return cy.get(`#form-${chartId}`)
   }
 

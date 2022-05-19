@@ -8,7 +8,7 @@ import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import AnalyticsService from '../services/analyticsService'
 import { AnalyticsError, ProtectedCharacteristic } from '../services/analyticsServiceTypes'
-import { ProtectedCharacteristicsChartsContent } from './analyticsChartsContent'
+import { BehaviourEntriesChartsContent, ProtectedCharacteristicsChartsContent } from './analyticsChartsContent'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 
 export const protectedCharacteristicRoutes = {
@@ -100,6 +100,7 @@ export default function routes(router: Router): Router {
       behaviourEntries,
       prisonersWithEntries,
       trends,
+      BehaviourEntriesChartsContent,
     })
   })
 

@@ -1,12 +1,35 @@
 type AnalyticsChartContent = {
   title: string
   guidance?: string
-  labelColumn: string
+  labelColumn?: string
   googleAnalyticsCategory: string
   wideLabel?: boolean
 }
 
-// eslint-disable-next-line import/prefer-default-export
+export const BehaviourEntriesChartsContent: Record<string, AnalyticsChartContent> = {
+  'entries-by-location': {
+    title: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
+    guidance:
+      'This chart lets you see the balance of positive to negative entries across the prison and at residential location level. Do these splits suggest a fair and consistent application of incentives?',
+    labelColumn: 'Location',
+    googleAnalyticsCategory: 'Behaviour entries by wing',
+  },
+  'prisoners-with-entries-by-location': {
+    title:
+      'Percentage and number of prisoners receiving each behaviour entry type by residential location – last 28 days',
+    guidance:
+      'Individual prisoner behaviours can give you a fuller picture. Are you happy with how many prisoners have no entries and how many have both? Positive entries can help lead to behaviour improvements.',
+    labelColumn: 'Location',
+    googleAnalyticsCategory: 'Prisoners with behaviour entries by wing',
+  },
+  'trends-entries': {
+    title: 'Comparison of positive and negative behaviour entries in the establishment – last 12 months',
+    guidance:
+      'Use this chart to compare the numbers of positive, negative and total entries with previous months. What do the number of entries and the positive-negative ratios tell you about the incentives policy and the behaviour of prisoners? Be aware of any significant population changes.',
+    googleAnalyticsCategory: 'Behaviour entry trends',
+  },
+}
+
 export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChartContent> = {
   'population-by-age': {
     title: 'Percentage and number of prisoners in the establishment by age',

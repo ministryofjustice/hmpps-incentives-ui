@@ -30,11 +30,11 @@
 
       {% set graphId = "entries-by-location" %}
       {{ chartBehaviourEntries(
-        title="Comparison of positive and negative behaviour entries by residential location – last 28 days",
-        guidance="This chart lets you see the balance of positive to negative entries across the prison and at residential location level. Do these splits suggest a fair and consistent application of incentives?",
-        labelColumn="Location",
+        title=BehaviourEntriesChartsContent[graphId].title,
+        guidance=BehaviourEntriesChartsContent[graphId].guidance,
+        labelColumn=BehaviourEntriesChartsContent[graphId].labelColumn,
         graphId=graphId,
-        graphGoogleAnalyticsCategory="Behaviour entries by wing",
+        graphGoogleAnalyticsCategory=BehaviourEntriesChartsContent[graphId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[graphId],
         csrfToken=csrfToken,
@@ -46,11 +46,11 @@
 
       {% set graphId = "prisoners-with-entries-by-location" %}
       {{ chartPrisonersWithBehaviourEntries(
-        title="Percentage and number of prisoners receiving each behaviour entry type by residential location – last 28 days",
-        guidance="Individual prisoner behaviours can give you a fuller picture. Are you happy with how many prisoners have no entries and how many have both? Positive entries can help lead to behaviour improvements.",
-        labelColumn="Location",
+        title=BehaviourEntriesChartsContent[graphId].title,
+        guidance=BehaviourEntriesChartsContent[graphId].guidance,
+        labelColumn=BehaviourEntriesChartsContent[graphId].labelColumn,
         graphId=graphId,
-        graphGoogleAnalyticsCategory="Prisoners with behaviour entries by wing",
+        graphGoogleAnalyticsCategory=BehaviourEntriesChartsContent[graphId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[graphId],
         csrfToken=csrfToken,
@@ -65,10 +65,10 @@
 
       {% set graphId = "trends-entries" %}
       {{ chartTrends(
-        title="Comparison of positive and negative behaviour entries in the establishment – last 12 months",
-        guidance="Use this chart to compare the numbers of positive, negative and total entries with previous months. What do the number of entries and the positive-negative ratios tell you about the incentives policy and the behaviour of prisoners? Be aware of any significant population changes.",
+        title=BehaviourEntriesChartsContent[graphId].title,
+        guidance=BehaviourEntriesChartsContent[graphId].guidance,
         graphId=graphId,
-        graphGoogleAnalyticsCategory="Behaviour entry trends",
+        graphGoogleAnalyticsCategory=BehaviourEntriesChartsContent[graphId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[graphId],
         csrfToken=csrfToken,

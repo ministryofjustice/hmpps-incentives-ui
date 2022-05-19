@@ -235,54 +235,6 @@ export default function routes(router: Router): Router {
     })
   })
 
-  const protectedCharacteristicsGraphIds = [
-    'incentive-levels-by-ethnicity',
-    'incentive-levels-by-age',
-    'incentive-levels-by-religion',
-    'incentive-levels-by-disability',
-    'incentive-levels-by-sexual-orientation',
-  ]
-  routeWithFeedback('/protected-characteristics', protectedCharacteristicsGraphIds, async (req, res, next) => {
-    res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
-
-    // Redirect to new Protected characteristics page when feature flag is on
-    if (config.featureFlags.showAnalyticsPcDropdown) {
-      res.redirect('/analytics/protected-characteristic?characteristic=age')
-    }
-
-    const activeCaseLoad = res.locals.user.activeCaseload.id
-
-    const s3Client = new S3Client(config.s3)
-    const analyticsService = new AnalyticsService(s3Client, urlForLocation)
-
-    const charts = [
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Ethnicity),
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Age),
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Religion),
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, ProtectedCharacteristic.Disability),
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-        activeCaseLoad,
-        ProtectedCharacteristic.SexualOrientation
-      ),
-    ].map(transformAnalyticsError)
-    const [
-      prisonersByEthnicity,
-      prisonersByAge,
-      prisonersByReligion,
-      prisonersByDisability,
-      prisonersBySexualOrientation,
-    ] = await Promise.all(charts)
-
-    res.render('pages/analytics/protectedCharacteristics', {
-      ...templateContext(req),
-      prisonersByEthnicity,
-      prisonersByAge,
-      prisonersByReligion,
-      prisonersByDisability,
-      prisonersBySexualOrientation,
-    })
-  })
-
   const protectedCharacteristicGraphIds = [
     'population-by-age',
     'population-by-disability',

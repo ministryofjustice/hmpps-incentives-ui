@@ -61,7 +61,6 @@ const analyticsPages = [
     name: 'Behaviour entries',
     url: '/analytics/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
-    showAnalyticsPcDropdown: true, // It doesn't matter for this page
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     graphIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
@@ -70,30 +69,14 @@ const analyticsPages = [
     name: 'Incentive levels',
     url: '/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
-    showAnalyticsPcDropdown: true, // It doesn't matter for this page
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     graphIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
-    name: 'Protected characteristics', // Old 'all in one' PC page
-    url: '/analytics/protected-characteristics',
-    expectedHeading: 'Percentage and number of prisoners on each incentive level by ethnicity',
-    showAnalyticsPcDropdown: false,
-    linksToIncentivesTable: false,
-    graphIds: [
-      'incentive-levels-by-ethnicity',
-      'incentive-levels-by-age',
-      'incentive-levels-by-religion',
-      'incentive-levels-by-disability',
-      'incentive-levels-by-sexual-orientation',
-    ],
-  },
-  {
-    name: 'Protected characteristics', // New PC page
+    name: 'Protected characteristics',
     url: '/analytics/protected-characteristic?characteristic=disability',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
-    showAnalyticsPcDropdown: true,
     linksToIncentivesTable: false,
     graphIds: ['population-by-disability', 'incentive-levels-by-disability', 'entries-by-disability'],
   },
@@ -103,15 +86,7 @@ const samplePrison = 'MDI'
 
 describe.each(analyticsPages)(
   'Analytics data pages',
-  ({ name, url, expectedHeading, graphIds, linksToIncentivesTable, sampleLocations, showAnalyticsPcDropdown }) => {
-    beforeAll(() => {
-      config.featureFlags.showAnalyticsPcDropdown = showAnalyticsPcDropdown
-    })
-
-    afterAll(() => {
-      config.featureFlags.showAnalyticsPcDropdown = false
-    })
-
+  ({ name, url, expectedHeading, graphIds, linksToIncentivesTable, sampleLocations }) => {
     beforeEach(() => {
       mockSdkS3ClientReponse(s3.send)
       StitchedTablesCache.clear()
@@ -282,13 +257,6 @@ describe.each(analyticsPages)(
 
 // Tests specific of Protected Characteristic pages
 describe('Protected characteristic pages', () => {
-  beforeAll(() => {
-    config.featureFlags.showAnalyticsPcDropdown = true
-  })
-  afterAll(() => {
-    config.featureFlags.showAnalyticsPcDropdown = false
-  })
-
   it('Age page is the default when none is explicitly selected', () => {
     return request(app)
       .get('/analytics/protected-characteristic')
@@ -315,13 +283,6 @@ describe('Protected characteristic pages', () => {
 describe.each(Object.entries(protectedCharacteristicRoutes))(
   'Protected characteristic pages',
   (characteristicName, { label }) => {
-    beforeAll(() => {
-      config.featureFlags.showAnalyticsPcDropdown = true
-    })
-    afterAll(() => {
-      config.featureFlags.showAnalyticsPcDropdown = false
-    })
-
     beforeEach(() => {
       mockSdkS3ClientReponse(s3.send)
       StitchedTablesCache.clear()

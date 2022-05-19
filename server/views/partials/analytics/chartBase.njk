@@ -4,7 +4,7 @@
 {% macro chartBase(
   title,
   guidance,
-  graphId,
+  chartId,
   graphGoogleAnalyticsCategory,
   activeCaseload,
   form,
@@ -30,7 +30,7 @@
         {{ govukDetails({
           summaryText: "How you can use this chart",
           text: guidance,
-          id: "guidance-" + graphId,
+          id: "guidance-" + chartId,
           classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
           attributes: {
             "data-qa": "guidance",
@@ -43,7 +43,7 @@
       {{ govukDetails({
         summaryText: "Is this chart useful?",
         html: formFeedback(form=form, csrfToken=csrfToken),
-        id: "chart-feedback-" + graphId,
+        id: "chart-feedback-" + chartId,
         classes: "govuk-!-display-none-print",
         open: form.hasErrors,
         attributes: {

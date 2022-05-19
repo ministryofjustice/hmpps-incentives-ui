@@ -69,7 +69,7 @@ export default function routes(router: Router): Router {
     res.redirect('/analytics/incentive-levels')
   })
 
-  const routeWithFeedback = (path: string, graphIds: ReadonlyArray<string>, handler: RequestHandler) =>
+  const routeWithFeedback = (path: string, chartIds: ReadonlyArray<string>, handler: RequestHandler) =>
     router.all(
       path,
       (req, res, next) => {
@@ -79,12 +79,12 @@ export default function routes(router: Router): Router {
         }
         next()
       },
-      asyncMiddleware(chartFeedbackHandler(graphIds)),
+      asyncMiddleware(chartFeedbackHandler(chartIds)),
       asyncMiddleware(handler)
     )
 
-  const behaviourEntryGraphIds = ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries']
-  routeWithFeedback('/behaviour-entries', behaviourEntryGraphIds, async (req, res) => {
+  const behaviourEntryChartIds = ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries']
+  routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
@@ -108,8 +108,8 @@ export default function routes(router: Router): Router {
     })
   })
 
-  const incentiveLevelGraphIds = ['incentive-levels-by-location', 'trends-incentive-levels']
-  routeWithFeedback('/incentive-levels', incentiveLevelGraphIds, async (req, res) => {
+  const incentiveLevelChartIds = ['incentive-levels-by-location', 'trends-incentive-levels']
+  routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
@@ -135,7 +135,7 @@ export default function routes(router: Router): Router {
     res.redirect('/analytics/protected-characteristic?characteristic=age')
   })
 
-  const protectedCharacteristicGraphIds = [
+  const protectedCharacteristicChartIds = [
     'population-by-age',
     'population-by-disability',
     'population-by-ethnicity',
@@ -152,7 +152,7 @@ export default function routes(router: Router): Router {
     'entries-by-religion',
     'entries-by-sexual-orientation',
   ]
-  routeWithFeedback('/protected-characteristic', protectedCharacteristicGraphIds, async (req, res, next) => {
+  routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
     const characteristicName = (req.query.characteristic || 'age') as string
@@ -196,12 +196,12 @@ export default function routes(router: Router): Router {
   return router
 }
 
-const chartFeedbackHandler = (graphIds: ReadonlyArray<string>) =>
+const chartFeedbackHandler = (chartIds: ReadonlyArray<string>) =>
   async function handler(req: Request, res: Response, next: NextFunction) {
-    res.locals.graphIds = graphIds
+    res.locals.chartIds = chartIds
     res.locals.forms = res.locals.forms || {}
-    graphIds.forEach(graphId => {
-      res.locals.forms[graphId] = new ChartFeedbackForm(graphId)
+    chartIds.forEach(chartId => {
+      res.locals.forms[chartId] = new ChartFeedbackForm(chartId)
     })
 
     if (req.method !== 'POST') {
@@ -212,8 +212,8 @@ const chartFeedbackHandler = (graphIds: ReadonlyArray<string>) =>
     const activeCaseLoad = res.locals.user.activeCaseload.id
     const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`
 
-    if (!req.body.formId || !graphIds.includes(req.body.formId)) {
-      logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${graphIds.join(' ')} are allowed`)
+    if (!req.body.formId || !chartIds.includes(req.body.formId)) {
+      logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${chartIds.join(' ')} are allowed`)
       next(new BadRequest())
       return
     }

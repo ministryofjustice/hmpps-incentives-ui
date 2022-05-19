@@ -42,19 +42,19 @@ export abstract class AnalyticsPage extends Page {
     return cy.get('.govuk-details[data-qa=chart-feedback]')
   }
 
-  getGraphGuidance(graphId: string): PageElement<HTMLDetailsElement> {
-    return this.chartGuidanceBoxes.filter(`#guidance-${graphId}`).find('.govuk-details__summary')
+  getGraphGuidance(chartId: string): PageElement<HTMLDetailsElement> {
+    return this.chartGuidanceBoxes.filter(`#guidance-${chartId}`).find('.govuk-details__summary')
   }
 
-  getGraphFeedback(graphId: string): PageElement<HTMLDetailsElement> {
-    return this.chartFeedbackBoxes.filter(`#chart-feedback-${graphId}`).find('.govuk-details__summary')
+  getGraphFeedback(chartId: string): PageElement<HTMLDetailsElement> {
+    return this.chartFeedbackBoxes.filter(`#chart-feedback-${chartId}`).find('.govuk-details__summary')
   }
 
-  getGraphFeedbackForm(graphId: string): PageElement<HTMLDetailsElement> {
-    return cy.get(`#form-${graphId}`)
+  getGraphFeedbackForm(chartId: string): PageElement<HTMLDetailsElement> {
+    return cy.get(`#form-${chartId}`)
   }
 
-  getChartTable(graphId: string): PageElement<HTMLTableRowElement> {
-    return cy.get(`#table-${graphId} tbody tr`)
+  getChartTable(chartId: string): PageElement<HTMLTableRowElement> {
+    return cy.get(`#table-${chartId} tbody tr`)
   }
 }

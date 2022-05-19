@@ -63,7 +63,7 @@ const analyticsPages = [
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
-    graphIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
+    chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
     name: 'Incentive levels',
@@ -71,14 +71,14 @@ const analyticsPages = [
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
     linksToIncentivesTable: true,
     sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
-    graphIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
+    chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
     name: 'Protected characteristics',
     url: '/analytics/protected-characteristic?characteristic=disability',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
     linksToIncentivesTable: false,
-    graphIds: ['population-by-disability', 'incentive-levels-by-disability', 'entries-by-disability'],
+    chartIds: ['population-by-disability', 'incentive-levels-by-disability', 'entries-by-disability'],
   },
 ]
 
@@ -86,7 +86,7 @@ const samplePrison = 'MDI'
 
 describe.each(analyticsPages)(
   'Analytics data pages',
-  ({ name, url, expectedHeading, graphIds, linksToIncentivesTable, sampleLocations }) => {
+  ({ name, url, expectedHeading, chartIds, linksToIncentivesTable, sampleLocations }) => {
     beforeEach(() => {
       mockSdkS3ClientReponse(s3.send)
       StitchedTablesCache.clear()
@@ -146,25 +146,25 @@ describe.each(analyticsPages)(
         })
     })
 
-    describe.each(graphIds)('charts have feedback forms', graphId => {
+    describe.each(chartIds)('charts have feedback forms', chartId => {
       beforeAll(() => {
         mockSdkS3ClientReponse(s3.send)
       })
 
-      it(`${name} page can post simple feedback on ${graphId} chart`, () => {
+      it(`${name} page can post simple feedback on ${chartId} chart`, () => {
         return request(app)
           .post(url)
-          .send({ formId: graphId, chartUseful: 'yes' })
+          .send({ formId: chartId, chartUseful: 'yes' })
           .expect(200)
           .expect(res => {
             expect(res.text).toContain(expectedHeading)
             expect(mockedZendeskClientClass).toHaveBeenCalled()
             const mockedZendeskClient = mockedZendeskClientClass.mock.instances[0] as jest.Mocked<ZendeskClient>
             expect(mockedZendeskClient.createTicket).toHaveBeenCalledWith({
-              subject: `Feedback on chart ${graphId}`,
+              subject: `Feedback on chart ${chartId}`,
               comment: { body: expect.any(String) },
               type: 'task',
-              tags: ['hmpps-incentives', 'chart-feedback', `chart-${graphId}`, 'useful-yes'],
+              tags: ['hmpps-incentives', 'chart-feedback', `chart-${chartId}`, 'useful-yes'],
               custom_fields: [
                 // Service
                 { id: 23757677, value: 'hmpps_incentives' },
@@ -183,11 +183,11 @@ describe.each(analyticsPages)(
           })
       })
 
-      it(`${name} page can post more complex feedback on ${graphId} chart`, () => {
+      it(`${name} page can post more complex feedback on ${chartId} chart`, () => {
         return request(app)
           .post(url)
           .send({
-            formId: graphId,
+            formId: chartId,
             chartUseful: 'no',
             mainNoReason: 'do-not-understand',
             noComments: 'How do I use this?',
@@ -204,7 +204,7 @@ describe.each(analyticsPages)(
               tags: [
                 'hmpps-incentives',
                 'chart-feedback',
-                `chart-${graphId}`,
+                `chart-${chartId}`,
                 'useful-no',
                 'not-useful-do-not-understand',
               ],
@@ -220,11 +220,11 @@ describe.each(analyticsPages)(
           })
       })
 
-      it(`${name} page will not post invalid feedback on ${graphId} chart`, () => {
+      it(`${name} page will not post invalid feedback on ${chartId} chart`, () => {
         return request(app)
           .post(url)
           .send({
-            formId: graphId,
+            formId: chartId,
             chartUseful: 'no',
             noComments: 'Do I have to choose only one reason?',
           })
@@ -233,9 +233,9 @@ describe.each(analyticsPages)(
             expect(res.text).toContain(expectedHeading)
             expect(res.text).not.toContain('Your feedback has been submitted')
             expect(res.text).toContain('There is a problem') // error summary
-            expect(res.text).toContain(`#${graphId}-mainNoReason`) // link to field
+            expect(res.text).toContain(`#${chartId}-mainNoReason`) // link to field
             expect(res.text).toContain('Select a reason for your answer') // error message
-            expect(res.text).toContain(`id="${graphId}-mainNoReason"`) // field with error
+            expect(res.text).toContain(`id="${chartId}-mainNoReason"`) // field with error
             expect(res.text).toContain('Do I have to choose only one reason?') // comment not forgotten
             expect(mockedZendeskClientClass).not.toHaveBeenCalled()
           })

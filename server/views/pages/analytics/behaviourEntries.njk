@@ -28,15 +28,15 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
 
-      {% set graphId = "entries-by-location" %}
+      {% set chartId = "entries-by-location" %}
       {{ chartBehaviourEntries(
-        title=BehaviourEntriesChartsContent[graphId].title,
-        guidance=BehaviourEntriesChartsContent[graphId].guidance,
-        labelColumn=BehaviourEntriesChartsContent[graphId].labelColumn,
-        graphId=graphId,
-        graphGoogleAnalyticsCategory=BehaviourEntriesChartsContent[graphId].googleAnalyticsCategory,
+        title=BehaviourEntriesChartsContent[chartId].title,
+        guidance=BehaviourEntriesChartsContent[chartId].guidance,
+        labelColumn=BehaviourEntriesChartsContent[chartId].labelColumn,
+        chartId=chartId,
+        graphGoogleAnalyticsCategory=BehaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[graphId],
+        form=forms[chartId],
         csrfToken=csrfToken,
         report=behaviourEntries
       ) }}
@@ -44,15 +44,15 @@
     </section>
     <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
 
-      {% set graphId = "prisoners-with-entries-by-location" %}
+      {% set chartId = "prisoners-with-entries-by-location" %}
       {{ chartPrisonersWithBehaviourEntries(
-        title=BehaviourEntriesChartsContent[graphId].title,
-        guidance=BehaviourEntriesChartsContent[graphId].guidance,
-        labelColumn=BehaviourEntriesChartsContent[graphId].labelColumn,
-        graphId=graphId,
-        graphGoogleAnalyticsCategory=BehaviourEntriesChartsContent[graphId].googleAnalyticsCategory,
+        title=BehaviourEntriesChartsContent[chartId].title,
+        guidance=BehaviourEntriesChartsContent[chartId].guidance,
+        labelColumn=BehaviourEntriesChartsContent[chartId].labelColumn,
+        chartId=chartId,
+        graphGoogleAnalyticsCategory=BehaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[graphId],
+        form=forms[chartId],
         csrfToken=csrfToken,
         report=prisonersWithEntries
       ) }}
@@ -63,14 +63,14 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-      {% set graphId = "trends-entries" %}
+      {% set chartId = "trends-entries" %}
       {{ chartTrends(
-        title=BehaviourEntriesChartsContent[graphId].title,
-        guidance=BehaviourEntriesChartsContent[graphId].guidance,
-        graphId=graphId,
-        graphGoogleAnalyticsCategory=BehaviourEntriesChartsContent[graphId].googleAnalyticsCategory,
+        title=BehaviourEntriesChartsContent[chartId].title,
+        guidance=BehaviourEntriesChartsContent[chartId].guidance,
+        chartId=chartId,
+        graphGoogleAnalyticsCategory=BehaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[graphId],
+        form=forms[chartId],
         csrfToken=csrfToken,
         report=trends
       ) }}

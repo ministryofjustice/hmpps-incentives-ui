@@ -28,7 +28,7 @@
   title,
   guidance,
   labelColumn,
-  graphId,
+  chartId,
   graphGoogleAnalyticsCategory,
   activeCaseload,
   form,
@@ -42,7 +42,7 @@
 {% call chartBase(
   title=title,
   guidance=guidance,
-  graphId=graphId,
+  chartId=chartId,
   graphGoogleAnalyticsCategory=graphGoogleAnalyticsCategory,
   activeCaseload=activeCaseload,
   form=form,
@@ -64,7 +64,7 @@
   </div>
 </div>
 
-<table class="app-chart-table app-chart-table--heatmap" id="table-{{ graphId }}">
+<table class="app-chart-table app-chart-table--heatmap" id="table-{{ chartId }}">
   <caption class="govuk-visually-hidden">
     {{ title }}
   </caption>

@@ -5,7 +5,7 @@
   title,
   guidance,
   chartId,
-  graphGoogleAnalyticsCategory,
+  googleAnalyticsCategory,
   activeCaseload,
   form,
   csrfToken,
@@ -34,7 +34,7 @@
           classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
           attributes: {
             "data-qa": "guidance",
-            "data-ga-category": "How you can use this chart > " + graphGoogleAnalyticsCategory,
+            "data-ga-category": "How you can use this chart > " + googleAnalyticsCategory,
             "data-ga-label": activeCaseload | default("")
           }
         }) }}
@@ -48,7 +48,7 @@
         open: form.hasErrors,
         attributes: {
           "data-qa": "chart-feedback",
-          "data-ga-category": "Is this chart useful > " + graphGoogleAnalyticsCategory,
+          "data-ga-category": "Is this chart useful > " + googleAnalyticsCategory,
           "data-ga-label": activeCaseload | default("")
         }
       }) }}

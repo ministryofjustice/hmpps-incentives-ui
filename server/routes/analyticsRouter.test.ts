@@ -127,7 +127,7 @@ describe.each(analyticsPages)(
     })
 
     if (linksToIncentivesTable) {
-      it(`${name} page has graphs that link to incentive tables for locations`, () => {
+      it(`${name} page has charts that link to incentive tables for locations`, () => {
         return request(app)
           .get(url)
           .expect(res => {

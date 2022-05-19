@@ -495,7 +495,7 @@ export default class AnalyticsService {
  * This has the advantage of clearing the cache if application is restarted.
  *
  * Values are cached based on source filename and list of columns.
- * This means that potentially two graphs could use the same source table
+ * This means that potentially two charts could use the same source table
  * but different columns and the corresponding stiched tables would not clash.
  *
  * NOTE: The cached stiched tables are not filtered. The AnalyticsService

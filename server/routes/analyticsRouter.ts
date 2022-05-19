@@ -34,7 +34,7 @@ function templateContext(req: Request): Record<string, unknown> {
 }
 
 /**
- * Makes a link from locations in analytics graphs to incentives review table
+ * Makes a link from locations in analytics charts to incentives review table
  */
 function urlForLocation(prison: string, location: string): string {
   return `/incentive-summary/${prison}-${location}`

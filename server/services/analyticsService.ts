@@ -362,7 +362,7 @@ export default class AnalyticsService {
       rows.push({ label: characteristic, values: Array(columns.length).fill(0) })
     })
     rows.sort(compareCharacteristics)
-    return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
+    return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
   async getBehaviourEntryTrends(prison: string): Promise<TrendsReport> {
@@ -415,7 +415,7 @@ export default class AnalyticsService {
       columns,
       rows,
       lastUpdated,
-      dataSource: 'NOMIS',
+      dataSource: 'NOMIS positive and negative case notes',
       plotPercentage: false,
       populationIsTotal: false,
       verticalAxisTitle: 'Entries',

@@ -3,8 +3,8 @@
 {% macro chartTrends(
   title,
   guidance,
-  graphId,
-  graphGoogleAnalyticsCategory,
+  chartId,
+  googleAnalyticsCategory,
   activeCaseload,
   form,
   csrfToken,
@@ -14,8 +14,8 @@
 {% call chartBase(
   title=title,
   guidance=guidance,
-  graphId=graphId,
-  graphGoogleAnalyticsCategory=graphGoogleAnalyticsCategory,
+  chartId=chartId,
+  googleAnalyticsCategory=googleAnalyticsCategory,
   activeCaseload=activeCaseload,
   form=form,
   csrfToken=csrfToken,
@@ -48,7 +48,7 @@
 
 <div class="app-chart-container">
 
-  <table class="app-chart-table app-chart-table--trends" id="table-{{ graphId }}">
+  <table class="app-chart-table app-chart-table--trends" id="table-{{ chartId }}">
     <caption class="govuk-visually-hidden">
       {{ title }}
     </caption>

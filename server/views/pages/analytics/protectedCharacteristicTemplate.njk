@@ -3,9 +3,9 @@
 {% from "../../partials/analytics/chartPopulation.njk" import chartPopulation %}
 {% from "../../partials/analytics/chartPrisonersOnLevels.njk" import chartPrisonersOnLevels %}
 
-{% set graphPageId = "protected-characteristics" %}
-{% set graphTitle = "Protected characteristics" %}
-{% set pageTitle = applicationName + " – " + graphTitle %}
+{% set chartPageId = "protected-characteristics" %}
+{% set chartPageTitle = "Protected characteristics" %}
+{% set pageTitle = applicationName + " – " + chartPageTitle %}
 
 {% block content %}
   {{ super() }}
@@ -18,7 +18,7 @@
       {% include "../../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl">
-        {{ graphTitle }}
+        {{ chartPageTitle }}
       </h1>
 
     </div>
@@ -48,18 +48,18 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-      {% set graphId = "population-by-" + characteristicName %}
+      {% set chartId = "population-by-" + characteristicName %}
       {{ chartPopulation(
-        title=ProtectedCharacteristicsChartsContent[graphId].title,
-        guidance=ProtectedCharacteristicsChartsContent[graphId].guidance,
-        labelColumn=ProtectedCharacteristicsChartsContent[graphId].labelColumn,
-        graphId=graphId,
-        graphGoogleAnalyticsCategory=ProtectedCharacteristicsChartsContent[graphId].googleAnalyticsCategory,
+        title=ProtectedCharacteristicsChartsContent[chartId].title,
+        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+        labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
+        chartId=chartId,
+        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[graphId],
+        form=forms[chartId],
         csrfToken=csrfToken,
         report=incentiveLevelsByCharacteristic,
-        wideLabel=ProtectedCharacteristicsChartsContent[graphId].wideLabel
+        wideLabel=ProtectedCharacteristicsChartsContent[chartId].wideLabel
       ) }}
 
     </section>
@@ -68,18 +68,18 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-      {% set graphId = "incentive-levels-by-" + characteristicName %}
+      {% set chartId = "incentive-levels-by-" + characteristicName %}
       {{ chartPrisonersOnLevels(
-        title=ProtectedCharacteristicsChartsContent[graphId].title,
-        guidance=ProtectedCharacteristicsChartsContent[graphId].guidance,
-        labelColumn=ProtectedCharacteristicsChartsContent[graphId].labelColumn,
-        graphId=graphId,
-        graphGoogleAnalyticsCategory=ProtectedCharacteristicsChartsContent[graphId].googleAnalyticsCategory,
+        title=ProtectedCharacteristicsChartsContent[chartId].title,
+        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+        labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
+        chartId=chartId,
+        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[graphId],
+        form=forms[chartId],
         csrfToken=csrfToken,
         report=incentiveLevelsByCharacteristic,
-        wideLabel=ProtectedCharacteristicsChartsContent[graphId].wideLabel
+        wideLabel=ProtectedCharacteristicsChartsContent[chartId].wideLabel
       ) }}
 
     </section>
@@ -88,18 +88,18 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-      {% set graphId = "entries-by-" + characteristicName %}
+      {% set chartId = "entries-by-" + characteristicName %}
       {{ chartPrisonersOnLevels(
-        title=ProtectedCharacteristicsChartsContent[graphId].title,
-        guidance=ProtectedCharacteristicsChartsContent[graphId].guidance,
-        labelColumn=ProtectedCharacteristicsChartsContent[graphId].labelColumn,
-        graphId=graphId,
-        graphGoogleAnalyticsCategory=ProtectedCharacteristicsChartsContent[graphId].googleAnalyticsCategory,
+        title=ProtectedCharacteristicsChartsContent[chartId].title,
+        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+        labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
+        chartId=chartId,
+        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[graphId],
+        form=forms[chartId],
         csrfToken=csrfToken,
         report=behaviourEntriesByCharacteristic,
-        wideLabel=ProtectedCharacteristicsChartsContent[graphId].wideLabel
+        wideLabel=ProtectedCharacteristicsChartsContent[chartId].wideLabel
       ) }}
 
     </section>

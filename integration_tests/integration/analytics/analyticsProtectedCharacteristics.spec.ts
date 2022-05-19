@@ -94,7 +94,7 @@ context('Analytics section > Protected characteristics page', () => {
     gaSpy.install()
 
     page
-      .getGraphGuidance('incentive-levels-by-age')
+      .getChartGuidance('incentive-levels-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -104,7 +104,7 @@ context('Analytics section > Protected characteristics page', () => {
         })
       )
     page
-      .getGraphGuidance('incentive-levels-by-age')
+      .getChartGuidance('incentive-levels-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -115,7 +115,7 @@ context('Analytics section > Protected characteristics page', () => {
       )
 
     page
-      .getGraphGuidance('entries-by-age')
+      .getChartGuidance('entries-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -125,7 +125,7 @@ context('Analytics section > Protected characteristics page', () => {
         })
       )
     page
-      .getGraphGuidance('entries-by-age')
+      .getChartGuidance('entries-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -143,7 +143,7 @@ context('Analytics section > Protected characteristics page', () => {
     gaSpy.install()
 
     page
-      .getGraphFeedback('population-by-age')
+      .getChartFeedback('population-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -153,7 +153,7 @@ context('Analytics section > Protected characteristics page', () => {
         })
       )
     page
-      .getGraphFeedback('population-by-age')
+      .getChartFeedback('population-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -164,7 +164,7 @@ context('Analytics section > Protected characteristics page', () => {
       )
 
     page
-      .getGraphFeedback('incentive-levels-by-age')
+      .getChartFeedback('incentive-levels-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -174,7 +174,7 @@ context('Analytics section > Protected characteristics page', () => {
         })
       )
     page
-      .getGraphFeedback('incentive-levels-by-age')
+      .getChartFeedback('incentive-levels-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -185,7 +185,7 @@ context('Analytics section > Protected characteristics page', () => {
       )
 
     page
-      .getGraphFeedback('entries-by-age')
+      .getChartFeedback('entries-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -195,7 +195,7 @@ context('Analytics section > Protected characteristics page', () => {
         })
       )
     page
-      .getGraphFeedback('entries-by-age')
+      .getChartFeedback('entries-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {

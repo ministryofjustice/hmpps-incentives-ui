@@ -16,8 +16,8 @@
   title,
   guidance,
   labelColumn,
-  graphId,
-  graphGoogleAnalyticsCategory,
+  chartId,
+  googleAnalyticsCategory,
   activeCaseload,
   form,
   csrfToken,
@@ -33,8 +33,8 @@
 {% call chartBase(
   title=title,
   guidance=guidance,
-  graphId=graphId,
-  graphGoogleAnalyticsCategory=graphGoogleAnalyticsCategory,
+  chartId=chartId,
+  googleAnalyticsCategory=googleAnalyticsCategory,
   activeCaseload=activeCaseload,
   form=form,
   csrfToken=csrfToken,
@@ -50,7 +50,7 @@
   </div>
 </div>
 
-<table class="app-chart-table app-chart-table--bars app-chart-table--bars-with-{{ report.columns.length + 1 }}-columns {% if wideLabel %}app-chart-table--bars-wide-label{% endif %}" id="table-{{ graphId }}">
+<table class="app-chart-table app-chart-table--bars app-chart-table--bars-with-{{ report.columns.length + 1 }}-columns {% if wideLabel %}app-chart-table--bars-wide-label{% endif %}" id="table-{{ chartId }}">
   <caption class="govuk-visually-hidden">
     {{ title }}
   </caption>

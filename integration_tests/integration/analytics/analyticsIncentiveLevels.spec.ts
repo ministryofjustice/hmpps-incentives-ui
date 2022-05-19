@@ -60,7 +60,7 @@ context('Analytics section > Incentive levels page', () => {
     gaSpy.install()
 
     page
-      .getGraphGuidance('incentive-levels-by-location')
+      .getChartGuidance('incentive-levels-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -70,7 +70,7 @@ context('Analytics section > Incentive levels page', () => {
         })
       )
     page
-      .getGraphGuidance('incentive-levels-by-location')
+      .getChartGuidance('incentive-levels-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -81,7 +81,7 @@ context('Analytics section > Incentive levels page', () => {
       )
 
     page
-      .getGraphGuidance('trends-incentive-levels')
+      .getChartGuidance('trends-incentive-levels')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -91,7 +91,7 @@ context('Analytics section > Incentive levels page', () => {
         })
       )
     page
-      .getGraphGuidance('trends-incentive-levels')
+      .getChartGuidance('trends-incentive-levels')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -109,7 +109,7 @@ context('Analytics section > Incentive levels page', () => {
     gaSpy.install()
 
     page
-      .getGraphFeedback('incentive-levels-by-location')
+      .getChartFeedback('incentive-levels-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -119,7 +119,7 @@ context('Analytics section > Incentive levels page', () => {
         })
       )
     page
-      .getGraphFeedback('incentive-levels-by-location')
+      .getChartFeedback('incentive-levels-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -130,7 +130,7 @@ context('Analytics section > Incentive levels page', () => {
       )
 
     page
-      .getGraphFeedback('trends-incentive-levels')
+      .getChartFeedback('trends-incentive-levels')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -140,7 +140,7 @@ context('Analytics section > Incentive levels page', () => {
         })
       )
     page
-      .getGraphFeedback('trends-incentive-levels')
+      .getChartFeedback('trends-incentive-levels')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {

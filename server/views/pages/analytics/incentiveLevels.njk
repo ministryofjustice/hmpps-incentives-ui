@@ -3,9 +3,9 @@
 {% from "../../partials/analytics/chartPrisonersOnLevels.njk" import chartPrisonersOnLevels %}
 {% from "../../partials/analytics/chartTrends.njk" import chartTrends %}
 
-{% set graphPageId = "incentive-levels" %}
-{% set graphTitle = "Incentive levels" %}
-{% set pageTitle = applicationName + " – " + graphTitle %}
+{% set chartPageId = "incentive-levels" %}
+{% set chartPageTitle = "Incentive levels" %}
+{% set pageTitle = applicationName + " – " + chartPageTitle %}
 
 {% block content %}
   {{ super() }}
@@ -18,7 +18,7 @@
       {% include "../../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl">
-        {{ graphTitle }}
+        {{ chartPageTitle }}
       </h1>
 
     </div>
@@ -27,15 +27,15 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-      {% set graphId = "incentive-levels-by-location" %}
+      {% set chartId = "incentive-levels-by-location" %}
       {{ chartPrisonersOnLevels(
-        title=IncentiveLevelsChartsContent[graphId].title,
-        guidance=IncentiveLevelsChartsContent[graphId].guidance,
-        labelColumn=IncentiveLevelsChartsContent[graphId].labelColumn,
-        graphId=graphId,
-        graphGoogleAnalyticsCategory=IncentiveLevelsChartsContent[graphId].googleAnalyticsCategory,
+        title=IncentiveLevelsChartsContent[chartId].title,
+        guidance=IncentiveLevelsChartsContent[chartId].guidance,
+        labelColumn=IncentiveLevelsChartsContent[chartId].labelColumn,
+        chartId=chartId,
+        googleAnalyticsCategory=IncentiveLevelsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[graphId],
+        form=forms[chartId],
         csrfToken=csrfToken,
         report=prisonersOnLevels
       ) }}
@@ -46,14 +46,14 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-      {% set graphId = "trends-incentive-levels" %}
+      {% set chartId = "trends-incentive-levels" %}
       {{ chartTrends(
-        title=IncentiveLevelsChartsContent[graphId].title,
-        guidance=IncentiveLevelsChartsContent[graphId].guidance,
-        graphId=graphId,
-        graphGoogleAnalyticsCategory=IncentiveLevelsChartsContent[graphId].googleAnalyticsCategory,
+        title=IncentiveLevelsChartsContent[chartId].title,
+        guidance=IncentiveLevelsChartsContent[chartId].guidance,
+        chartId=chartId,
+        googleAnalyticsCategory=IncentiveLevelsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[graphId],
+        form=forms[chartId],
         csrfToken=csrfToken,
         report=trends
       ) }}

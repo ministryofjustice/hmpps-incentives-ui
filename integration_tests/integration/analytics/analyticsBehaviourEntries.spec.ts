@@ -76,7 +76,7 @@ context('Analytics section > Behaviour entries page', () => {
     gaSpy.install()
 
     page
-      .getGraphGuidance('entries-by-location')
+      .getChartGuidance('entries-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -86,7 +86,7 @@ context('Analytics section > Behaviour entries page', () => {
         })
       )
     page
-      .getGraphGuidance('entries-by-location')
+      .getChartGuidance('entries-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -97,7 +97,7 @@ context('Analytics section > Behaviour entries page', () => {
       )
 
     page
-      .getGraphGuidance('prisoners-with-entries-by-location')
+      .getChartGuidance('prisoners-with-entries-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -107,7 +107,7 @@ context('Analytics section > Behaviour entries page', () => {
         })
       )
     page
-      .getGraphGuidance('prisoners-with-entries-by-location')
+      .getChartGuidance('prisoners-with-entries-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -118,7 +118,7 @@ context('Analytics section > Behaviour entries page', () => {
       )
 
     page
-      .getGraphGuidance('trends-entries')
+      .getChartGuidance('trends-entries')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -128,7 +128,7 @@ context('Analytics section > Behaviour entries page', () => {
         })
       )
     page
-      .getGraphGuidance('trends-entries')
+      .getChartGuidance('trends-entries')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -146,7 +146,7 @@ context('Analytics section > Behaviour entries page', () => {
     gaSpy.install()
 
     page
-      .getGraphFeedback('entries-by-location')
+      .getChartFeedback('entries-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -156,7 +156,7 @@ context('Analytics section > Behaviour entries page', () => {
         })
       )
     page
-      .getGraphFeedback('entries-by-location')
+      .getChartFeedback('entries-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -167,7 +167,7 @@ context('Analytics section > Behaviour entries page', () => {
       )
 
     page
-      .getGraphFeedback('prisoners-with-entries-by-location')
+      .getChartFeedback('prisoners-with-entries-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -177,7 +177,7 @@ context('Analytics section > Behaviour entries page', () => {
         })
       )
     page
-      .getGraphFeedback('prisoners-with-entries-by-location')
+      .getChartFeedback('prisoners-with-entries-by-location')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -188,7 +188,7 @@ context('Analytics section > Behaviour entries page', () => {
       )
 
     page
-      .getGraphFeedback('trends-entries')
+      .getChartFeedback('trends-entries')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
@@ -198,7 +198,7 @@ context('Analytics section > Behaviour entries page', () => {
         })
       )
     page
-      .getGraphFeedback('trends-entries')
+      .getChartFeedback('trends-entries')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {

@@ -30,6 +30,22 @@ export const BehaviourEntriesChartsContent: Record<string, AnalyticsChartContent
   },
 }
 
+export const IncentiveLevelsChartsContent: Record<string, AnalyticsChartContent> = {
+  'incentive-levels-by-location': {
+    title: 'Percentage and number of prisoners on each incentive level by residential location',
+    guidance:
+      'Use this chart to see incentive level splits for the prison and residential location. What does it tell you about how the incentives policy is applied, the population and possible actions for your prison?',
+    labelColumn: 'Location',
+    googleAnalyticsCategory: 'Incentive level by wing',
+  },
+  'trends-incentive-levels': {
+    title: 'Incentive levels in the establishment – last 12 months',
+    guidance:
+      'Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?',
+    googleAnalyticsCategory: 'Incentive level trends',
+  },
+}
+
 export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChartContent> = {
   'population-by-age': {
     title: 'Percentage and number of prisoners in the establishment by age',

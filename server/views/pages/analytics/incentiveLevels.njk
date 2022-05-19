@@ -29,11 +29,11 @@
 
       {% set graphId = "incentive-levels-by-location" %}
       {{ chartPrisonersOnLevels(
-        title="Percentage and number of prisoners on each incentive level by residential location",
-        guidance="Use this chart to see incentive level splits for the prison and residential location. What does it tell you about how the incentives policy is applied, the population and possible actions for your prison?",
-        labelColumn="Location",
+        title=IncentiveLevelsChartsContent[graphId].title,
+        guidance=IncentiveLevelsChartsContent[graphId].guidance,
+        labelColumn=IncentiveLevelsChartsContent[graphId].labelColumn,
         graphId=graphId,
-        graphGoogleAnalyticsCategory="Incentive level by wing",
+        graphGoogleAnalyticsCategory=IncentiveLevelsChartsContent[graphId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[graphId],
         csrfToken=csrfToken,
@@ -48,10 +48,10 @@
 
       {% set graphId = "trends-incentive-levels" %}
       {{ chartTrends(
-        title="Incentive levels in the establishment – last 12 months",
-        guidance="Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?",
+        title=IncentiveLevelsChartsContent[graphId].title,
+        guidance=IncentiveLevelsChartsContent[graphId].guidance,
         graphId=graphId,
-        graphGoogleAnalyticsCategory="Incentive level trends",
+        graphGoogleAnalyticsCategory=IncentiveLevelsChartsContent[graphId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[graphId],
         csrfToken=csrfToken,

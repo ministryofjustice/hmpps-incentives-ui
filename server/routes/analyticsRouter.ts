@@ -235,6 +235,10 @@ export default function routes(router: Router): Router {
     })
   })
 
+  get('/protected-characteristics', (req, res) => {
+    res.redirect('/analytics/protected-characteristic?characteristic=age')
+  })
+
   const protectedCharacteristicGraphIds = [
     'population-by-age',
     'population-by-disability',

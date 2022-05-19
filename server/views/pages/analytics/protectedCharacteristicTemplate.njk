@@ -50,16 +50,16 @@
 
       {% set graphId = "population-by-" + characteristicName %}
       {{ chartPopulation(
-        title=protectedCharacteristicsChartContent[graphId].title,
-        guidance=protectedCharacteristicsChartContent[graphId].guidance,
-        labelColumn=protectedCharacteristicsChartContent[graphId].labelColumn,
+        title=ProtectedCharacteristicsChartsContent[graphId].title,
+        guidance=ProtectedCharacteristicsChartsContent[graphId].guidance,
+        labelColumn=ProtectedCharacteristicsChartsContent[graphId].labelColumn,
         graphId=graphId,
-        graphGoogleAnalyticsCategory=protectedCharacteristicsChartContent[graphId].graphGoogleAnalyticsCategory,
+        graphGoogleAnalyticsCategory=ProtectedCharacteristicsChartsContent[graphId].graphGoogleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[graphId],
         csrfToken=csrfToken,
         report=incentiveLevelsByCharacteristic,
-        wideLabel=protectedCharacteristicsChartContent[graphId].wideLabel
+        wideLabel=ProtectedCharacteristicsChartsContent[graphId].wideLabel
       ) }}
 
     </section>
@@ -70,16 +70,16 @@
 
       {% set graphId = "incentive-levels-by-" + characteristicName %}
       {{ chartPrisonersOnLevels(
-        title=protectedCharacteristicsChartContent[graphId].title,
-        guidance=protectedCharacteristicsChartContent[graphId].guidance,
-        labelColumn=protectedCharacteristicsChartContent[graphId].labelColumn,
+        title=ProtectedCharacteristicsChartsContent[graphId].title,
+        guidance=ProtectedCharacteristicsChartsContent[graphId].guidance,
+        labelColumn=ProtectedCharacteristicsChartsContent[graphId].labelColumn,
         graphId=graphId,
-        graphGoogleAnalyticsCategory=protectedCharacteristicsChartContent[graphId].graphGoogleAnalyticsCategory,
+        graphGoogleAnalyticsCategory=ProtectedCharacteristicsChartsContent[graphId].graphGoogleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[graphId],
         csrfToken=csrfToken,
         report=incentiveLevelsByCharacteristic,
-        wideLabel=protectedCharacteristicsChartContent[graphId].wideLabel
+        wideLabel=ProtectedCharacteristicsChartsContent[graphId].wideLabel
       ) }}
 
     </section>
@@ -90,16 +90,16 @@
 
       {% set graphId = "entries-by-" + characteristicName %}
       {{ chartPrisonersOnLevels(
-        title=protectedCharacteristicsChartContent[graphId].title,
-        guidance=protectedCharacteristicsChartContent[graphId].guidance,
-        labelColumn=protectedCharacteristicsChartContent[graphId].labelColumn,
+        title=ProtectedCharacteristicsChartsContent[graphId].title,
+        guidance=ProtectedCharacteristicsChartsContent[graphId].guidance,
+        labelColumn=ProtectedCharacteristicsChartsContent[graphId].labelColumn,
         graphId=graphId,
-        graphGoogleAnalyticsCategory=protectedCharacteristicsChartContent[graphId].graphGoogleAnalyticsCategory,
+        graphGoogleAnalyticsCategory=ProtectedCharacteristicsChartsContent[graphId].graphGoogleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[graphId],
         csrfToken=csrfToken,
         report=behaviourEntriesByCharacteristic,
-        wideLabel=protectedCharacteristicsChartContent[graphId].wideLabel
+        wideLabel=ProtectedCharacteristicsChartsContent[graphId].wideLabel
       ) }}
 
     </section>

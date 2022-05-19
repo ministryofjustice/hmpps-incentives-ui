@@ -17,6 +17,11 @@ context('SignIn', () => {
     Page.verifyOnPage(AuthSignInPage)
   })
 
+  it('Unauthenticated user navigating to sign in page directed to auth', () => {
+    cy.visit('/sign-in')
+    Page.verifyOnPage(AuthSignInPage)
+  })
+
   it('User name visible in header', () => {
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
@@ -52,5 +57,29 @@ context('SignIn', () => {
       expect(getHelpLink).to.contain('Get help')
       expect(TsAndCsLink).to.contain('Terms and conditions')
     })
+  })
+
+  it('Token verification failure takes user to sign in page', () => {
+    cy.signIn()
+    Page.verifyOnPage(HomePage)
+    cy.task('stubVerifyToken', false)
+
+    // can't do a visit here as cypress requires only one domain
+    cy.request('/').its('body').should('contain', 'Sign in')
+  })
+
+  it('Token verification failure clears user session', () => {
+    cy.signIn()
+    const indexPage = Page.verifyOnPage(HomePage)
+    cy.task('stubVerifyToken', false)
+
+    // can't do a visit here as cypress requires only one domain
+    cy.request('/').its('body').should('contain', 'Sign in')
+
+    cy.task('stubVerifyToken', true)
+    cy.task('stubAuthUser', 'bobby brown')
+    cy.signIn()
+
+    indexPage.headerUserName().contains('B. Brown')
   })
 })

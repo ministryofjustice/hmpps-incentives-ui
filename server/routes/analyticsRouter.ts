@@ -91,14 +91,15 @@ const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartC
     graphGoogleAnalyticsCategory: 'Incentive level by sexual orientation',
   },
   'entries-by-age': {
-    title: 'Percentage and number of prisoners receiving each behaviour entry by age - last 28 days',
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by age - last 28 days',
     guidance:
       'Use this chart to see the number of prisoners with different types of behaviour entries for each age grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
     labelColumn: 'Age',
     graphGoogleAnalyticsCategory: 'Behaviour entries by age',
   },
   'entries-by-disability': {
-    title: 'Percentage and number of prisoners receiving each behaviour entry by recorded disability - last 28 days',
+    title:
+      'Percentage and number of prisoners receiving each behaviour entry type by recorded disability - last 28 days',
     guidance:
       'Use this chart to see the number of prisoners with different types of behaviour entries for each disability grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
     labelColumn: 'Disability',
@@ -106,7 +107,7 @@ const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartC
     wideLabel: true,
   },
   'entries-by-ethnicity': {
-    title: 'Percentage and number of prisoners receiving each behaviour entry by ethnicity - last 28 days',
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by ethnicity - last 28 days',
     guidance:
       'Use this chart to see the number of prisoners with different types of behaviour entries for each ethnic grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
     labelColumn: 'Ethnicity',
@@ -114,14 +115,15 @@ const protectedCharacteristicsChartContent: Record<string, CharacteristicsChartC
     wideLabel: true,
   },
   'entries-by-religion': {
-    title: 'Percentage and number of prisoners receiving each behaviour entry by religion - last 28 days',
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by religion - last 28 days',
     guidance:
       'Use this chart to see the number of prisoners with different types of behaviour entries for each religious grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
     labelColumn: 'Religion',
     graphGoogleAnalyticsCategory: 'Behaviour entries by religion',
   },
   'entries-by-sexual-orientation': {
-    title: 'Percentage and number of prisoners receiving each behaviour entry by sexual orientation - last 28 days',
+    title:
+      'Percentage and number of prisoners receiving each behaviour entry type by sexual orientation - last 28 days',
     guidance:
       'Use this chart to see the number of prisoners with different types of behaviour entries for each sexual orientation grouping. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.',
     labelColumn: 'Sexual orientation',

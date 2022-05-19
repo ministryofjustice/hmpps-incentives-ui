@@ -1,7 +1,6 @@
-import Page, { PageElement } from './page'
+import Page, { type PageElement } from '../page'
 
-// eslint-disable-next-line import/prefer-default-export
-export abstract class AnalyticsPage extends Page {
+export default abstract class AnalyticsPage extends Page {
   get subNavigation(): PageElement<HTMLUListElement> {
     return cy.get('.moj-sub-navigation__list')
   }

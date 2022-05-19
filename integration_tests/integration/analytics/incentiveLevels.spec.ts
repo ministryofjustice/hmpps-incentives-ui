@@ -1,7 +1,7 @@
 import { getTextFromTable, testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
-import AnalyticsIncentiveLevels from '../../pages/analyticsIncentiveLevels'
+import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 
 context('Analytics section > Incentive levels page', () => {

@@ -1,8 +1,8 @@
 import { getTextFromTable, testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
-import AnalyticsBehaviourEntries from '../../pages/analyticsBehaviourEntries'
-import AnalyticsIncentiveLevels from '../../pages/analyticsIncentiveLevels'
+import AnalyticsBehaviourEntries from '../../pages/analytics/behaviourEntries'
+import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 
 context('Analytics section > Behaviour entries page', () => {

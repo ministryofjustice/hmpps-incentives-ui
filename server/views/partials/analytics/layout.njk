@@ -2,12 +2,6 @@
 {% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
 
 {% block content %}
-  {% if featureFlags.showAnalyticsPcDropdown %}
-    {% set protectedCharacteristicsUrl = "/analytics/protected-characteristic?characteristic=age" %}
-  {% else %}
-    {% set protectedCharacteristicsUrl = "/analytics/protected-characteristics" %}
-  {% endif %}
-
   {{ mojSubNavigation({
     label: "Incentive data navigation",
     classes: "govuk-!-display-none-print",
@@ -26,7 +20,7 @@
       },
       {
         text: "Protected characteristics",
-        href: protectedCharacteristicsUrl,
+        href: "/analytics/protected-characteristic?characteristic=age",
         active: graphPageId == "protected-characteristics",
         attributes: { "data-qa": "protected-characteristics" }
       }

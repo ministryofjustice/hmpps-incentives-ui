@@ -5,8 +5,8 @@
 {% from "../../partials/analytics/chartTrends.njk" import chartTrends %}
 
 {% set chartPageId = "behaviour-entries" %}
-{% set graphTitle = "Behaviour entries" %}
-{% set pageTitle = applicationName + " – " + graphTitle %}
+{% set chartPageTitle = "Behaviour entries" %}
+{% set pageTitle = applicationName + " – " + chartPageTitle %}
 
 {% block content %}
   {{ super() }}
@@ -19,7 +19,7 @@
       {% include "../../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl">
-        {{ graphTitle }}
+        {{ chartPageTitle }}
       </h1>
 
     </div>

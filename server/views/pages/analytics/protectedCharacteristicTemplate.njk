@@ -4,8 +4,8 @@
 {% from "../../partials/analytics/chartPrisonersOnLevels.njk" import chartPrisonersOnLevels %}
 
 {% set chartPageId = "protected-characteristics" %}
-{% set graphTitle = "Protected characteristics" %}
-{% set pageTitle = applicationName + " – " + graphTitle %}
+{% set chartPageTitle = "Protected characteristics" %}
+{% set pageTitle = applicationName + " – " + chartPageTitle %}
 
 {% block content %}
   {{ super() }}
@@ -18,7 +18,7 @@
       {% include "../../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl">
-        {{ graphTitle }}
+        {{ chartPageTitle }}
       </h1>
 
     </div>

@@ -19,7 +19,7 @@ export default class UserService {
       return nomisUserRolesApi.getUserCaseloads().then(uc => {
         return {
           ...user,
-          displayName: convertToTitleCase(user.name as string),
+          displayName: convertToTitleCase(user.name),
           caseloads: uc.caseloads,
           activeCaseload: uc.activeCaseload,
         }

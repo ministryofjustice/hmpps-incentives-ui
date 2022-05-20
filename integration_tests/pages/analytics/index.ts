@@ -1,3 +1,4 @@
+import type { ChartId } from '../../../server/routes/analyticsChartTypes'
 import Page, { type PageElement } from '../page'
 
 export default abstract class AnalyticsPage extends Page {
@@ -41,19 +42,19 @@ export default abstract class AnalyticsPage extends Page {
     return cy.get('.govuk-details[data-qa=chart-feedback]')
   }
 
-  getChartGuidance(chartId: string): PageElement<HTMLDetailsElement> {
+  getChartGuidance(chartId: ChartId): PageElement<HTMLDetailsElement> {
     return this.chartGuidanceBoxes.filter(`#guidance-${chartId}`).find('.govuk-details__summary')
   }
 
-  getChartFeedback(chartId: string): PageElement<HTMLDetailsElement> {
+  getChartFeedback(chartId: ChartId): PageElement<HTMLDetailsElement> {
     return this.chartFeedbackBoxes.filter(`#chart-feedback-${chartId}`).find('.govuk-details__summary')
   }
 
-  getChartFeedbackForm(chartId: string): PageElement<HTMLDetailsElement> {
+  getChartFeedbackForm(chartId: ChartId): PageElement<HTMLDetailsElement> {
     return cy.get(`#form-${chartId}`)
   }
 
-  getChartTable(chartId: string): PageElement<HTMLTableRowElement> {
+  getChartTable(chartId: ChartId): PageElement<HTMLTableRowElement> {
     return cy.get(`#table-${chartId} tbody tr`)
   }
 }

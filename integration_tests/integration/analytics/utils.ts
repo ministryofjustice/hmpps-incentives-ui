@@ -1,7 +1,11 @@
+import type { ChartId } from '../../../server/routes/analyticsChartTypes'
 import Page, { type PageElement } from '../../pages/page'
 import type AnalyticsPage from '../../pages/analytics'
 
-export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(pageClass: new () => PageClass, chartIds) {
+export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(
+  pageClass: new () => PageClass,
+  chartIds: ChartId[]
+) {
   chartIds.forEach(chartId => {
     let page = Page.verifyOnPage(pageClass)
 
@@ -22,7 +26,7 @@ export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(pag
 
 export function testInvalidFeedbackSubmission<PageClass extends AnalyticsPage>(
   pageClass: new () => PageClass,
-  chartIds
+  chartIds: ChartId[]
 ) {
   chartIds.forEach(chartId => {
     let page = Page.verifyOnPage(pageClass)

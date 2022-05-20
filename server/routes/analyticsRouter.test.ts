@@ -4,6 +4,7 @@ import request from 'supertest'
 import config from '../config'
 import ZendeskClient from '../data/zendeskClient'
 import { StitchedTablesCache } from '../services/analyticsService'
+import type { ChartId } from './analyticsChartTypes'
 import { protectedCharacteristicRoutes } from './analyticsRouter'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { MockTable, mockSdkS3ClientReponse } from '../testData/s3Bucket'
@@ -56,28 +57,33 @@ describe('Home page', () => {
   })
 })
 
-const analyticsPages = [
+type AnalyticsPage = {
+  name: string
+  url: string
+  expectedHeading: string
+  locationsLinkingToIncentivesTable?: string[]
+  chartIds: ChartId[]
+}
+
+const analyticsPages: AnalyticsPage[] = [
   {
     name: 'Behaviour entries',
     url: '/analytics/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
-    linksToIncentivesTable: true,
-    sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
+    locationsLinkingToIncentivesTable: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
     name: 'Incentive levels',
     url: '/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
-    linksToIncentivesTable: true,
-    sampleLocations: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
+    locationsLinkingToIncentivesTable: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
     name: 'Protected characteristics',
     url: '/analytics/protected-characteristic?characteristic=disability',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
-    linksToIncentivesTable: false,
     chartIds: ['population-by-disability', 'incentive-levels-by-disability', 'entries-by-disability'],
   },
 ]
@@ -86,7 +92,7 @@ const samplePrison = 'MDI'
 
 describe.each(analyticsPages)(
   'Analytics data pages',
-  ({ name, url, expectedHeading, chartIds, linksToIncentivesTable, sampleLocations }) => {
+  ({ name, url, expectedHeading, chartIds, locationsLinkingToIncentivesTable }) => {
     beforeEach(() => {
       mockSdkS3ClientReponse(s3.send)
       StitchedTablesCache.clear()
@@ -126,12 +132,12 @@ describe.each(analyticsPages)(
         })
     })
 
-    if (linksToIncentivesTable) {
+    if (locationsLinkingToIncentivesTable) {
       it(`${name} page has charts that link to incentive tables for locations`, () => {
         return request(app)
           .get(url)
           .expect(res => {
-            sampleLocations.forEach(location => {
+            locationsLinkingToIncentivesTable.forEach(location => {
               expect(res.text).toContain(`href="/incentive-summary/${samplePrison}-${location}"`)
             })
           })

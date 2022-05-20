@@ -7,21 +7,25 @@
 {% set pageTitle = applicationName + ' – Select a location' %}
 
 {% block content %}
-<h1 class="govuk-heading-l">{{title}}</h1>
-<form method="POST" id="changeLocation">
-  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-  {{ govukSelect({
-          id: "changeLocationSelect",
-          name: "locationPrefix",
-          label: {
-              text: "Select a location"
-          },
-          classes: 'govuk-!-width-one-third',
-          items: options
-      }) }}
-  {{ govukButton({
+  <h1 class="govuk-heading-l">{{title}}</h1>
+
+  <form method="POST" id="changeLocation">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+    {{ govukSelect({
+      id: "changeLocationSelect",
+      name: "locationPrefix",
+      label: {
+        text: "Select a location"
+      },
+      classes: 'govuk-!-width-one-third',
+      items: options
+    }) }}
+
+    {{ govukButton({
       text: "Continue",
       preventDoubleClick: true
     }) }}
-</form>
+
+  </form>
 {% endblock %}

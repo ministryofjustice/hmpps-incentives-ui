@@ -39,87 +39,87 @@
   rowValue=rowValue
 ) %}
 
-{% call chartBase(
-  title=title,
-  guidance=guidance,
-  chartId=chartId,
-  googleAnalyticsCategory=googleAnalyticsCategory,
-  activeCaseload=activeCaseload,
-  form=form,
-  csrfToken=csrfToken,
-  report=report
-) %}
+  {% call chartBase(
+    title=title,
+    guidance=guidance,
+    chartId=chartId,
+    googleAnalyticsCategory=googleAnalyticsCategory,
+    activeCaseload=activeCaseload,
+    form=form,
+    csrfToken=csrfToken,
+    report=report
+  ) %}
 
-<div class="govuk-!-margin-top-8">
-  <div aria-hidden="true" class="app-chart-legend">
-    <span class="app-chart-legend__label">0%</span>
-    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(0) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(15) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(30) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(45) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(60) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(75) }}">&nbsp;</span>
-    <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(100) }}">&nbsp;</span>
-    <span class="app-chart-legend__label">100%</span>
-  </div>
-</div>
+    <div class="govuk-!-margin-top-8">
+      <div aria-hidden="true" class="app-chart-legend">
+        <span class="app-chart-legend__label">0%</span>
+        <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(0) }}">&nbsp;</span>
+        <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(15) }}">&nbsp;</span>
+        <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(30) }}">&nbsp;</span>
+        <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(45) }}">&nbsp;</span>
+        <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(60) }}">&nbsp;</span>
+        <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(75) }}">&nbsp;</span>
+        <span class="app-chart-legend__swatch" data-style-background="{{ heatMapColour(100) }}">&nbsp;</span>
+        <span class="app-chart-legend__label">100%</span>
+      </div>
+    </div>
 
-<table class="app-chart-table app-chart-table--heatmap" id="table-{{ chartId }}">
-  <caption class="govuk-visually-hidden">
-    {{ title }}
-  </caption>
+    <table class="app-chart-table app-chart-table--heatmap" id="table-{{ chartId }}">
+      <caption class="govuk-visually-hidden">
+        {{ title }}
+      </caption>
 
-  <thead>
-    <tr>
-      <th scope="col">{{ labelColumn }}</th>
-      {% for column in report.columns %}
-        <th scope="col">
-          {{ valueColumn(column=column, columnIndex=loop.index0) }}
-        </th>
-      {% endfor %}
-    </tr>
-  </thead>
+      <thead>
+        <tr>
+          <th scope="col">{{ labelColumn }}</th>
+          {% for column in report.columns %}
+            <th scope="col">
+              {{ valueColumn(column=column, columnIndex=loop.index0) }}
+            </th>
+          {% endfor %}
+        </tr>
+      </thead>
 
-  <tbody>
-    {% for row in report.rows %}
-      {% set rowIndex = loop.index0 %}
-      {% set total = row.values | sum %}
+      <tbody>
+        {% for row in report.rows %}
+          {% set rowIndex = loop.index0 %}
+          {% set total = row.values | sum %}
 
-      <tr>
-        <td>
-          <strong>
-            {% if row.href %}
-              <a href="{{ row.href }}">{{ row.label }}</a>
-            {% else %}
-              {{ row.label }}
-            {% endif %}
-          </strong>
-          <br />
-          {{ rowTotalValue(total=total, rowIndex=rowIndex) }}
-        </td>
-
-        {% for column in report.columns %}
-          {% set columnIndex = loop.index0 %}
-          {% set value = row.values[columnIndex] %}
-          {% set percentage = value | percentageOf(total) %}
-
-          <td>
-            <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentage | float) }}">
-              {{ percentage }}
+          <tr>
+            <td>
+              <strong>
+                {% if row.href %}
+                  <a href="{{ row.href }}">{{ row.label }}</a>
+                {% else %}
+                  {{ row.label }}
+                {% endif %}
+              </strong>
               <br />
-              {{ rowValue(value=value, column=column, columnIndex=columnIndex) }}
-            </span>
-          </td>
+              {{ rowTotalValue(total=total, rowIndex=rowIndex) }}
+            </td>
+
+            {% for column in report.columns %}
+              {% set columnIndex = loop.index0 %}
+              {% set value = row.values[columnIndex] %}
+              {% set percentage = value | percentageOf(total) %}
+
+              <td>
+                <span class="app-chart-table--heatmap__cell" data-style-background="{{ heatMapColour(percentage | float) }}">
+                  {{ percentage }}
+                  <br />
+                  {{ rowValue(value=value, column=column, columnIndex=columnIndex) }}
+                </span>
+              </td>
+            {% endfor %}
+          </tr>
+
+          {% if loop.first %}
+            <tr aria-hidden="true"><td colspan="{{ (report.columns | length) + 1 }}"></td></tr>
+          {% endif %}
         {% endfor %}
-      </tr>
+      </tbody>
+    </table>
 
-      {% if loop.first %}
-        <tr aria-hidden="true"><td colspan="{{ (report.columns | length) + 1 }}"></td></tr>
-      {% endif %}
-    {% endfor %}
-  </tbody>
-</table>
-
-{% endcall %}
+  {% endcall %}
 
 {% endmacro %}

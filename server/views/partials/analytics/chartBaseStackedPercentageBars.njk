@@ -28,108 +28,108 @@
   rowValue=rowValue
 ) %}
 
-{% set colourChoices = report.columns | chartPalette %}
+  {% set colourChoices = report.columns | chartPalette %}
 
-{% call chartBase(
-  title=title,
-  guidance=guidance,
-  chartId=chartId,
-  googleAnalyticsCategory=googleAnalyticsCategory,
-  activeCaseload=activeCaseload,
-  form=form,
-  csrfToken=csrfToken,
-  report=report
-) %}
+  {% call chartBase(
+    title=title,
+    guidance=guidance,
+    chartId=chartId,
+    googleAnalyticsCategory=googleAnalyticsCategory,
+    activeCaseload=activeCaseload,
+    form=form,
+    csrfToken=csrfToken,
+    report=report
+  ) %}
 
-<div class="govuk-!-margin-top-8">
-  <div aria-hidden="true" class="app-chart-legend">
-    {% for column in report.columns %}
-      <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>
-      <span class="app-chart-legend__label">{{ column }}</span>
-    {% endfor %}
-  </div>
-</div>
-
-<table class="app-chart-table app-chart-table--bars app-chart-table--bars-with-{{ report.columns.length + 1 }}-columns {% if wideLabel %}app-chart-table--bars-wide-label{% endif %}" id="table-{{ chartId }}">
-  <caption class="govuk-visually-hidden">
-    {{ title }}
-  </caption>
-
-  <thead>
-    <tr>
-      <th scope="col">{{ labelColumn }}</th>
-      {% for column in report.columns %}
-        <th scope="col">
-          {{ valueColumn(column=column, columnIndex=loop.index0) }}
-        </th>
-      {% endfor %}
-      <th aria-hidden="true" scope="col"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {% for row in report.rows %}
-      {% set rowIndex = loop.index0 %}
-      {% set total = row.values | sum %}
-
-      <tr>
-        <td>
-          <strong>
-            {% if row.href %}
-              <a href="{{ row.href }}">{{ row.label }}</a>
-            {% else %}
-              {{ row.label }}
-            {% endif %}
-          </strong>
-          <br />
-          {{ rowTotalValue(total=total, rowIndex=rowIndex) }}
-        </td>
+    <div class="govuk-!-margin-top-8">
+      <div aria-hidden="true" class="app-chart-legend">
         {% for column in report.columns %}
-          {% set columnIndex = loop.index0 %}
-          {% set value = row.values[columnIndex] %}
-
-          <td>
-            {{ value | percentageOf(total) }}
-            <br />
-            {{ rowValue(value=value, column=column, columnIndex=columnIndex) }}
-          </td>
+          <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>
+          <span class="app-chart-legend__label">{{ column }}</span>
         {% endfor %}
-        <td aria-hidden="true" class="app-chart-table__percentage-cell">
-          <span class="app-chart-table__axis-midpoint"></span>
-          {% for column in report.columns %}
-            <div class="app-chart-table__percentage-cell-bar {{ colourChoices[loop.index0] }}" data-style-width="{{ row.values[loop.index0] | percentageOf(total, false) }}">&nbsp;<br />&nbsp;</div>
-          {% endfor %}
-        </td>
-      </tr>
+      </div>
+    </div>
 
-      {% if loop.first %}
-        <tr aria-hidden="true">
+    <table class="app-chart-table app-chart-table--bars app-chart-table--bars-with-{{ report.columns.length + 1 }}-columns {% if wideLabel %}app-chart-table--bars-wide-label{% endif %}" id="table-{{ chartId }}">
+      <caption class="govuk-visually-hidden">
+        {{ title }}
+      </caption>
+
+      <thead>
+        <tr>
+          <th scope="col">{{ labelColumn }}</th>
+          {% for column in report.columns %}
+            <th scope="col">
+              {{ valueColumn(column=column, columnIndex=loop.index0) }}
+            </th>
+          {% endfor %}
+          <th aria-hidden="true" scope="col"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for row in report.rows %}
+          {% set rowIndex = loop.index0 %}
+          {% set total = row.values | sum %}
+
+          <tr>
+            <td>
+              <strong>
+                {% if row.href %}
+                  <a href="{{ row.href }}">{{ row.label }}</a>
+                {% else %}
+                  {{ row.label }}
+                {% endif %}
+              </strong>
+              <br />
+              {{ rowTotalValue(total=total, rowIndex=rowIndex) }}
+            </td>
+            {% for column in report.columns %}
+              {% set columnIndex = loop.index0 %}
+              {% set value = row.values[columnIndex] %}
+
+              <td>
+                {{ value | percentageOf(total) }}
+                <br />
+                {{ rowValue(value=value, column=column, columnIndex=columnIndex) }}
+              </td>
+            {% endfor %}
+            <td aria-hidden="true" class="app-chart-table__percentage-cell">
+              <span class="app-chart-table__axis-midpoint"></span>
+              {% for column in report.columns %}
+                <div class="app-chart-table__percentage-cell-bar {{ colourChoices[loop.index0] }}" data-style-width="{{ row.values[loop.index0] | percentageOf(total, false) }}">&nbsp;<br />&nbsp;</div>
+              {% endfor %}
+            </td>
+          </tr>
+
+          {% if loop.first %}
+            <tr aria-hidden="true">
+              <td colspan="{{ (report.columns | length) + 1 }}"></td>
+              <td class="app-chart-table__percentage-cell">
+                <span class="app-chart-table__axis-midpoint"></span>
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+
+      <tfoot aria-hidden="true">
+        <tr>
           <td colspan="{{ (report.columns | length) + 1 }}"></td>
-          <td class="app-chart-table__percentage-cell">
+          <td class="app-chart-table__axis-values">
             <span class="app-chart-table__axis-midpoint"></span>
+            <span class="app-chart-table__axis-value app-chart-table__axis-value--min">0</span>
+            <span class="app-chart-table__axis-value app-chart-table__axis-value--mid">50</span>
+            <span class="app-chart-table__axis-value app-chart-table__axis-value--max">100</span>
           </td>
         </tr>
-      {% endif %}
-    {% endfor %}
-  </tbody>
+        <tr>
+          <td colspan="{{ (report.columns | length) + 1 }}"></td>
+          <td>Percentage</td>
+        </tr>
+      </tfoot>
+    </table>
 
-  <tfoot aria-hidden="true">
-    <tr>
-      <td colspan="{{ (report.columns | length) + 1 }}"></td>
-      <td class="app-chart-table__axis-values">
-        <span class="app-chart-table__axis-midpoint"></span>
-        <span class="app-chart-table__axis-value app-chart-table__axis-value--min">0</span>
-        <span class="app-chart-table__axis-value app-chart-table__axis-value--mid">50</span>
-        <span class="app-chart-table__axis-value app-chart-table__axis-value--max">100</span>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="{{ (report.columns | length) + 1 }}"></td>
-      <td>Percentage</td>
-    </tr>
-  </tfoot>
-</table>
-
-{% endcall %}
+  {% endcall %}
 
 {% endmacro %}

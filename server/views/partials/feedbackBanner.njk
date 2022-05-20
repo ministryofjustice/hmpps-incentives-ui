@@ -7,16 +7,14 @@
 {% block feedbackBanner %}
   {% if feedbackUrl %}
     <div class="govuk-width-container">
-      {{
-        govukPhaseBanner({
-          classes: 'app-feedback-banner',
-          tag: {
-            classes: 'app-feedback-banner__tag',
-            text: "give feedback"
-          },
-          html: feedbackMessage()
-        })
-      }}
+      {{ govukPhaseBanner({
+        classes: 'app-feedback-banner',
+        tag: {
+          classes: 'app-feedback-banner__tag',
+          text: "give feedback"
+        },
+        html: feedbackMessage()
+      }) }}
     </div>
   {% endif %}
 {% endblock feedbackBanner %}

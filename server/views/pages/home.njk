@@ -13,28 +13,28 @@
   <ul class="govuk-grid-row card-group">
     <li class="govuk-grid-column-one-third card-group__item">
       {% if featureFlags.hideDaysColumnsInIncentivesTable %}
-        {% set cardDescription = 'See incentive levels and behaviour entries for the prison population, by residential location.' %}
+        {% set cardDescription = "See incentive levels and behaviour entries for the prison population, by residential location." %}
       {% else %}
-        {% set cardDescription = 'See review dates, incentive levels and behaviour entries by residential location.' %}
+        {% set cardDescription = "See review dates, incentive levels and behaviour entries by residential location." %}
       {% endif %}
 
       {{ card({
-        "href": "/select-location",
-        "clickable": "true",
-        "heading": "Prisoner incentive information",
-        "description": cardDescription,
-        "id": "incentive-information"
+        href: "/select-location",
+        clickable: "true",
+        heading: "Prisoner incentive information",
+        description: cardDescription,
+        id: "incentive-information"
       }) }}
 
     </li>
     <li class="govuk-grid-column-one-third card-group__item">
 
       {{ card({
-        "href": "/analytics/incentive-levels",
-        "clickable": "true",
-        "heading": "Incentive levels and behaviour entry charts",
-        "description": "See data visualisations for incentive levels and behaviour entries, including protected characteristics.",
-        "id": "incentive-analytics"
+        href: "/analytics/incentive-levels",
+        clickable: "true",
+        heading: "Incentive levels and behaviour entry charts",
+        description: "See data visualisations for incentive levels and behaviour entries, including protected characteristics.",
+        id: "incentive-analytics"
       }) }}
 
     </li>

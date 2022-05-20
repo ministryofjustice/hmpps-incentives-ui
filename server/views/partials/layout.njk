@@ -5,13 +5,13 @@
   {% if googleAnalyticsUaId %}
     <!-- Google Analytics -->
     <script nonce="{{ cspNonce }}">
-    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-    ga('create', '{{ googleAnalyticsUaId }}', 'auto');
-    {# GA custom dimension 1 is "Active Case Load" -#}
-    {% if user.activeCaseload.id -%}
-      ga('set', 'dimension1', '{{ user.activeCaseload.id }}');
-    {%- endif %}
-    ga('send', 'pageview');
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', '{{ googleAnalyticsUaId }}', 'auto');
+      {# GA custom dimension 1 is "Active Case Load" -#}
+      {% if user.activeCaseload.id -%}
+        ga('set', 'dimension1', '{{ user.activeCaseload.id }}');
+      {%- endif %}
+      ga('send', 'pageview');
     </script>
     <script async src='https://www.google-analytics.com/analytics.js'></script>
     <!-- End Google Analytics -->

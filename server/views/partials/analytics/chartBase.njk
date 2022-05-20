@@ -12,55 +12,55 @@
   report
 ) %}
 
-<h2 class="govuk-heading-m">
-  {{ title }}
-</h2>
+  <h2 class="govuk-heading-m">
+    {{ title }}
+  </h2>
 
-{% if not report.hasErrors %}
+  {% if not report.hasErrors %}
 
-  <p>
-    Data source: {{ report.dataSource -}}<span class="govuk-visually-hidden">.</span>
-    <br />
-    Date updated: {{ report.lastUpdated | shortDate -}}<span class="govuk-visually-hidden">.</span>
-  </p>
+    <p>
+      Data source: {{ report.dataSource -}}<span class="govuk-visually-hidden">.</span>
+      <br />
+      Date updated: {{ report.lastUpdated | shortDate -}}<span class="govuk-visually-hidden">.</span>
+    </p>
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      {% if guidance %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {% if guidance %}
+          {{ govukDetails({
+            summaryText: "How you can use this chart",
+            text: guidance,
+            id: "guidance-" + chartId,
+            classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
+            attributes: {
+              "data-qa": "guidance",
+              "data-ga-category": "How you can use this chart > " + googleAnalyticsCategory,
+              "data-ga-label": activeCaseload | default("")
+            }
+          }) }}
+        {% endif %}
+
         {{ govukDetails({
-          summaryText: "How you can use this chart",
-          text: guidance,
-          id: "guidance-" + chartId,
-          classes: "govuk-!-margin-bottom-2 govuk-!-display-none-print",
+          summaryText: "Is this chart useful?",
+          html: formFeedback(form=form, csrfToken=csrfToken),
+          id: "chart-feedback-" + chartId,
+          classes: "govuk-!-display-none-print",
+          open: form.hasErrors,
           attributes: {
-            "data-qa": "guidance",
-            "data-ga-category": "How you can use this chart > " + googleAnalyticsCategory,
+            "data-qa": "chart-feedback",
+            "data-ga-category": "Is this chart useful > " + googleAnalyticsCategory,
             "data-ga-label": activeCaseload | default("")
           }
         }) }}
-      {% endif %}
-
-      {{ govukDetails({
-        summaryText: "Is this chart useful?",
-        html: formFeedback(form=form, csrfToken=csrfToken),
-        id: "chart-feedback-" + chartId,
-        classes: "govuk-!-display-none-print",
-        open: form.hasErrors,
-        attributes: {
-          "data-qa": "chart-feedback",
-          "data-ga-category": "Is this chart useful > " + googleAnalyticsCategory,
-          "data-ga-label": activeCaseload | default("")
-        }
-      }) }}
+      </div>
     </div>
-  </div>
 
-  {{ caller() }}
+    {{ caller() }}
 
-{% else %}
+  {% else %}
 
-  {% include "./reportError.njk" %}
+    {% include "./reportError.njk" %}
 
-{% endif %}
+  {% endif %}
 
 {% endmacro %}

@@ -16,95 +16,96 @@
 
 {% macro formFeedback(form, csrfToken) %}
 
-{% set chartUsefulHtml %}
-  {{ _commentTextarea(form, "yes") }}
-{% endset %}
+  {% set chartUsefulHtml %}
+    {{ _commentTextarea(form, "yes") }}
+  {% endset %}
 
-{% set chartNotUsefulHtml %}
-  {% set mainNoReasonField = form.getField("mainNoReason") %}
-  {{ govukRadios({
-    idPrefix: form.formId + "-mainNoReason",
-    name: "mainNoReason",
-    classes: "govuk-radios--small",
-    fieldset: {
-      legend: {
-        text: "Why wasn’t this chart useful?",
-        classes: "govuk-fieldset__legend--s"
-      }
-    },
-    items: [
-      {
-        value: "not-relevant",
-        text: "It’s not relevant to me",
-        checked: mainNoReasonField.value === "not-relevant"
-      },
-      {
-        value: "do-not-understand",
-        text: "I don’t understand it",
-        checked: mainNoReasonField.value === "do-not-understand"
-      },
-      {
-        value: "does-not-show-enough",
-        text: "It doesn’t show me enough",
-        checked: mainNoReasonField.value === "does-not-show-enough"
-      },
-      {
-        value: "what-to-do-with-info",
-        text: "I don’t know what to do with the information",
-        checked: mainNoReasonField.value === "what-to-do-with-info"
-      },
-      {
-        value: "other",
-        text: "Other",
-        checked: mainNoReasonField.value === "other"
-      }
-    ],
-    errorMessage: { text: mainNoReasonField.error } if mainNoReasonField.error else undefined
-  }) }}
-
-  {{ _commentTextarea(form, "no") }}
-{% endset %}
-
-<form id="form-{{ form.formId }}" method="post" novalidate>
-  {% set chartUsefulField = form.getField("chartUseful") %}
-  {{ govukRadios({
-    idPrefix: form.formId + "-chartUseful",
-    name: "chartUseful",
-    fieldset: {
-      legend: {
-        text: "Is this chart useful?",
-        classes: "govuk-visually-hidden"
-      }
-    },
-    items: [
-      {
-        value: "yes",
-        text: "Yes",
-        checked: chartUsefulField.value === "yes",
-        conditional: {
-          html: chartUsefulHtml
+  {% set chartNotUsefulHtml %}
+    {% set mainNoReasonField = form.getField("mainNoReason") %}
+    {{ govukRadios({
+      idPrefix: form.formId + "-mainNoReason",
+      name: "mainNoReason",
+      classes: "govuk-radios--small",
+      fieldset: {
+        legend: {
+          text: "Why wasn’t this chart useful?",
+          classes: "govuk-fieldset__legend--s"
         }
       },
-      {
-        value: "no",
-        text: "No",
-        checked: chartUsefulField.value === "no",
-        conditional: {
-          html: chartNotUsefulHtml
+      items: [
+        {
+          value: "not-relevant",
+          text: "It’s not relevant to me",
+          checked: mainNoReasonField.value === "not-relevant"
+        },
+        {
+          value: "do-not-understand",
+          text: "I don’t understand it",
+          checked: mainNoReasonField.value === "do-not-understand"
+        },
+        {
+          value: "does-not-show-enough",
+          text: "It doesn’t show me enough",
+          checked: mainNoReasonField.value === "does-not-show-enough"
+        },
+        {
+          value: "what-to-do-with-info",
+          text: "I don’t know what to do with the information",
+          checked: mainNoReasonField.value === "what-to-do-with-info"
+        },
+        {
+          value: "other",
+          text: "Other",
+          checked: mainNoReasonField.value === "other"
         }
-      }
-    ],
-    errorMessage: { text: chartUsefulField.error } if chartUsefulField.error else undefined
-  }) }}
+      ],
+      errorMessage: { text: mainNoReasonField.error } if mainNoReasonField.error else undefined
+    }) }}
 
-  <input type="hidden" name="formId" value="{{ form.formId }}" />
-  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    {{ _commentTextarea(form, "no") }}
+  {% endset %}
 
-  {{ govukButton({
-    text: "Submit",
-    classes: "govuk-!-margin-bottom-0",
-    preventDoubleClick: true
-  }) }}
-</form>
+  <form id="form-{{ form.formId }}" method="post" novalidate>
+    {% set chartUsefulField = form.getField("chartUseful") %}
+    {{ govukRadios({
+      idPrefix: form.formId + "-chartUseful",
+      name: "chartUseful",
+      fieldset: {
+        legend: {
+          text: "Is this chart useful?",
+          classes: "govuk-visually-hidden"
+        }
+      },
+      items: [
+        {
+          value: "yes",
+          text: "Yes",
+          checked: chartUsefulField.value === "yes",
+          conditional: {
+            html: chartUsefulHtml
+          }
+        },
+        {
+          value: "no",
+          text: "No",
+          checked: chartUsefulField.value === "no",
+          conditional: {
+            html: chartNotUsefulHtml
+          }
+        }
+      ],
+      errorMessage: { text: chartUsefulField.error } if chartUsefulField.error else undefined
+    }) }}
+
+    <input type="hidden" name="formId" value="{{ form.formId }}" />
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+    {{ govukButton({
+      text: "Submit",
+      classes: "govuk-!-margin-bottom-0",
+      preventDoubleClick: true
+    }) }}
+
+  </form>
 
 {% endmacro %}

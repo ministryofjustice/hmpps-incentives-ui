@@ -11,164 +11,164 @@
   report
 ) %}
 
-{% call chartBase(
-  title=title,
-  guidance=guidance,
-  chartId=chartId,
-  googleAnalyticsCategory=googleAnalyticsCategory,
-  activeCaseload=activeCaseload,
-  form=form,
-  csrfToken=csrfToken,
-  report=report
-) %}
+  {% call chartBase(
+    title=title,
+    guidance=guidance,
+    chartId=chartId,
+    googleAnalyticsCategory=googleAnalyticsCategory,
+    activeCaseload=activeCaseload,
+    form=form,
+    csrfToken=csrfToken,
+    report=report
+  ) %}
 
-{% set trendsOverlayHeight = 300 %} {# NB: must match $trends-overlay-height in SCSS #}
-{% set colourChoices = report.columns | chartPalette %}
+    {% set trendsOverlayHeight = 300 %} {# NB: must match $trends-overlay-height in SCSS #}
+    {% set colourChoices = report.columns | chartPalette %}
 
-{% set report = report | calculateTrendsRange %}
+    {% set report = report | calculateTrendsRange %}
 
-<div class="govuk-!-margin-top-8">
-  <div aria-hidden="true" class="app-chart-legend">
-    {% for column in report.columns %}
-      <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>
-      <span class="app-chart-legend__label">{{ column }}</span>
-    {% endfor %}
-    {% if not report.plotPercentage %}
-      <span class="app-chart-legend__swatch app-chart-legend__swatch--trends">&nbsp;</span>
-      <span class="app-chart-legend__label">
-        {% if report.populationIsTotal %}
-          Prison population
-        {% else %}
-          {{ report.monthlyTotalName }}
-        {% endif %}
-      </span>
-    {% endif %}
-  </div>
-</div>
-
-<div class="app-chart-container">
-
-  <table class="app-chart-table app-chart-table--trends" id="table-{{ chartId }}">
-    <caption class="govuk-visually-hidden">
-      {{ title }}
-    </caption>
-    <thead>
-      <tr aria-hidden="true" class="app-chart-trends-overlay">
-        <td>
-          <span>
-            {% if not report.plotPercentage %}
-              {{ report.verticalAxisTitle }}
+    <div class="govuk-!-margin-top-8">
+      <div aria-hidden="true" class="app-chart-legend">
+        {% for column in report.columns %}
+          <span class="app-chart-legend__swatch {{ colourChoices[loop.index0] }}">&nbsp;</span>
+          <span class="app-chart-legend__label">{{ column }}</span>
+        {% endfor %}
+        {% if not report.plotPercentage %}
+          <span class="app-chart-legend__swatch app-chart-legend__swatch--trends">&nbsp;</span>
+          <span class="app-chart-legend__label">
+            {% if report.populationIsTotal %}
+              Prison population
             {% else %}
-              Percentage
+              {{ report.monthlyTotalName }}
             {% endif %}
           </span>
-        </td>
-        <td colspan="{{ report.rows | length }}">
-          <svg viewbox="0 0 720 {{ trendsOverlayHeight }}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            {% for gridlineValue in report.range %}
-              {% set gridlineY = report.range.percentage(gridlineValue) * trendsOverlayHeight / 100 %}
-              {% if gridlineY < 1 %}
-                {% set gridlineY = 0.5 %}
-              {% elseif gridlineY > trendsOverlayHeight - 1 %}
-                {% set gridlineY = trendsOverlayHeight - 0.5 %}
-              {% endif %}
-              <line stroke="#b1b4b6 {#- GDS mid-grey -#}" stroke-width="1" stroke-dasharray="2" x1="0" x2="720" y1="{{ gridlineY }}" y2="{{ gridlineY }}" />
-            {% endfor %}
+        {% endif %}
+      </div>
+    </div>
 
-            {% if not report.plotPercentage %}
-              {% set columnWidth = 720 / report.rows.length %}
-              <path stroke="#b1b4b6 {#- GDS mid-grey -#}" stroke-width="3" fill="none" d="
-                {%- for row in report.rows -%}
-                  {%- if loop.first %} M{% else %} L{% endif -%}
-                  {{- (loop.index0 + 0.5) * columnWidth -}},
-                  {{- trendsOverlayHeight - report.range.percentage(row.total) * trendsOverlayHeight / 100 -}}
-                {%- endfor -%}
-              " />
-            {% endif %}
-          </svg>
-        </td>
-      </tr>
-      <tr aria-hidden="true">
-        <td>
-          <div class="app-chart-trends-vertical-axis">
-            {% for gridlineValue in report.range %}
-              <span>{{ gridlineValue | thousands }}</span>
-            {% endfor %}
-          </div>
-        </td>
-        {% for row in report.rows %}
-          {% set rowIndex = loop.index0 %}
+    <div class="app-chart-container">
 
-          <td>
-            <div class="app-chart-table__group app-chart-table__group-of-{{ report.columns.length }}">
-              {% for column in report.columns %}
-                {% set columnIndex = loop.index0 %}
-                <span class="{{ colourChoices[columnIndex] }}" data-style-height="
-                  {%- if not report.plotPercentage -%}
-                    {{ report.range.percentage(row.values[columnIndex]) }}%
-                  {%- else -%}
-                    {%- if row.total === 0 -%}
-                      0
-                    {%- else -%}
-                      {{ report.range.percentage(row.values[columnIndex] / row.total * 100) }}%
-                    {%- endif -%}
-                  {%- endif -%}
-                "></span>
+      <table class="app-chart-table app-chart-table--trends" id="table-{{ chartId }}">
+        <caption class="govuk-visually-hidden">
+          {{ title }}
+        </caption>
+        <thead>
+          <tr aria-hidden="true" class="app-chart-trends-overlay">
+            <td>
+              <span>
+                {% if not report.plotPercentage %}
+                  {{ report.verticalAxisTitle }}
+                {% else %}
+                  Percentage
+                {% endif %}
+              </span>
+            </td>
+            <td colspan="{{ report.rows | length }}">
+              <svg viewbox="0 0 720 {{ trendsOverlayHeight }}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                {% for gridlineValue in report.range %}
+                  {% set gridlineY = report.range.percentage(gridlineValue) * trendsOverlayHeight / 100 %}
+                  {% if gridlineY < 1 %}
+                    {% set gridlineY = 0.5 %}
+                  {% elseif gridlineY > trendsOverlayHeight - 1 %}
+                    {% set gridlineY = trendsOverlayHeight - 0.5 %}
+                  {% endif %}
+                  <line stroke="#b1b4b6 {#- GDS mid-grey -#}" stroke-width="1" stroke-dasharray="2" x1="0" x2="720" y1="{{ gridlineY }}" y2="{{ gridlineY }}" />
+                {% endfor %}
+
+                {% if not report.plotPercentage %}
+                  {% set columnWidth = 720 / report.rows.length %}
+                  <path stroke="#b1b4b6 {#- GDS mid-grey -#}" stroke-width="3" fill="none" d="
+                    {%- for row in report.rows -%}
+                      {%- if loop.first %} M{% else %} L{% endif -%}
+                      {{- (loop.index0 + 0.5) * columnWidth -}},
+                      {{- trendsOverlayHeight - report.range.percentage(row.total) * trendsOverlayHeight / 100 -}}
+                    {%- endfor -%}
+                  " />
+                {% endif %}
+              </svg>
+            </td>
+          </tr>
+          <tr aria-hidden="true">
+            <td>
+              <div class="app-chart-trends-vertical-axis">
+                {% for gridlineValue in report.range %}
+                  <span>{{ gridlineValue | thousands }}</span>
+                {% endfor %}
+              </div>
+            </td>
+            {% for row in report.rows %}
+              {% set rowIndex = loop.index0 %}
+
+              <td>
+                <div class="app-chart-table__group app-chart-table__group-of-{{ report.columns.length }}">
+                  {% for column in report.columns %}
+                    {% set columnIndex = loop.index0 %}
+                    <span class="{{ colourChoices[columnIndex] }}" data-style-height="
+                      {%- if not report.plotPercentage -%}
+                        {{ report.range.percentage(row.values[columnIndex]) }}%
+                      {%- else -%}
+                        {%- if row.total === 0 -%}
+                          0
+                        {%- else -%}
+                          {{ report.range.percentage(row.values[columnIndex] / row.total * 100) }}%
+                        {%- endif -%}
+                      {%- endif -%}
+                    "></span>
+                  {% endfor %}
+                </div>
+              </td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <th></th>
+            {% for row in report.rows %}
+              {% set yearAndMonth = row.yearAndMonth | splitYearAndMonth %}
+              <th scope="col">
+                <strong>
+                  {{ yearAndMonth.month }}
+                </strong>
+                <br />
+                {{ yearAndMonth.year }}
+              </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for column in report.columns %}
+            {% set columnIndex = loop.index0 %}
+
+            <tr>
+              <th scope="row">{{ column }}</th>
+              {% for row in report.rows %}
+                <td>
+                  {{ row.values[columnIndex] | thousands }}
+                  <br />
+                  {{ row.values[columnIndex] | percentageOf(row.total) }}
+                </td>
               {% endfor %}
-            </div>
-          </td>
-        {% endfor %}
-      </tr>
-      <tr>
-        <th></th>
-        {% for row in report.rows %}
-          {% set yearAndMonth = row.yearAndMonth | splitYearAndMonth %}
-          <th scope="col">
-            <strong>
-              {{ yearAndMonth.month }}
-            </strong>
-            <br />
-            {{ yearAndMonth.year }}
-          </th>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-      {% for column in report.columns %}
-        {% set columnIndex = loop.index0 %}
-
-        <tr>
-          <th scope="row">{{ column }}</th>
-          {% for row in report.rows %}
-            <td>
-              {{ row.values[columnIndex] | thousands }}
-              <br />
-              {{ row.values[columnIndex] | percentageOf(row.total) }}
-            </td>
+            </tr>
           {% endfor %}
-        </tr>
-      {% endfor %}
-      {% if not report.populationIsTotal %}
-        <tr>
-          <th scope="row">{{ report.monthlyTotalName }}</th>
-          {% for row in report.rows %}
-            <td>
-              {{ row.total | thousands }}
-            </td>
-          {% endfor %}
-        </tr>
-      {% endif %}
-      <tr>
-        <th scope="row">Prison population</th>
-        {% for row in report.rows %}
-          <td>{{ row.population | thousands }}</td>
-        {% endfor %}
-      </tr>
-    </tbody>
-  </table>
+          {% if not report.populationIsTotal %}
+            <tr>
+              <th scope="row">{{ report.monthlyTotalName }}</th>
+              {% for row in report.rows %}
+                <td>
+                  {{ row.total | thousands }}
+                </td>
+              {% endfor %}
+            </tr>
+          {% endif %}
+          <tr>
+            <th scope="row">Prison population</th>
+            {% for row in report.rows %}
+              <td>{{ row.population | thousands }}</td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
 
-</div>
+    </div>
 
-{% endcall %}
+  {% endcall %}
 
 {% endmacro %}

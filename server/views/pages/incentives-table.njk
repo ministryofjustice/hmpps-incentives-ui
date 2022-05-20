@@ -6,260 +6,265 @@
 {% set pageTitle = applicationName + " – Incentives information" %}
 
 {% block content %}
-    {% if featureFlags.hideDaysColumnsInIncentivesTable %}
-        {%- from "moj/components/banner/macro.njk" import mojBanner -%}
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                {{ mojBanner({
-                    type: 'information',
-                    text: 'Review details have been removed from this table while we investigate the data.'
-                }) }}
-            </div>
-        </div>
-    {% endif %}
+  {% if featureFlags.hideDaysColumnsInIncentivesTable %}
+    {%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
-        Incentive information
-    </h1>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
 
-    <p>
-        <span class='govuk-!-margin-right-1'>{{ entries.locationDescription }}</span>
-        <a href="/select-location" class="govuk-link">Select another location</a>
-    </p>
+        {{ mojBanner({
+            type: 'information',
+            text: 'Review details have been removed from this table while we investigate the data.'
+        }) }}
 
-    <div class="govuk-grid-row govuk-!-margin-top-8 govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-l">Incentive levels</h2>
-        </div>
-        {% for level in entries.incentiveLevelSummary %}
-            <div class="govuk-grid-column-one-quarter" data-qa="number-at-level-{{ level.level }}">
-                <p class="govuk-body govuk-!-margin-bottom-2">{{ level.levelDescription }}</p>
-                <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold">
-                    {{ level.numberAtThisLevel | default(0) }}
-                </span>
-            </div>
-        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
+    Incentive information
+  </h1>
+
+  <p>
+    <span class='govuk-!-margin-right-1'>{{ entries.locationDescription }}</span>
+    <a href="/select-location" class="govuk-link">Select another location</a>
+  </p>
+
+  <div class="govuk-grid-row govuk-!-margin-top-8 govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-l">Incentive levels</h2>
     </div>
 
-    <p class="govuk-!-margin-top-9"></p>
-    <h2 class="govuk-heading-l govuk-!-margin-top-9">
-        {% if featureFlags.hideDaysColumnsInIncentivesTable %}
-            Behaviour entries in the last 3 months
-        {% else %}
-            Review dates and behaviour entries in the last 3 months
-        {% endif %}
-    </h2>
-
-    {% macro table(level) %}
-        {% set commonHeader = [
-            {
-                text: ""
-            },
-            {
-                text: "Name and prison number",
-                attributes: {
-                    "aria-sort": "ascending",
-                    "data-ga-category": "Incentives information > Sorted table",
-                    "data-ga-action": "by name"
-                }
-            },
-            {
-                text: "Days on level",
-                attributes: {
-                    "aria-sort": "none",
-                    "data-ga-category": "Incentives information > Sorted table",
-                    "data-ga-action": "by days on level"
-                },
-                itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
-            },
-            {
-                text: "Days since last review",
-                attributes: {
-                    "aria-sort": "none",
-                    "data-ga-category": "Incentives information > Sorted table",
-                    "data-ga-action": "by days since last review"
-                },
-                itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
-            },
-            {
-                text: "Positive behaviours",
-                attributes: {
-                    "aria-sort": "none",
-                    "data-ga-category": "Incentives information > Sorted table",
-                    "data-ga-action": "by positive behaviours"
-                }
-            },
-            {
-                text: "Incentive encouragements",
-                attributes: {
-                    "aria-sort": "none",
-                    "data-ga-category": "Incentives information > Sorted table",
-                    "data-ga-action": "by incentive encouragements"
-                }
-            },
-            {
-                text: "Negative behaviours",
-                attributes: {
-                    "aria-sort": "none",
-                    "data-ga-category": "Incentives information > Sorted table",
-                    "data-ga-action": "by negative behaviours"
-                }
-            },
-            {
-                text: "Incentive warnings",
-                attributes: {
-                    "aria-sort": "none",
-                    "data-ga-category": "Incentives information > Sorted table",
-                    "data-ga-action": "by incentive warnings"
-                }
-            },
-            {
-                text: "Proven adjudications",
-                attributes: {
-                    "aria-sort": "none",
-                    "data-ga-category": "Incentives information > Sorted table",
-                    "data-ga-action": "by proven adjudications"
-                }
-            }
-        ] | rejectattr('itemToRemove') %}
-
-        {% set rows = [] %}
-        {% for prisoner in level.prisonerBehaviours %}
-            {% if prisoner.imageId > 0 %}
-                {% set imageUrl = '/prisoner-images/' + prisoner.imageId + '.jpeg' %}
-            {% else %}
-                {% set imageUrl = '/assets/images/prisoner.jpeg' %}
-            {% endif %}
-
-            {% set prisonerFullName = (prisoner.lastName + ', ' + prisoner.firstName) | escape %}
-
-            {# First 2 columns always shown #}
-            {% set row = [
-                {
-                    html: '<img src="' + imageUrl + '" alt="' + prisonerFullName + '’s photo" width="90" />'
-                },
-                {
-                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="prisoner name">' + prisonerFullName + '<br>' + prisoner.prisonerNumber + '</a>',
-                    attributes: {
-                        "data-sort-value": prisonerFullName
-                    }
-                },
-                {
-                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days on level">' + prisoner.daysOnLevel + '</a>',
-                    attributes: {
-                        "data-sort-value": prisoner.daysOnLevel
-                    },
-                    itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
-                },
-                {
-                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days since last review">' + prisoner.daysSinceLastReview + '</a>',
-                    attributes: {
-                        "data-sort-value": prisoner.daysSinceLastReview
-                    },
-                    itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
-                },
-                {
-                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="positive behaviours">' + prisoner.positiveBehaviours + '</a>',
-                    attributes: {
-                        "data-sort-value": prisoner.positiveBehaviours
-                    }
-                },
-                {
-                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&subType=IEP_ENC&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive encouragements">' + prisoner.incentiveEncouragements + '</a>',
-                    attributes: {
-                        "data-sort-value": prisoner.incentiveEncouragements
-                    }
-                },
-                {
-                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="negative behaviours">' + prisoner.negativeBehaviours + '</a>',
-                    attributes: {
-                        "data-sort-value": prisoner.negativeBehaviours
-                    }
-                },
-                {
-                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&subType=IEP_WARN&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive warnings">' + prisoner.incentiveWarnings + '</a>',
-                    attributes: {
-                        "data-sort-value": prisoner.incentiveWarnings
-                    }
-                },
-                {
-                    html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/adjudications?finding=PROVED" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="proven adjudications">' + prisoner.provenAdjudications + '</a>',
-                    attributes: {
-                        "data-sort-value": prisoner.provenAdjudications
-                    }
-                }
-            ] | rejectattr('itemToRemove') %}
-            {% set _ = rows.push(row) %}
-        {% endfor %}
-
-        <h2 class="govuk-heading-l">{{ level.levelDescription }}</h2>
-        {{ govukTable({
-            attributes: {
-                'id': 'incentive-table-' + level.level,
-                'data-module': 'moj-sortable-table'
-            },
-            classes: 'govuk-table--incentive-summary app-table--striped' + '' if featureFlags.hideDaysColumnsInIncentivesTable else ' govuk-table--small-headers',
-            head: commonHeader,
-            rows: rows
-        }) }}
-    {% endmacro %}
-
-    {% set tabsItems = [] %}
     {% for level in entries.incentiveLevelSummary %}
-        {% set _ = tabsItems.push(
-            {
-                label: level.levelDescription + ' (' + level.numberAtThisLevel + ')',
-                id: level.level,
-                attributes: {
-                    "data-ga-category": "Incentives information > Clicked on incentive level tab",
-                    "data-ga-action": level.levelDescription
-                },
-                panel: { html: table(level) }
-            }
-        ) %}
+      <div class="govuk-grid-column-one-quarter" data-qa="number-at-level-{{ level.level }}">
+        <p class="govuk-body govuk-!-margin-bottom-2">{{ level.levelDescription }}</p>
+        <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold">
+          {{ level.numberAtThisLevel | default(0) }}
+        </span>
+      </div>
     {% endfor %}
+  </div>
 
-    {{ govukTabs({
-        classes: 'govuk-tabs--incentive-summary',
-        items: tabsItems
+  <p class="govuk-!-margin-top-9"></p>
+  <h2 class="govuk-heading-l govuk-!-margin-top-9">
+    {% if featureFlags.hideDaysColumnsInIncentivesTable %}
+      Behaviour entries in the last 3 months
+    {% else %}
+      Review dates and behaviour entries in the last 3 months
+    {% endif %}
+  </h2>
+
+  {% macro table(level) %}
+    {% set commonHeader = [
+      {
+        text: ""
+      },
+      {
+        text: "Name and prison number",
+        attributes: {
+          "aria-sort": "ascending",
+          "data-ga-category": "Incentives information > Sorted table",
+          "data-ga-action": "by name"
+        }
+      },
+      {
+        text: "Days on level",
+        attributes: {
+          "aria-sort": "none",
+          "data-ga-category": "Incentives information > Sorted table",
+          "data-ga-action": "by days on level"
+        },
+        itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
+      },
+      {
+        text: "Days since last review",
+        attributes: {
+          "aria-sort": "none",
+          "data-ga-category": "Incentives information > Sorted table",
+          "data-ga-action": "by days since last review"
+        },
+        itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
+      },
+      {
+        text: "Positive behaviours",
+        attributes: {
+          "aria-sort": "none",
+          "data-ga-category": "Incentives information > Sorted table",
+          "data-ga-action": "by positive behaviours"
+        }
+      },
+      {
+        text: "Incentive encouragements",
+        attributes: {
+          "aria-sort": "none",
+          "data-ga-category": "Incentives information > Sorted table",
+          "data-ga-action": "by incentive encouragements"
+        }
+      },
+      {
+        text: "Negative behaviours",
+        attributes: {
+          "aria-sort": "none",
+          "data-ga-category": "Incentives information > Sorted table",
+          "data-ga-action": "by negative behaviours"
+        }
+      },
+      {
+        text: "Incentive warnings",
+        attributes: {
+          "aria-sort": "none",
+          "data-ga-category": "Incentives information > Sorted table",
+          "data-ga-action": "by incentive warnings"
+        }
+      },
+      {
+        text: "Proven adjudications",
+        attributes: {
+          "aria-sort": "none",
+          "data-ga-category": "Incentives information > Sorted table",
+          "data-ga-action": "by proven adjudications"
+        }
+      }
+    ] | rejectattr('itemToRemove') %}
+
+    {% set rows = [] %}
+      {% for prisoner in level.prisonerBehaviours %}
+        {% if prisoner.imageId > 0 %}
+          {% set imageUrl = '/prisoner-images/' + prisoner.imageId + '.jpeg' %}
+        {% else %}
+          {% set imageUrl = '/assets/images/prisoner.jpeg' %}
+        {% endif %}
+
+        {% set prisonerFullName = (prisoner.lastName + ', ' + prisoner.firstName) | escape %}
+
+        {% set row = [
+          {
+            html: '<img src="' + imageUrl + '" alt="' + prisonerFullName + '’s photo" width="90" />'
+          },
+          {
+            html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="prisoner name">' + prisonerFullName + '<br>' + prisoner.prisonerNumber + '</a>',
+            attributes: {
+              "data-sort-value": prisonerFullName
+            }
+          },
+          {
+            html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days on level">' + prisoner.daysOnLevel + '</a>',
+            attributes: {
+              "data-sort-value": prisoner.daysOnLevel
+            },
+            itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
+          },
+          {
+            html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days since last review">' + prisoner.daysSinceLastReview + '</a>',
+            attributes: {
+              "data-sort-value": prisoner.daysSinceLastReview
+            },
+            itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
+          },
+          {
+            html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="positive behaviours">' + prisoner.positiveBehaviours + '</a>',
+            attributes: {
+              "data-sort-value": prisoner.positiveBehaviours
+            }
+          },
+          {
+              html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=POS&subType=IEP_ENC&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive encouragements">' + prisoner.incentiveEncouragements + '</a>',
+              attributes: {
+                  "data-sort-value": prisoner.incentiveEncouragements
+              }
+          },
+          {
+            html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="negative behaviours">' + prisoner.negativeBehaviours + '</a>',
+            attributes: {
+              "data-sort-value": prisoner.negativeBehaviours
+            }
+          },
+          {
+            html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/case-notes?type=NEG&subType=IEP_WARN&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive warnings">' + prisoner.incentiveWarnings + '</a>',
+            attributes: {
+              "data-sort-value": prisoner.incentiveWarnings
+            }
+          },
+          {
+            html: '<a href="' + dpsHome + '/prisoner/' + prisoner.prisonerNumber + '/adjudications?finding=PROVED" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="proven adjudications">' + prisoner.provenAdjudications + '</a>',
+            attributes: {
+              "data-sort-value": prisoner.provenAdjudications
+            }
+          }
+        ] | rejectattr('itemToRemove') %}
+        {% set _ = rows.push(row) %}
+      {% endfor %}
+
+    <h2 class="govuk-heading-l">{{ level.levelDescription }}</h2>
+
+    {{ govukTable({
+      attributes: {
+        'id': 'incentive-table-' + level.level,
+        'data-module': 'moj-sortable-table'
+      },
+      classes: 'govuk-table--incentive-summary app-table--striped' + '' if featureFlags.hideDaysColumnsInIncentivesTable else ' govuk-table--small-headers',
+      head: commonHeader,
+      rows: rows
     }) }}
+
+  {% endmacro %}
+
+  {% set tabsItems = [] %}
+  {% for level in entries.incentiveLevelSummary %}
+    {% set _ = tabsItems.push(
+      {
+        label: level.levelDescription + ' (' + level.numberAtThisLevel + ')',
+        id: level.level,
+        attributes: {
+          "data-ga-category": "Incentives information > Clicked on incentive level tab",
+          "data-ga-action": level.levelDescription
+        },
+        panel: { html: table(level) }
+      }
+    ) %}
+  {% endfor %}
+
+  {{ govukTabs({
+    classes: 'govuk-tabs--incentive-summary',
+    items: tabsItems
+  }) }}
 
 {% endblock %}
 
 {% block bodyEnd %}
-    {{ super() }}
+  {{ super() }}
 
-    <script nonce="{{ cspNonce }}">
-        function gaSendEvent() {
-            const elem = $(this)
+  <script nonce="{{ cspNonce }}">
+    function gaSendEvent() {
+      const elem = $(this)
 
-            const gaCategory = elem.data('ga-category')
-            let gaAction = elem.data('ga-action')
-            const gaLabel = '{{ locationPrefix }}'
+      const gaCategory = elem.data('ga-category')
+      let gaAction = elem.data('ga-action')
+      const gaLabel = '{{ locationPrefix }}'
 
-            // for sorting events, add sort order to GA action
-            const previousSortOrder = elem.attr('aria-sort')
-            if (previousSortOrder) {
-                if (previousSortOrder === 'ascending') {
-                    gaAction += ' (descending)'
-                } else {
-                    gaAction += ' (ascending)'
-                }
-            }
-
-            if (typeof ga === typeof Function) ga('send', 'event', gaCategory, gaAction, gaLabel)
-
-            if (typeof gtag === typeof Function) {
-                gtag('event', 'incentives_event', {
-                    category: gaCategory,
-                    action: gaAction,
-                    label: gaLabel,
-                })
-            }
+      // for sorting events, add sort order to GA action
+      const previousSortOrder = elem.attr('aria-sort')
+      if (previousSortOrder) {
+        if (previousSortOrder === 'ascending') {
+          gaAction += ' (descending)'
+        } else {
+          gaAction += ' (ascending)'
         }
+      }
 
-        $('.govuk-tabs__tab[data-ga-category]').on('focus', gaSendEvent)
-        $('.govuk-table a[data-ga-category]').on('click', gaSendEvent)
-        $('.govuk-table .govuk-table__header[data-ga-category]').on('click', gaSendEvent)
-    </script>
+      if (typeof ga === typeof Function) ga('send', 'event', gaCategory, gaAction, gaLabel)
+
+      if (typeof gtag === typeof Function) {
+        gtag('event', 'incentives_event', {
+          category: gaCategory,
+          action: gaAction,
+          label: gaLabel,
+        })
+      }
+    }
+
+    $('.govuk-tabs__tab[data-ga-category]').on('focus', gaSendEvent)
+    $('.govuk-table a[data-ga-category]').on('click', gaSendEvent)
+    $('.govuk-table .govuk-table__header[data-ga-category]').on('click', gaSendEvent)
+  </script>
 {% endblock bodyEnd %}

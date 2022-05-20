@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { Response } from 'superagent'
 
-import { stubFor, getRequests } from './wiremock'
+import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 import nomisUserRolesApi from './nomisUserRolesApi'
 
@@ -19,10 +19,12 @@ const createToken = () => {
 }
 
 const getSignInUrl = (): Promise<string> =>
-  getRequests().then(data => {
+  getMatchingRequests({
+    method: 'GET',
+    urlPath: '/auth/oauth/authorize',
+  }).then(data => {
     const { requests } = data.body
-    const stateParam = requests[0].request.queryParams.state
-    const stateValue = stateParam ? stateParam.values[0] : requests[1].request.queryParams.state.values[0]
+    const stateValue = requests[requests.length - 1].queryParams.state.values[0]
     return `/sign-in/callback?code=codexxxx&state=${stateValue}`
   })
 
@@ -117,7 +119,7 @@ const token = () =>
     },
   })
 
-const stubUser = () =>
+const stubUser = (name: string) =>
   stubFor({
     request: {
       method: 'GET',
@@ -132,7 +134,7 @@ const stubUser = () =>
         staffId: 231232,
         username: 'USER1',
         active: true,
-        name: 'john smith',
+        name,
         activeCaseLoadId: 'MDI',
       },
     },
@@ -158,6 +160,6 @@ export default {
   stubAuthPing: ping,
   stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
-  stubAuthUser: (): Promise<[Response, Response, Response]> =>
-    Promise.all([stubUser(), stubUserRoles(), nomisUserRolesApi.stubGetUserCaseloads()]),
+  stubAuthUser: (name = 'john smith'): Promise<[Response, Response, Response]> =>
+    Promise.all([stubUser(name), stubUserRoles(), nomisUserRolesApi.stubGetUserCaseloads()]),
 }

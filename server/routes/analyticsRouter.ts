@@ -13,6 +13,7 @@ import {
   IncentiveLevelsChartsContent,
   ProtectedCharacteristicsChartsContent,
 } from './analyticsChartsContent'
+import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 
 export const protectedCharacteristicRoutes = {
@@ -69,7 +70,7 @@ export default function routes(router: Router): Router {
     res.redirect('/analytics/incentive-levels')
   })
 
-  const routeWithFeedback = (path: string, chartIds: ReadonlyArray<string>, handler: RequestHandler) =>
+  const routeWithFeedback = (path: string, chartIds: ReadonlyArray<ChartId>, handler: RequestHandler) =>
     router.all(
       path,
       (req, res, next) => {
@@ -83,7 +84,11 @@ export default function routes(router: Router): Router {
       asyncMiddleware(handler)
     )
 
-  const behaviourEntryChartIds = ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries']
+  const behaviourEntryChartIds: ChartId[] = [
+    'entries-by-location',
+    'prisoners-with-entries-by-location',
+    'trends-entries',
+  ]
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
@@ -108,7 +113,7 @@ export default function routes(router: Router): Router {
     })
   })
 
-  const incentiveLevelChartIds = ['incentive-levels-by-location', 'trends-incentive-levels']
+  const incentiveLevelChartIds: ChartId[] = ['incentive-levels-by-location', 'trends-incentive-levels']
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
@@ -135,7 +140,7 @@ export default function routes(router: Router): Router {
     res.redirect('/analytics/protected-characteristic?characteristic=age')
   })
 
-  const protectedCharacteristicChartIds = [
+  const protectedCharacteristicChartIds: ChartId[] = [
     'population-by-age',
     'population-by-disability',
     'population-by-ethnicity',
@@ -196,7 +201,7 @@ export default function routes(router: Router): Router {
   return router
 }
 
-const chartFeedbackHandler = (chartIds: ReadonlyArray<string>) =>
+const chartFeedbackHandler = (chartIds: ReadonlyArray<ChartId>) =>
   async function handler(req: Request, res: Response, next: NextFunction) {
     res.locals.chartIds = chartIds
     res.locals.forms = res.locals.forms || {}

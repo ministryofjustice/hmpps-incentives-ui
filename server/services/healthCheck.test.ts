@@ -37,7 +37,7 @@ describe('Healthcheck', () => {
 function successfulCheck(name: string): HealthCheckService {
   return () =>
     Promise.resolve({
-      name: `${name}`,
+      name,
       status: 'ok',
       message: 'some message',
     })
@@ -46,7 +46,7 @@ function successfulCheck(name: string): HealthCheckService {
 function erroredCheck(name: string): HealthCheckService {
   return () =>
     Promise.resolve({
-      name: `${name}`,
+      name,
       status: 'ERROR',
       message: 'some error',
     })

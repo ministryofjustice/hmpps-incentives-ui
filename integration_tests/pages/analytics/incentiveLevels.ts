@@ -1,4 +1,4 @@
-import { AnalyticsPage } from './analytics'
+import AnalyticsPage from '.'
 
 export default class AnalyticsIncentiveLevels extends AnalyticsPage {
   constructor() {

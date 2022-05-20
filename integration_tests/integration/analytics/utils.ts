@@ -1,5 +1,5 @@
-import Page, { PageElement } from '../../pages/page'
-import { AnalyticsPage } from '../../pages/analytics'
+import Page, { type PageElement } from '../../pages/page'
+import type AnalyticsPage from '../../pages/analytics'
 
 export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(pageClass: new () => PageClass, chartIds) {
   chartIds.forEach(chartId => {

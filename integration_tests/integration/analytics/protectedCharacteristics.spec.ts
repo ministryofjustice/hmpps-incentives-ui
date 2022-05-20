@@ -1,8 +1,8 @@
 import { getTextFromTable, testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
-import AnalyticsIncentiveLevels from '../../pages/analyticsIncentiveLevels'
-import AnalyticsProtectedCharacteristics from '../../pages/analyticsProtectedCharacteristics'
+import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
+import AnalyticsProtectedCharacteristics from '../../pages/analytics/protectedCharacteristics'
 import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 
 context('Analytics section > Protected characteristics page', () => {

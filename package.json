@@ -43,6 +43,8 @@
     "collectCoverageFrom": [
       "server/**/*.{ts,js,jsx,mjs}"
     ],
+    "coverageDirectory": "test_results/jest-coverage",
+    "coverageReporters": ["lcov", "text"],
     "testMatch": [
       "<rootDir>/(server|job)/**/?(*.)(cy|test).{ts,js,jsx,mjs}"
     ],

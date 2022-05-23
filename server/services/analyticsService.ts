@@ -480,6 +480,72 @@ export default class AnalyticsService {
       populationIsTotal: true,
     }
   }
+
+  async getIncentiveLevelTrendsByCharacteristic(
+    prison: string,
+    protectedCharacteristic: ProtectedCharacteristic,
+    characteristicGroup: string
+  ): Promise<TrendsReport> {
+    const columnsToStitch = ['prison', 'year_month_str', 'snapshots', 'offenders', 'incentive', protectedCharacteristic]
+    type StitchedRow = [string, string, number, number, string, string]
+
+    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
+      this,
+      TableType.trends,
+      columnsToStitch
+    )
+
+    const columnSet: Set<string> = new Set()
+    const filteredTables = stitchedTable.filter(
+      ([somePrison, _yearAndMonth, _snapshots, _offenders, incentive, someCharacteristicGroup]) => {
+        const include =
+          // filter only selected prison
+          somePrison === prison &&
+          someCharacteristicGroup.trim() === characteristicGroup &&
+          // it's possible for incentive level to be null
+          incentive
+        if (include) {
+          columnSet.add(incentive)
+        }
+        return include
+      }
+    )
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered trends report for incentive levels has no rows')
+    }
+
+    let columns = Array.from(columnSet)
+    columns.sort() // NB: levels sort naturally because they include a prefix
+
+    let rows = mapRowsForMonthlyTrends<StitchedRow>(
+      filteredTables,
+      ([_prison, yearAndMonth, snapshots, offenders, incentive, _someCharacteristic]) => {
+        const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
+        return [
+          {
+            yearAndMonth,
+            columnIndex: levelIndex,
+            value: offenders / snapshots,
+            population: offenders / snapshots,
+          },
+        ]
+      },
+      columns.length
+    )
+    addMissingMonths(rows, columns.length)
+    rows = removeMonthsOutsideBounds(rows)
+    columns = columns.map(removeSortingPrefix)
+
+    return {
+      columns,
+      rows,
+      lastUpdated,
+      dataSource: 'NOMIS',
+      plotPercentage: true,
+      populationIsTotal: false,
+      monthlyTotalName: `Total ${characteristicGroup} population`,
+    }
+  }
 }
 
 /**

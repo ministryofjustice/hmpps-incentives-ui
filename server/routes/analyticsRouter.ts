@@ -167,6 +167,9 @@ export default function routes(router: Router): Router {
 
     const characteristicName = (req.query.characteristic || 'age') as string
 
+    // TODO: Hardcoded for now. Take value from query param
+    const protectedCharacteristicGroup = '26-35'
+
     if (!(characteristicName in protectedCharacteristicRoutes)) {
       next(new NotFound())
       return
@@ -189,15 +192,22 @@ export default function routes(router: Router): Router {
 
     const charts = [
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getIncentiveLevelTrendsByCharacteristic(
+        activeCaseLoad,
+        protectedCharacteristic,
+        protectedCharacteristicGroup
+      ),
       analyticsService.getBehaviourEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
     ].map(transformAnalyticsError)
-    const [incentiveLevelsByCharacteristic, behaviourEntriesByCharacteristic] = await Promise.all(charts)
+    const [incentiveLevelsByCharacteristic, incentiveLevelsTrendsByCharacteristic, behaviourEntriesByCharacteristic] =
+      await Promise.all(charts)
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
       characteristicName,
       characteristicOptions,
       incentiveLevelsByCharacteristic,
+      incentiveLevelsTrendsByCharacteristic,
       behaviourEntriesByCharacteristic,
       ProtectedCharacteristicsChartsContent,
     })

@@ -9,6 +9,7 @@
   form,
   csrfToken,
   report,
+  showPrisonPopulation=true,
   afterHeaderHtml=''
 ) %}
 
@@ -160,12 +161,14 @@
               {% endfor %}
             </tr>
           {% endif %}
-          <tr>
-            <th scope="row">Prison population</th>
-            {% for row in report.rows %}
-              <td>{{ row.population | thousands }}</td>
-            {% endfor %}
-          </tr>
+          {% if showPrisonPopulation %}
+            <tr>
+              <th scope="row">Prison population</th>
+              {% for row in report.rows %}
+                <td>{{ row.population | thousands }}</td>
+              {% endfor %}
+            </tr>
+          {% endif %}
         </tbody>
       </table>
 

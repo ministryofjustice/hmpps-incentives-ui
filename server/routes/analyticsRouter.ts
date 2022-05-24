@@ -22,26 +22,26 @@ import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 
 export const protectedCharacteristicRoutes = {
-  age: { label: 'Age', characteristic: ProtectedCharacteristic.Age, groupSelectLabel: 'Select an age' },
+  age: { label: 'Age', groupSelectLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
   ethnicity: {
     label: 'Ethnicity',
-    characteristic: ProtectedCharacteristic.Ethnicity,
     groupSelectLabel: 'Select an ethnicity',
+    characteristic: ProtectedCharacteristic.Ethnicity,
   },
   disability: {
     label: 'Recorded disability',
-    characteristic: ProtectedCharacteristic.Disability,
     groupSelectLabel: 'Select a recorded disability',
+    characteristic: ProtectedCharacteristic.Disability,
   },
   religion: {
     label: 'Religion',
-    characteristic: ProtectedCharacteristic.Religion,
     groupSelectLabel: 'Select a religion',
+    characteristic: ProtectedCharacteristic.Religion,
   },
   'sexual-orientation': {
     label: 'Sexual orientation',
-    characteristic: ProtectedCharacteristic.SexualOrientation,
     groupSelectLabel: 'Select a sexual orientation',
+    characteristic: ProtectedCharacteristic.SexualOrientation,
   },
 } as const
 

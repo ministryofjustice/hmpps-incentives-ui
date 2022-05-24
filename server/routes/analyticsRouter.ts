@@ -20,6 +20,7 @@ import {
 } from './analyticsChartsContent'
 import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
+import PrisonRegister from '../data/prisonRegister'
 
 export const protectedCharacteristicRoutes = {
   age: { label: 'Age', groupSelectLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
@@ -192,6 +193,7 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
     const characteristicName = (req.query.characteristic || 'age') as string
+    const activeCaseLoad = res.locals.user.activeCaseload.id
 
     // TODO: Hardcoded for now. Take value from query param
     const protectedCharacteristicGroup = '26-35'
@@ -212,11 +214,17 @@ export default function routes(router: Router): Router {
     const protectedCharacteristic = protectedCharacteristicRoutes[characteristicName].characteristic
 
     const groupsForCharacteristic =
-      protectedCharacteristic === ProtectedCharacteristic.Age
+      protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(activeCaseLoad)
         ? knownGroupsFor(protectedCharacteristic).filter(ageGroup => ageGroup !== AgeYoungPeople)
         : knownGroupsFor(protectedCharacteristic)
 
     const trendsEntriesGroup = (req.query.trendsEntriesGroup || groupsForCharacteristic[0]) as string
+
+    if (!groupsForCharacteristic.includes(trendsEntriesGroup)) {
+      next(new NotFound())
+      return
+    }
+
     const trendsEntriesOptions = groupsForCharacteristic.map(name => {
       return {
         value: name,
@@ -224,8 +232,6 @@ export default function routes(router: Router): Router {
       }
     })
     const { groupSelectLabel } = protectedCharacteristicRoutes[characteristicName]
-
-    const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)

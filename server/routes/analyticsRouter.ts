@@ -151,6 +151,11 @@ export default function routes(router: Router): Router {
     'incentive-levels-by-ethnicity',
     'incentive-levels-by-religion',
     'incentive-levels-by-sexual-orientation',
+    'trends-incentive-levels-by-age',
+    'trends-incentive-levels-by-disability',
+    'trends-incentive-levels-by-ethnicity',
+    'trends-incentive-levels-by-religion',
+    'trends-incentive-levels-by-sexual-orientation',
     'entries-by-age',
     'entries-by-disability',
     'entries-by-ethnicity',
@@ -161,6 +166,9 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
     const characteristicName = (req.query.characteristic || 'age') as string
+
+    // TODO: Hardcoded for now. Take value from query param
+    const protectedCharacteristicGroup = '26-35'
 
     if (!(characteristicName in protectedCharacteristicRoutes)) {
       next(new NotFound())
@@ -184,15 +192,22 @@ export default function routes(router: Router): Router {
 
     const charts = [
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getIncentiveLevelTrendsByCharacteristic(
+        activeCaseLoad,
+        protectedCharacteristic,
+        protectedCharacteristicGroup
+      ),
       analyticsService.getBehaviourEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
     ].map(transformAnalyticsError)
-    const [incentiveLevelsByCharacteristic, behaviourEntriesByCharacteristic] = await Promise.all(charts)
+    const [incentiveLevelsByCharacteristic, incentiveLevelsTrendsByCharacteristic, behaviourEntriesByCharacteristic] =
+      await Promise.all(charts)
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
       characteristicName,
       characteristicOptions,
       incentiveLevelsByCharacteristic,
+      incentiveLevelsTrendsByCharacteristic,
       behaviourEntriesByCharacteristic,
       ProtectedCharacteristicsChartsContent,
     })

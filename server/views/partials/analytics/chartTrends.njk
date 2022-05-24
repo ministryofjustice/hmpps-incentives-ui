@@ -9,7 +9,7 @@
   form,
   csrfToken,
   report,
-  showPrisonPopulation=true,
+  showTotalPopulation=true,
   afterHeaderHtml=''
 ) %}
 
@@ -161,9 +161,15 @@
               {% endfor %}
             </tr>
           {% endif %}
-          {% if showPrisonPopulation %}
+          {% if showTotalPopulation %}
             <tr>
-              <th scope="row">Prison population</th>
+              <th scope="row">
+                {% if report.populationTotalName %}
+                  {{ report.populationTotalName }}
+                {% else %}
+                  Prison population
+                {% endif %}
+              </th>
               {% for row in report.rows %}
                 <td>{{ row.population | thousands }}</td>
               {% endfor %}

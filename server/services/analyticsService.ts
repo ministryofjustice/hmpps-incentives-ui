@@ -622,8 +622,10 @@ export default class AnalyticsService {
       lastUpdated,
       dataSource: 'NOMIS positive and negative case notes',
       plotPercentage: false,
-      populationIsTotal: true,
-      verticalAxisTitle: `Entries`,
+      populationIsTotal: false,
+      verticalAxisTitle: 'Entries',
+      monthlyTotalName: `All ${characteristicGroup} entries`,
+      populationTotalName: `Total ${characteristicGroup} population`,
     }
   }
 }

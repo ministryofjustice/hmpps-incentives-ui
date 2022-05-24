@@ -551,6 +551,81 @@ export default class AnalyticsService {
       monthlyTotalName: `Total ${characteristicGroup} population`,
     }
   }
+
+  async getBehaviourEntryTrendsByProtectedCharacteristic(
+    prison: string,
+    protectedCharacteristic: ProtectedCharacteristic,
+    characteristicGroup: string
+  ): Promise<TrendsReport> {
+    const columnsToStitch = [
+      'prison',
+      'year_month_str',
+      'snapshots',
+      'offenders',
+      'positives',
+      'negatives',
+      protectedCharacteristic,
+    ]
+    type StitchedRow = [string, string, number, number, number, number, string]
+
+    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
+      this,
+      TableType.trends,
+      columnsToStitch
+    )
+
+    const filteredTables = stitchedTable.filter(
+      ([somePrison, _yearAndMonth, _snapshots, _offenders, _positives, _negatives, someCharacteristicGroup]) => {
+        return (
+          // it's possible for characteristic group to be null
+          someCharacteristicGroup &&
+          // filter only selected prison
+          somePrison === prison &&
+          someCharacteristicGroup.trim() === characteristicGroup
+        )
+      }
+    )
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(
+        AnalyticsErrorType.EmptyTable,
+        'Filtered PC trends report for behaviour entries has no rows'
+      )
+    }
+
+    const columns = ['Positive', 'Negative']
+    let rows = mapRowsForMonthlyTrends<StitchedRow>(
+      filteredTables,
+      ([_prison, yearAndMonth, snapshots, offenders, positives, negatives, _someCharacteristic]) => {
+        return [
+          {
+            yearAndMonth,
+            columnIndex: 0, // positive entries
+            value: positives,
+            population: offenders / snapshots,
+          },
+          {
+            yearAndMonth,
+            columnIndex: 1, // negative entries
+            value: negatives,
+            population: 0, // so that population isn't double-counted
+          },
+        ]
+      },
+      2
+    )
+    addMissingMonths(rows, 2)
+    rows = removeMonthsOutsideBounds(rows)
+
+    return {
+      columns,
+      rows,
+      lastUpdated,
+      dataSource: 'NOMIS positive and negative case notes',
+      plotPercentage: false,
+      populationIsTotal: true,
+      verticalAxisTitle: `Entries`,
+    }
+  }
 }
 
 /**

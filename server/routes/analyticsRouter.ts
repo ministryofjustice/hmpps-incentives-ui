@@ -7,7 +7,7 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import AnalyticsService from '../services/analyticsService'
-import { AnalyticsError, ProtectedCharacteristic } from '../services/analyticsServiceTypes'
+import { AnalyticsError, knownGroupsFor, ProtectedCharacteristic } from '../services/analyticsServiceTypes'
 import {
   BehaviourEntriesChartsContent,
   IncentiveLevelsChartsContent,
@@ -17,11 +17,27 @@ import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 
 export const protectedCharacteristicRoutes = {
-  age: { label: 'Age', characteristic: ProtectedCharacteristic.Age },
-  ethnicity: { label: 'Ethnicity', characteristic: ProtectedCharacteristic.Ethnicity },
-  disability: { label: 'Recorded disability', characteristic: ProtectedCharacteristic.Disability },
-  religion: { label: 'Religion', characteristic: ProtectedCharacteristic.Religion },
-  'sexual-orientation': { label: 'Sexual orientation', characteristic: ProtectedCharacteristic.SexualOrientation },
+  age: { label: 'Age', characteristic: ProtectedCharacteristic.Age, groupSelectLabel: 'Select an age' },
+  ethnicity: {
+    label: 'Ethnicity',
+    characteristic: ProtectedCharacteristic.Ethnicity,
+    groupSelectLabel: 'Select an ethnicity',
+  },
+  disability: {
+    label: 'Recorded disability',
+    characteristic: ProtectedCharacteristic.Disability,
+    groupSelectLabel: 'Select a recorded disability',
+  },
+  religion: {
+    label: 'Religion',
+    characteristic: ProtectedCharacteristic.Religion,
+    groupSelectLabel: 'Select a religion',
+  },
+  'sexual-orientation': {
+    label: 'Sexual orientation',
+    characteristic: ProtectedCharacteristic.SexualOrientation,
+    groupSelectLabel: 'Select a sexual orientation',
+  },
 } as const
 
 /**
@@ -156,6 +172,11 @@ export default function routes(router: Router): Router {
     'trends-incentive-levels-by-ethnicity',
     'trends-incentive-levels-by-religion',
     'trends-incentive-levels-by-sexual-orientation',
+    'trends-entries-by-age',
+    'trends-entries-by-disability',
+    'trends-entries-by-ethnicity',
+    'trends-entries-by-religion',
+    'trends-entries-by-sexual-orientation',
     'entries-by-age',
     'entries-by-disability',
     'entries-by-ethnicity',
@@ -185,6 +206,17 @@ export default function routes(router: Router): Router {
 
     const protectedCharacteristic = protectedCharacteristicRoutes[characteristicName].characteristic
 
+    const groupsForCharacteristic = knownGroupsFor(protectedCharacteristic)
+
+    const trendsEntriesGroup = (req.query.trendsEntriesGroup || groupsForCharacteristic[0]) as string
+    const trendsEntriesOptions = groupsForCharacteristic.map(name => {
+      return {
+        value: name,
+        selected: name === trendsEntriesGroup,
+      }
+    })
+    const { groupSelectLabel } = protectedCharacteristicRoutes[characteristicName]
+
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
@@ -197,17 +229,29 @@ export default function routes(router: Router): Router {
         protectedCharacteristic,
         protectedCharacteristicGroup
       ),
+      analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
+        activeCaseLoad,
+        protectedCharacteristic,
+        trendsEntriesGroup
+      ),
       analyticsService.getBehaviourEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
     ].map(transformAnalyticsError)
-    const [incentiveLevelsByCharacteristic, incentiveLevelsTrendsByCharacteristic, behaviourEntriesByCharacteristic] =
-      await Promise.all(charts)
+    const [
+      incentiveLevelsByCharacteristic,
+      incentiveLevelsTrendsByCharacteristic,
+      behaviourEntryTrendsByCharacteristic,
+      behaviourEntriesByCharacteristic,
+    ] = await Promise.all(charts)
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
       characteristicName,
       characteristicOptions,
+      trendsEntriesOptions,
+      groupSelectLabel,
       incentiveLevelsByCharacteristic,
       incentiveLevelsTrendsByCharacteristic,
+      behaviourEntryTrendsByCharacteristic,
       behaviourEntriesByCharacteristic,
       ProtectedCharacteristicsChartsContent,
     })

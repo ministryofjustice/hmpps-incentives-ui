@@ -27,7 +27,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <form id="form-select-characteristic" method="get" novalidate>
+      <form id="form-select-characteristic" method="get" action="/analytics/protected-characteristic" novalidate>
         <div class="govuk-form-group">
           <label class="govuk-label" for="characteristic">
             Select a protected characteristic
@@ -101,6 +101,46 @@
           csrfToken=csrfToken,
           report=incentiveLevelsTrendsByCharacteristic,
           showPrisonPopulation=false
+        ) }}
+
+      </section>
+    </div>
+
+    <div class="govuk-grid-row">
+      <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+        {% set chartId = "trends-entries-by-" + characteristicName %}
+
+        {% set afterHeaderHtml %}
+          <form id="form-select-trendsEntriesGroup" method="get" action="#heading-{{ chartId }}" novalidate>
+            <input type="hidden" name="characteristic" value="{{ characteristicName }}">
+            <div class="govuk-form-group">
+              <label class="govuk-label" for="trendsEntriesGroup">
+                {{ groupSelectLabel }}
+              </label>
+              <select class="govuk-select" id="trendsEntriesGroup" name="trendsEntriesGroup">
+                {%- for option in trendsEntriesOptions -%}
+                  <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.value }}</option>
+                {%- endfor %}
+              </select>
+
+              <button class="govuk-button govuk-!-margin-left-2" data-module="govuk-button" data-prevent-double-click="true">
+                Show results
+              </button>
+            </div>
+          </form>
+        {% endset %}
+
+        {{ chartTrends(
+          title=ProtectedCharacteristicsChartsContent[chartId].title,
+          guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+          chartId=chartId,
+          googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+          activeCaseload=user.activeCaseload.id,
+          form=forms[chartId],
+          csrfToken=csrfToken,
+          report=behaviourEntryTrendsByCharacteristic,
+          afterHeaderHtml=afterHeaderHtml
         ) }}
 
       </section>

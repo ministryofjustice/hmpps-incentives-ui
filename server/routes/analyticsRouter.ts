@@ -7,7 +7,12 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import AnalyticsService from '../services/analyticsService'
-import { AnalyticsError, ProtectedCharacteristic } from '../services/analyticsServiceTypes'
+import {
+  AgeYoungPeople,
+  AnalyticsError,
+  knownGroupsFor,
+  ProtectedCharacteristic,
+} from '../services/analyticsServiceTypes'
 import {
   BehaviourEntriesChartsContent,
   IncentiveLevelsChartsContent,
@@ -15,13 +20,30 @@ import {
 } from './analyticsChartsContent'
 import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
+import PrisonRegister from '../data/prisonRegister'
 
 export const protectedCharacteristicRoutes = {
-  age: { label: 'Age', characteristic: ProtectedCharacteristic.Age },
-  ethnicity: { label: 'Ethnicity', characteristic: ProtectedCharacteristic.Ethnicity },
-  disability: { label: 'Recorded disability', characteristic: ProtectedCharacteristic.Disability },
-  religion: { label: 'Religion', characteristic: ProtectedCharacteristic.Religion },
-  'sexual-orientation': { label: 'Sexual orientation', characteristic: ProtectedCharacteristic.SexualOrientation },
+  age: { label: 'Age', groupSelectLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
+  ethnicity: {
+    label: 'Ethnicity',
+    groupSelectLabel: 'Select an ethnicity',
+    characteristic: ProtectedCharacteristic.Ethnicity,
+  },
+  disability: {
+    label: 'Recorded disability',
+    groupSelectLabel: 'Select a recorded disability',
+    characteristic: ProtectedCharacteristic.Disability,
+  },
+  religion: {
+    label: 'Religion',
+    groupSelectLabel: 'Select a religion',
+    characteristic: ProtectedCharacteristic.Religion,
+  },
+  'sexual-orientation': {
+    label: 'Sexual orientation',
+    groupSelectLabel: 'Select a sexual orientation',
+    characteristic: ProtectedCharacteristic.SexualOrientation,
+  },
 } as const
 
 /**
@@ -156,6 +178,11 @@ export default function routes(router: Router): Router {
     'trends-incentive-levels-by-ethnicity',
     'trends-incentive-levels-by-religion',
     'trends-incentive-levels-by-sexual-orientation',
+    'trends-entries-by-age',
+    'trends-entries-by-disability',
+    'trends-entries-by-ethnicity',
+    'trends-entries-by-religion',
+    'trends-entries-by-sexual-orientation',
     'entries-by-age',
     'entries-by-disability',
     'entries-by-ethnicity',
@@ -166,6 +193,7 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
     const characteristicName = (req.query.characteristic || 'age') as string
+    const activeCaseLoad = res.locals.user.activeCaseload.id
 
     // TODO: Hardcoded for now. Take value from query param
     const protectedCharacteristicGroup = '26-35'
@@ -185,7 +213,25 @@ export default function routes(router: Router): Router {
 
     const protectedCharacteristic = protectedCharacteristicRoutes[characteristicName].characteristic
 
-    const activeCaseLoad = res.locals.user.activeCaseload.id
+    const groupsForCharacteristic =
+      protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(activeCaseLoad)
+        ? knownGroupsFor(protectedCharacteristic).filter(ageGroup => ageGroup !== AgeYoungPeople)
+        : knownGroupsFor(protectedCharacteristic)
+
+    const trendsEntriesGroup = (req.query.trendsEntriesGroup || groupsForCharacteristic[0]) as string
+
+    if (!groupsForCharacteristic.includes(trendsEntriesGroup)) {
+      next(new NotFound())
+      return
+    }
+
+    const trendsEntriesOptions = groupsForCharacteristic.map(name => {
+      return {
+        value: name,
+        selected: name === trendsEntriesGroup,
+      }
+    })
+    const { groupSelectLabel } = protectedCharacteristicRoutes[characteristicName]
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
@@ -197,17 +243,29 @@ export default function routes(router: Router): Router {
         protectedCharacteristic,
         protectedCharacteristicGroup
       ),
+      analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
+        activeCaseLoad,
+        protectedCharacteristic,
+        trendsEntriesGroup
+      ),
       analyticsService.getBehaviourEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
     ].map(transformAnalyticsError)
-    const [incentiveLevelsByCharacteristic, incentiveLevelsTrendsByCharacteristic, behaviourEntriesByCharacteristic] =
-      await Promise.all(charts)
+    const [
+      incentiveLevelsByCharacteristic,
+      incentiveLevelsTrendsByCharacteristic,
+      behaviourEntryTrendsByCharacteristic,
+      behaviourEntriesByCharacteristic,
+    ] = await Promise.all(charts)
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
       characteristicName,
       characteristicOptions,
+      trendsEntriesOptions,
+      groupSelectLabel,
       incentiveLevelsByCharacteristic,
       incentiveLevelsTrendsByCharacteristic,
+      behaviourEntryTrendsByCharacteristic,
       behaviourEntriesByCharacteristic,
       ProtectedCharacteristicsChartsContent,
     })

@@ -158,6 +158,7 @@ export type TrendsReport = Report<TrendsReportRow> &
         // from each month's values sum
         populationIsTotal: false
         monthlyTotalName: string
+        populationTotalName?: string
       }
   )
 

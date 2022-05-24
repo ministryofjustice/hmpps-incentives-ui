@@ -513,7 +513,10 @@ export default class AnalyticsService {
       }
     )
     if (filteredTables.length === 0) {
-      throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered trends report for incentive levels has no rows')
+      throw new AnalyticsError(
+        AnalyticsErrorType.EmptyTable,
+        'Filtered PC trends report for incentive levels has no rows'
+      )
     }
 
     let columns = Array.from(columnSet)

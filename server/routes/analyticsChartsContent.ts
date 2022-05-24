@@ -46,6 +46,8 @@ export const IncentiveLevelsChartsContent: Record<string, AnalyticsChartContent>
   },
 }
 
+const guidanceTrendsIncentiveLevelsByPc =
+  'Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?'
 export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChartContent> = {
   'population-by-age': {
     title: 'Percentage and number of prisoners in the establishment by age',
@@ -113,32 +115,27 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
   },
   'trends-incentive-levels-by-age': {
     title: 'Incentive levels by age - last 12 months',
-    guidance:
-      'Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?',
+    guidance: guidanceTrendsIncentiveLevelsByPc,
     googleAnalyticsCategory: 'Incentive level by age trends',
   },
   'trends-incentive-levels-by-disability': {
     title: 'Incentive levels by recorded disability - last 12 months',
-    guidance:
-      'Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?',
+    guidance: guidanceTrendsIncentiveLevelsByPc,
     googleAnalyticsCategory: 'Incentive level by recorded disability trends',
   },
   'trends-incentive-levels-by-ethnicity': {
     title: 'Incentive levels by ethnicity - last 12 months',
-    guidance:
-      'Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?',
+    guidance: guidanceTrendsIncentiveLevelsByPc,
     googleAnalyticsCategory: 'Incentive level by ethnicity trends',
   },
   'trends-incentive-levels-by-religion': {
     title: 'Incentive levels by religion - last 12 months',
-    guidance:
-      'Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?',
+    guidance: guidanceTrendsIncentiveLevelsByPc,
     googleAnalyticsCategory: 'Incentive level by religion trends',
   },
   'trends-incentive-levels-by-sexual-orientation': {
     title: 'Incentive levels by sexual orientation - last 12 months',
-    guidance:
-      'Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?',
+    guidance: guidanceTrendsIncentiveLevelsByPc,
     googleAnalyticsCategory: 'Incentive level by sexual orientation trends',
   },
   'entries-by-age': {

@@ -11,7 +11,7 @@ import {
   AgeYoungPeople,
   AnalyticsError,
   knownGroupsFor,
-  ProtectedCharacteristic
+  ProtectedCharacteristic,
 } from '../services/analyticsServiceTypes'
 import {
   BehaviourEntriesChartsContent,

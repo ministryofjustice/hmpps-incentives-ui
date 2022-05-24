@@ -7,7 +7,12 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import AnalyticsService from '../services/analyticsService'
-import { AnalyticsError, knownGroupsFor, ProtectedCharacteristic } from '../services/analyticsServiceTypes'
+import {
+  AgeYoungPeople,
+  AnalyticsError,
+  knownGroupsFor,
+  ProtectedCharacteristic
+} from '../services/analyticsServiceTypes'
 import {
   BehaviourEntriesChartsContent,
   IncentiveLevelsChartsContent,
@@ -206,7 +211,10 @@ export default function routes(router: Router): Router {
 
     const protectedCharacteristic = protectedCharacteristicRoutes[characteristicName].characteristic
 
-    const groupsForCharacteristic = knownGroupsFor(protectedCharacteristic)
+    const groupsForCharacteristic =
+      protectedCharacteristic === ProtectedCharacteristic.Age
+        ? knownGroupsFor(protectedCharacteristic).filter(ageGroup => ageGroup !== AgeYoungPeople)
+        : knownGroupsFor(protectedCharacteristic)
 
     const trendsEntriesGroup = (req.query.trendsEntriesGroup || groupsForCharacteristic[0]) as string
     const trendsEntriesOptions = groupsForCharacteristic.map(name => {

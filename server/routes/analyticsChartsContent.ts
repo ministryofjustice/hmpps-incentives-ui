@@ -46,6 +46,8 @@ export const IncentiveLevelsChartsContent: Record<string, AnalyticsChartContent>
   },
 }
 
+const guidanceTrendsIncentiveLevelsByPc =
+  'Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?'
 export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChartContent> = {
   'population-by-age': {
     title: 'Percentage and number of prisoners in the establishment by age',
@@ -110,6 +112,31 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
       'Use this chart to see incentive levels for prisoners of different sexual orientation and compare them to the overall prison levels. Are there any patterns or imbalances that you might want to explore further?',
     labelColumn: 'Sexual orientation',
     googleAnalyticsCategory: 'Incentive level by sexual orientation',
+  },
+  'trends-incentive-levels-by-age': {
+    title: 'Incentive levels by age - last 12 months',
+    guidance: guidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by age trends',
+  },
+  'trends-incentive-levels-by-disability': {
+    title: 'Incentive levels by recorded disability - last 12 months',
+    guidance: guidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by recorded disability trends',
+  },
+  'trends-incentive-levels-by-ethnicity': {
+    title: 'Incentive levels by ethnicity - last 12 months',
+    guidance: guidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by ethnicity trends',
+  },
+  'trends-incentive-levels-by-religion': {
+    title: 'Incentive levels by religion - last 12 months',
+    guidance: guidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by religion trends',
+  },
+  'trends-incentive-levels-by-sexual-orientation': {
+    title: 'Incentive levels by sexual orientation - last 12 months',
+    guidance: guidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by sexual orientation trends',
   },
   'entries-by-age': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by age - last 28 days',

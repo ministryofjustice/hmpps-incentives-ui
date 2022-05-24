@@ -134,6 +134,7 @@ export default {
     addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),
     // Whether to hide the 'Days since last review'/'Days on level' columns
     hideDaysColumnsInIncentivesTable: flag('FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE', false),
+    showAnalyticsPcTrends: flag('FEATURE_SHOW_ANALYTICS_PC_TRENDS', false),
   },
   feedbackUrl: get('FEEDBACK_URL', ''),
   feedbackUrlForAnalytics: get('FEEDBACK_URL_ANALYTICS', ''),

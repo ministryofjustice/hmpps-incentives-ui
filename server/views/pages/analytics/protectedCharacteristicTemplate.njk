@@ -1,5 +1,6 @@
 {% extends "../../partials/analytics/layout.njk" %}
 
+{% from "../../partials/analytics/chartTrends.njk" import chartTrends %}
 {% from "../../partials/analytics/chartPopulation.njk" import chartPopulation %}
 {% from "../../partials/analytics/chartPrisonersOnLevels.njk" import chartPrisonersOnLevels %}
 
@@ -84,6 +85,27 @@
 
     </section>
   </div>
+
+  {% if featureFlags.showAnalyticsPcTrends %}
+    <div class="govuk-grid-row">
+      <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+        {% set chartId = "trends-incentive-levels-by-" + characteristicName %}
+        {{ chartTrends(
+          title=ProtectedCharacteristicsChartsContent[chartId].title,
+          guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+          chartId=chartId,
+          googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+          activeCaseload=user.activeCaseload.id,
+          form=forms[chartId],
+          csrfToken=csrfToken,
+          report=incentiveLevelsTrendsByCharacteristic,
+          showPrisonPopulation=false
+        ) }}
+
+      </section>
+    </div>
+  {% endif %}
 
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">

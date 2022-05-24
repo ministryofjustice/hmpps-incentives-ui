@@ -22,6 +22,7 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
     PHASE_NAME: "PRE-PRODUCTION"
     FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE: "true"
+    FEATURE_SHOW_ANALYTICS_PC_TRENDS: "false"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

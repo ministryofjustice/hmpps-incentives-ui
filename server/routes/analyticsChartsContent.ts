@@ -46,6 +46,8 @@ export const IncentiveLevelsChartsContent: Record<string, AnalyticsChartContent>
   },
 }
 
+const guidanceTrendsEntriesByPc =
+  'Use this chart to compare the numbers of positive, negative and total entries received by each group within this protected characteristic with previous months. What do the number of entries and the ratios tell you about incentives policy and behaviour of prisoners? Be aware of population changes.'
 export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChartContent> = {
   'population-by-age': {
     title: 'Percentage and number of prisoners in the establishment by age',
@@ -110,6 +112,31 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
       'Use this chart to see incentive levels for prisoners of different sexual orientation and compare them to the overall prison levels. Are there any patterns or imbalances that you might want to explore further?',
     labelColumn: 'Sexual orientation',
     googleAnalyticsCategory: 'Incentive level by sexual orientation',
+  },
+  'trends-entries-by-age': {
+    title: 'Comparison of positive and negative behaviour entries by age - last 12 months',
+    guidance: guidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by age trends',
+  },
+  'trends-entries-by-disability': {
+    title: 'Comparison of positive and negative behaviour entries by recorded disability - last 12 months',
+    guidance: guidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by recorded disability trends',
+  },
+  'trends-entries-by-ethnicity': {
+    title: 'Comparison of positive and negative behaviour entries by ethnicity - last 12 months',
+    guidance: guidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by ethnicity trends',
+  },
+  'trends-entries-by-religion': {
+    title: 'Comparison of positive and negative behaviour entries by religion - last 12 months',
+    guidance: guidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by religion trends',
+  },
+  'trends-entries-by-sexual-orientation': {
+    title: 'Comparison of positive and negative behaviour entries by sexual orientation - last 12 months',
+    guidance: guidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by sexual orientation trends',
   },
   'entries-by-age': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by age - last 28 days',

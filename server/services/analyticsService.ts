@@ -499,11 +499,13 @@ export default class AnalyticsService {
     const filteredTables = stitchedTable.filter(
       ([somePrison, _yearAndMonth, _snapshots, _offenders, incentive, someCharacteristicGroup]) => {
         const include =
+          // it's possible for incentive level to be null
+          incentive &&
+          // it's possible for characteristic group to be null
+          someCharacteristicGroup &&
           // filter only selected prison
           somePrison === prison &&
-          someCharacteristicGroup.trim() === characteristicGroup &&
-          // it's possible for incentive level to be null
-          incentive
+          someCharacteristicGroup.trim() === characteristicGroup
         if (include) {
           columnSet.add(incentive)
         }

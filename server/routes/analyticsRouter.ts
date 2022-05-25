@@ -23,25 +23,25 @@ import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
 
 export const protectedCharacteristicRoutes = {
-  age: { label: 'Age', groupSelectLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
+  age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
   ethnicity: {
     label: 'Ethnicity',
-    groupSelectLabel: 'Select an ethnicity',
+    groupDropdownLabel: 'Select an ethnicity',
     characteristic: ProtectedCharacteristic.Ethnicity,
   },
   disability: {
     label: 'Recorded disability',
-    groupSelectLabel: 'Select a recorded disability',
+    groupDropdownLabel: 'Select a recorded disability',
     characteristic: ProtectedCharacteristic.Disability,
   },
   religion: {
     label: 'Religion',
-    groupSelectLabel: 'Select a religion',
+    groupDropdownLabel: 'Select a religion',
     characteristic: ProtectedCharacteristic.Religion,
   },
   'sexual-orientation': {
     label: 'Sexual orientation',
-    groupSelectLabel: 'Select a sexual orientation',
+    groupDropdownLabel: 'Select a sexual orientation',
     characteristic: ProtectedCharacteristic.SexualOrientation,
   },
 } as const
@@ -218,20 +218,30 @@ export default function routes(router: Router): Router {
         ? knownGroupsFor(protectedCharacteristic).filter(ageGroup => ageGroup !== AgeYoungPeople)
         : knownGroupsFor(protectedCharacteristic)
 
+    const trendsIncentiveLevelsGroup = (req.query.trendsIncentiveLevelsGroup || groupsForCharacteristic[0]) as string
     const trendsEntriesGroup = (req.query.trendsEntriesGroup || groupsForCharacteristic[0]) as string
 
-    if (!groupsForCharacteristic.includes(trendsEntriesGroup)) {
+    if (
+      !groupsForCharacteristic.includes(trendsIncentiveLevelsGroup) ||
+      !groupsForCharacteristic.includes(trendsEntriesGroup)
+    ) {
       next(new NotFound())
       return
     }
 
+    const trendsIncentiveLevelsOptions = groupsForCharacteristic.map(name => {
+      return {
+        value: name,
+        selected: name === trendsIncentiveLevelsGroup,
+      }
+    })
     const trendsEntriesOptions = groupsForCharacteristic.map(name => {
       return {
         value: name,
         selected: name === trendsEntriesGroup,
       }
     })
-    const { groupSelectLabel } = protectedCharacteristicRoutes[characteristicName]
+    const { groupDropdownLabel } = protectedCharacteristicRoutes[characteristicName]
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
@@ -261,8 +271,11 @@ export default function routes(router: Router): Router {
       ...templateContext(req),
       characteristicName,
       characteristicOptions,
+      trendsIncentiveLevelsOptions,
       trendsEntriesOptions,
-      groupSelectLabel,
+      trendsIncentiveLevelsGroup,
+      trendsEntriesGroup,
+      groupDropdownLabel,
       incentiveLevelsByCharacteristic,
       incentiveLevelsTrendsByCharacteristic,
       behaviourEntryTrendsByCharacteristic,

@@ -327,6 +327,15 @@ describe('Protected characteristic pages', () => {
               expect(res.text).toContain('Protected characteristics')
             })
         })
+
+        it(`PC groups defaults to 15-17`, () => {
+          return request(app)
+            .get(`/analytics/protected-characteristic?characteristic=age`)
+            .expect(200)
+            .expect(res => {
+              expect(res.text).toContain('<option value="15-17" selected>15-17</option>')
+            })
+        })
       })
 
       describe('when prison is not Youth Custody Service', () => {
@@ -346,6 +355,17 @@ describe('Protected characteristic pages', () => {
             .expect(404)
             .expect(res => {
               expect(res.text).toContain('Not Found')
+            })
+        })
+
+        it(`PC groups defaults to 18-25`, () => {
+          return request(app)
+            .get(`/analytics/protected-characteristic?characteristic=age`)
+            .expect(200)
+            .expect(res => {
+              expect(res.text).toContain('<option value="18-25" selected>18-25</option>')
+              // doesn't show option for Young People
+              expect(res.text).not.toContain('<option value="15-17">15-17</option>')
             })
         })
       })

@@ -616,6 +616,52 @@ describe('AnalyticsService', () => {
     })
   })
 
+  describe.each(Ethnicities)('getIncentiveLevelTrendsByCharacteristic()', characteristicGroup => {
+    beforeEach(() => {
+      mockAppS3ClientResponse(s3Client)
+    })
+
+    it(`[${characteristicGroup}]: returns 12 months`, async () => {
+      const report = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
+        'MDI',
+        ProtectedCharacteristic.Ethnicity,
+        characteristicGroup
+      )
+      expect(report.rows).toHaveLength(12)
+    })
+
+    it(`[${characteristicGroup}]: plots percentage values`, async () => {
+      const report = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
+        'MDI',
+        ProtectedCharacteristic.Ethnicity,
+        characteristicGroup
+      )
+      expect(report.plotPercentage).toBeTruthy()
+    })
+
+    it(`[${characteristicGroup}]: shows population`, async () => {
+      const report = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
+        'MDI',
+        ProtectedCharacteristic.Ethnicity,
+        characteristicGroup
+      )
+      expect(report.populationIsTotal).toBeFalsy()
+      expect(report).toHaveProperty('monthlyTotalName')
+    })
+
+    it(`[${characteristicGroup}]: throws an error when the table is empty`, async () => {
+      mockAppS3ClientResponse(s3Client, MockTable.Empty)
+
+      await expect(
+        analyticsService.getIncentiveLevelTrendsByCharacteristic(
+          'MDI',
+          ProtectedCharacteristic.Ethnicity,
+          characteristicGroup
+        )
+      ).rejects.toThrow(AnalyticsError)
+    })
+  })
+
   describe.each(Ethnicities)('getBehaviourEntryTrendsByProtectedCharacteristic()', characteristicGroup => {
     beforeEach(() => {
       mockAppS3ClientResponse(s3Client)

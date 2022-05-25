@@ -649,7 +649,6 @@ describe('AnalyticsService', () => {
       expect(report.populationIsTotal).toBeFalsy()
       expect(report).toHaveProperty('monthlyTotalName')
       expect(report).toHaveProperty('populationTotalName')
-      report.rows.filter(row => row.population !== 0)
     })
 
     it(`[${characteristicGroup}]: throws an error when the table is empty`, async () => {

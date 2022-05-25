@@ -218,13 +218,23 @@ export default function routes(router: Router): Router {
         ? knownGroupsFor(protectedCharacteristic).filter(ageGroup => ageGroup !== AgeYoungPeople)
         : knownGroupsFor(protectedCharacteristic)
 
+    const trendsIncentiveLevelsGroup = (req.query.trendsIncentiveLevelsGroup || groupsForCharacteristic[0]) as string
     const trendsEntriesGroup = (req.query.trendsEntriesGroup || groupsForCharacteristic[0]) as string
 
-    if (!groupsForCharacteristic.includes(trendsEntriesGroup)) {
+    if (
+      !groupsForCharacteristic.includes(trendsIncentiveLevelsGroup) ||
+      !groupsForCharacteristic.includes(trendsEntriesGroup)
+    ) {
       next(new NotFound())
       return
     }
 
+    const trendsIncentiveLevelsOptions = groupsForCharacteristic.map(name => {
+      return {
+        value: name,
+        selected: name === trendsIncentiveLevelsGroup,
+      }
+    })
     const trendsEntriesOptions = groupsForCharacteristic.map(name => {
       return {
         value: name,
@@ -261,6 +271,7 @@ export default function routes(router: Router): Router {
       ...templateContext(req),
       characteristicName,
       characteristicOptions,
+      trendsIncentiveLevelsOptions,
       trendsEntriesOptions,
       groupSelectLabel,
       incentiveLevelsByCharacteristic,

@@ -87,10 +87,50 @@
   </div>
 
   {% if featureFlags.showAnalyticsPcTrends %}
+
+    {% macro pcGroupDropdown(
+      chartId,
+      characteristicName,
+      groupSelectLabel,
+      fieldName,
+      options
+    ) %}
+
+      <form id="form-select-{{ fieldName }}" method="get" action="#heading-{{ chartId }}" novalidate>
+        <input type="hidden" name="characteristic" value="{{ characteristicName }}">
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="{{ fieldName }}">
+            {{ groupSelectLabel }}
+          </label>
+          <select class="govuk-select" id="{{ fieldName }}" name="{{ fieldName }}">
+            {%- for option in options -%}
+              <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.value }}</option>
+            {%- endfor %}
+          </select>
+
+          <button class="govuk-button govuk-!-margin-left-2" data-module="govuk-button" data-prevent-double-click="true">
+            Show results
+          </button>
+        </div>
+      </form>
+
+    {% endmacro %}
+
     <div class="govuk-grid-row">
       <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
         {% set chartId = "trends-incentive-levels-by-" + characteristicName %}
+
+        {% set afterHeaderHtml %}
+          {{ pcGroupDropdown(
+              chartId,
+              characteristicName,
+              groupSelectLabel,
+              fieldName="trendsIncentiveLevelsGroup",
+              options=trendsIncentiveLevelsOptions
+          ) }}
+        {% endset %}
+
         {{ chartTrends(
           title=ProtectedCharacteristicsChartsContent[chartId].title,
           guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
@@ -100,7 +140,8 @@
           form=forms[chartId],
           csrfToken=csrfToken,
           report=incentiveLevelsTrendsByCharacteristic,
-          showTotalPopulation=false
+          showTotalPopulation=false,
+          afterHeaderHtml=afterHeaderHtml
         ) }}
 
       </section>
@@ -112,23 +153,13 @@
         {% set chartId = "trends-entries-by-" + characteristicName %}
 
         {% set afterHeaderHtml %}
-          <form id="form-select-trendsEntriesGroup" method="get" action="#heading-{{ chartId }}" novalidate>
-            <input type="hidden" name="characteristic" value="{{ characteristicName }}">
-            <div class="govuk-form-group">
-              <label class="govuk-label" for="trendsEntriesGroup">
-                {{ groupSelectLabel }}
-              </label>
-              <select class="govuk-select" id="trendsEntriesGroup" name="trendsEntriesGroup">
-                {%- for option in trendsEntriesOptions -%}
-                  <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.value }}</option>
-                {%- endfor %}
-              </select>
-
-              <button class="govuk-button govuk-!-margin-left-2" data-module="govuk-button" data-prevent-double-click="true">
-                Show results
-              </button>
-            </div>
-          </form>
+          {{ pcGroupDropdown(
+              chartId,
+              characteristicName,
+              groupSelectLabel,
+              fieldName="trendsEntriesGroup",
+              options=trendsEntriesOptions
+          ) }}
         {% endset %}
 
         {{ chartTrends(

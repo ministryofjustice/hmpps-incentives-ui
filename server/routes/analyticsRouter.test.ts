@@ -1,6 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 
+import PrisonRegister from '../data/prisonRegister'
 import config from '../config'
 import ZendeskClient from '../data/zendeskClient'
 import { StitchedTablesCache } from '../services/analyticsService'
@@ -12,6 +13,8 @@ import { MockTable, mockSdkS3ClientReponse } from '../testData/s3Bucket'
 const s3 = {
   send: jest.fn(),
 }
+
+const isYouthCustodyServiceOriginal = PrisonRegister.isYouthCustodyService
 
 jest.mock('@aws-sdk/client-s3', () => {
   const { GetObjectCommand, ListObjectsV2Command } = jest.requireActual('@aws-sdk/client-s3')
@@ -33,6 +36,8 @@ beforeAll(() => {
   config.apis.zendesk.url = 'http://zendesk.local'
   config.apis.zendesk.username = 'anonymous@justice.gov.uk'
   config.apis.zendesk.token = '123456789012345678901234567890'
+
+  config.featureFlags.showAnalyticsPcTrends = true
 
   mockedZendeskClientClass = ZendeskClient as jest.Mock<ZendeskClient>
 })
@@ -84,7 +89,13 @@ const analyticsPages: AnalyticsPage[] = [
     name: 'Protected characteristics',
     url: '/analytics/protected-characteristic?characteristic=disability',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
-    chartIds: ['population-by-disability', 'incentive-levels-by-disability', 'entries-by-disability'],
+    chartIds: [
+      'population-by-disability',
+      'incentive-levels-by-disability',
+      'trends-incentive-levels-by-disability',
+      'trends-entries-by-disability',
+      'entries-by-disability',
+    ],
   },
 ]
 
@@ -284,6 +295,62 @@ describe('Protected characteristic pages', () => {
         expect(res.text).toContain('Page not found')
       })
   })
+
+  describe.each(['trendsIncentiveLevelsGroup', 'trendsEntriesGroup'])(
+    `Protected characteristic route`,
+    queryParamName => {
+      it(`responds 404 Not Found when value for ${queryParamName} query parameter is invalid`, () => {
+        return request(app)
+          .get(`/analytics/protected-characteristic?characteristic=ethnicity&${queryParamName}=66+`)
+          .expect(404)
+          .expect(res => {
+            expect(res.text).toContain('Page not found')
+          })
+      })
+
+      describe('when prison is Youth Custody Service', () => {
+        beforeAll(() => {
+          // change isYouthCustodyService() to always return true
+          PrisonRegister.isYouthCustodyService = (_prisonId: string) => true
+        })
+
+        afterAll(() => {
+          // restore PrisonRegister.isYouthCustodyService() behaviour
+          PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
+        })
+
+        it(`${queryParamName} value can be 15-17`, () => {
+          return request(app)
+            .get(`/analytics/protected-characteristic?characteristic=age&${queryParamName}=15-17`)
+            .expect(200)
+            .expect(res => {
+              expect(res.text).toContain('Protected characteristics')
+            })
+        })
+      })
+
+      describe('when prison is not Youth Custody Service', () => {
+        beforeAll(() => {
+          // change isYouthCustodyService() to always return false
+          PrisonRegister.isYouthCustodyService = (_prisonId: string) => false
+        })
+
+        afterAll(() => {
+          // restore PrisonRegister.isYouthCustodyService() behaviour
+          PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
+        })
+
+        it(`${queryParamName} value cannot be 15-17`, () => {
+          return request(app)
+            .get(`/analytics/protected-characteristic?characteristic=age&${queryParamName}=15-17`)
+            .expect(404)
+            .expect(res => {
+              expect(res.text).toContain('Not Found')
+            })
+        })
+      })
+    }
+  )
 })
 
 describe.each(Object.entries(protectedCharacteristicRoutes))(
@@ -309,6 +376,8 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
           // correct characteristic charts
           expect(pageContent).toContain(`table-population-by-${characteristicName}`)
           expect(pageContent).toContain(`table-incentive-levels-by-${characteristicName}`)
+          expect(pageContent).toContain(`table-trends-incentive-levels-by-${characteristicName}`)
+          expect(pageContent).toContain(`table-trends-entries-by-${characteristicName}`)
           expect(pageContent).toContain(`table-entries-by-${characteristicName}`)
         })
     })

@@ -91,7 +91,7 @@
     {% macro pcGroupDropdown(
       chartId,
       hiddenInputs,
-      groupSelectLabel,
+      groupDropdownLabel,
       fieldName,
       options
     ) %}
@@ -103,7 +103,7 @@
 
         <div class="govuk-form-group">
           <label class="govuk-label" for="{{ fieldName }}">
-            {{ groupSelectLabel }}
+            {{ groupDropdownLabel }}
           </label>
           <select class="govuk-select" id="{{ fieldName }}" name="{{ fieldName }}">
             {%- for option in options -%}
@@ -133,7 +133,7 @@
           {{ pcGroupDropdown(
               chartId,
               hiddenInputs,
-              groupSelectLabel,
+              groupDropdownLabel,
               fieldName="trendsIncentiveLevelsGroup",
               options=trendsIncentiveLevelsOptions
           ) }}
@@ -169,7 +169,7 @@
           {{ pcGroupDropdown(
               chartId,
               hiddenInputs,
-              groupSelectLabel,
+              groupDropdownLabel,
               fieldName="trendsEntriesGroup",
               options=trendsEntriesOptions
           ) }}

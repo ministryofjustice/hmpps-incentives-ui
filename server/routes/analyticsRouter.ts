@@ -195,9 +195,6 @@ export default function routes(router: Router): Router {
     const characteristicName = (req.query.characteristic || 'age') as string
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
-    // TODO: Hardcoded for now. Take value from query param
-    const protectedCharacteristicGroup = '26-35'
-
     if (!(characteristicName in protectedCharacteristicRoutes)) {
       next(new NotFound())
       return
@@ -251,7 +248,7 @@ export default function routes(router: Router): Router {
       analyticsService.getIncentiveLevelTrendsByCharacteristic(
         activeCaseLoad,
         protectedCharacteristic,
-        protectedCharacteristicGroup
+        trendsIncentiveLevelsGroup
       ),
       analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
         activeCaseLoad,

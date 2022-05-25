@@ -90,14 +90,17 @@
 
     {% macro pcGroupDropdown(
       chartId,
-      characteristicName,
+      hiddenInputs,
       groupSelectLabel,
       fieldName,
       options
     ) %}
 
       <form id="form-select-{{ fieldName }}" method="get" action="#heading-{{ chartId }}" novalidate>
-        <input type="hidden" name="characteristic" value="{{ characteristicName }}">
+        {%- for name, value in hiddenInputs -%}
+          <input type="hidden" name="{{ name }}" value="{{ value }}">
+        {%- endfor %}
+
         <div class="govuk-form-group">
           <label class="govuk-label" for="{{ fieldName }}">
             {{ groupSelectLabel }}
@@ -122,9 +125,14 @@
         {% set chartId = "trends-incentive-levels-by-" + characteristicName %}
 
         {% set afterHeaderHtml %}
+          {% set hiddenInputs = {
+            characteristic: characteristicName,
+            trendsEntriesGroup: trendsEntriesGroup
+          } %}
+
           {{ pcGroupDropdown(
               chartId,
-              characteristicName,
+              hiddenInputs,
               groupSelectLabel,
               fieldName="trendsIncentiveLevelsGroup",
               options=trendsIncentiveLevelsOptions
@@ -153,9 +161,14 @@
         {% set chartId = "trends-entries-by-" + characteristicName %}
 
         {% set afterHeaderHtml %}
+          {% set hiddenInputs = {
+            characteristic: characteristicName,
+            trendsIncentiveLevelsGroup: trendsIncentiveLevelsGroup
+          } %}
+
           {{ pcGroupDropdown(
               chartId,
-              characteristicName,
+              hiddenInputs,
               groupSelectLabel,
               fieldName="trendsEntriesGroup",
               options=trendsEntriesOptions

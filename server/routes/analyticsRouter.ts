@@ -273,6 +273,8 @@ export default function routes(router: Router): Router {
       characteristicOptions,
       trendsIncentiveLevelsOptions,
       trendsEntriesOptions,
+      trendsIncentiveLevelsGroup,
+      trendsEntriesGroup,
       groupSelectLabel,
       incentiveLevelsByCharacteristic,
       incentiveLevelsTrendsByCharacteristic,

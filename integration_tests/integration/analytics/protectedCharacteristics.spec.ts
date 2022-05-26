@@ -72,6 +72,26 @@ context('Analytics section > Protected characteristics page', () => {
       ])
     })
 
+    getTextFromTable(page.getChartTable('trends-incentive-levels-by-age')).then(rows => {
+      const cleanedRows = cleanRows(rows)
+      expect(cleanedRows).to.deep.equal([
+        ['Basic', '1', '0', '0', '0', '2', '4', '6', '5', '5', '6', '7'],
+        ['Standard', '130', '128', '123', '124', '119', '116', '115', '122', '123', '122', '133'],
+        ['Enhanced', '30', '28', '30', '31', '27', '26', '24', '22', '27', '28', '30'],
+        ['Total', '162', '156', '153', '156', '148', '146', '144', '149', '155', '156', '170'],
+      ])
+    })
+
+    getTextFromTable(page.getChartTable('trends-entries-by-age')).then(rows => {
+      const cleanedRows = cleanRows(rows)
+      expect(cleanedRows).to.deep.equal([
+        ['Positive', '35', '26', '32', '37', '27', '33', '28', '31', '39', '38', '27'],
+        ['Negative', '113', '83', '77', '94', '95', '98', '104', '113', '102', '120', '109'],
+        ['All', '148', '109', '109', '131', '122', '131', '132', '144', '141', '158', '136'],
+        ['Total', '162', '156', '153', '156', '148', '146', '144', '149', '155', '156', '170'],
+      ])
+    })
+
     getTextFromTable(page.getChartTable('entries-by-age')).then(rows => {
       const cleanedRows = cleanRows(rows)
       expect(cleanedRows).to.deep.equal([

@@ -205,6 +205,48 @@ context('Analytics section > Protected characteristics page', () => {
       )
 
     page
+      .getChartFeedback('trends-incentive-levels-by-age')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by age trends',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+    page
+      .getChartFeedback('trends-incentive-levels-by-age')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by age trends',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
+
+    page
+      .getChartFeedback('trends-entries-by-age')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Behaviour entries by age trends',
+          action: 'opened',
+          label: 'MDI',
+        })
+      )
+    page
+      .getChartFeedback('trends-entries-by-age')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Behaviour entries by age trends',
+          action: 'closed',
+          label: 'MDI',
+        })
+      )
+
+    page
       .getChartFeedback('entries-by-age')
       .click()
       .then(() =>
@@ -230,6 +272,8 @@ context('Analytics section > Protected characteristics page', () => {
     testValidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
       'population-by-age',
       'incentive-levels-by-age',
+      'trends-incentive-levels-by-age',
+      'trends-entries-by-age',
       'entries-by-age',
     ])
   })
@@ -238,6 +282,8 @@ context('Analytics section > Protected characteristics page', () => {
     testInvalidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
       'population-by-age',
       'incentive-levels-by-age',
+      'trends-incentive-levels-by-age',
+      'trends-entries-by-age',
       'entries-by-age',
     ])
   })

@@ -35,7 +35,7 @@ context('Analytics section > Protected characteristics page', () => {
       .contains('Percentage and number of prisoners in the establishment by sexual orientation')
   })
 
-  it('PC groups dropdowns are woring and they are independent', () => {
+  it('PC groups dropdowns are working and they are independent', () => {
     // Change group for incentive level trends chart
     cy.get('#trendsIncentiveLevelsGroup').select('26-35')
     cy.get('#form-select-trendsIncentiveLevelsGroup button').click()

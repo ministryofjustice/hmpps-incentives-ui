@@ -4,6 +4,7 @@ import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 import AnalyticsProtectedCharacteristics from '../../pages/analytics/protectedCharacteristics'
 import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
+import { ChartId } from '../../../server/routes/analyticsChartTypes'
 
 context('Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
@@ -162,110 +163,37 @@ context('Analytics section > Protected characteristics page', () => {
     const gaSpy = new GoogleAnalyticsSpy()
     gaSpy.install()
 
-    page
-      .getChartFeedback('population-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Population by age',
-          action: 'opened',
-          label: 'MDI',
-        })
-      )
-    page
-      .getChartFeedback('population-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Population by age',
-          action: 'closed',
-          label: 'MDI',
-        })
-      )
+    const feedbackBoxes: [ChartId, string][] = [
+      ['population-by-age', 'Is this chart useful > Population by age'],
+      ['incentive-levels-by-age', 'Is this chart useful > Incentive level by age'],
+      ['trends-incentive-levels-by-age', 'Is this chart useful > Incentive level by age trends'],
+      ['trends-entries-by-age', 'Is this chart useful > Behaviour entries by age trends'],
+      ['entries-by-age', 'Is this chart useful > Behaviour entries by age'],
+    ]
 
-    page
-      .getChartFeedback('incentive-levels-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level by age',
-          action: 'opened',
-          label: 'MDI',
-        })
-      )
-    page
-      .getChartFeedback('incentive-levels-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level by age',
-          action: 'closed',
-          label: 'MDI',
-        })
-      )
-
-    page
-      .getChartFeedback('trends-incentive-levels-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level by age trends',
-          action: 'opened',
-          label: 'MDI',
-        })
-      )
-    page
-      .getChartFeedback('trends-incentive-levels-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level by age trends',
-          action: 'closed',
-          label: 'MDI',
-        })
-      )
-
-    page
-      .getChartFeedback('trends-entries-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entries by age trends',
-          action: 'opened',
-          label: 'MDI',
-        })
-      )
-    page
-      .getChartFeedback('trends-entries-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entries by age trends',
-          action: 'closed',
-          label: 'MDI',
-        })
-      )
-
-    page
-      .getChartFeedback('entries-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entries by age',
-          action: 'opened',
-          label: 'MDI',
-        })
-      )
-    page
-      .getChartFeedback('entries-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entries by age',
-          action: 'closed',
-          label: 'MDI',
-        })
-      )
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [chartId, expectedCategory] of feedbackBoxes) {
+      page
+        .getChartFeedback(chartId)
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('incentives_event', {
+            category: expectedCategory,
+            action: 'opened',
+            label: 'MDI',
+          })
+        )
+      page
+        .getChartFeedback(chartId)
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('incentives_event', {
+            category: expectedCategory,
+            action: 'closed',
+            label: 'MDI',
+          })
+        )
+    }
   })
 
   it('users can submit feedback on charts', () => {

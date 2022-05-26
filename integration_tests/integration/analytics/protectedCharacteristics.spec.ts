@@ -35,6 +35,26 @@ context('Analytics section > Protected characteristics page', () => {
       .contains('Percentage and number of prisoners in the establishment by sexual orientation')
   })
 
+  it('PC groups dropdowns are woring and they are independent', () => {
+    // Change group for incentive level trends chart
+    cy.get('#trendsIncentiveLevelsGroup').select('26-35')
+    cy.get('#form-select-trendsIncentiveLevelsGroup button').click()
+
+    // Check incentive level trends chart updated...
+    cy.get('#table-trends-incentive-levels-by-age').contains('Total 26-35 population')
+    // ...but other entries trends chart did not change
+    cy.get('#table-trends-entries-by-age').contains('Total 18-25 population')
+
+    // Change group for entries trends chart
+    cy.get('#trendsEntriesGroup').select('66+')
+    cy.get('#form-select-trendsEntriesGroup button').click()
+
+    // Check entries trends chart updated...
+    cy.get('#table-trends-entries-by-age').contains('Total 66+ population')
+    // ...but other incentive level trends chart did not change
+    cy.get('#table-trends-incentive-levels-by-age').contains('Total 26-35 population')
+  })
+
   it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
 

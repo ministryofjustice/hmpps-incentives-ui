@@ -4,6 +4,7 @@ import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 import AnalyticsProtectedCharacteristics from '../../pages/analytics/protectedCharacteristics'
 import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
+import { ChartId } from '../../../server/routes/analyticsChartTypes'
 
 context('Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
@@ -34,6 +35,26 @@ context('Analytics section > Protected characteristics page', () => {
       .contains('Percentage and number of prisoners in the establishment by sexual orientation')
   })
 
+  it('PC groups dropdowns are working and they are independent', () => {
+    // Change group for incentive level trends chart
+    cy.get('#trendsIncentiveLevelsGroup').select('26-35')
+    cy.get('#form-select-trendsIncentiveLevelsGroup button').click()
+
+    // Check incentive level trends chart updated...
+    cy.get('#table-trends-incentive-levels-by-age').contains('Total 26-35 population')
+    // ...but other entries trends chart did not change
+    cy.get('#table-trends-entries-by-age').contains('Total 18-25 population')
+
+    // Change group for entries trends chart
+    cy.get('#trendsEntriesGroup').select('66+')
+    cy.get('#form-select-trendsEntriesGroup button').click()
+
+    // Check entries trends chart updated...
+    cy.get('#table-trends-entries-by-age').contains('Total 66+ population')
+    // ...but other incentive level trends chart did not change
+    cy.get('#table-trends-incentive-levels-by-age').contains('Total 26-35 population')
+  })
+
   it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
 
@@ -44,47 +65,73 @@ context('Analytics section > Protected characteristics page', () => {
       })
     }
 
-    getTextFromTable(page.getChartTable('population-by-age')).then(rows => {
-      const cleanedRows = cleanRows(rows)
-      expect(cleanedRows).to.deep.equal([
-        ['All', '100%', '921'],
-        [''],
-        ['18-25', '21%', '189'],
-        ['26-35', '32%', '297'],
-        ['36-45', '23%', '212'],
-        ['46-55', '12%', '108'],
-        ['56-65', '6%', '52'],
-        ['66+', '7%', '63'],
-      ])
-    })
+    const testData: [ChartId, string[][]][] = [
+      [
+        'population-by-age',
+        [
+          ['All', '100%', '921'],
+          [''],
+          ['18-25', '21%', '189'],
+          ['26-35', '32%', '297'],
+          ['36-45', '23%', '212'],
+          ['46-55', '12%', '108'],
+          ['56-65', '6%', '52'],
+          ['66+', '7%', '63'],
+        ],
+      ],
+      [
+        'incentive-levels-by-age',
+        [
+          ['All', '2%', '58%', '40%'],
+          [''],
+          ['18-25', '3%', '78%', '19%'],
+          ['26-35', '2%', '61%', '37%'],
+          ['36-45', '2%', '56%', '42%'],
+          ['46-55', '0%', '45%', '55%'],
+          ['56-65', '2%', '33%', '65%'],
+          ['66+', '0%', '37%', '63%'],
+        ],
+      ],
+      [
+        'trends-incentive-levels-by-age',
+        [
+          ['Basic', '1', '0', '0', '0', '2', '4', '6', '5', '5', '6', '7'],
+          ['Standard', '130', '128', '123', '124', '119', '116', '115', '122', '123', '122', '133'],
+          ['Enhanced', '30', '28', '30', '31', '27', '26', '24', '22', '27', '28', '30'],
+          ['Total', '162', '156', '153', '156', '148', '146', '144', '149', '155', '156', '170'],
+        ],
+      ],
+      [
+        'trends-entries-by-age',
+        [
+          ['Positive', '35', '26', '32', '37', '27', '33', '28', '31', '39', '38', '27'],
+          ['Negative', '113', '83', '77', '94', '95', '98', '104', '113', '102', '120', '109'],
+          ['All', '148', '109', '109', '131', '122', '131', '132', '144', '141', '158', '136'],
+          ['Total', '162', '156', '153', '156', '148', '146', '144', '149', '155', '156', '170'],
+        ],
+      ],
+      [
+        'entries-by-age',
+        [
+          ['All', '11%', '17%', '2%', '69%'],
+          [''],
+          ['18-25', '14%', '30%', '2%', '54%'],
+          ['26-35', '13%', '18%', '3%', '66%'],
+          ['36-45', '12%', '17%', '2%', '68%'],
+          ['46-55', '8%', '8%', '2%', '81%'],
+          ['56-65', '6%', '2%', '0%', '92%'],
+          ['66+', '0%', '5%', '0%', '95%'],
+        ],
+      ],
+    ]
 
-    getTextFromTable(page.getChartTable('incentive-levels-by-age')).then(rows => {
-      const cleanedRows = cleanRows(rows)
-      expect(cleanedRows).to.deep.equal([
-        ['All', '2%', '58%', '40%'],
-        [''],
-        ['18-25', '3%', '78%', '19%'],
-        ['26-35', '2%', '61%', '37%'],
-        ['36-45', '2%', '56%', '42%'],
-        ['46-55', '0%', '45%', '55%'],
-        ['56-65', '2%', '33%', '65%'],
-        ['66+', '0%', '37%', '63%'],
-      ])
-    })
-
-    getTextFromTable(page.getChartTable('entries-by-age')).then(rows => {
-      const cleanedRows = cleanRows(rows)
-      expect(cleanedRows).to.deep.equal([
-        ['All', '11%', '17%', '2%', '69%'],
-        [''],
-        ['18-25', '14%', '30%', '2%', '54%'],
-        ['26-35', '13%', '18%', '3%', '66%'],
-        ['36-45', '12%', '17%', '2%', '68%'],
-        ['46-55', '8%', '8%', '2%', '81%'],
-        ['56-65', '6%', '2%', '0%', '92%'],
-        ['66+', '0%', '5%', '0%', '95%'],
-      ])
-    })
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [chartId, expectedData] of testData) {
+      getTextFromTable(page.getChartTable(chartId)).then(rows => {
+        const cleanedRows = cleanRows(rows)
+        expect(cleanedRows).to.deep.equal(expectedData)
+      })
+    }
   })
 
   it('guidance box for analytics is tracked', () => {
@@ -142,74 +189,45 @@ context('Analytics section > Protected characteristics page', () => {
     const gaSpy = new GoogleAnalyticsSpy()
     gaSpy.install()
 
-    page
-      .getChartFeedback('population-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Population by age',
-          action: 'opened',
-          label: 'MDI',
-        })
-      )
-    page
-      .getChartFeedback('population-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Population by age',
-          action: 'closed',
-          label: 'MDI',
-        })
-      )
+    const feedbackBoxes: [ChartId, string][] = [
+      ['population-by-age', 'Is this chart useful > Population by age'],
+      ['incentive-levels-by-age', 'Is this chart useful > Incentive level by age'],
+      ['trends-incentive-levels-by-age', 'Is this chart useful > Incentive level by age trends'],
+      ['trends-entries-by-age', 'Is this chart useful > Behaviour entries by age trends'],
+      ['entries-by-age', 'Is this chart useful > Behaviour entries by age'],
+    ]
 
-    page
-      .getChartFeedback('incentive-levels-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level by age',
-          action: 'opened',
-          label: 'MDI',
-        })
-      )
-    page
-      .getChartFeedback('incentive-levels-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level by age',
-          action: 'closed',
-          label: 'MDI',
-        })
-      )
-
-    page
-      .getChartFeedback('entries-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entries by age',
-          action: 'opened',
-          label: 'MDI',
-        })
-      )
-    page
-      .getChartFeedback('entries-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entries by age',
-          action: 'closed',
-          label: 'MDI',
-        })
-      )
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [chartId, expectedCategory] of feedbackBoxes) {
+      page
+        .getChartFeedback(chartId)
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('incentives_event', {
+            category: expectedCategory,
+            action: 'opened',
+            label: 'MDI',
+          })
+        )
+      page
+        .getChartFeedback(chartId)
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('incentives_event', {
+            category: expectedCategory,
+            action: 'closed',
+            label: 'MDI',
+          })
+        )
+    }
   })
 
   it('users can submit feedback on charts', () => {
     testValidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
       'population-by-age',
       'incentive-levels-by-age',
+      'trends-incentive-levels-by-age',
+      'trends-entries-by-age',
       'entries-by-age',
     ])
   })
@@ -218,6 +236,8 @@ context('Analytics section > Protected characteristics page', () => {
     testInvalidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
       'population-by-age',
       'incentive-levels-by-age',
+      'trends-incentive-levels-by-age',
+      'trends-entries-by-age',
       'entries-by-age',
     ])
   })

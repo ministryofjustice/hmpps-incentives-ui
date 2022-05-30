@@ -21,7 +21,7 @@ export function setUpSentryRequestHandler(app: Express): void {
       Sentry.Handlers.requestHandler({
         ip: false,
         user: false,
-      }) as RequestHandler
+      }) as RequestHandler,
     )
   }
 }

@@ -155,7 +155,7 @@ context('Analytics section > Protected characteristics page', () => {
           category: 'How you can use this chart > Incentive level by age',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartGuidance('incentive-levels-by-age')
@@ -165,7 +165,7 @@ context('Analytics section > Protected characteristics page', () => {
           category: 'How you can use this chart > Incentive level by age',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
 
     page
@@ -176,7 +176,7 @@ context('Analytics section > Protected characteristics page', () => {
           category: 'How you can use this chart > Behaviour entries by age',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartGuidance('prisoners-with-entries-by-age')
@@ -186,7 +186,7 @@ context('Analytics section > Protected characteristics page', () => {
           category: 'How you can use this chart > Behaviour entries by age',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
   })
 
@@ -214,7 +214,7 @@ context('Analytics section > Protected characteristics page', () => {
             category: expectedCategory,
             action: 'opened',
             label: 'MDI',
-          })
+          }),
         )
       page
         .getChartFeedback(chartId)
@@ -224,7 +224,7 @@ context('Analytics section > Protected characteristics page', () => {
             category: expectedCategory,
             action: 'closed',
             label: 'MDI',
-          })
+          }),
         )
     }
   })

@@ -30,7 +30,7 @@ export default class GoogleAnalyticsSpy {
   shouldHaveSentEvents(...calls: [string, Record<string, string>][]) {
     return cy.wrap(this.calls).should(
       'be.deep.equal',
-      calls.map(([eventName, eventParams]) => ['event', eventName, eventParams])
+      calls.map(([eventName, eventParams]) => ['event', eventName, eventParams]),
     )
   }
 }

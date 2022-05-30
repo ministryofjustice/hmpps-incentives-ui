@@ -67,7 +67,7 @@ function appSetup(
   production: boolean,
   testSession: Session,
   mockUserService: UserService,
-  testRouter?: Router
+  testRouter?: Router,
 ): Express {
   const app = express()
 

@@ -71,7 +71,7 @@ export function mockAppS3ClientResponse(s3Client: jest.Mocked<S3Client>, tableRe
  */
 export function mockSdkS3ClientReponse(
   send: jest.Mock<Promise<GetObjectOutput | ListObjectsV2Output>, [GetObjectCommand | ListObjectsV2Command]>,
-  tableResponse = MockTable.Sample
+  tableResponse = MockTable.Sample,
 ) {
   send.mockImplementation(async command => {
     if (command instanceof ListObjectsV2Command) {

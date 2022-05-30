@@ -5,11 +5,11 @@ import { TrendsReportRow } from './analyticsServiceTypes'
  */
 export function mapRowsAndSumTotals<
   RowIn extends [string, ...(number | string)[]],
-  RowOut extends [string, ...number[]]
+  RowOut extends [string, ...number[]],
 >(
   stitchedTable: RowIn[],
   rowMapper: (row: RowIn) => RowOut,
-  summedColumnCount: number // the number of number columns at the end of RowOut
+  summedColumnCount: number, // the number of number columns at the end of RowOut
 ): RowOut[] {
   const groups: Record<string, RowOut> = {}
   const grandTotals: number[] = Array(summedColumnCount).fill(0)
@@ -42,7 +42,7 @@ export function mapRowsAndSumTotals<
 export function mapRowsForMonthlyTrends<RowIn extends [string, ...(number | string)[]]>(
   stitchedTable: RowIn[],
   rowMapper: (row: RowIn) => { yearAndMonth: string; columnIndex: number; value: number; population: number }[],
-  valueCount: number
+  valueCount: number,
 ): TrendsReportRow[] {
   const groups: Record<string, Omit<TrendsReportRow, 'total'>> = {}
   stitchedTable.forEach(rowIn => {
@@ -148,7 +148,7 @@ export function compareLocations({ label: location1 }: BaseReportRow, { label: l
  */
 export function compareCharacteristics(
   { label: characteristic1 }: BaseReportRow,
-  { label: characteristic2 }: BaseReportRow
+  { label: characteristic2 }: BaseReportRow,
 ) {
   if (characteristic1 === 'All') {
     return -1
@@ -176,7 +176,7 @@ export function compareCharacteristics(
  */
 export function compareMonths(
   { yearAndMonth: month1 }: Pick<TrendsReportRow, 'yearAndMonth'>,
-  { yearAndMonth: month2 }: Pick<TrendsReportRow, 'yearAndMonth'>
+  { yearAndMonth: month2 }: Pick<TrendsReportRow, 'yearAndMonth'>,
 ): number {
   if (month1 < month2) {
     return -1

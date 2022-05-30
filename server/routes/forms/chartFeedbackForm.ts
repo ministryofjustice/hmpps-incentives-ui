@@ -19,7 +19,7 @@ export default class ChartFeedbackForm extends Form<ChartFeedbackData> {
       delete this.data.yesComments
       if (
         !['not-relevant', 'do-not-understand', 'does-not-show-enough', 'what-to-do-with-info', 'other'].includes(
-          mainNoReason
+          mainNoReason,
         )
       ) {
         this.addError('mainNoReason', 'Select a reason for your answer')

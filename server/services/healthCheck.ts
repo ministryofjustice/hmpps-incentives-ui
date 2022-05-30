@@ -65,19 +65,19 @@ const apiChecks = [
   service(
     'hmppsNomisUserRolesApi',
     `${config.apis.nomisUserRolesApi.url}/health/ping`,
-    config.apis.nomisUserRolesApi.agent
+    config.apis.nomisUserRolesApi.agent,
   ),
   service(
     'hmppsIncentivesApi',
     `${config.apis.hmppsIncentivesApi.url}/health/ping`,
-    config.apis.hmppsIncentivesApi.agent
+    config.apis.hmppsIncentivesApi.agent,
   ),
   ...(config.apis.tokenVerification.enabled
     ? [
         service(
           'tokenVerification',
           `${config.apis.tokenVerification.url}/health/ping`,
-          config.apis.tokenVerification.agent
+          config.apis.tokenVerification.agent,
         ),
       ]
     : []),

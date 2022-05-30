@@ -146,7 +146,7 @@ context('Wing incentives table page', () => {
             // eslint-disable-next-line no-unused-expressions
             expect(
               isSorted(columnValues, reversed),
-              `Column "${columnTitle}" should be ${reversed ? 'reverse-' : ''}sorted`
+              `Column "${columnTitle}" should be ${reversed ? 'reverse-' : ''}sorted`,
             ).to.be.true
           }
         }
@@ -166,7 +166,7 @@ context('Wing incentives table page', () => {
           category: 'Incentives information > Clicked on incentive level tab',
           action: 'Basic',
           label: 'MDI-42',
-        })
+        }),
       )
     cy.get('a#tab_STD')
       .click()
@@ -175,7 +175,7 @@ context('Wing incentives table page', () => {
           category: 'Incentives information > Clicked on incentive level tab',
           action: 'Standard',
           label: 'MDI-42',
-        })
+        }),
       )
     cy.get('a#tab_STD')
       .type('{leftarrow}')
@@ -184,7 +184,7 @@ context('Wing incentives table page', () => {
           category: 'Incentives information > Clicked on incentive level tab',
           action: 'Basic',
           label: 'MDI-42',
-        })
+        }),
       )
 
     // sorting table send events
@@ -193,7 +193,7 @@ context('Wing incentives table page', () => {
       .then(() => gaSpy.clear())
     cy.get('table#incentive-table-STD .govuk-table__header:visible')
       .spread((...$ths) =>
-        $ths.map($th => cy.wrap($th).click()).reduce((thClick, thNextClick) => thClick.then(() => thNextClick))
+        $ths.map($th => cy.wrap($th).click()).reduce((thClick, thNextClick) => thClick.then(() => thNextClick)),
       )
       .then(() => {
         const eventsCalls: [string, Record<string, string>][] = [
@@ -223,8 +223,8 @@ context('Wing incentives table page', () => {
               category: 'Incentives information > Clicked on link',
               action: 'prisoner name',
               label: 'MDI-42',
-            })
-          )
+            }),
+          ),
       )
   })
 })

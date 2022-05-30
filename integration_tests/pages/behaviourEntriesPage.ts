@@ -27,7 +27,7 @@ export default class BehaviourEntriesPage extends Page {
             provenAdjudications: Cypress.$(tds[6]).text(),
             provenAdjudicationsLink: Cypress.$(tds[6]).find('a').attr('href'),
           }
-        })
+        }),
       )
   }
 }

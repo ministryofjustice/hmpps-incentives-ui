@@ -23,7 +23,7 @@ beforeEach(() => {
       prisonId: 'MDI',
       locationId: 'MDI-2',
       locationDescription: 'Houseblock 2',
-    })
+    }),
   )
 })
 
@@ -56,7 +56,7 @@ describe('GET /incentive-summary/:locationPrefix', () => {
           .expect('Content-Type', /html/)
           .expect(res => {
             expect(res.text).toContain(
-              'Review details have been removed from this table while we investigate the data.'
+              'Review details have been removed from this table while we investigate the data.',
             )
           })
       })
@@ -82,7 +82,7 @@ describe('GET /incentive-summary/:locationPrefix', () => {
           .expect('Content-Type', /html/)
           .expect(res => {
             expect(res.text).not.toContain(
-              'Review details have been removed from this table while we work on improving the data.'
+              'Review details have been removed from this table while we work on improving the data.',
             )
           })
       })

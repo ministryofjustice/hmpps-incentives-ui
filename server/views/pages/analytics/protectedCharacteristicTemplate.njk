@@ -27,7 +27,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <form id="form-select-characteristic" method="get" action="/analytics/protected-characteristic" novalidate>
+      <form id="form-select-characteristic" method="get" action="/analytics/{{ prisonId }}/protected-characteristic" novalidate>
         <div class="govuk-form-group">
           <label class="govuk-label" for="characteristic">
             Select a protected characteristic
@@ -56,7 +56,7 @@
         labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
         chartId=chartId,
         googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
-        activeCaseload=user.activeCaseload.id,
+        prisonId=prisonId,
         form=forms[chartId],
         csrfToken=csrfToken,
         report=incentiveLevelsByCharacteristic,
@@ -76,7 +76,7 @@
         labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
         chartId=chartId,
         googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
-        activeCaseload=user.activeCaseload.id,
+        prisonId=prisonId,
         form=forms[chartId],
         csrfToken=csrfToken,
         report=incentiveLevelsByCharacteristic,
@@ -144,7 +144,7 @@
           guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
           chartId=chartId,
           googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
-          activeCaseload=user.activeCaseload.id,
+          prisonId=prisonId,
           form=forms[chartId],
           csrfToken=csrfToken,
           report=incentiveLevelsTrendsByCharacteristic,
@@ -180,7 +180,7 @@
           guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
           chartId=chartId,
           googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
-          activeCaseload=user.activeCaseload.id,
+          prisonId=prisonId,
           form=forms[chartId],
           csrfToken=csrfToken,
           report=behaviourEntryTrendsByCharacteristic,
@@ -201,7 +201,7 @@
         labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
         chartId=chartId,
         googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
-        activeCaseload=user.activeCaseload.id,
+        prisonId=prisonId,
         form=forms[chartId],
         csrfToken=csrfToken,
         report=prisonersWithEntriesByCharacteristic,

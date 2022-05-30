@@ -50,9 +50,12 @@ export const protectedCharacteristicRoutes = {
  * Shared template variables needed throughout analytics section
  */
 function templateContext(req: Request): Record<string, unknown> {
+  const { prisonId } = req.params
+
   return {
     feedbackUrl: config.feedbackUrlForAnalytics || config.feedbackUrl,
     messages: req.flash(),
+    prisonId,
   }
 }
 
@@ -89,7 +92,8 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', (req, res) => {
-    res.redirect('/analytics/incentive-levels')
+    const { prisonId } = req.params
+    res.redirect(`/analytics/${prisonId}/incentive-levels`)
   })
 
   const routeWithFeedback = (path: string, chartIds: ReadonlyArray<ChartId>, handler: RequestHandler) =>
@@ -114,15 +118,15 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
-    const activeCaseLoad = res.locals.user.activeCaseload.id
+    const { prisonId } = req.params
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
     const charts = [
-      analyticsService.getBehaviourEntriesByLocation(activeCaseLoad),
-      analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad),
-      analyticsService.getBehaviourEntryTrends(activeCaseLoad),
+      analyticsService.getBehaviourEntriesByLocation(prisonId),
+      analyticsService.getPrisonersWithEntriesByLocation(prisonId),
+      analyticsService.getBehaviourEntryTrends(prisonId),
     ].map(transformAnalyticsError)
     const [behaviourEntries, prisonersWithEntries, trends] = await Promise.all(charts)
 
@@ -139,14 +143,14 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
-    const activeCaseLoad = res.locals.user.activeCaseload.id
+    const { prisonId } = req.params
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
     const charts = [
-      analyticsService.getIncentiveLevelsByLocation(activeCaseLoad),
-      analyticsService.getIncentiveLevelTrends(activeCaseLoad),
+      analyticsService.getIncentiveLevelsByLocation(prisonId),
+      analyticsService.getIncentiveLevelTrends(prisonId),
     ].map(transformAnalyticsError)
     const [prisonersOnLevels, trends] = await Promise.all(charts)
 
@@ -159,7 +163,8 @@ export default function routes(router: Router): Router {
   })
 
   get('/protected-characteristics', (req, res) => {
-    res.redirect('/analytics/protected-characteristic?characteristic=age')
+    const { prisonId } = req.params
+    res.redirect(`/analytics/${prisonId}/protected-characteristic?characteristic=age`)
   })
 
   const protectedCharacteristicChartIds: ChartId[] = [
@@ -192,8 +197,8 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
+    const { prisonId } = req.params
     const characteristicName = (req.query.characteristic || 'age') as string
-    const activeCaseLoad = res.locals.user.activeCaseload.id
 
     if (!(characteristicName in protectedCharacteristicRoutes)) {
       next(new NotFound())
@@ -211,7 +216,7 @@ export default function routes(router: Router): Router {
     const protectedCharacteristic = protectedCharacteristicRoutes[characteristicName].characteristic
 
     const groupsForCharacteristic =
-      protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(activeCaseLoad)
+      protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(prisonId)
         ? knownGroupsFor(protectedCharacteristic).filter(ageGroup => ageGroup !== AgeYoungPeople)
         : knownGroupsFor(protectedCharacteristic)
 
@@ -244,18 +249,18 @@ export default function routes(router: Router): Router {
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
     const charts = [
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(prisonId, protectedCharacteristic),
       analyticsService.getIncentiveLevelTrendsByCharacteristic(
-        activeCaseLoad,
+        prisonId,
         protectedCharacteristic,
         trendsIncentiveLevelsGroup,
       ),
       analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        activeCaseLoad,
+        prisonId,
         protectedCharacteristic,
         trendsEntriesGroup,
       ),
-      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(prisonId, protectedCharacteristic),
     ].map(transformAnalyticsError)
     const [
       incentiveLevelsByCharacteristic,
@@ -297,7 +302,7 @@ const chartFeedbackHandler = (chartIds: ReadonlyArray<ChartId>) =>
       return
     }
 
-    const activeCaseLoad = res.locals.user.activeCaseload.id
+    const { prisonId } = req.params
     const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`
 
     if (!req.body.formId || !chartIds.includes(req.body.formId)) {
@@ -330,12 +335,12 @@ const chartFeedbackHandler = (chartIds: ReadonlyArray<ChartId>) =>
       chartUseful === 'yes'
         ? `
 Chart: ${form.formId} (${url})
-Prison: ${activeCaseLoad}
+Prison: ${prisonId}
 
 Is this chart useful? ${chartUseful}`
         : `
 Chart: ${form.formId} (${url})
-Prison: ${activeCaseLoad}
+Prison: ${prisonId}
 
 Is this chart useful? ${chartUseful}
 Main reason: ${mainNoReason}`
@@ -365,7 +370,7 @@ ${noComments}`
         // URL
         { id: 23730083, value: url },
         // Prison
-        { id: 23984153, value: activeCaseLoad },
+        { id: 23984153, value: prisonId },
       ],
     }
     const { username, token } = config.apis.zendesk

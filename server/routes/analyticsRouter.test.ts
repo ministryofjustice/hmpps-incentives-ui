@@ -15,6 +15,7 @@ const s3 = {
 }
 
 const isYouthCustodyServiceOriginal = PrisonRegister.isYouthCustodyService
+const pcBaseUrl = `/analytics/MDI/protected-characteristic`
 
 jest.mock('@aws-sdk/client-s3', () => {
   const { GetObjectCommand, ListObjectsV2Command } = jest.requireActual('@aws-sdk/client-s3')
@@ -73,21 +74,21 @@ type AnalyticsPage = {
 const analyticsPages: AnalyticsPage[] = [
   {
     name: 'Behaviour entries',
-    url: '/analytics/behaviour-entries',
+    url: '/analytics/MDI/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
     locationsLinkingToIncentivesTable: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
     name: 'Incentive levels',
-    url: '/analytics/incentive-levels',
+    url: '/analytics/MDI/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
     locationsLinkingToIncentivesTable: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
     name: 'Protected characteristics',
-    url: '/analytics/protected-characteristic?characteristic=disability',
+    url: `${pcBaseUrl}?characteristic=disability`,
     expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
     chartIds: [
       'population-by-disability',
@@ -276,7 +277,7 @@ describe.each(analyticsPages)(
 describe('Protected characteristic pages', () => {
   it('Age page is the default when none is explicitly selected', () => {
     return request(app)
-      .get('/analytics/protected-characteristic')
+      .get(pcBaseUrl)
       .expect(200)
       .expect(res => {
         expect(res.text).not.toContain('Page not found')
@@ -289,7 +290,7 @@ describe('Protected characteristic pages', () => {
 
   it('Invalid characteristic name results in 404', () => {
     return request(app)
-      .get('/analytics/protected-characteristic?characteristic=invalid')
+      .get(`${pcBaseUrl}?characteristic=invalid`)
       .expect(404)
       .expect(res => {
         expect(res.text).toContain('Page not found')
@@ -301,7 +302,7 @@ describe('Protected characteristic pages', () => {
     queryParamName => {
       it(`responds 404 Not Found when value for ${queryParamName} query parameter is invalid`, () => {
         return request(app)
-          .get(`/analytics/protected-characteristic?characteristic=ethnicity&${queryParamName}=66+`)
+          .get(`${pcBaseUrl}?characteristic=ethnicity&${queryParamName}=66+`)
           .expect(404)
           .expect(res => {
             expect(res.text).toContain('Page not found')
@@ -321,7 +322,7 @@ describe('Protected characteristic pages', () => {
 
         it(`${queryParamName} value can be 15-17`, () => {
           return request(app)
-            .get(`/analytics/protected-characteristic?characteristic=age&${queryParamName}=15-17`)
+            .get(`${pcBaseUrl}?characteristic=age&${queryParamName}=15-17`)
             .expect(200)
             .expect(res => {
               expect(res.text).toContain('Protected characteristics')
@@ -330,7 +331,7 @@ describe('Protected characteristic pages', () => {
 
         it(`PC groups defaults to 15-17`, () => {
           return request(app)
-            .get(`/analytics/protected-characteristic?characteristic=age`)
+            .get(`${pcBaseUrl}?characteristic=age`)
             .expect(200)
             .expect(res => {
               expect(res.text).toContain('<option value="15-17" selected>15-17</option>')
@@ -351,7 +352,7 @@ describe('Protected characteristic pages', () => {
 
         it(`${queryParamName} value cannot be 15-17`, () => {
           return request(app)
-            .get(`/analytics/protected-characteristic?characteristic=age&${queryParamName}=15-17`)
+            .get(`${pcBaseUrl}?characteristic=age&${queryParamName}=15-17`)
             .expect(404)
             .expect(res => {
               expect(res.text).toContain('Not Found')
@@ -360,7 +361,7 @@ describe('Protected characteristic pages', () => {
 
         it(`PC groups defaults to 18-25`, () => {
           return request(app)
-            .get(`/analytics/protected-characteristic?characteristic=age`)
+            .get(`${pcBaseUrl}?characteristic=age`)
             .expect(200)
             .expect(res => {
               expect(res.text).toContain('<option value="18-25" selected>18-25</option>')
@@ -381,7 +382,7 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
       StitchedTablesCache.clear()
     })
 
-    const url = `/analytics/protected-characteristic?characteristic=${characteristicName}`
+    const url = `${pcBaseUrl}?characteristic=${characteristicName}`
 
     it(`${label} page shows correct charts`, () => {
       return request(app)

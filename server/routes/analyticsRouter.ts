@@ -21,6 +21,7 @@ import {
 import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
+import { Caseload } from '../data/nomisUserRolesApi'
 
 export const protectedCharacteristicRoutes = {
   age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
@@ -88,6 +89,15 @@ async function transformAnalyticsError<R>(reportPromise: Promise<R>): Promise<R>
   }
 }
 
+function hasAccessToPrisonOr404(caseloads: Caseload[], prisonId: string) {
+  logger.debug(JSON.stringify(caseloads))
+
+  const hasAccess = caseloads.find((caseload: Caseload) => caseload.id === prisonId)
+  if (!hasAccess) {
+    throw new NotFound()
+  }
+}
+
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
@@ -119,6 +129,7 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
     const { prisonId } = req.params
+    hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
@@ -144,6 +155,7 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
     const { prisonId } = req.params
+    hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
@@ -198,6 +210,8 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
     const { prisonId } = req.params
+    hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
+
     const characteristicName = (req.query.characteristic || 'age') as string
 
     if (!(characteristicName in protectedCharacteristicRoutes)) {
@@ -303,6 +317,8 @@ const chartFeedbackHandler = (chartIds: ReadonlyArray<ChartId>) =>
     }
 
     const { prisonId } = req.params
+    hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
+
     const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`
 
     if (!req.body.formId || !chartIds.includes(req.body.formId)) {

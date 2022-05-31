@@ -90,9 +90,7 @@ async function transformAnalyticsError<R>(reportPromise: Promise<R>): Promise<R>
 }
 
 function hasAccessToPrisonOr404(caseloads: Caseload[], prisonId: string) {
-  logger.debug(JSON.stringify(caseloads))
-
-  const hasAccess = caseloads.find((caseload: Caseload) => caseload.id === prisonId)
+  const hasAccess = caseloads.some((caseload: Caseload) => caseload.id === prisonId)
   if (!hasAccess) {
     throw new NotFound()
   }
@@ -103,7 +101,7 @@ export default function routes(router: Router): Router {
 
   get('/', (req, res) => {
     const { prisonId } = req.params
-    res.redirect(`/analytics/${prisonId}/incentive-levels`)
+    res.redirect(`/${prisonId}/analytics/incentive-levels`)
   })
 
   const routeWithFeedback = (path: string, chartIds: ReadonlyArray<ChartId>, handler: RequestHandler) =>
@@ -176,7 +174,7 @@ export default function routes(router: Router): Router {
 
   get('/protected-characteristics', (req, res) => {
     const { prisonId } = req.params
-    res.redirect(`/analytics/${prisonId}/protected-characteristic?characteristic=age`)
+    res.redirect(`/${prisonId}/analytics/protected-characteristic?characteristic=age`)
   })
 
   const protectedCharacteristicChartIds: ChartId[] = [

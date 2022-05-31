@@ -15,7 +15,7 @@ const s3 = {
 }
 
 const isYouthCustodyServiceOriginal = PrisonRegister.isYouthCustodyService
-const pcBaseUrl = `/analytics/MDI/protected-characteristic`
+const pcBaseUrl = `/MDI/analytics/protected-characteristic`
 
 jest.mock('@aws-sdk/client-s3', () => {
   const { GetObjectCommand, ListObjectsV2Command } = jest.requireActual('@aws-sdk/client-s3')
@@ -74,14 +74,14 @@ type AnalyticsPage = {
 const analyticsPages: AnalyticsPage[] = [
   {
     name: 'Behaviour entries',
-    url: '/analytics/MDI/behaviour-entries',
+    url: '/MDI/analytics/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
     locationsLinkingToIncentivesTable: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
     name: 'Incentive levels',
-    url: '/analytics/MDI/incentive-levels',
+    url: '/MDI/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
     locationsLinkingToIncentivesTable: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
     chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],

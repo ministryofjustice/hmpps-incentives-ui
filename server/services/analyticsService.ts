@@ -18,7 +18,7 @@ import {
   AgeYoungPeople,
   AnalyticsError,
   AnalyticsErrorType,
-  BehaviourEntriesByProtectedCharacteristic,
+  PrisonersWithEntriesByProtectedCharacteristic,
   knownGroupsFor,
   ProtectedCharacteristic,
   TableType,
@@ -300,10 +300,10 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }
   }
 
-  async getBehaviourEntriesByProtectedCharacteristic(
+  async getPrisonersWithEntriesByProtectedCharacteristic(
     prison: string,
     protectedCharacteristic: ProtectedCharacteristic
-  ): Promise<Report<BehaviourEntriesByProtectedCharacteristic>> {
+  ): Promise<Report<PrisonersWithEntriesByProtectedCharacteristic>> {
     const columnsToStitch = ['prison', 'behaviour_profile', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string]
 
@@ -328,7 +328,7 @@ export default class AnalyticsService {
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
-        `Filtered BehaviourEntriesByProtectedCharacteristic report for ${protectedCharacteristic} has no rows`
+        `Filtered PrisonersWithEntriesByProtectedCharacteristic report for ${protectedCharacteristic} has no rows`
       )
     }
 
@@ -349,7 +349,7 @@ export default class AnalyticsService {
       columns.length
     )
 
-    const rows: BehaviourEntriesByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
+    const rows: PrisonersWithEntriesByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
       return { label: characteristic, values }
     })
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))

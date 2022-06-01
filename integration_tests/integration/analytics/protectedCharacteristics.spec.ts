@@ -111,7 +111,7 @@ context('Analytics section > Protected characteristics page', () => {
         ],
       ],
       [
-        'entries-by-age',
+        'prisoners-with-entries-by-age',
         [
           ['All', '11%', '17%', '2%', '69%'],
           [''],
@@ -162,21 +162,21 @@ context('Analytics section > Protected characteristics page', () => {
       )
 
     page
-      .getChartGuidance('entries-by-age')
+      .getChartGuidance('prisoners-with-entries-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entries by age',
+          category: 'How you can use this chart > Prisoners with behaviour entries by age',
           action: 'opened',
           label: 'MDI',
         })
       )
     page
-      .getChartGuidance('entries-by-age')
+      .getChartGuidance('prisoners-with-entries-by-age')
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entries by age',
+          category: 'How you can use this chart > Prisoners with behaviour entries by age',
           action: 'closed',
           label: 'MDI',
         })
@@ -194,7 +194,7 @@ context('Analytics section > Protected characteristics page', () => {
       ['incentive-levels-by-age', 'Is this chart useful > Incentive level by age'],
       ['trends-incentive-levels-by-age', 'Is this chart useful > Incentive level by age trends'],
       ['trends-entries-by-age', 'Is this chart useful > Behaviour entries by age trends'],
-      ['entries-by-age', 'Is this chart useful > Behaviour entries by age'],
+      ['prisoners-with-entries-by-age', 'Is this chart useful > Prisoners with behaviour entries by age'],
     ]
 
     // eslint-disable-next-line no-restricted-syntax
@@ -228,7 +228,7 @@ context('Analytics section > Protected characteristics page', () => {
       'incentive-levels-by-age',
       'trends-incentive-levels-by-age',
       'trends-entries-by-age',
-      'entries-by-age',
+      'prisoners-with-entries-by-age',
     ])
   })
 
@@ -238,7 +238,7 @@ context('Analytics section > Protected characteristics page', () => {
       'incentive-levels-by-age',
       'trends-incentive-levels-by-age',
       'trends-entries-by-age',
-      'entries-by-age',
+      'prisoners-with-entries-by-age',
     ])
   })
 })

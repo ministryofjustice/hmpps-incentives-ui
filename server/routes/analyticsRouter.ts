@@ -183,11 +183,11 @@ export default function routes(router: Router): Router {
     'trends-entries-by-ethnicity',
     'trends-entries-by-religion',
     'trends-entries-by-sexual-orientation',
-    'entries-by-age',
-    'entries-by-disability',
-    'entries-by-ethnicity',
-    'entries-by-religion',
-    'entries-by-sexual-orientation',
+    'prisoners-with-entries-by-age',
+    'prisoners-with-entries-by-disability',
+    'prisoners-with-entries-by-ethnicity',
+    'prisoners-with-entries-by-religion',
+    'prisoners-with-entries-by-sexual-orientation',
   ]
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
@@ -255,13 +255,13 @@ export default function routes(router: Router): Router {
         protectedCharacteristic,
         trendsEntriesGroup
       ),
-      analyticsService.getBehaviourEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
     ].map(transformAnalyticsError)
     const [
       incentiveLevelsByCharacteristic,
       incentiveLevelsTrendsByCharacteristic,
       behaviourEntryTrendsByCharacteristic,
-      behaviourEntriesByCharacteristic,
+      prisonersWithEntriesByCharacteristic,
     ] = await Promise.all(charts)
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
@@ -276,7 +276,7 @@ export default function routes(router: Router): Router {
       incentiveLevelsByCharacteristic,
       incentiveLevelsTrendsByCharacteristic,
       behaviourEntryTrendsByCharacteristic,
-      behaviourEntriesByCharacteristic,
+      prisonersWithEntriesByCharacteristic,
       ProtectedCharacteristicsChartsContent,
     })
   })

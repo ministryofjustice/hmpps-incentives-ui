@@ -29,11 +29,11 @@ export const chartIds = [
   'trends-entries-by-ethnicity',
   'trends-entries-by-religion',
   'trends-entries-by-sexual-orientation',
-  'entries-by-age',
-  'entries-by-disability',
-  'entries-by-ethnicity',
-  'entries-by-religion',
-  'entries-by-sexual-orientation',
+  'prisoners-with-entries-by-age',
+  'prisoners-with-entries-by-disability',
+  'prisoners-with-entries-by-ethnicity',
+  'prisoners-with-entries-by-religion',
+  'prisoners-with-entries-by-sexual-orientation',
 ] as const
 
 export type ChartId = typeof chartIds[number]

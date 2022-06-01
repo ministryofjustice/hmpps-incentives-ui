@@ -52,7 +52,7 @@ const guidanceTrendsIncentiveLevelsByPc =
   'Use this chart to compare incentive levels for each group in this protected characteristic with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing levels you expect?'
 const guidanceTrendsEntriesByPc =
   'Use this chart to compare the numbers of positive, negative and total entries received by each group within this protected characteristic with previous months. What do the number of entries and the ratios tell you about incentives policy and behaviour of prisoners? Be aware of population changes.'
-const guidanceEntriesByPc =
+const guidancePrisonersWithEntriesByPc =
   'Use this chart to see the number of prisoners who have received different types of behaviour entries in this protected characteristic. Are there imbalances that need action to make sure incentives work for everyone? Be cautious about small numbers.'
 export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChartContent> = {
   'population-by-age': {
@@ -164,38 +164,38 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     guidance: guidanceTrendsEntriesByPc,
     googleAnalyticsCategory: 'Behaviour entries by sexual orientation trends',
   },
-  'entries-by-age': {
+  'prisoners-with-entries-by-age': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by age – last 28 days',
-    guidance: guidanceEntriesByPc,
+    guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Age',
-    googleAnalyticsCategory: 'Behaviour entries by age',
+    googleAnalyticsCategory: 'Prisoners with behaviour entries by age',
   },
-  'entries-by-disability': {
+  'prisoners-with-entries-by-disability': {
     title:
       'Percentage and number of prisoners receiving each behaviour entry type by recorded disability – last 28 days',
-    guidance: guidanceEntriesByPc,
+    guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Disability',
-    googleAnalyticsCategory: 'Behaviour entries by disability',
+    googleAnalyticsCategory: 'Prisoners with behaviour entries by disability',
     wideLabel: true,
   },
-  'entries-by-ethnicity': {
+  'prisoners-with-entries-by-ethnicity': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by ethnicity – last 28 days',
-    guidance: guidanceEntriesByPc,
+    guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Ethnicity',
-    googleAnalyticsCategory: 'Behaviour entries by ethnicity',
+    googleAnalyticsCategory: 'Prisoners with behaviour entries by ethnicity',
     wideLabel: true,
   },
-  'entries-by-religion': {
+  'prisoners-with-entries-by-religion': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by religion – last 28 days',
-    guidance: guidanceEntriesByPc,
+    guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Religion',
-    googleAnalyticsCategory: 'Behaviour entries by religion',
+    googleAnalyticsCategory: 'Prisoners with behaviour entries by religion',
   },
-  'entries-by-sexual-orientation': {
+  'prisoners-with-entries-by-sexual-orientation': {
     title:
       'Percentage and number of prisoners receiving each behaviour entry type by sexual orientation – last 28 days',
-    guidance: guidanceEntriesByPc,
+    guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Sexual orientation',
-    googleAnalyticsCategory: 'Behaviour entries by sexual orientation',
+    googleAnalyticsCategory: 'Prisoners with behaviour entries by sexual orientation',
   },
 }

@@ -41,7 +41,7 @@ export const IncentiveLevelsChartsContent: Record<string, AnalyticsChartContent>
   'trends-incentive-levels': {
     title: 'Incentive levels in the establishment – last 12 months',
     guidance:
-      'Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing the levels you would like it to?',
+      'Use this chart to compare incentive levels with previous months. Information is taken from monthly averages. Is there anything that needs more exploration? Is the incentives scheme producing the levels you would like it to?',
     googleAnalyticsCategory: 'Incentive level trends',
   },
 }
@@ -49,7 +49,7 @@ export const IncentiveLevelsChartsContent: Record<string, AnalyticsChartContent>
 const guidanceIncentiveLevelsByPc =
   'Use this chart to see incentive levels for this protected characteristic and compare them to prison levels. Are there patterns or imbalances that you might want to explore further? Be aware of small numbers.'
 const guidanceTrendsIncentiveLevelsByPc =
-  'Use this chart to compare incentive levels for each group in this protected characteristic with previous months. Information is taken from monthly averages. Is there anything that needs explored further? Is the incentives scheme producing levels you expect?'
+  'Use this chart to compare incentive levels for each group in this protected characteristic with previous months. Information is taken from monthly averages. Is there anything that needs more exploration? Is the incentives scheme producing levels you expect?'
 const guidanceTrendsEntriesByPc =
   'Use this chart to compare the numbers of positive, negative and total entries received by each group within this protected characteristic with previous months. What do the number of entries and the ratios tell you about incentives policy and behaviour of prisoners? Be aware of population changes.'
 const guidancePrisonersWithEntriesByPc =

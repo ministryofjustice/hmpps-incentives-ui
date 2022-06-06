@@ -94,7 +94,7 @@ const analyticsPages: AnalyticsPage[] = [
       'incentive-levels-by-disability',
       'trends-incentive-levels-by-disability',
       'trends-entries-by-disability',
-      'entries-by-disability',
+      'prisoners-with-entries-by-disability',
     ],
   },
 ]
@@ -398,7 +398,7 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
           expect(pageContent).toContain(`table-incentive-levels-by-${characteristicName}`)
           expect(pageContent).toContain(`table-trends-incentive-levels-by-${characteristicName}`)
           expect(pageContent).toContain(`table-trends-entries-by-${characteristicName}`)
-          expect(pageContent).toContain(`table-entries-by-${characteristicName}`)
+          expect(pageContent).toContain(`table-prisoners-with-entries-by-${characteristicName}`)
         })
     })
 

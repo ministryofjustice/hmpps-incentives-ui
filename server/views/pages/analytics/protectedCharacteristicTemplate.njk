@@ -194,7 +194,7 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-      {% set chartId = "entries-by-" + characteristicName %}
+      {% set chartId = "prisoners-with-entries-by-" + characteristicName %}
       {{ chartPrisonersOnLevels(
         title=ProtectedCharacteristicsChartsContent[chartId].title,
         guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
@@ -204,7 +204,7 @@
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
-        report=behaviourEntriesByCharacteristic,
+        report=prisonersWithEntriesByCharacteristic,
         wideLabel=ProtectedCharacteristicsChartsContent[chartId].wideLabel
       ) }}
 

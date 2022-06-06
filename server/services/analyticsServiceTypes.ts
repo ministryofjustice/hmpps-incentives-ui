@@ -126,7 +126,7 @@ export type PrisonersOnLevelsByProtectedCharacteristic = {
 /**
  * A row in a report returned
  */
-export type BehaviourEntriesByProtectedCharacteristic = {
+export type PrisonersWithEntriesByProtectedCharacteristic = {
   /** protected characteristic */
   label: string
   /** link */

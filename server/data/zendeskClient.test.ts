@@ -13,7 +13,7 @@ describe('Zendesk client', () => {
     mockedZendeskClient = new ZendeskClient(
       { agent: new AgentConfig(1000), timeout: { deadline: 1000, response: 1000 }, url: mockedZendeskApiUrl },
       'test-user',
-      '12345'
+      '12345',
     )
   })
 

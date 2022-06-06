@@ -103,7 +103,7 @@ export default function routes(router: Router): Router {
         next()
       },
       asyncMiddleware(chartFeedbackHandler(chartIds)),
-      asyncMiddleware(handler)
+      asyncMiddleware(handler),
     )
 
   const behaviourEntryChartIds: ChartId[] = [
@@ -248,12 +248,12 @@ export default function routes(router: Router): Router {
       analyticsService.getIncentiveLevelTrendsByCharacteristic(
         activeCaseLoad,
         protectedCharacteristic,
-        trendsIncentiveLevelsGroup
+        trendsIncentiveLevelsGroup,
       ),
       analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
         activeCaseLoad,
         protectedCharacteristic,
-        trendsEntriesGroup
+        trendsEntriesGroup,
       ),
       analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
     ].map(transformAnalyticsError)

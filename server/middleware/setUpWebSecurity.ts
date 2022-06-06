@@ -29,14 +29,14 @@ export default function setUpWebSecurity(): Router {
           imgSrc: ["'self'", 'https://www.google-analytics.com'],
         },
       },
-    })
+    }),
   )
 
   // cf. https://security-guidance.service.justice.gov.uk/implement-security-txt/
   router.get('/.well-known/security.txt', (req, res) =>
     res.redirect(
-      'https://raw.githubusercontent.com/ministryofjustice/security-guidance/main/contact/vulnerability-disclosure-security.txt'
-    )
+      'https://raw.githubusercontent.com/ministryofjustice/security-guidance/main/contact/vulnerability-disclosure-security.txt',
+    ),
   )
 
   return router

@@ -40,7 +40,7 @@ describe('StitchedTablesCache', () => {
       const { stitchedTable } = await StitchedTablesCache.getStitchedTable(
         analyticsService,
         TableType.behaviourEntries,
-        columnsToStitch
+        columnsToStitch,
       )
       expect(s3Client.getObject).toHaveBeenCalledTimes(1)
       expect(stitchedTable).toEqual([['ABC'], ['DEF']])
@@ -126,7 +126,7 @@ describe('StitchedTablesCache', () => {
         const { stitchedTable: stitchedTable1 } = await StitchedTablesCache.getStitchedTable(
           analyticsService,
           TableType.behaviourEntries,
-          ['prison', 'someColumn']
+          ['prison', 'someColumn'],
         )
         expect(stitchedTable1).toEqual([
           ['ABC', 'Value 1'],
@@ -141,7 +141,7 @@ describe('StitchedTablesCache', () => {
         const { stitchedTable: stitchedTable2 } = await StitchedTablesCache.getStitchedTable(
           analyticsService,
           TableType.behaviourEntries,
-          ['prison']
+          ['prison'],
         )
         expect(stitchedTable2).toEqual([['ABC'], ['DEF']])
         expect(s3Client.getObject).toHaveBeenCalledTimes(1)
@@ -154,7 +154,7 @@ describe('StitchedTablesCache', () => {
         const { stitchedTable } = await StitchedTablesCache.getStitchedTable(
           analyticsService,
           TableType.behaviourEntries,
-          ['prison', 'someColumn']
+          ['prison', 'someColumn'],
         )
         expect(stitchedTable).toEqual([
           ['ABC', 'Value 1'],

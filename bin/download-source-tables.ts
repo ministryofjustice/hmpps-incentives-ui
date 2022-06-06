@@ -13,7 +13,7 @@ function printHelpAndExit() {
   const tableTypeOptions = tableTypes.map(t => `"${t}"`).join(' | ')
   process.stderr.write(
     `Usage: ./${scriptName} [${tableTypeOptions}] [YYYY-MM-DD] [path to save to or '-' for stdout]\n` +
-      `NB: Only works on pods within Cloud Platform\n`
+      `NB: Only works on pods within Cloud Platform\n`,
   )
   process.exit(1)
 }

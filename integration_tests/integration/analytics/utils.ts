@@ -4,7 +4,7 @@ import type AnalyticsPage from '../../pages/analytics'
 
 export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(
   pageClass: new () => PageClass,
-  chartIds: ChartId[]
+  chartIds: ChartId[],
 ) {
   chartIds.forEach(chartId => {
     let page = Page.verifyOnPage(pageClass)
@@ -26,7 +26,7 @@ export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(
 
 export function testInvalidFeedbackSubmission<PageClass extends AnalyticsPage>(
   pageClass: new () => PageClass,
-  chartIds: ChartId[]
+  chartIds: ChartId[],
 ) {
   chartIds.forEach(chartId => {
     let page = Page.verifyOnPage(pageClass)

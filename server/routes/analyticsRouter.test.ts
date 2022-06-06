@@ -269,7 +269,7 @@ describe.each(analyticsPages)(
           expect(mockedZendeskClientClass).not.toHaveBeenCalled()
         })
     })
-  }
+  },
 )
 
 // Tests specific of Protected Characteristic pages
@@ -369,7 +369,7 @@ describe('Protected characteristic pages', () => {
             })
         })
       })
-    }
+    },
   )
 })
 
@@ -417,5 +417,5 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
           })
         })
     })
-  }
+  },
 )

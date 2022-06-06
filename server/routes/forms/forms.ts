@@ -24,7 +24,7 @@ export default abstract class Form<Data extends BaseFormData> {
     /**
      * Unique identifier to distinguish multiple forms on one page
      */
-    readonly formId: string
+    readonly formId: string,
   ) {
     this.fieldErrors = {}
   }

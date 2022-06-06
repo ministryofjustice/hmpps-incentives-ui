@@ -125,7 +125,7 @@ describe('AnalyticsService', () => {
       const output = mapRowsAndSumTotals<StitchedRow, MappedRow>(
         stitchedTable,
         ([category, valA, valB]) => [category, valA + valB],
-        1
+        1,
       )
       expect(output).toEqual<MappedRow[]>([
         ['A', 6],
@@ -172,7 +172,7 @@ describe('AnalyticsService', () => {
             },
           ]
         },
-        1
+        1,
       )
       expect(output).toEqual<TrendsReportRow[]>([
         { yearAndMonth: '2022-02', population: 1800, values: [1800], total: 1800 },
@@ -204,7 +204,7 @@ describe('AnalyticsService', () => {
             },
           ]
         },
-        1
+        1,
       )
       expect(output).toEqual<TrendsReportRow[]>([
         { yearAndMonth: '2022-02', population: 3590, values: [3590], total: 3590 },
@@ -249,7 +249,7 @@ describe('AnalyticsService', () => {
             },
           ]
         },
-        2
+        2,
       )
       expect(output).toEqual<TrendsReportRow[]>([
         { yearAndMonth: '2022-02', population: 3590, values: [4, 24], total: 28 },
@@ -295,7 +295,7 @@ describe('AnalyticsService', () => {
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })
-      }
+      },
     )
   })
 
@@ -340,7 +340,7 @@ describe('AnalyticsService', () => {
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })
-      }
+      },
     )
   })
 
@@ -382,7 +382,7 @@ describe('AnalyticsService', () => {
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })
-      }
+      },
     )
 
     describe.each(Object.entries(prisonLevels))('lists levels in the correct order', (prison, levels) => {
@@ -410,7 +410,7 @@ describe('AnalyticsService', () => {
     it(`[${characteristic}]: has a totals row`, async () => {
       const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
         'MDI',
-        characteristic
+        characteristic,
       )
       expect(prisonersOnLevels).toHaveLength(expectedCharacteristics.length)
 
@@ -432,7 +432,7 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
       await expect(analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)).rejects.toThrow(
-        AnalyticsError
+        AnalyticsError,
       )
     })
 
@@ -471,7 +471,7 @@ describe('AnalyticsService', () => {
           const { columns } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(prison, characteristic)
           expect(columns).toEqual(levels)
         })
-      }
+      },
     )
   })
 
@@ -578,7 +578,7 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
       await expect(
-        analyticsService.getPrisonersWithEntriesByProtectedCharacteristic('MDI', characteristic)
+        analyticsService.getPrisonersWithEntriesByProtectedCharacteristic('MDI', characteristic),
       ).rejects.toThrow(AnalyticsError)
     })
 
@@ -625,7 +625,7 @@ describe('AnalyticsService', () => {
       const report = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
         'MDI',
         ProtectedCharacteristic.Ethnicity,
-        characteristicGroup
+        characteristicGroup,
       )
       expect(report.rows).toHaveLength(12)
     })
@@ -634,7 +634,7 @@ describe('AnalyticsService', () => {
       const report = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
         'MDI',
         ProtectedCharacteristic.Ethnicity,
-        characteristicGroup
+        characteristicGroup,
       )
       expect(report.plotPercentage).toBeTruthy()
     })
@@ -643,7 +643,7 @@ describe('AnalyticsService', () => {
       const report = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
         'MDI',
         ProtectedCharacteristic.Ethnicity,
-        characteristicGroup
+        characteristicGroup,
       )
       expect(report.populationIsTotal).toBeFalsy()
       expect(report).toHaveProperty('monthlyTotalName')
@@ -656,8 +656,8 @@ describe('AnalyticsService', () => {
         analyticsService.getIncentiveLevelTrendsByCharacteristic(
           'MDI',
           ProtectedCharacteristic.Ethnicity,
-          characteristicGroup
-        )
+          characteristicGroup,
+        ),
       ).rejects.toThrow(AnalyticsError)
     })
   })
@@ -671,7 +671,7 @@ describe('AnalyticsService', () => {
       const report = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
         'MDI',
         ProtectedCharacteristic.Ethnicity,
-        characteristicGroup
+        characteristicGroup,
       )
       expect(report.rows).toHaveLength(12)
     })
@@ -680,7 +680,7 @@ describe('AnalyticsService', () => {
       const report = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
         'MDI',
         ProtectedCharacteristic.Ethnicity,
-        characteristicGroup
+        characteristicGroup,
       )
       expect(report.plotPercentage).toBeFalsy()
       expect(report).toHaveProperty('verticalAxisTitle')
@@ -690,7 +690,7 @@ describe('AnalyticsService', () => {
       const report = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
         'MDI',
         ProtectedCharacteristic.Ethnicity,
-        characteristicGroup
+        characteristicGroup,
       )
       expect(report.populationIsTotal).toBeFalsy()
       expect(report).toHaveProperty('monthlyTotalName')
@@ -704,8 +704,8 @@ describe('AnalyticsService', () => {
         analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
           'MDI',
           ProtectedCharacteristic.Ethnicity,
-          characteristicGroup
-        )
+          characteristicGroup,
+        ),
       ).rejects.toThrow(AnalyticsError)
     })
   })

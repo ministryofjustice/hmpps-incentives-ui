@@ -39,7 +39,7 @@ export default class AnalyticsService {
 
   constructor(
     private readonly client: S3Client,
-    private readonly urlForLocation: (prison: string, location: string) => string
+    private readonly urlForLocation: (prison: string, location: string) => string,
   ) {}
 
   async findLatestTable(tableType: TableType): Promise<{ key: string; date: Date; modified: Date }> {
@@ -100,13 +100,13 @@ export default class AnalyticsService {
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
       this,
       TableType.behaviourEntries,
-      columnsToStitch
+      columnsToStitch,
     )
 
     const filteredTables = stitchedTable.filter(
       ([somePrison]) =>
         // filter only selected prison
-        somePrison === prison
+        somePrison === prison,
     )
     if (filteredTables.length === 0) {
       throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered BehaviourEntriesByLocation report has no rows')
@@ -117,7 +117,7 @@ export default class AnalyticsService {
     const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
       ([_prison, wing, positives, negatives]) => [wing, positives, negatives],
-      2
+      2,
     )
 
     const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([location, ...values], index) => {
@@ -135,18 +135,18 @@ export default class AnalyticsService {
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
       this,
       TableType.behaviourEntries,
-      columnsToStitch
+      columnsToStitch,
     )
 
     const filteredTables = stitchedTable.filter(
       ([somePrison]) =>
         // filter only selected prison
-        somePrison === prison
+        somePrison === prison,
     )
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
-        'Filtered PrisonersWithEntriesByLocation report has no rows'
+        'Filtered PrisonersWithEntriesByLocation report has no rows',
       )
     }
 
@@ -166,7 +166,7 @@ export default class AnalyticsService {
         }
         return [wing, 0, 0, 0, 1]
       },
-      4
+      4,
     )
 
     const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([location, ...values], index) => {
@@ -184,7 +184,7 @@ export default class AnalyticsService {
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       this,
       TableType.incentiveLevels,
-      columnsToStitch
+      columnsToStitch,
     )
 
     const columnSet: Set<string> = new Set()
@@ -217,7 +217,7 @@ export default class AnalyticsService {
         levels[levelIndex] = 1
         return [wing, ...levels]
       },
-      columns.length
+      columns.length,
     )
     columns = columns.map(removeSortingPrefix)
 
@@ -231,7 +231,7 @@ export default class AnalyticsService {
 
   async getIncentiveLevelsByProtectedCharacteristic(
     prison: string,
-    protectedCharacteristic: ProtectedCharacteristic
+    protectedCharacteristic: ProtectedCharacteristic,
   ): Promise<Report<PrisonersOnLevelsByProtectedCharacteristic>> {
     const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string, string]
@@ -239,7 +239,7 @@ export default class AnalyticsService {
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       this,
       TableType.incentiveLevels,
-      columnsToStitch
+      columnsToStitch,
     )
 
     const columnSet: Set<string> = new Set()
@@ -259,12 +259,12 @@ export default class AnalyticsService {
           columnSet.add(incentive)
         }
         return include
-      }
+      },
     )
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
-        `Filtered PrisonersOnLevelsByProtectedCharacteristic report for ${protectedCharacteristic} has no rows`
+        `Filtered PrisonersOnLevelsByProtectedCharacteristic report for ${protectedCharacteristic} has no rows`,
       )
     }
 
@@ -280,7 +280,7 @@ export default class AnalyticsService {
         levels[levelIndex] = 1
         return [characteristicGroup.trim(), ...levels]
       },
-      columns.length
+      columns.length,
     )
     columns = columns.map(removeSortingPrefix)
 
@@ -302,7 +302,7 @@ export default class AnalyticsService {
 
   async getPrisonersWithEntriesByProtectedCharacteristic(
     prison: string,
-    protectedCharacteristic: ProtectedCharacteristic
+    protectedCharacteristic: ProtectedCharacteristic,
   ): Promise<Report<PrisonersWithEntriesByProtectedCharacteristic>> {
     const columnsToStitch = ['prison', 'behaviour_profile', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string]
@@ -310,7 +310,7 @@ export default class AnalyticsService {
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       this,
       TableType.incentiveLevels,
-      columnsToStitch
+      columnsToStitch,
     )
 
     const filteredTables = stitchedTable.filter(
@@ -323,12 +323,12 @@ export default class AnalyticsService {
           // it's possible for characteristic to be null
           characteristicGroup
         )
-      }
+      },
     )
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
-        `Filtered PrisonersWithEntriesByProtectedCharacteristic report for ${protectedCharacteristic} has no rows`
+        `Filtered PrisonersWithEntriesByProtectedCharacteristic report for ${protectedCharacteristic} has no rows`,
       )
     }
 
@@ -341,12 +341,12 @@ export default class AnalyticsService {
         behaviourProfile = removeSortingPrefix(behaviourProfile)
         const behaviourProfiles = Array(columns.length).fill(0)
         const behaviourProfileIndex = columns.findIndex(
-          someBehaviourProfile => someBehaviourProfile === behaviourProfile
+          someBehaviourProfile => someBehaviourProfile === behaviourProfile,
         )
         behaviourProfiles[behaviourProfileIndex] = 1
         return [characteristicGroup.trim(), ...behaviourProfiles]
       },
-      columns.length
+      columns.length,
     )
 
     const rows: PrisonersWithEntriesByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
@@ -372,18 +372,18 @@ export default class AnalyticsService {
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
       this,
       TableType.trends,
-      columnsToStitch
+      columnsToStitch,
     )
 
     const filteredTables = stitchedTable.filter(
       ([somePrison]) =>
         // filter only selected prison
-        somePrison === prison
+        somePrison === prison,
     )
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
-        'Filtered trends report for behaviour entries has no rows'
+        'Filtered trends report for behaviour entries has no rows',
       )
     }
 
@@ -406,7 +406,7 @@ export default class AnalyticsService {
           },
         ]
       },
-      2
+      2,
     )
     addMissingMonths(lastUpdated, rows, 2)
     rows = removeMonthsOutsideBounds(lastUpdated, rows)
@@ -430,7 +430,7 @@ export default class AnalyticsService {
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
       this,
       TableType.trends,
-      columnsToStitch
+      columnsToStitch,
     )
 
     const columnSet: Set<string> = new Set()
@@ -465,7 +465,7 @@ export default class AnalyticsService {
           },
         ]
       },
-      columns.length
+      columns.length,
     )
     addMissingMonths(lastUpdated, rows, columns.length)
     rows = removeMonthsOutsideBounds(lastUpdated, rows)
@@ -484,7 +484,7 @@ export default class AnalyticsService {
   async getIncentiveLevelTrendsByCharacteristic(
     prison: string,
     protectedCharacteristic: ProtectedCharacteristic,
-    characteristicGroup: string
+    characteristicGroup: string,
   ): Promise<TrendsReport> {
     const columnsToStitch = ['prison', 'year_month_str', 'snapshots', 'offenders', 'incentive', protectedCharacteristic]
     type StitchedRow = [string, string, number, number, string, string]
@@ -492,7 +492,7 @@ export default class AnalyticsService {
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
       this,
       TableType.trends,
-      columnsToStitch
+      columnsToStitch,
     )
 
     const columnSet: Set<string> = new Set()
@@ -510,12 +510,12 @@ export default class AnalyticsService {
           columnSet.add(incentive)
         }
         return include
-      }
+      },
     )
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
-        'Filtered PC trends report for incentive levels has no rows'
+        'Filtered PC trends report for incentive levels has no rows',
       )
     }
 
@@ -535,7 +535,7 @@ export default class AnalyticsService {
           },
         ]
       },
-      columns.length
+      columns.length,
     )
     addMissingMonths(lastUpdated, rows, columns.length)
     rows = removeMonthsOutsideBounds(lastUpdated, rows)
@@ -555,7 +555,7 @@ export default class AnalyticsService {
   async getBehaviourEntryTrendsByProtectedCharacteristic(
     prison: string,
     protectedCharacteristic: ProtectedCharacteristic,
-    characteristicGroup: string
+    characteristicGroup: string,
   ): Promise<TrendsReport> {
     const columnsToStitch = [
       'prison',
@@ -571,7 +571,7 @@ export default class AnalyticsService {
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
       this,
       TableType.trends,
-      columnsToStitch
+      columnsToStitch,
     )
 
     const filteredTables = stitchedTable.filter(
@@ -583,12 +583,12 @@ export default class AnalyticsService {
           somePrison === prison &&
           someCharacteristicGroup.trim() === characteristicGroup
         )
-      }
+      },
     )
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
-        'Filtered PC trends report for behaviour entries has no rows'
+        'Filtered PC trends report for behaviour entries has no rows',
       )
     }
 
@@ -611,7 +611,7 @@ export default class AnalyticsService {
           },
         ]
       },
-      2
+      2,
     )
     addMissingMonths(lastUpdated, rows, 2)
     rows = removeMonthsOutsideBounds(lastUpdated, rows)
@@ -681,7 +681,7 @@ export class StitchedTablesCache {
   static async getStitchedTable<T extends Table, Row extends [string, ...(number | string)[]]>(
     analyticsService: AnalyticsService,
     tableType: TableType,
-    columnsToStitch: string[]
+    columnsToStitch: string[],
   ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] }> {
     const cacheKey = [tableType, ...columnsToStitch].join(',')
 
@@ -702,7 +702,7 @@ export class StitchedTablesCache {
 
   private static async get<Row extends [string, ...(number | string)[]]>(
     analyticsService: AnalyticsService,
-    cacheKey: string
+    cacheKey: string,
   ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] } | null> {
     // Check if there is a cached value
     if (cacheKey in this.cache) {

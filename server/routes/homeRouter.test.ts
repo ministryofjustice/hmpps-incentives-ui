@@ -24,7 +24,7 @@ describe('Home page', () => {
           .expect(res => {
             expect(res.text).toContain('Prisoner incentive information')
             expect(res.text).toContain(
-              'See incentive levels and behaviour entries for the prison population, by residential location.'
+              'See incentive levels and behaviour entries for the prison population, by residential location.',
             )
             expect(res.text).not.toContain('review date')
           })
@@ -42,7 +42,7 @@ describe('Home page', () => {
           .expect(res => {
             expect(res.text).toContain('Prisoner incentive information')
             expect(res.text).toContain(
-              'See review dates, incentive levels and behaviour entries by residential location.'
+              'See review dates, incentive levels and behaviour entries by residential location.',
             )
           })
       })

@@ -19,7 +19,7 @@ if (process.argv.length !== 4 || !tableTypes.includes(chosenTableType)) {
 }
 const destPath = path.resolve(
   __dirname,
-  `../server/testData/s3Bucket/${TableType[chosenTableType]}/${path.basename(sourcePath)}`
+  `../server/testData/s3Bucket/${TableType[chosenTableType]}/${path.basename(sourcePath)}`,
 )
 
 let columnsToKeep: string[]
@@ -71,7 +71,7 @@ const prisonsToKeep: ReadonlySet<string> = new Set(['BWI', 'MDI', 'WRI'])
 process.stderr.write(`Selecting ${prisonsToKeep.size} prisons…\n`)
 const prisonColumn = sourceTable.prison as Record<string, string>
 const newPrisonColumn: Record<string, string> = Object.fromEntries(
-  Object.entries(prisonColumn).filter(([_rowIndex, prison]) => prisonsToKeep.has(prison))
+  Object.entries(prisonColumn).filter(([_rowIndex, prison]) => prisonsToKeep.has(prison)),
 )
 sourceTable.prison = newPrisonColumn
 

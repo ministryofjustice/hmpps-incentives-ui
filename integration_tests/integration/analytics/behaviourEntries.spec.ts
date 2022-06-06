@@ -56,15 +56,15 @@ context('Analytics section > Behaviour entries page', () => {
 
       expect(positivesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly positive entries
-        ['145', '194', '173', '191', '205', '155', '209', '160', '254', '176', '170', '131']
+        ['145', '194', '173', '191', '205', '155', '209', '160', '254', '176', '170', '131'],
       )
       expect(negativesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly negative entries
-        ['301', '248', '243', '267', '310', '295', '322', '307', '277', '333', '353', '318']
+        ['301', '248', '243', '267', '310', '295', '322', '307', '277', '333', '353', '318'],
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
-        ['929', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922']
+        ['929', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922'],
       )
     })
   })
@@ -83,7 +83,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'How you can use this chart > Behaviour entries by wing',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartGuidance('entries-by-location')
@@ -93,7 +93,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'How you can use this chart > Behaviour entries by wing',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
 
     page
@@ -104,7 +104,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'How you can use this chart > Prisoners with behaviour entries by wing',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartGuidance('prisoners-with-entries-by-location')
@@ -114,7 +114,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'How you can use this chart > Prisoners with behaviour entries by wing',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
 
     page
@@ -125,7 +125,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'How you can use this chart > Behaviour entry trends',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartGuidance('trends-entries')
@@ -135,7 +135,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'How you can use this chart > Behaviour entry trends',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
   })
 
@@ -153,7 +153,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'Is this chart useful > Behaviour entries by wing',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartFeedback('entries-by-location')
@@ -163,7 +163,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'Is this chart useful > Behaviour entries by wing',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
 
     page
@@ -174,7 +174,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'Is this chart useful > Prisoners with behaviour entries by wing',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartFeedback('prisoners-with-entries-by-location')
@@ -184,7 +184,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'Is this chart useful > Prisoners with behaviour entries by wing',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
 
     page
@@ -195,7 +195,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'Is this chart useful > Behaviour entry trends',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartFeedback('trends-entries')
@@ -205,7 +205,7 @@ context('Analytics section > Behaviour entries page', () => {
           category: 'Is this chart useful > Behaviour entry trends',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
   })
 

@@ -44,11 +44,11 @@ context('Analytics section > Incentive levels page', () => {
 
       expect(standardRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly average population on standard level
-        ['571', '568', '572', '567', '554', '552', '555', '568', '561', '534', '533', '543']
+        ['571', '568', '572', '567', '554', '552', '555', '568', '561', '534', '533', '543'],
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
-        ['929', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922']
+        ['929', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922'],
       )
     })
   })
@@ -67,7 +67,7 @@ context('Analytics section > Incentive levels page', () => {
           category: 'How you can use this chart > Incentive level by wing',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartGuidance('incentive-levels-by-location')
@@ -77,7 +77,7 @@ context('Analytics section > Incentive levels page', () => {
           category: 'How you can use this chart > Incentive level by wing',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
 
     page
@@ -88,7 +88,7 @@ context('Analytics section > Incentive levels page', () => {
           category: 'How you can use this chart > Incentive level trends',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartGuidance('trends-incentive-levels')
@@ -98,7 +98,7 @@ context('Analytics section > Incentive levels page', () => {
           category: 'How you can use this chart > Incentive level trends',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
   })
 
@@ -116,7 +116,7 @@ context('Analytics section > Incentive levels page', () => {
           category: 'Is this chart useful > Incentive level by wing',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartFeedback('incentive-levels-by-location')
@@ -126,7 +126,7 @@ context('Analytics section > Incentive levels page', () => {
           category: 'Is this chart useful > Incentive level by wing',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
 
     page
@@ -137,7 +137,7 @@ context('Analytics section > Incentive levels page', () => {
           category: 'Is this chart useful > Incentive level trends',
           action: 'opened',
           label: 'MDI',
-        })
+        }),
       )
     page
       .getChartFeedback('trends-incentive-levels')
@@ -147,7 +147,7 @@ context('Analytics section > Incentive levels page', () => {
           category: 'Is this chart useful > Incentive level trends',
           action: 'closed',
           label: 'MDI',
-        })
+        }),
       )
   })
 

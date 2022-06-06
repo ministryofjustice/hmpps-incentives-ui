@@ -168,34 +168,34 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     title: 'Percentage and number of prisoners receiving each behaviour entry type by age – last 28 days',
     guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Age',
-    googleAnalyticsCategory: 'Prisoners with behaviour entries by age',
+    googleAnalyticsCategory: 'Behaviour entries by age',
   },
   'prisoners-with-entries-by-disability': {
     title:
       'Percentage and number of prisoners receiving each behaviour entry type by recorded disability – last 28 days',
     guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Disability',
-    googleAnalyticsCategory: 'Prisoners with behaviour entries by disability',
+    googleAnalyticsCategory: 'Behaviour entries by disability',
     wideLabel: true,
   },
   'prisoners-with-entries-by-ethnicity': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by ethnicity – last 28 days',
     guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Ethnicity',
-    googleAnalyticsCategory: 'Prisoners with behaviour entries by ethnicity',
+    googleAnalyticsCategory: 'Behaviour entries by ethnicity',
     wideLabel: true,
   },
   'prisoners-with-entries-by-religion': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by religion – last 28 days',
     guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Religion',
-    googleAnalyticsCategory: 'Prisoners with behaviour entries by religion',
+    googleAnalyticsCategory: 'Behaviour entries by religion',
   },
   'prisoners-with-entries-by-sexual-orientation': {
     title:
       'Percentage and number of prisoners receiving each behaviour entry type by sexual orientation – last 28 days',
     guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Sexual orientation',
-    googleAnalyticsCategory: 'Prisoners with behaviour entries by sexual orientation',
+    googleAnalyticsCategory: 'Behaviour entries by sexual orientation',
   },
 }

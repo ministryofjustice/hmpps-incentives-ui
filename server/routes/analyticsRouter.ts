@@ -51,12 +51,9 @@ export const protectedCharacteristicRoutes = {
  * Shared template variables needed throughout analytics section
  */
 function templateContext(req: Request): Record<string, unknown> {
-  const { prisonId } = req.params
-
   return {
     feedbackUrl: config.feedbackUrlForAnalytics || config.feedbackUrl,
     messages: req.flash(),
-    prisonId,
   }
 }
 
@@ -99,8 +96,21 @@ function hasAccessToPrisonOr404(caseloads: Caseload[], prisonId: string) {
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
+  router.use((req, res, next) => {
+    res.locals.prisonId = req.params.prisonId
+    if (!res.locals.prisonId) {
+      res.locals.prisonId = res.locals.user.activeCaseload.id
+      res.redirect(`/${res.locals.prisonId}${req.originalUrl}`)
+      return
+    }
+
+    hasAccessToPrisonOr404(res.locals.user.caseloads, res.locals.prisonId)
+
+    next()
+  })
+
   get('/', (req, res) => {
-    const { prisonId } = req.params
+    const { prisonId } = res.locals
     res.redirect(`/${prisonId}/analytics/incentive-levels`)
   })
 
@@ -126,14 +136,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
-    let { prisonId } = req.params
-    if (!prisonId) {
-      prisonId = res.locals.user.activeCaseload.id
-      res.redirect(`/${prisonId}/analytics/behaviour-entries`)
-      return
-    }
-
-    hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
+    const { prisonId } = res.locals
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
@@ -158,16 +161,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
-    let { prisonId } = req.params
-    if (!prisonId) {
-      prisonId = res.locals.user.activeCaseload.id
-      res.redirect(`/${prisonId}/analytics/incentive-levels`)
-      return
-    } else {
-      hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
-    }
-
-    res.locals.prisonId = prisonId
+    const { prisonId } = res.locals
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
@@ -187,10 +181,8 @@ export default function routes(router: Router): Router {
   })
 
   get('/protected-characteristics', (req, res) => {
-    let { prisonId } = req.params
-    if (!prisonId) {
-      prisonId = res.locals.user.activeCaseload.id
-    }
+    const { prisonId } = res.locals
+
     res.redirect(`/${prisonId}/analytics/protected-characteristic?characteristic=age`)
   })
 
@@ -224,14 +216,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
-    let { prisonId } = req.params
-    if (!prisonId) {
-      prisonId = res.locals.user.activeCaseload.id
-      res.redirect(`/${prisonId}${req.originalUrl}`)
-      return
-    }
-
-    hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
+    const { prisonId } = res.locals
 
     const characteristicName = (req.query.characteristic || 'age') as string
 
@@ -337,8 +322,7 @@ const chartFeedbackHandler = (chartIds: ReadonlyArray<ChartId>) =>
       return
     }
 
-    const { prisonId } = req.params
-    hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
+    const { prisonId } = res.locals
 
     const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`
 

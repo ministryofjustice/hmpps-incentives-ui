@@ -6,21 +6,6 @@
 {% set pageTitle = applicationName + " – Incentives information" %}
 
 {% block content %}
-  {% if featureFlags.hideDaysColumnsInIncentivesTable %}
-    {%- from "moj/components/banner/macro.njk" import mojBanner -%}
-
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-
-        {{ mojBanner({
-          type: "information",
-          text: "Review details have been removed from this table while we investigate the data."
-        }) }}
-
-      </div>
-    </div>
-  {% endif %}
-
   <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
     Incentive information
   </h1>

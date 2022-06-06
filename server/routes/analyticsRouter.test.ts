@@ -110,7 +110,7 @@ describe.each(analyticsPages)(
       StitchedTablesCache.clear()
     })
 
-    describe('requests pages for prisons use have no access to', () => {
+    describe(`${name} page requests for prisons user have no access to`, () => {
       it('respond 404 Not Found', () => {
         const otherPrisonUrl = url.replace('MDI', 'XYZ')
 
@@ -119,6 +119,19 @@ describe.each(analyticsPages)(
           .expect(404)
           .expect(res => {
             expect(res.text).toContain('Page not found')
+          })
+      })
+    })
+
+    describe(`${name} page, when URL does not containt Prison ID`, () => {
+      it('redirects user to corresponding URL with Prison ID', () => {
+        const otherPrisonUrl = url.replace('/MDI', '')
+
+        return request(app)
+          .get(otherPrisonUrl)
+          .expect(res => {
+            expect(res.redirect).toBeTruthy()
+            expect(res.headers.location).toBe(url)
           })
       })
     })

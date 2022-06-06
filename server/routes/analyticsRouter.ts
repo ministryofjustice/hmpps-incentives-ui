@@ -126,7 +126,13 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
-    const { prisonId } = req.params
+    let { prisonId } = req.params
+    if (!prisonId) {
+      prisonId = res.locals.user.activeCaseload.id
+      res.redirect(`/${prisonId}/analytics/behaviour-entries`)
+      return
+    }
+
     hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
 
     const s3Client = new S3Client(config.s3)
@@ -152,8 +158,16 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
-    const { prisonId } = req.params
-    hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
+    let { prisonId } = req.params
+    if (!prisonId) {
+      prisonId = res.locals.user.activeCaseload.id
+      res.redirect(`/${prisonId}/analytics/incentive-levels`)
+      return
+    } else {
+      hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
+    }
+
+    res.locals.prisonId = prisonId
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
@@ -173,7 +187,10 @@ export default function routes(router: Router): Router {
   })
 
   get('/protected-characteristics', (req, res) => {
-    const { prisonId } = req.params
+    let { prisonId } = req.params
+    if (!prisonId) {
+      prisonId = res.locals.user.activeCaseload.id
+    }
     res.redirect(`/${prisonId}/analytics/protected-characteristic?characteristic=age`)
   })
 
@@ -207,7 +224,13 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
-    const { prisonId } = req.params
+    let { prisonId } = req.params
+    if (!prisonId) {
+      prisonId = res.locals.user.activeCaseload.id
+      res.redirect(`/${prisonId}${req.originalUrl}`)
+      return
+    }
+
     hasAccessToPrisonOr404(res.locals.user.caseloads, prisonId)
 
     const characteristicName = (req.query.characteristic || 'age') as string

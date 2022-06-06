@@ -613,7 +613,7 @@ export default class AnalyticsService {
       },
       2
     )
-    addMissingMonths(lastUpdated, rows, columns.length)
+    addMissingMonths(lastUpdated, rows, 2)
     rows = removeMonthsOutsideBounds(lastUpdated, rows)
 
     return {

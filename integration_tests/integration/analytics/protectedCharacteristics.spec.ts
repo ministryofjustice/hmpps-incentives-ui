@@ -56,7 +56,6 @@ context('Analytics section > Protected characteristics page', () => {
   })
 
   it('users see analytics', () => {
-    cy.clock(new Date(2022, 5, 9, 13, 12, 0), ['Date'])
     const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
 
     const cleanRows = (rows: string[][], removeLastRow) => {

@@ -408,8 +408,8 @@ export default class AnalyticsService {
       },
       2
     )
-    addMissingMonths(rows, 2)
-    rows = removeMonthsOutsideBounds(rows)
+    addMissingMonths(lastUpdated, rows, 2)
+    rows = removeMonthsOutsideBounds(lastUpdated, rows)
 
     return {
       columns,
@@ -467,8 +467,8 @@ export default class AnalyticsService {
       },
       columns.length
     )
-    addMissingMonths(rows, columns.length)
-    rows = removeMonthsOutsideBounds(rows)
+    addMissingMonths(lastUpdated, rows, columns.length)
+    rows = removeMonthsOutsideBounds(lastUpdated, rows)
     columns = columns.map(removeSortingPrefix)
 
     return {
@@ -537,8 +537,8 @@ export default class AnalyticsService {
       },
       columns.length
     )
-    addMissingMonths(rows, columns.length)
-    rows = removeMonthsOutsideBounds(rows)
+    addMissingMonths(lastUpdated, rows, columns.length)
+    rows = removeMonthsOutsideBounds(lastUpdated, rows)
     columns = columns.map(removeSortingPrefix)
 
     return {
@@ -613,8 +613,8 @@ export default class AnalyticsService {
       },
       2
     )
-    addMissingMonths(rows, 2)
-    rows = removeMonthsOutsideBounds(rows)
+    addMissingMonths(lastUpdated, rows, columns.length)
+    rows = removeMonthsOutsideBounds(lastUpdated, rows)
 
     return {
       columns,

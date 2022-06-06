@@ -73,12 +73,12 @@ function yearAndMonthString(date: Date): string {
 }
 
 /**
- * Ensures that months without data are still present for last 12 months (excluding this month)
+ * Ensures that months without data are still present for last 12 months prior to the report month
  */
-export function addMissingMonths(rows: TrendsReportRow[], valueCount: number) {
+export function addMissingMonths(reportDate: Date, rows: TrendsReportRow[], valueCount: number) {
   const existingYearsAndMonths = new Set(rows.map(({ yearAndMonth }) => yearAndMonth))
 
-  const monthCounter = new Date()
+  const monthCounter = new Date(reportDate)
   monthCounter.setDate(1)
   monthCounter.setHours(12, 0, 0, 0)
   for (let monthsAgo = 1; monthsAgo <= 12; monthsAgo += 1) {
@@ -98,16 +98,16 @@ export function addMissingMonths(rows: TrendsReportRow[], valueCount: number) {
 }
 
 /**
- * Removes data that is not from last 12 months (excluding this month)
+ * Removes data that is not from last 12 months prior to the report month
  */
-export function removeMonthsOutsideBounds(rows: TrendsReportRow[]): TrendsReportRow[] {
-  const previousMonth = new Date()
+export function removeMonthsOutsideBounds(reportDate: Date, rows: TrendsReportRow[]): TrendsReportRow[] {
+  const previousMonth = new Date(reportDate)
   previousMonth.setDate(1)
   previousMonth.setHours(12, 0, 0, 0)
   previousMonth.setMonth(previousMonth.getMonth() - 1)
   const latest = yearAndMonthString(previousMonth)
 
-  const yearAgo = new Date()
+  const yearAgo = new Date(reportDate)
   yearAgo.setDate(1)
   yearAgo.setHours(12, 0, 0, 0)
   yearAgo.setMonth(yearAgo.getMonth() - 12)

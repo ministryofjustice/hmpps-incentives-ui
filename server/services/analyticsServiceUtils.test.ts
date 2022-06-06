@@ -88,15 +88,6 @@ describe('comparators and filters', () => {
 })
 
 describe('trends monthly data helpers', () => {
-  beforeAll(() => {
-    jest.useFakeTimers()
-    jest.setSystemTime(new Date('2021-05-09T13:12:00'))
-  })
-
-  afterAll(() => {
-    jest.useRealTimers()
-  })
-
   describe('addMissingMonths()', () => {
     function expectBlankValues(actual: TrendsReportRow, expectedYearAndMonth: string) {
       expect(actual.yearAndMonth).toEqual(expectedYearAndMonth)
@@ -108,7 +99,7 @@ describe('trends monthly data helpers', () => {
 
     it('creates blank values when no source data', () => {
       const rows: TrendsReportRow[] = []
-      addMissingMonths(rows, 2)
+      addMissingMonths(new Date('2021-05-09T13:12:00'), rows, 2)
       expect(rows).toHaveLength(12)
       expectBlankValues(rows[0], '2020-05')
       expectBlankValues(rows[1], '2020-06')
@@ -137,7 +128,7 @@ describe('trends monthly data helpers', () => {
         { yearAndMonth: '2020-08', population: 1, values: [1, 2], total: 3 },
         { yearAndMonth: '2020-12', population: 1, values: [1, 2], total: 3 },
       ]
-      addMissingMonths(rows, 2)
+      addMissingMonths(new Date('2021-05-09T13:12:00'), rows, 2)
       expect(rows).toHaveLength(12)
       expectBlankValues(rows[1], '2020-06')
       expectBlankValues(rows[5], '2020-10')
@@ -163,7 +154,7 @@ describe('trends monthly data helpers', () => {
         { yearAndMonth: '2020-06', population: 1, values: [1], total: 1 },
         { yearAndMonth: '2020-10', population: 1, values: [1], total: 1 },
       ]
-      rows = removeMonthsOutsideBounds(rows)
+      rows = removeMonthsOutsideBounds(new Date('2021-05-09T13:12:00'), rows)
       expect(rows).toHaveLength(12)
       expect(rows.some(row => row.yearAndMonth <= '2020-04' && row.yearAndMonth >= '2021-05')).toBeFalsy()
     })

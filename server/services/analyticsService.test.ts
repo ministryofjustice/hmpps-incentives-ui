@@ -662,6 +662,77 @@ describe('AnalyticsService', () => {
     })
   })
 
+  describe.each([
+    [ProtectedCharacteristic.Ethnicity, ['All', ...Ethnicities]],
+    [ProtectedCharacteristic.Age, ['All', ...Ages]],
+    [ProtectedCharacteristic.Religion, ['All', ...Religions]],
+    [ProtectedCharacteristic.Disability, ['All', ...Disabilities]],
+    [ProtectedCharacteristic.SexualOrientation, ['All', ...SexualOrientations]],
+  ])('getBehaviourEntriesByProtectedCharacteristic()', (characteristic, expectedCharacteristics) => {
+    beforeEach(() => {
+      mockAppS3ClientResponse(s3Client)
+
+      // pretend that MDI is a YCS
+      PrisonRegister.isYouthCustodyService = (prisonId: string) => prisonId === 'MDI'
+    })
+
+    it(`[${characteristic}]: has a totals row`, async () => {
+      const { rows: entries } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
+        'MDI',
+        characteristic,
+      )
+      expect(entries).toHaveLength(expectedCharacteristics.length)
+
+      const characteristicTotal = entries.shift()
+      expect(characteristicTotal.label).toEqual('All')
+
+      let [sumPositive, sumNegative] = [0, 0]
+      entries.forEach(({ values }) => {
+        const [entriesPositive, entriesNegative] = values
+        sumPositive += entriesPositive
+        sumNegative += entriesNegative
+      })
+      expect(characteristicTotal.values[0]).toEqual(sumPositive)
+      expect(characteristicTotal.values[1]).toEqual(sumNegative)
+    })
+
+    it(`[${characteristic}]: throws an error when the table is empty`, async () => {
+      mockAppS3ClientResponse(s3Client, MockTable.Empty)
+
+      await expect(
+        analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic),
+      ).rejects.toThrow(AnalyticsError)
+    })
+
+    it(`[${characteristic}]: lists groups in the correct order`, async () => {
+      const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+      const characteristics = rows.map(row => row.label)
+      expect(characteristics).toEqual(expectedCharacteristics)
+    })
+
+    if (characteristic === ProtectedCharacteristic.Age) {
+      it(`[${characteristic}]: adds missing 15-17 group with all zeros in YCS prison`, async () => {
+        const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+        const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
+        expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([
+          {
+            label: '15-17',
+            values: [0, 0],
+          },
+        ])
+      })
+
+      it(`[${characteristic}]: skips 15-17 group in non-YCS prison`, async () => {
+        // make MDI not a YCS by restoring isYouthCustodyService()
+        PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
+
+        const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+        const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
+        expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([])
+      })
+    }
+  })
+
   describe.each(Ethnicities)('getBehaviourEntryTrendsByProtectedCharacteristic()', characteristicGroup => {
     beforeEach(() => {
       mockAppS3ClientResponse(s3Client)

@@ -22,6 +22,7 @@ import {
   knownGroupsFor,
   ProtectedCharacteristic,
   TableType,
+  BehaviourEntriesByProtectedCharacteristic,
 } from './analyticsServiceTypes'
 import {
   addMissingMonths,
@@ -550,6 +551,63 @@ export default class AnalyticsService {
       populationIsTotal: false,
       monthlyTotalName: `Total ${characteristicGroup} population`,
     }
+  }
+
+  async getBehaviourEntriesByProtectedCharacteristic(
+    prison: string,
+    protectedCharacteristic: ProtectedCharacteristic,
+  ): Promise<Report<BehaviourEntriesByProtectedCharacteristic>> {
+    const columnsToStitch = ['prison', 'characteristic', 'charac_group', 'positives', 'negatives']
+    type StitchedRow = [string, string, string, number, number]
+
+    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
+      this,
+      TableType.incentiveLevels,
+      columnsToStitch,
+    )
+
+    const filteredTables = stitchedTable.filter(
+      ([somePrison, characteristic, characteristicGroup]) =>
+        // filter only selected prison
+        somePrison === prison &&
+        // filter by selected characteristic
+        characteristic === protectedCharacteristic &&
+        // it's possible for characteristic to be null
+        characteristicGroup,
+    )
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(
+        AnalyticsErrorType.EmptyTable,
+        'Filtered BehaviourEntriesByProtectedCharacteristic report has no rows',
+      )
+    }
+
+    const columns = ['Positive', 'Negative']
+    type AggregateRow = [string, number, number]
+    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+      filteredTables,
+      ([_prison, _characteristic, characteristicGroup, positives, negatives]) => [
+        characteristicGroup.trim(),
+        positives,
+        negatives,
+      ],
+      2,
+    )
+
+    const rows: BehaviourEntriesByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
+      return { label: characteristic, values }
+    })
+    const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
+    // Don't show empty young people ('15-17') group in non-YCS prisons
+    if (protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(prison)) {
+      missingCharacteristics.delete(AgeYoungPeople)
+    }
+    rows.forEach(({ label: characteristic }) => missingCharacteristics.delete(characteristic))
+    missingCharacteristics.forEach(characteristic => {
+      rows.push({ label: characteristic, values: [0, 0] })
+    })
+    rows.sort(compareCharacteristics)
+    return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
   async getBehaviourEntryTrendsByProtectedCharacteristic(

@@ -3,6 +3,7 @@
 {% from "../../partials/analytics/chartTrends.njk" import chartTrends %}
 {% from "../../partials/analytics/chartPopulation.njk" import chartPopulation %}
 {% from "../../partials/analytics/chartPrisonersOnLevels.njk" import chartPrisonersOnLevels %}
+{% from "../../partials/analytics/chartBehaviourEntries.njk" import chartBehaviourEntries %}
 
 {% set chartPageId = "protected-characteristics" %}
 {% set chartPageTitle = "Protected characteristics" %}
@@ -150,6 +151,26 @@
           report=incentiveLevelsTrendsByCharacteristic,
           showTotalPopulation=false,
           afterHeaderHtml=afterHeaderHtml
+        ) }}
+
+      </section>
+    </div>
+
+    <div class="govuk-grid-row">
+      <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+        {% set chartId = "entries-by-" + characteristicName %}
+        {{ chartBehaviourEntries(
+          title=ProtectedCharacteristicsChartsContent[chartId].title,
+          guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+          labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
+          chartId=chartId,
+          googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+          activeCaseload=user.activeCaseload.id,
+          form=forms[chartId],
+          csrfToken=csrfToken,
+          report=behaviourEntriesByCharacteristic,
+          wideLabel=ProtectedCharacteristicsChartsContent[chartId].wideLabel
         ) }}
 
       </section>

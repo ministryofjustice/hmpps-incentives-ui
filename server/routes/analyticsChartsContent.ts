@@ -50,6 +50,8 @@ const guidanceIncentiveLevelsByPc =
   'Use this chart to see incentive levels for this protected characteristic and compare them to prison levels. Are there patterns or imbalances that you might want to explore further? Be aware of small numbers.'
 const guidanceTrendsIncentiveLevelsByPc =
   'Use this chart to compare incentive levels for each group in this protected characteristic with previous months. Information is taken from monthly averages. Is there anything that needs more exploration? Is the incentives scheme producing levels you expect?'
+const guidanceEntriesByPc =
+  'This chart lets you see the balance of positive to negative entries broken down by this protected characteristic. Do these splits suggest a fair and consistent application of incentives?'
 const guidanceTrendsEntriesByPc =
   'Use this chart to compare the numbers of positive, negative and total entries received by each group within this protected characteristic with previous months. What do the number of entries and the ratios tell you about incentives policy and behaviour of prisoners? Be aware of population changes.'
 const guidancePrisonersWithEntriesByPc =
@@ -138,6 +140,38 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     title: 'Incentive levels by sexual orientation – last 12 months',
     guidance: guidanceTrendsIncentiveLevelsByPc,
     googleAnalyticsCategory: 'Incentive level by sexual orientation trends',
+  },
+  'entries-by-age': {
+    title: 'Comparison of positive and negative behaviour entries by age – last 28 days',
+    guidance: guidanceEntriesByPc,
+    labelColumn: 'Age',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by age',
+  },
+  'entries-by-disability': {
+    title: 'Comparison of positive and negative behaviour entries by recorded disability – last 28 days',
+    guidance: guidanceEntriesByPc,
+    labelColumn: 'Disability',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by disability',
+    wideLabel: true,
+  },
+  'entries-by-ethnicity': {
+    title: 'Comparison of positive and negative behaviour entries by ethnicity – last 28 days',
+    guidance: guidanceEntriesByPc,
+    labelColumn: 'Ethnicity',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by ethnicity',
+    wideLabel: true,
+  },
+  'entries-by-religion': {
+    title: 'Comparison of positive and negative behaviour entries by religion – last 28 days',
+    guidance: guidanceEntriesByPc,
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by religion',
+  },
+  'entries-by-sexual-orientation': {
+    title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 28 days',
+    guidance: guidanceEntriesByPc,
+    labelColumn: 'Sexual orientation',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by sexual orientation',
   },
   'trends-entries-by-age': {
     title: 'Comparison of positive and negative behaviour entries by age – last 12 months',

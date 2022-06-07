@@ -38,6 +38,8 @@ export interface IncentiveLevelsTable extends Table {
   behaviour_profile: Record<string, string>
   characteristic: Record<string, string>
   charac_group: Record<string, string>
+  positives: Record<string, number>
+  negatives: Record<string, number>
   // Unused columns; not currently stored in test data:
   // date: Record<string, number>
   // offender_book_id: Record<string, number>
@@ -121,6 +123,18 @@ export type PrisonersOnLevelsByProtectedCharacteristic = {
   href?: string
   /** number of prisoners on each level */
   values: number[]
+}
+
+/**
+ * A row in a report returned
+ */
+export type BehaviourEntriesByProtectedCharacteristic = {
+  /** protected characteristic */
+  label: string
+  /** link */
+  href?: string
+  /** number of positive entries, number of negative entries */
+  values: [number, number]
 }
 
 /**

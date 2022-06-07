@@ -9,7 +9,8 @@ import {
   Ages,
   Religions,
   Disabilities,
-  SexualOrientations, BehaviourEntriesByProtectedCharacteristic,
+  SexualOrientations,
+  BehaviourEntriesByProtectedCharacteristic,
 } from './analyticsServiceTypes'
 import type { PrisonersOnLevelsByProtectedCharacteristic, TrendsReportRow, TrendsTable } from './analyticsServiceTypes'
 import { mapRowsAndSumTotals, mapRowsForMonthlyTrends } from './analyticsServiceUtils'

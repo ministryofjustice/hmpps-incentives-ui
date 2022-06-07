@@ -15,7 +15,7 @@ context('Prison group selection', () => {
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
-    homePage.selectRegionalNationalLink().click()
+    homePage.selectPrisonGroupLink().click()
   })
 
   it('user can select national', () => {

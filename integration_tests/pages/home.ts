@@ -9,5 +9,5 @@ export default class HomePage extends Page {
 
   viewAnalyticsLink = (): PageElement => cy.get('[data-test="incentive-analytics"] a')
 
-  selectRegionalNationalLink = (): PageElement => cy.get('[data-test="select-prison-group"] a')
+  selectPrisonGroupLink = (): PageElement => cy.get('[data-test="select-prison-group"] a')
 }

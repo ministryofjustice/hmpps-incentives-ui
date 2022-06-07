@@ -9,7 +9,7 @@ import {
   Ages,
   Religions,
   Disabilities,
-  SexualOrientations,
+  SexualOrientations, BehaviourEntriesByProtectedCharacteristic,
 } from './analyticsServiceTypes'
 import type { PrisonersOnLevelsByProtectedCharacteristic, TrendsReportRow, TrendsTable } from './analyticsServiceTypes'
 import { mapRowsAndSumTotals, mapRowsForMonthlyTrends } from './analyticsServiceUtils'
@@ -714,7 +714,7 @@ describe('AnalyticsService', () => {
       it(`[${characteristic}]: adds missing 15-17 group with all zeros in YCS prison`, async () => {
         const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
-        expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([
+        expect(zeroRows).toEqual<BehaviourEntriesByProtectedCharacteristic[]>([
           {
             label: '15-17',
             values: [0, 0],
@@ -728,7 +728,7 @@ describe('AnalyticsService', () => {
 
         const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
-        expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([])
+        expect(zeroRows).toEqual<BehaviourEntriesByProtectedCharacteristic[]>([])
       })
     }
   })

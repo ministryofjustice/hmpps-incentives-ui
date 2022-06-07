@@ -32,7 +32,7 @@ context('Analytics section > Incentive levels page', () => {
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('921')
+        expect(location).to.contain('923')
       })
 
     getTextFromTable(page.getChartTable('trends-incentive-levels')).then(rows => {

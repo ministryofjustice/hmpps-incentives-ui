@@ -28,7 +28,16 @@ if (chosenTableType === 'behaviourEntries') {
   columnsToKeep = ['prison', 'wing', 'positives', 'negatives']
   rowFilter = () => true
 } else if (chosenTableType === 'incentiveLevels') {
-  columnsToKeep = ['prison', 'wing', 'incentive', 'behaviour_profile', 'characteristic', 'charac_group']
+  columnsToKeep = [
+    'prison',
+    'wing',
+    'incentive',
+    'behaviour_profile',
+    'characteristic',
+    'charac_group',
+    'positives',
+    'negatives',
+  ]
   const characteristicsToKeep: ReadonlySet<string> = new Set([
     'ethnic_group',
     'age_group_10yr',

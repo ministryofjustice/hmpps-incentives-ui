@@ -29,6 +29,7 @@ if (chosenTableType === 'behaviourEntries') {
   rowFilter = () => true
 } else if (chosenTableType === 'incentiveLevels') {
   columnsToKeep = [
+    'pgd_region',
     'prison',
     'wing',
     'incentive',

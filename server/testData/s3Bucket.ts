@@ -25,7 +25,7 @@ function mockedListObjects(prefix: string, tableResponse: MockTable): { key: str
     return [{ key: `${TableType.behaviourEntries}/2022-04-11.json`, modified: new Date('2022-04-12T12:00:00Z') }]
   }
   if (prefix === `${TableType.incentiveLevels}/`) {
-    return [{ key: `${TableType.incentiveLevels}/2022-04-11.json`, modified: new Date('2022-04-12T12:00:00Z') }]
+    return [{ key: `${TableType.incentiveLevels}/2022-06-06.json`, modified: new Date('2022-06-06T12:00:00Z') }]
   }
   if (prefix === `${TableType.trends}/`) {
     return [{ key: `${TableType.trends}/2022-05-11.json`, modified: new Date('2022-05-11T21:10:00Z') }]
@@ -43,7 +43,7 @@ function mockedGetObject(key: string, tableResponse: MockTable): string {
     if (tableType === TableType.behaviourEntries) {
       fileName = '2022-04-11.json'
     } else if (tableType === TableType.incentiveLevels) {
-      fileName = '2022-04-11.json'
+      fileName = '2022-06-06.json'
     } else if (tableType === TableType.trends) {
       fileName = '2022-05-11.json'
     } else {

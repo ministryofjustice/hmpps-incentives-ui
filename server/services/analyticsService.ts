@@ -474,9 +474,14 @@ export default class AnalyticsService {
     }
   }
 
-  async getIncentiveLevelTrends(prison: string): Promise<TrendsReport> {
-    const columnsToStitch = ['prison', 'year_month_str', 'snapshots', 'offenders', 'incentive']
-    type StitchedRow = [string, string, number, number, string]
+  async getIncentiveLevelTrends({ filterColumn, filterValue }: Query): Promise<TrendsReport> {
+    const columnsToStitch = ['year_month_str', 'snapshots', 'offenders', 'incentive']
+    if (filterColumn) {
+      columnsToStitch.unshift(filterColumn)
+    }
+    type StitchedRowNational = [string, number, number, string]
+    type StitchedRowFiltered = [string, string, number, number, string]
+    type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
       this,
@@ -485,10 +490,17 @@ export default class AnalyticsService {
     )
 
     const columnSet: Set<string> = new Set()
-    const filteredTables = stitchedTable.filter(([somePrison, _yearAndMonth, _snapshots, _offenders, incentive]) => {
+    const filteredTables = stitchedTable.filter(row => {
+      const rowCopy: StitchedRow = [...row]
+      if (!filterColumn) {
+        rowCopy.unshift(null)
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [filteredColumn, _yearAndMonth, _snapshots, _offenders, incentive] = rowCopy
+
       const include =
-        // filter only selected prison
-        somePrison === prison &&
+        // if not national filter only selected PGD region or prison
+        (!filterColumn || filteredColumn === filterValue) &&
         // it's possible for incentive level to be null
         incentive
       if (include) {
@@ -505,7 +517,21 @@ export default class AnalyticsService {
 
     let rows = mapRowsForMonthlyTrends<StitchedRow>(
       filteredTables,
-      ([_prison, yearAndMonth, snapshots, offenders, incentive]) => {
+      row => {
+        // eslint-disable-next-line no-underscore-dangle
+        let _filteredColumn: string
+        let yearAndMonth: string
+        let snapshots: number
+        let offenders: number
+        let incentive: string
+
+        if (filterColumn) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ;[_filteredColumn, yearAndMonth, snapshots, offenders, incentive] = row as StitchedRowFiltered
+        } else {
+          ;[yearAndMonth, snapshots, offenders, incentive] = row as StitchedRowNational
+        }
+
         const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
         return [
           {

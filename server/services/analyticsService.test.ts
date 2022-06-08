@@ -519,18 +519,18 @@ describe('AnalyticsService', () => {
     })
 
     it('returns 12 months', async () => {
-      const report = await analyticsService.getIncentiveLevelTrends('MDI')
+      const report = await analyticsService.getIncentiveLevelTrends(Filtering.byPrison('MDI'))
       expect(report.rows).toHaveLength(12)
     })
 
     it('plots absolute values', async () => {
-      const report = await analyticsService.getIncentiveLevelTrends('MDI')
+      const report = await analyticsService.getIncentiveLevelTrends(Filtering.byPrison('MDI'))
       expect(report.plotPercentage).toBeTruthy()
       expect(report).not.toHaveProperty('verticalAxisTitle')
     })
 
     it('does not show population', async () => {
-      const report = await analyticsService.getIncentiveLevelTrends('MDI')
+      const report = await analyticsService.getIncentiveLevelTrends(Filtering.byPrison('MDI'))
       expect(report.populationIsTotal).toBeTruthy()
       expect(report).not.toHaveProperty('monthlyTotalName')
       report.rows
@@ -542,7 +542,7 @@ describe('AnalyticsService', () => {
     it('throws an error when the table is empty', async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
-      await expect(analyticsService.getIncentiveLevelTrends('MDI')).rejects.toThrow(AnalyticsError)
+      await expect(analyticsService.getIncentiveLevelTrends(Filtering.byPrison('MDI'))).rejects.toThrow(AnalyticsError)
     })
   })
 

@@ -38,6 +38,7 @@ beforeAll(() => {
   config.apis.zendesk.token = '123456789012345678901234567890'
 
   config.featureFlags.showAnalyticsPcTrends = true
+  config.featureFlags.showRegionalNational = true
 
   mockedZendeskClientClass = ZendeskClient as jest.Mock<ZendeskClient>
 })
@@ -59,6 +60,44 @@ describe('Home page', () => {
     return request(app)
       .get('/')
       .expect(res => expect(res.text).toContain('/analytics'))
+  })
+})
+
+describe('GET /select-prison-group', () => {
+  it('renders prison group selection page', () => {
+    return request(app)
+      .get('/analytics/select-prison-group')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Select a view')
+        expect(res.text).toContain('Select national or a prison group')
+        expect(res.text).toContain('<option value="National">National')
+      })
+  })
+})
+
+describe('POST /select-prison-group', () => {
+  describe('when prisonGroup is missing', () => {
+    it('redirects to prison group selection page', () => {
+      return request(app)
+        .post('/analytics/select-prison-group')
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/analytics/select-prison-group')
+        })
+    })
+  })
+
+  describe('when prisonGroup is provided', () => {
+    it('redirects to incentive level page', () => {
+      return request(app)
+        .post('/analytics/select-prison-group')
+        .send({ prisonGroup: 'National' })
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/analytics/incentive-levels')
+        })
+    })
   })
 })
 

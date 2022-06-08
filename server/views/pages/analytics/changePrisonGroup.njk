@@ -1,21 +1,21 @@
-{% extends "../partials/layout.njk" %}
+{% extends "../../partials/layout.njk" %}
 
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = applicationName + ' – Select a location' %}
+{% set pageTitle = applicationName + ' – Select national or a prison group' %}
 
 {% block content %}
   <h1 class="govuk-heading-l">{{title}}</h1>
 
-  <form method="POST" id="changeLocation">
+  <form method="POST" id="changePrisonGroup">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
     {{ govukSelect({
-      id: "changeLocationSelect",
-      name: "locationPrefix",
+      id: "changePrisonGroupSelect",
+      name: "prisonGroup",
       label: {
-        text: "Select a location"
+        text: "Select national or a prison group"
       },
       classes: 'govuk-!-width-one-third',
       items: options

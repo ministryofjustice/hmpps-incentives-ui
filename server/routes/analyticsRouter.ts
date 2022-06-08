@@ -87,10 +87,37 @@ async function transformAnalyticsError<R>(reportPromise: Promise<R>): Promise<R>
 
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
+  const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
   get('/', (req, res) => {
     res.redirect('/analytics/incentive-levels')
   })
+
+  if (config.featureFlags.showRegionalNational) {
+    get('/select-prison-group', async (req, res) => {
+      // TODO: with INC-597 populate prison groups
+      const options = [{ value: 'National', text: 'National' }]
+
+      res.render('pages/analytics/changePrisonGroup.njk', {
+        title: 'Select a view',
+        options,
+        backUrl: '/',
+      })
+    })
+
+    post('/select-prison-group', async (req, res) => {
+      const { prisonGroup } = req.body
+
+      if (!prisonGroup) {
+        logger.error(req.originalUrl, 'prisonGroup is missing')
+        res.redirect('/analytics/select-prison-group')
+        return
+      }
+
+      // TODO: with INC-599 do something like res.redirect(`/analytics/${prisonGroup}/incentive-levels`)
+      res.redirect('/analytics/incentive-levels')
+    })
+  }
 
   const routeWithFeedback = (path: string, chartIds: ReadonlyArray<ChartId>, handler: RequestHandler) =>
     router.all(

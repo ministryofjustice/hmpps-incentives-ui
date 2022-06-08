@@ -107,6 +107,20 @@ context('Analytics section > Protected characteristics page', () => {
         ],
       ],
       [
+        'entries-by-age',
+        true,
+        [
+          ['All', '36%', '64%'],
+          [''],
+          ['18-25', '23%', '77%'],
+          ['26-35', '39%', '61%'],
+          ['36-45', '47%', '53%'],
+          ['46-55', '63%', '38%'],
+          ['56-65', '71%', '29%'],
+          ['66+', '67%', '33%'],
+        ],
+      ],
+      [
         'trends-entries-by-age',
         false,
         [
@@ -147,47 +161,37 @@ context('Analytics section > Protected characteristics page', () => {
     const gaSpy = new GoogleAnalyticsSpy()
     gaSpy.install()
 
-    page
-      .getChartGuidance('incentive-levels-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level by age',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartGuidance('incentive-levels-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level by age',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
+    const guidanceBoxes: [ChartId, string][] = [
+      ['incentive-levels-by-age', 'How you can use this chart > Incentive level by age'],
+      ['trends-incentive-levels-by-age', 'How you can use this chart > Incentive level by age trends'],
+      ['entries-by-age', 'How you can use this chart > Comparison of behaviour entries by age'],
+      ['trends-entries-by-age', 'How you can use this chart > Behaviour entries by age trends'],
+      ['prisoners-with-entries-by-age', 'How you can use this chart > Behaviour entries by age'],
+    ]
 
-    page
-      .getChartGuidance('prisoners-with-entries-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entries by age',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartGuidance('prisoners-with-entries-by-age')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entries by age',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [chartId, expectedCategory] of guidanceBoxes) {
+      page
+        .getChartGuidance(chartId)
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('incentives_event', {
+            category: expectedCategory,
+            action: 'opened',
+            label: 'MDI',
+          }),
+        )
+      page
+        .getChartGuidance(chartId)
+        .click()
+        .then(() =>
+          gaSpy.shouldHaveSentEvent('incentives_event', {
+            category: expectedCategory,
+            action: 'closed',
+            label: 'MDI',
+          }),
+        )
+    }
   })
 
   it('chart feedback box for analytics is tracked', () => {
@@ -200,6 +204,7 @@ context('Analytics section > Protected characteristics page', () => {
       ['population-by-age', 'Is this chart useful > Population by age'],
       ['incentive-levels-by-age', 'Is this chart useful > Incentive level by age'],
       ['trends-incentive-levels-by-age', 'Is this chart useful > Incentive level by age trends'],
+      ['entries-by-age', 'Is this chart useful > Comparison of behaviour entries by age'],
       ['trends-entries-by-age', 'Is this chart useful > Behaviour entries by age trends'],
       ['prisoners-with-entries-by-age', 'Is this chart useful > Behaviour entries by age'],
     ]
@@ -234,6 +239,7 @@ context('Analytics section > Protected characteristics page', () => {
       'population-by-age',
       'incentive-levels-by-age',
       'trends-incentive-levels-by-age',
+      'entries-by-age',
       'trends-entries-by-age',
       'prisoners-with-entries-by-age',
     ])
@@ -244,6 +250,7 @@ context('Analytics section > Protected characteristics page', () => {
       'population-by-age',
       'incentive-levels-by-age',
       'trends-incentive-levels-by-age',
+      'entries-by-age',
       'trends-entries-by-age',
       'prisoners-with-entries-by-age',
     ])

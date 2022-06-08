@@ -205,6 +205,11 @@ export default function routes(router: Router): Router {
     'trends-incentive-levels-by-ethnicity',
     'trends-incentive-levels-by-religion',
     'trends-incentive-levels-by-sexual-orientation',
+    'entries-by-age',
+    'entries-by-disability',
+    'entries-by-ethnicity',
+    'entries-by-religion',
+    'entries-by-sexual-orientation',
     'trends-entries-by-age',
     'trends-entries-by-disability',
     'trends-entries-by-ethnicity',
@@ -277,6 +282,7 @@ export default function routes(router: Router): Router {
         protectedCharacteristic,
         trendsIncentiveLevelsGroup,
       ),
+      analyticsService.getBehaviourEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
       analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
         activeCaseLoad,
         protectedCharacteristic,
@@ -287,6 +293,7 @@ export default function routes(router: Router): Router {
     const [
       incentiveLevelsByCharacteristic,
       incentiveLevelsTrendsByCharacteristic,
+      behaviourEntriesByCharacteristic,
       behaviourEntryTrendsByCharacteristic,
       prisonersWithEntriesByCharacteristic,
     ] = await Promise.all(charts)
@@ -302,6 +309,7 @@ export default function routes(router: Router): Router {
       groupDropdownLabel,
       incentiveLevelsByCharacteristic,
       incentiveLevelsTrendsByCharacteristic,
+      behaviourEntriesByCharacteristic,
       behaviourEntryTrendsByCharacteristic,
       prisonersWithEntriesByCharacteristic,
       ProtectedCharacteristicsChartsContent,

@@ -436,6 +436,7 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
           expect(pageContent).toContain(`table-population-by-${characteristicName}`)
           expect(pageContent).toContain(`table-incentive-levels-by-${characteristicName}`)
           expect(pageContent).toContain(`table-trends-incentive-levels-by-${characteristicName}`)
+          expect(pageContent).toContain(`table-entries-by-${characteristicName}`)
           expect(pageContent).toContain(`table-trends-entries-by-${characteristicName}`)
           expect(pageContent).toContain(`table-prisoners-with-entries-by-${characteristicName}`)
         })

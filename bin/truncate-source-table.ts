@@ -51,6 +51,7 @@ if (chosenTableType === 'behaviourEntries') {
   columnsToKeep = [
     'year_month_str',
     'snapshots',
+    'pgd_region',
     'prison',
     'offenders',
     'incentive',

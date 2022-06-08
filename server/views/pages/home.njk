@@ -28,12 +28,17 @@
 
     </li>
     <li class="govuk-grid-column-one-third card-group__item">
+      {% if featureFlags.showRegionalNational %}
+        {% set cardDescription = "Data visualisations for incentive levels and behaviour entries at establishment level, including protected characteristics." %}
+      {% else %}
+        {% set cardDescription = "See data visualisations for incentive levels and behaviour entries, including protected characteristics." %}
+      {% endif %}
 
       {{ card({
         href: "/analytics/incentive-levels",
         clickable: "true",
         heading: "Incentive levels and behaviour entry charts",
-        description: "Data visualisations for incentive levels and behaviour entries at establishment level, including protected characteristics.",
+        description: cardDescription,
         id: "incentive-analytics"
       }) }}
 

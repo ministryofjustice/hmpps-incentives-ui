@@ -36,8 +36,9 @@ import {
 import PrisonRegister from '../data/prisonRegister'
 
 type Query =
-  | { filterColumn: 'prison' | 'pgd_region'; filterValue: string; groupBy: 'wing' | 'prison' | 'pgd_region' }
-  | { filterColumn: null; filterValue: null; groupBy: 'wing' | 'prison' | 'pgd_region' }
+  | { filterColumn: 'prison'; filterValue: string; groupBy: 'wing' }
+  | { filterColumn: 'pgd_region'; filterValue: string; groupBy: 'prison' }
+  | { filterColumn: null; filterValue: null; groupBy: 'pgd_region' }
 
 export const Filtering = {
   byPrison: (prisonId: string): Query => {

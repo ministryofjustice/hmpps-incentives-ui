@@ -134,3 +134,8 @@
     @include govuk-font($size: 19, $weight: 'normal');
   }
 }
+
+.spacer-bar {
+  @include govuk-width-container;
+  @include govuk-responsive-padding(2, 'bottom');
+}

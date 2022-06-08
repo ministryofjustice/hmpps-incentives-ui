@@ -41,7 +41,13 @@
 
 {% block header %}
   {% include "./header.njk" %}
-  {% include "./locationBar.njk" %}
+
+  {% if prisonGroup %}
+    {% include "./spacer.njk" %}
+  {% else %}
+    {% include "./locationBar.njk" %}
+  {% endif %}
+
   {% include "./feedbackBanner.njk" %}
   {% include "./breadcrumbs.njk" %}
 {% endblock %}

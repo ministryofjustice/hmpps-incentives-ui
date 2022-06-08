@@ -137,10 +137,5 @@
 
 .spacer-bar {
   @include govuk-width-container;
-  @include govuk-responsive-margin(3, 'bottom');
-  @include govuk-responsive-padding(1, 'top');
   @include govuk-responsive-padding(2, 'bottom');
-  display: flex;
-  flex-wrap: wrap;
-  border-bottom: 1px solid $govuk-border-colour;
 }

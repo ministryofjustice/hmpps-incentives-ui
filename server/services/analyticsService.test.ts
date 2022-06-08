@@ -1,6 +1,6 @@
 import PrisonRegister from '../data/prisonRegister'
 import S3Client from '../data/s3Client'
-import AnalyticsService, { StitchedTablesCache } from './analyticsService'
+import AnalyticsService, { Filtering, StitchedTablesCache } from './analyticsService'
 import {
   AnalyticsError,
   TableType,
@@ -351,7 +351,9 @@ describe('AnalyticsService', () => {
     })
 
     it('has a totals row', async () => {
-      const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation('MDI')
+      const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation(
+        Filtering.byPrison('MDI'),
+      )
       expect(prisonersOnLevels).toHaveLength(prisonLocations.MDI.length)
 
       const prisonTotal = prisonersOnLevels.shift()
@@ -372,14 +374,16 @@ describe('AnalyticsService', () => {
     it('throws an error when the table is empty', async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
-      await expect(analyticsService.getIncentiveLevelsByLocation('MDI')).rejects.toThrow(AnalyticsError)
+      await expect(analyticsService.getIncentiveLevelsByLocation(Filtering.byPrison('MDI'))).rejects.toThrow(
+        AnalyticsError,
+      )
     })
 
     describe.each(Object.entries(prisonLocations))(
       'lists locations in the correct order',
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
-          const { rows } = await analyticsService.getIncentiveLevelsByLocation(prison)
+          const { rows } = await analyticsService.getIncentiveLevelsByLocation(Filtering.byPrison(prison))
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })
@@ -388,7 +392,7 @@ describe('AnalyticsService', () => {
 
     describe.each(Object.entries(prisonLevels))('lists levels in the correct order', (prison, levels) => {
       it(`for ${prison}`, async () => {
-        const { columns } = await analyticsService.getIncentiveLevelsByLocation(prison)
+        const { columns } = await analyticsService.getIncentiveLevelsByLocation(Filtering.byPrison(prison))
         expect(columns).toEqual(levels)
       })
     })

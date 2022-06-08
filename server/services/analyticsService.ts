@@ -35,6 +35,34 @@ import {
 } from './analyticsServiceUtils'
 import PrisonRegister from '../data/prisonRegister'
 
+type Query =
+  | { filterColumn: 'prison' | 'pgd_region'; filterValue: string; groupBy: 'wing' | 'prison' | 'pgd_region' }
+  | { filterColumn: null; filterValue: null; groupBy: 'wing' | 'prison' | 'pgd_region' }
+
+export const Filtering = {
+  byPrison: (prisonId: string): Query => {
+    return {
+      filterColumn: 'prison',
+      filterValue: prisonId,
+      groupBy: 'wing',
+    }
+  },
+  byPgdRegion: (pgdRegion: string): Query => {
+    return {
+      filterColumn: 'pgd_region',
+      filterValue: pgdRegion,
+      groupBy: 'prison',
+    }
+  },
+  national: (): Query => {
+    return {
+      filterColumn: null,
+      filterValue: null,
+      groupBy: 'pgd_region',
+    }
+  },
+}
+
 export default class AnalyticsService {
   private readonly cache = StitchedTablesCache
 
@@ -178,9 +206,16 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
-  async getIncentiveLevelsByLocation(prison: string): Promise<Report<PrisonersOnLevelsByLocation>> {
-    const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
-    type StitchedRow = [string, string, string, string, string]
+  async getIncentiveLevelsByLocation({
+    filterColumn,
+    filterValue,
+    groupBy,
+  }: Query): Promise<Report<PrisonersOnLevelsByLocation>> {
+    const columnsToStitch = [groupBy, 'incentive', 'characteristic', 'charac_group']
+    if (filterColumn) {
+      columnsToStitch.unshift(filterColumn)
+    }
+    type StitchedRow = [string, string, string, string, string?]
 
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       this,
@@ -189,10 +224,17 @@ export default class AnalyticsService {
     )
 
     const columnSet: Set<string> = new Set()
-    const filteredTables = stitchedTable.filter(([somePrison, _wing, incentive, characteristic]) => {
+    const filteredTables = stitchedTable.filter(row => {
+      const rowCopy = [...row]
+      if (!filterColumn) {
+        rowCopy.unshift(null)
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [filteredColumn, _groupedColumn, incentive, characteristic] = rowCopy
+
       const include =
-        // filter only selected prison
-        somePrison === prison &&
+        // if not national filter only selected PGD region or prison
+        (!filterColumn || filteredColumn === filterValue) &&
         // arbitrarily filter by a characteristic (using one is required)
         characteristic === 'age_group_10yr' &&
         // it's possible for incentive level to be null
@@ -212,19 +254,26 @@ export default class AnalyticsService {
     type AggregateRow = [string, ...number[]]
     const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
-      ([_prison, wing, incentive]) => {
+      row => {
+        const rowCopy = [...row]
+        if (!filterColumn) {
+          rowCopy.unshift(null)
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_filteredColumn, groupedColumn, incentive] = rowCopy
+
         const levels = Array(columns.length).fill(0)
         const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
         levels[levelIndex] = 1
-        return [wing, ...levels]
+        return [groupedColumn, ...levels]
       },
       columns.length,
     )
     columns = columns.map(removeSortingPrefix)
 
-    const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([location, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
-      return { label: location, href, values }
+    const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([groupedColumn, ...values], index) => {
+      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, groupedColumn)
+      return { label: groupedColumn, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }

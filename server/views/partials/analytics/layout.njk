@@ -2,6 +2,15 @@
 {% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
 
 {% block content %}
+  {% if prisonGroup %}
+    <div class="govuk-!-margin-bottom-4">
+      <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+        {{ prisonGroup }}
+      </h1>
+      <a href="/analytics/select-prison-group" class="govuk-link">Select another prison group</a>
+    </div>
+  {% endif %}
+
   {{ mojSubNavigation({
     label: "Incentive data navigation",
     classes: "govuk-!-display-none-print",

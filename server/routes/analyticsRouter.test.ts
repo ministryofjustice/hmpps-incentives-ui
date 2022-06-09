@@ -90,7 +90,7 @@ describe('POST /select-prison-group', () => {
   })
 
   describe('Invalid prisonGroupCode', () => {
-    it('Invalid prisonGroupCode for Behaviour entries page', () => {
+    it('redirects to prison group selection page from Behaviour entries page', () => {
       return request(app)
         .get('/analytics/test/behaviour-entries')
         .expect(res => {
@@ -99,7 +99,7 @@ describe('POST /select-prison-group', () => {
         })
     })
 
-    it('Invalid prisonGroupCode for Incentive levels page', () => {
+    it('redirects to prison group selection page from Incentive levels page', () => {
       return request(app)
         .get('/analytics/test/incentive-levels')
         .expect(res => {
@@ -108,7 +108,7 @@ describe('POST /select-prison-group', () => {
         })
     })
 
-    it('Invalid prisonGroupCode for Protected Characteristic page', () => {
+    it('redirects to prison group selection page from Protected Characteristic page', () => {
       return request(app)
         .get('/analytics/test/protected-characteristic?characteristic=disability')
         .expect(res => {
@@ -118,7 +118,7 @@ describe('POST /select-prison-group', () => {
     })
   })
 
-  describe('when prisonGroupCode is provided', () => {
+  describe('Valid prisonGroupCode', () => {
     it('routes to the National incentive level page', () => {
       return request(app)
         .post('/analytics/select-prison-group')
@@ -126,6 +126,16 @@ describe('POST /select-prison-group', () => {
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(res.headers.location).toBe('/analytics/National/incentive-levels')
+        })
+    })
+
+    it('routes to the West Midlands incentive level page', () => {
+      return request(app)
+        .post('/analytics/select-prison-group')
+        .send({ prisonGroupCode: 'WM' })
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/analytics/WM/incentive-levels')
         })
     })
   })

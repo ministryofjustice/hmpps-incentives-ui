@@ -8,10 +8,6 @@ context('Prison group selection', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
-    cy.task('stubNomisUserRolesApiUserCaseloads')
-    cy.task('stubPrisonApiImages')
-    cy.task('stubPrisonApiLocations')
-    cy.task('stubIncentivesApiGetLocationSummary')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
@@ -24,6 +20,12 @@ context('Prison group selection', () => {
     locationSelectionPage.continueButton().click()
 
     Page.verifyOnPage(AnalyticsIncentiveLevels)
+    cy.get('.govuk-heading-xl').contains('National')
     cy.get('.govuk-heading-xl').contains('Incentive levels')
   })
+
+  // TODO: with INC-597 we'll introduce additional prison groups and can test this
+  // when a user clicks 'Select another prison group'
+  // it('user can change prison group', () => {
+  // })
 })

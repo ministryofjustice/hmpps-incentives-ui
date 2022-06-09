@@ -289,6 +289,14 @@ context('Prison Group selection > Analytics section > Protected characteristics 
     cy.get('#trendsIncentiveLevelsGroup').select('26-35')
     cy.get('#form-select-trendsIncentiveLevelsGroup button').click()
 
+    // Still on National page
+    cy.get('.govuk-heading-xl').contains('National')
+
+    // Change group for entries trends chart
+    cy.get('#trendsEntriesGroup').select('66+')
+    cy.get('#form-select-trendsEntriesGroup button').click()
+
+    // Still on National page
     cy.get('.govuk-heading-xl').contains('National')
   })
 })

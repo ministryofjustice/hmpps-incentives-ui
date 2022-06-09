@@ -12,11 +12,11 @@
 
     {% set incentiveLevelsLink = "/analytics/" + prisonGroup + "/incentive-levels" %}
     {% set behaviourEntriesLink = "/analytics/" + prisonGroup + "/behaviour-entries" %}
-    {% set protectedCharacteristicsLink = "/analytics/" + prisonGroup + "/protected-characteristic?characteristic=age" %}
+    {% set protectedCharacteristicLink = "/analytics/" + prisonGroup + "/protected-characteristic?characteristic=age" %}
   {% else %}
     {% set incentiveLevelsLink = "/analytics/incentive-levels" %}
     {% set behaviourEntriesLink = "/analytics/behaviour-entries" %}
-    {% set protectedCharacteristicsLink = "/analytics/protected-characteristic?characteristic=age" %}
+    {% set protectedCharacteristicLink = "/analytics/protected-characteristic?characteristic=age" %}
   {% endif %}
 
   {{ mojSubNavigation({
@@ -37,7 +37,7 @@
       },
       {
         text: "Protected characteristics",
-        href: protectedCharacteristicsLink,
+        href: protectedCharacteristicLink,
         active: chartPageId == "protected-characteristics",
         attributes: { "data-qa": "protected-characteristics" }
       }

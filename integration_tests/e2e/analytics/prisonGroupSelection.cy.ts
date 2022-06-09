@@ -24,8 +24,12 @@ context('Prison group selection', () => {
     cy.get('.govuk-heading-xl').contains('Incentive levels')
   })
 
-  // TODO: with INC-597 we'll introduce additional prison groups and can test this
-  // when a user clicks 'Select another prison group'
-  // it('user can change prison group', () => {
-  // })
+  it('user can navigate back to the change prison group screen', () => {
+    const locationSelectionPage = Page.verifyOnPage(PrisonGroupSelection)
+    locationSelectionPage.changePrisonGroupSelect().select('National')
+    locationSelectionPage.continueButton().click()
+
+    cy.get('.prison-group a').click()
+    Page.verifyOnPage(PrisonGroupSelection)
+  })
 })

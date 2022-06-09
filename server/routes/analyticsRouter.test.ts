@@ -72,13 +72,13 @@ describe('GET /select-prison-group', () => {
         expect(res.text).toContain('Select a view')
         expect(res.text).toContain('Select national or a prison group')
         expect(res.text).toContain('<option value="National">National')
-        // TODO: with INC-597 we'll introduce additional prison groups and can test other options
+        expect(res.text).toContain('<option value="WM">West Midlands')
       })
   })
 })
 
 describe('POST /select-prison-group', () => {
-  describe('when prisonGroup is missing', () => {
+  describe('when prisonGroupCode is missing', () => {
     it('redirects to prison group selection page', () => {
       return request(app)
         .post('/analytics/select-prison-group')
@@ -89,11 +89,40 @@ describe('POST /select-prison-group', () => {
     })
   })
 
-  describe('when prisonGroup is provided', () => {
+  describe('Invalid prisonGroupCode', () => {
+    it('Invalid prisonGroupCode for Behaviour entries page', () => {
+      return request(app)
+        .get('/analytics/test/behaviour-entries')
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/analytics/select-prison-group')
+        })
+    })
+
+    it('Invalid prisonGroupCode for Incentive levels page', () => {
+      return request(app)
+        .get('/analytics/test/incentive-levels')
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/analytics/select-prison-group')
+        })
+    })
+
+    it('Invalid prisonGroupCode for Protected Characteristic page', () => {
+      return request(app)
+        .get('/analytics/test/protected-characteristic?characteristic=disability')
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/analytics/select-prison-group')
+        })
+    })
+  })
+
+  describe('when prisonGroupCode is provided', () => {
     it('routes to the National incentive level page', () => {
       return request(app)
         .post('/analytics/select-prison-group')
-        .send({ prisonGroup: 'National' })
+        .send({ prisonGroupCode: 'National' })
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(res.headers.location).toBe('/analytics/National/incentive-levels')
@@ -133,6 +162,7 @@ const analyticsPages: AnalyticsPage[] = [
       'population-by-disability',
       'incentive-levels-by-disability',
       'trends-incentive-levels-by-disability',
+      'entries-by-disability',
       'trends-entries-by-disability',
       'prisoners-with-entries-by-disability',
     ],

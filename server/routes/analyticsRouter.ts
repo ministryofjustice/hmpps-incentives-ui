@@ -21,6 +21,7 @@ import {
 import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
+import PrisonGroupService, { National, PgdRegion } from '../services/prisonGroupService'
 
 export const protectedCharacteristicRoutes = {
   age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
@@ -93,31 +94,6 @@ export default function routes(router: Router): Router {
     res.redirect('/analytics/incentive-levels')
   })
 
-  if (config.featureFlags.showRegionalNational) {
-    get('/select-prison-group', async (req, res) => {
-      // TODO: with INC-597 populate prison groups
-      const options = [{ value: 'National', text: 'National' }]
-
-      res.render('pages/analytics/changePrisonGroup.njk', {
-        title: 'Select a view',
-        options,
-        backUrl: '/',
-      })
-    })
-
-    post('/select-prison-group', async (req, res) => {
-      const { prisonGroup } = req.body
-
-      if (!prisonGroup) {
-        logger.error(req.originalUrl, 'prisonGroup is missing')
-        res.redirect('/analytics/select-prison-group')
-        return
-      }
-
-      res.redirect(`/analytics/${prisonGroup}/incentive-levels`)
-    })
-  }
-
   const routeWithFeedback = (path: string, chartIds: ReadonlyArray<ChartId>, handler: RequestHandler) =>
     router.all(
       path,
@@ -132,6 +108,35 @@ export default function routes(router: Router): Router {
       asyncMiddleware(handler),
     )
 
+  if (config.featureFlags.showRegionalNational) {
+    get('/select-prison-group', async (req, res) => {
+      const options = [{ value: National, text: National }].concat(
+        PrisonGroupService.getAllPrisonGroups().map((pgdRegion: PgdRegion) => ({
+          value: pgdRegion.code,
+          text: pgdRegion.name,
+        })),
+      )
+
+      res.render('pages/analytics/changePrisonGroup.njk', {
+        title: 'Select a view',
+        options,
+        backUrl: '/',
+      })
+    })
+
+    post('/select-prison-group', async (req, res) => {
+      const { prisonGroupCode } = req.body
+
+      if (!prisonGroupCode) {
+        logger.error(req.originalUrl, 'prisonGroup is missing')
+        res.redirect('/analytics/select-prison-group')
+        return
+      }
+
+      res.redirect(`/analytics/${prisonGroupCode}/incentive-levels`)
+    })
+  }
+
   const behaviourEntryChartIds: ChartId[] = [
     'entries-by-location',
     'prisoners-with-entries-by-location',
@@ -140,7 +145,21 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
-    const { prisonGroup } = req.params
+    const {prisonGroupCode} = req.params
+    let prisonGroupName
+    if (prisonGroupCode) {
+      if (prisonGroupCode === National) {
+        prisonGroupName = National
+      } else {
+        const prisonGroup = PrisonGroupService.getPrisonGroup(prisonGroupCode)
+        if (!prisonGroup) {
+          res.redirect('/analytics/select-prison-group')
+          return
+        }
+        prisonGroupName = prisonGroup.name
+      }
+    }
+
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
@@ -155,7 +174,8 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/behaviourEntries', {
       ...templateContext(req),
-      prisonGroup,
+      prisonGroupName,
+      prisonGroupCode,
       behaviourEntries,
       prisonersWithEntries,
       trends,
@@ -167,7 +187,21 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
-    const { prisonGroup } = req.params
+    const {prisonGroupCode} = req.params
+    let prisonGroupName
+    if (prisonGroupCode) {
+      if (prisonGroupCode === National) {
+        prisonGroupName = National
+      } else {
+        const prisonGroup = PrisonGroupService.getPrisonGroup(prisonGroupCode)
+        if (!prisonGroup) {
+          res.redirect('/analytics/select-prison-group')
+          return
+        }
+        prisonGroupName = prisonGroup.name
+      }
+    }
+
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
@@ -181,7 +215,8 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/incentiveLevels', {
       ...templateContext(req),
-      prisonGroup,
+      prisonGroupName,
+      prisonGroupCode,
       prisonersOnLevels,
       trends,
       IncentiveLevelsChartsContent,
@@ -227,7 +262,21 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
-    const { prisonGroup } = req.params
+    const {prisonGroupCode} = req.params
+    let prisonGroupName
+    if (prisonGroupCode) {
+      if (prisonGroupCode === National) {
+        prisonGroupName = National
+      } else {
+        const prisonGroup = PrisonGroupService.getPrisonGroup(prisonGroupCode)
+        if (!prisonGroup) {
+          res.redirect('/analytics/select-prison-group')
+          return
+        }
+        prisonGroupName = prisonGroup.name
+      }
+    }
+
     const characteristicName = (req.query.characteristic || 'age') as string
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
@@ -304,7 +353,8 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
-      prisonGroup,
+      prisonGroupName,
+      prisonGroupCode,
       characteristicName,
       characteristicOptions,
       trendsIncentiveLevelsOptions,

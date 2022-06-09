@@ -284,7 +284,7 @@ export default function routes(router: Router): Router {
     const charts = [
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
       analyticsService.getIncentiveLevelTrendsByCharacteristic(
-        activeCaseLoad,
+        filterByPrison,
         protectedCharacteristic,
         trendsIncentiveLevelsGroup,
       ),

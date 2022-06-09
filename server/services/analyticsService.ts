@@ -577,12 +577,18 @@ export default class AnalyticsService {
   }
 
   async getIncentiveLevelTrendsByCharacteristic(
-    prison: string,
+    { filterColumn, filterValue }: Query,
     protectedCharacteristic: ProtectedCharacteristic,
     characteristicGroup: string,
   ): Promise<TrendsReport> {
-    const columnsToStitch = ['prison', 'year_month_str', 'snapshots', 'offenders', 'incentive', protectedCharacteristic]
-    type StitchedRow = [string, string, number, number, string, string]
+    const columnsToStitch = ['year_month_str', 'snapshots', 'offenders', 'incentive', protectedCharacteristic]
+    if (filterColumn) {
+      columnsToStitch.unshift(filterColumn)
+    }
+    type StitchedRowNational = [string, number, number, string, string]
+    type StitchedRowFiltered = [string, string, number, number, string, string]
+    type StitchedRow = StitchedRowFiltered | StitchedRowNational
+    const EmptyFilteredRow: StitchedRowFiltered = ['', '', 0, 0, '', '']
 
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
       this,
@@ -591,22 +597,29 @@ export default class AnalyticsService {
     )
 
     const columnSet: Set<string> = new Set()
-    const filteredTables = stitchedTable.filter(
-      ([somePrison, _yearAndMonth, _snapshots, _offenders, incentive, someCharacteristicGroup]) => {
-        const include =
-          // it's possible for incentive level to be null
-          incentive &&
-          // it's possible for characteristic group to be null
-          someCharacteristicGroup &&
-          // filter only selected prison
-          somePrison === prison &&
-          someCharacteristicGroup.trim() === characteristicGroup
-        if (include) {
-          columnSet.add(incentive)
-        }
-        return include
-      },
-    )
+    const filteredTables = stitchedTable.filter(row => {
+      let [filteredColumn, _yearAndMonth, _snapshots, _offenders, incentive, someCharacteristicGroup] = EmptyFilteredRow
+      if (filterColumn) {
+        ;[filteredColumn, _yearAndMonth, _snapshots, _offenders, incentive, someCharacteristicGroup] =
+          row as StitchedRowFiltered
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ;[_yearAndMonth, _snapshots, _offenders, incentive, someCharacteristicGroup] = row as StitchedRowNational
+      }
+
+      const include =
+        // it's possible for incentive level to be null
+        incentive &&
+        // it's possible for characteristic group to be null
+        someCharacteristicGroup &&
+        // if not national filter only selected PGD region or prison
+        (!filterColumn || filteredColumn === filterValue) &&
+        someCharacteristicGroup.trim() === characteristicGroup
+      if (include) {
+        columnSet.add(incentive)
+      }
+      return include
+    })
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
@@ -619,7 +632,17 @@ export default class AnalyticsService {
 
     let rows = mapRowsForMonthlyTrends<StitchedRow>(
       filteredTables,
-      ([_prison, yearAndMonth, snapshots, offenders, incentive, _someCharacteristic]) => {
+      row => {
+        let [_filteredColumn, yearAndMonth, snapshots, offenders, incentive, _someCharacteristic] = EmptyFilteredRow
+
+        if (filterColumn) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ;[_filteredColumn, yearAndMonth, snapshots, offenders, incentive, _someCharacteristic] =
+            row as StitchedRowFiltered
+        } else {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ;[yearAndMonth, snapshots, offenders, incentive, _someCharacteristic] = row as StitchedRowNational
+        }
         const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
         return [
           {

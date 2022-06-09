@@ -8,11 +8,6 @@
 {% set chartPageId = "protected-characteristics" %}
 {% set chartPageTitle = "Protected characteristics" %}
 {% set pageTitle = applicationName + " – " + chartPageTitle %}
-{% if prisonGroup %}
-  {% set selectProtectedCharacteristicLink = "/analytics/" + prisonGroup + "/protected-characteristic" %}
-{% else %}
-  {% set selectProtectedCharacteristicLink = "/analytics/protected-characteristic" %}
-{% endif %}
 
 {% block content %}
   {{ super() }}
@@ -33,7 +28,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <form id="form-select-characteristic" method="get" action={{ selectProtectedCharacteristicLink }} novalidate>
+      <form id="form-select-characteristic" method="get" novalidate>
         <div class="govuk-form-group">
           <label class="govuk-label" for="characteristic">
             Select a protected characteristic

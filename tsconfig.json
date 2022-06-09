@@ -18,6 +18,6 @@
     "experimentalDecorators": true,
     "typeRoots": ["./server/@types", "./node_modules/@types"]
   },
-  "exclude": ["node_modules", "assets", "dist", "helm_deploy", "integration_tests", "test_results"],
+  "exclude": ["node_modules", "assets", "dist", "helm_deploy", "integration_tests", "test_results", "cypress.config.ts"],
   "include": ["**/*.js", "**/*.ts"]
 }

@@ -72,6 +72,7 @@ describe('GET /select-prison-group', () => {
         expect(res.text).toContain('Select a view')
         expect(res.text).toContain('Select national or a prison group')
         expect(res.text).toContain('<option value="National">National')
+        // TODO: with INC-597 we'll introduce additional prison groups and can test other options
       })
   })
 })
@@ -89,13 +90,13 @@ describe('POST /select-prison-group', () => {
   })
 
   describe('when prisonGroup is provided', () => {
-    it('redirects to incentive level page', () => {
+    it('routes to the National incentive level page', () => {
       return request(app)
         .post('/analytics/select-prison-group')
         .send({ prisonGroup: 'National' })
         .expect(res => {
           expect(res.redirect).toBeTruthy()
-          expect(res.headers.location).toBe('/analytics/incentive-levels')
+          expect(res.headers.location).toBe('/analytics/National/incentive-levels')
         })
     })
   })

@@ -114,8 +114,7 @@ export default function routes(router: Router): Router {
         return
       }
 
-      // TODO: with INC-599 do something like res.redirect(`/analytics/${prisonGroup}/incentive-levels`)
-      res.redirect('/analytics/incentive-levels')
+      res.redirect(`/analytics/${prisonGroup}/incentive-levels`)
     })
   }
 
@@ -141,6 +140,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
+    const { prisonGroup } = req.params
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
@@ -155,6 +155,7 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/behaviourEntries', {
       ...templateContext(req),
+      prisonGroup,
       behaviourEntries,
       prisonersWithEntries,
       trends,
@@ -166,6 +167,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
+    const { prisonGroup } = req.params
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
@@ -179,6 +181,7 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/incentiveLevels', {
       ...templateContext(req),
+      prisonGroup,
       prisonersOnLevels,
       trends,
       IncentiveLevelsChartsContent,
@@ -224,6 +227,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
+    const { prisonGroup } = req.params
     const characteristicName = (req.query.characteristic || 'age') as string
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
@@ -300,6 +304,7 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
+      prisonGroup,
       characteristicName,
       characteristicOptions,
       trendsIncentiveLevelsOptions,

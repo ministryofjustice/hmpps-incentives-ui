@@ -94,20 +94,6 @@ export default function routes(router: Router): Router {
     res.redirect('/analytics/incentive-levels')
   })
 
-  const routeWithFeedback = (path: string, chartIds: ReadonlyArray<ChartId>, handler: RequestHandler) =>
-    router.all(
-      path,
-      (req, res, next) => {
-        if (req.method !== 'GET' && req.method !== 'POST') {
-          next(new MethodNotAllowed())
-          return
-        }
-        next()
-      },
-      asyncMiddleware(chartFeedbackHandler(chartIds)),
-      asyncMiddleware(handler),
-    )
-
   if (config.featureFlags.showRegionalNational) {
     get('/select-prison-group', async (req, res) => {
       const options = [{ value: National, text: National }].concat(
@@ -137,6 +123,20 @@ export default function routes(router: Router): Router {
     })
   }
 
+  const routeWithFeedback = (path: string, chartIds: ReadonlyArray<ChartId>, handler: RequestHandler) =>
+    router.all(
+      path,
+      (req, res, next) => {
+        if (req.method !== 'GET' && req.method !== 'POST') {
+          next(new MethodNotAllowed())
+          return
+        }
+        next()
+      },
+      asyncMiddleware(chartFeedbackHandler(chartIds)),
+      asyncMiddleware(handler),
+    )
+
   const behaviourEntryChartIds: ChartId[] = [
     'entries-by-location',
     'prisoners-with-entries-by-location',
@@ -145,7 +145,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
-    const {prisonGroupCode} = req.params
+    const { prisonGroupCode } = req.params
     let prisonGroupName
     if (prisonGroupCode) {
       if (prisonGroupCode === National) {
@@ -187,7 +187,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
-    const {prisonGroupCode} = req.params
+    const { prisonGroupCode } = req.params
     let prisonGroupName
     if (prisonGroupCode) {
       if (prisonGroupCode === National) {
@@ -262,7 +262,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
-    const {prisonGroupCode} = req.params
+    const { prisonGroupCode } = req.params
     let prisonGroupName
     if (prisonGroupCode) {
       if (prisonGroupCode === National) {

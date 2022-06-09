@@ -280,8 +280,9 @@ export default function routes(router: Router): Router {
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
+    const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
       analyticsService.getIncentiveLevelTrendsByCharacteristic(
         activeCaseLoad,
         protectedCharacteristic,

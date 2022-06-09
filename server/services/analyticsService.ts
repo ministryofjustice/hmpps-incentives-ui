@@ -281,11 +281,14 @@ export default class AnalyticsService {
   }
 
   async getIncentiveLevelsByProtectedCharacteristic(
-    prison: string,
+    { filterColumn, filterValue, groupBy }: Query,
     protectedCharacteristic: ProtectedCharacteristic,
   ): Promise<Report<PrisonersOnLevelsByProtectedCharacteristic>> {
-    const columnsToStitch = ['prison', 'wing', 'incentive', 'characteristic', 'charac_group']
-    type StitchedRow = [string, string, string, string, string]
+    const columnsToStitch = [groupBy, 'incentive', 'characteristic', 'charac_group']
+    if (filterColumn) {
+      columnsToStitch.unshift(filterColumn)
+    }
+    type StitchedRow = [string, string, string, string, string?]
 
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       this,
@@ -294,24 +297,29 @@ export default class AnalyticsService {
     )
 
     const columnSet: Set<string> = new Set()
-    const filteredTables = stitchedTable.filter(
-      ([somePrison, _wing, incentive, characteristic, characteristicGroup]) => {
-        // TODO: null characteristicGroup is excluded; convert to 'Unknown'?
-        const include =
-          // filter only selected prison
-          somePrison === prison &&
-          // filter by selected characteristic
-          characteristic === protectedCharacteristic &&
-          // it's possible for characteristic to be null
-          characteristicGroup &&
-          // it's possible for incentive level to be null
-          incentive
-        if (include) {
-          columnSet.add(incentive)
-        }
-        return include
-      },
-    )
+    const filteredTables = stitchedTable.filter(row => {
+      const rowCopy = [...row]
+      if (!filterColumn) {
+        rowCopy.unshift(null)
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [filteredColumn, _groupedColumn, incentive, characteristic, characteristicGroup] = rowCopy
+
+      // TODO: null characteristicGroup is excluded; convert to 'Unknown'?
+      const include =
+        // if not national filter only selected PGD region or prison
+        (!filterColumn || filteredColumn === filterValue) &&
+        // filter by selected characteristic
+        characteristic === protectedCharacteristic &&
+        // it's possible for characteristic to be null
+        characteristicGroup &&
+        // it's possible for incentive level to be null
+        incentive
+      if (include) {
+        columnSet.add(incentive)
+      }
+      return include
+    })
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
@@ -325,7 +333,13 @@ export default class AnalyticsService {
     type AggregateRow = [string, ...number[]]
     const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
-      ([_prison, _wing, incentive, _characteristic, characteristicGroup]) => {
+      row => {
+        const rowCopy = [...row]
+        if (!filterColumn) {
+          rowCopy.unshift(null)
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_filteredColumn, _groupedColumn, incentive, _characteristic, characteristicGroup] = rowCopy
         const levels = Array(columns.length).fill(0)
         const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
         levels[levelIndex] = 1
@@ -340,7 +354,11 @@ export default class AnalyticsService {
     })
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
-    if (protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(prison)) {
+    if (
+      filterColumn === 'prison' &&
+      protectedCharacteristic === ProtectedCharacteristic.Age &&
+      !PrisonRegister.isYouthCustodyService(filterValue)
+    ) {
       missingCharacteristics.delete(AgeYoungPeople)
     }
     rows.forEach(({ label: characteristic }) => missingCharacteristics.delete(characteristic))

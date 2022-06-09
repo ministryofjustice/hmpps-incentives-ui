@@ -414,7 +414,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristic}]: has a totals row`, async () => {
       const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-        'MDI',
+        Filtering.byPrison('MDI'),
         characteristic,
       )
       expect(prisonersOnLevels).toHaveLength(expectedCharacteristics.length)
@@ -436,20 +436,26 @@ describe('AnalyticsService', () => {
     it(`[${characteristic}]: throws an error when the table is empty`, async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
-      await expect(analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)).rejects.toThrow(
-        AnalyticsError,
-      )
+      await expect(
+        analyticsService.getIncentiveLevelsByProtectedCharacteristic(Filtering.byPrison('MDI'), characteristic),
+      ).rejects.toThrow(AnalyticsError)
     })
 
     it(`[${characteristic}]: lists groups in the correct order`, async () => {
-      const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
+      const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
+        Filtering.byPrison('MDI'),
+        characteristic,
+      )
       const characteristics = rows.map(row => row.label)
       expect(characteristics).toEqual(expectedCharacteristics)
     })
 
     if (characteristic === ProtectedCharacteristic.Age) {
       it(`[${characteristic}]: adds missing 15-17 group with all zeros in YCS prison`, async () => {
-        const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
+        const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
+          Filtering.byPrison('MDI'),
+          characteristic,
+        )
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
         expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([
           {
@@ -463,7 +469,10 @@ describe('AnalyticsService', () => {
         // make MDI not a YCS by restoring isYouthCustodyService()
         PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
 
-        const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic('MDI', characteristic)
+        const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
+          Filtering.byPrison('MDI'),
+          characteristic,
+        )
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
         expect(zeroRows).toEqual<PrisonersOnLevelsByProtectedCharacteristic[]>([])
       })
@@ -473,7 +482,10 @@ describe('AnalyticsService', () => {
       `[${characteristic}]: lists levels in the correct order`,
       (prison, levels) => {
         it(`for ${prison}`, async () => {
-          const { columns } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(prison, characteristic)
+          const { columns } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
+            Filtering.byPrison(prison),
+            characteristic,
+          )
           expect(columns).toEqual(levels)
         })
       },

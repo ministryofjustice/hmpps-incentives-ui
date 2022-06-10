@@ -25,7 +25,7 @@ const destPath = path.resolve(
 let columnsToKeep: string[]
 let rowFilter: (rowIndex: string, table: Table) => boolean
 if (chosenTableType === 'behaviourEntries') {
-  columnsToKeep = ['prison', 'wing', 'positives', 'negatives']
+  columnsToKeep = ['pgd_region', 'prison', 'wing', 'positives', 'negatives']
   rowFilter = () => true
 } else if (chosenTableType === 'incentiveLevels') {
   columnsToKeep = [

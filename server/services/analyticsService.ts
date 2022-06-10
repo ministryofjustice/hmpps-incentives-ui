@@ -671,11 +671,18 @@ export default class AnalyticsService {
   }
 
   async getBehaviourEntriesByProtectedCharacteristic(
-    prison: string,
+    { filterColumn, filterValue }: Query,
     protectedCharacteristic: ProtectedCharacteristic,
   ): Promise<Report<BehaviourEntriesByProtectedCharacteristic>> {
-    const columnsToStitch = ['prison', 'characteristic', 'charac_group', 'positives', 'negatives']
-    type StitchedRow = [string, string, string, number, number]
+    const columnsToStitch = ['characteristic', 'charac_group', 'positives', 'negatives']
+    if (filterColumn) {
+      columnsToStitch.unshift(filterColumn)
+    }
+
+    type StitchedRowFiltered = [string, string, string, number, number]
+    type StitchedRowNational = [string, string, number, number]
+    type StitchedRow = StitchedRowFiltered | StitchedRowNational
+    const EmptyFilteredRow: StitchedRowFiltered = ['', '', '', 0, 0]
 
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       this,
@@ -683,15 +690,22 @@ export default class AnalyticsService {
       columnsToStitch,
     )
 
-    const filteredTables = stitchedTable.filter(
-      ([somePrison, characteristic, characteristicGroup]) =>
-        // filter only selected prison
-        somePrison === prison &&
+    const filteredTables = stitchedTable.filter(row => {
+      let [filteredColumn, characteristic, characteristicGroup] = EmptyFilteredRow
+      if (filterColumn) {
+        ;[filteredColumn, characteristic, characteristicGroup] = row as StitchedRowFiltered
+      } else {
+        ;[characteristic, characteristicGroup] = row as StitchedRowNational
+      }
+      return (
+        // if not national filter only selected PGD region or prison
+        (!filterColumn || filteredColumn === filterValue) &&
         // filter by selected characteristic
         characteristic === protectedCharacteristic &&
         // it's possible for characteristic to be null
-        characteristicGroup,
-    )
+        characteristicGroup
+      )
+    })
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
@@ -703,11 +717,17 @@ export default class AnalyticsService {
     type AggregateRow = [string, number, number]
     const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
-      ([_prison, _characteristic, characteristicGroup, positives, negatives]) => [
-        characteristicGroup.trim(),
-        positives,
-        negatives,
-      ],
+      row => {
+        let [_filteredColumn, _characteristic, characteristicGroup, positives, negatives] = EmptyFilteredRow
+        if (filterColumn) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ;[_filteredColumn, _characteristic, characteristicGroup, positives, negatives] = row as StitchedRowFiltered
+        } else {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ;[_characteristic, characteristicGroup, positives, negatives] = row as StitchedRowNational
+        }
+        return [characteristicGroup.trim(), positives, negatives]
+      },
       2,
     )
 
@@ -716,7 +736,11 @@ export default class AnalyticsService {
     })
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
-    if (protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(prison)) {
+    if (
+      filterColumn === 'prison' &&
+      protectedCharacteristic === ProtectedCharacteristic.Age &&
+      !PrisonRegister.isYouthCustodyService(filterValue)
+    ) {
       missingCharacteristics.delete(AgeYoungPeople)
     }
     rows.forEach(({ label: characteristic }) => missingCharacteristics.delete(characteristic))

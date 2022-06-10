@@ -288,7 +288,7 @@ export default function routes(router: Router): Router {
         protectedCharacteristic,
         trendsIncentiveLevelsGroup,
       ),
-      analyticsService.getBehaviourEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getBehaviourEntriesByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
       analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
         activeCaseLoad,
         protectedCharacteristic,

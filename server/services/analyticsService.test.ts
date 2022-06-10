@@ -695,7 +695,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristic}]: has a totals row`, async () => {
       const { rows: entries } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
-        'MDI',
+        Filtering.byPrison('MDI'),
         characteristic,
       )
       expect(entries).toHaveLength(expectedCharacteristics.length)
@@ -717,19 +717,25 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
       await expect(
-        analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic),
+        analyticsService.getBehaviourEntriesByProtectedCharacteristic(Filtering.byPrison('MDI'), characteristic),
       ).rejects.toThrow(AnalyticsError)
     })
 
     it(`[${characteristic}]: lists groups in the correct order`, async () => {
-      const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+      const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
+        Filtering.byPrison('MDI'),
+        characteristic,
+      )
       const characteristics = rows.map(row => row.label)
       expect(characteristics).toEqual(expectedCharacteristics)
     })
 
     if (characteristic === ProtectedCharacteristic.Age) {
       it(`[${characteristic}]: adds missing 15-17 group with all zeros in YCS prison`, async () => {
-        const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+        const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
+          Filtering.byPrison('MDI'),
+          characteristic,
+        )
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
         expect(zeroRows).toEqual<BehaviourEntriesByProtectedCharacteristic[]>([
           {
@@ -743,7 +749,10 @@ describe('AnalyticsService', () => {
         // make MDI not a YCS by restoring isYouthCustodyService()
         PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
 
-        const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic('MDI', characteristic)
+        const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
+          Filtering.byPrison('MDI'),
+          characteristic,
+        )
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
         expect(zeroRows).toEqual<BehaviourEntriesByProtectedCharacteristic[]>([])
       })

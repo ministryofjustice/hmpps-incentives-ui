@@ -752,12 +752,11 @@ export default class AnalyticsService {
   }
 
   async getBehaviourEntryTrendsByProtectedCharacteristic(
-    prison: string,
+    { filterColumn, filterValue }: Query,
     protectedCharacteristic: ProtectedCharacteristic,
     characteristicGroup: string,
   ): Promise<TrendsReport> {
     const columnsToStitch = [
-      'prison',
       'year_month_str',
       'snapshots',
       'offenders',
@@ -765,7 +764,13 @@ export default class AnalyticsService {
       'negatives',
       protectedCharacteristic,
     ]
-    type StitchedRow = [string, string, number, number, number, number, string]
+    if (filterColumn) {
+      columnsToStitch.unshift(filterColumn)
+    }
+    type StitchedRowFiltered = [string, string, number, number, number, number, string]
+    type StitchedRowNational = [string, number, number, number, number, string]
+    type StitchedRow = StitchedRowFiltered | StitchedRowNational
+    const EmptyFilteredRow: StitchedRowFiltered = ['', '', 0, 0, 0, 0, '']
 
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
       this,
@@ -773,17 +778,25 @@ export default class AnalyticsService {
       columnsToStitch,
     )
 
-    const filteredTables = stitchedTable.filter(
-      ([somePrison, _yearAndMonth, _snapshots, _offenders, _positives, _negatives, someCharacteristicGroup]) => {
-        return (
-          // it's possible for characteristic group to be null
-          someCharacteristicGroup &&
-          // filter only selected prison
-          somePrison === prison &&
-          someCharacteristicGroup.trim() === characteristicGroup
-        )
-      },
-    )
+    const filteredTables = stitchedTable.filter(row => {
+      let [filteredColumn, _yearAndMonth, _snapshots, _offenders, _positives, _negatives, someCharacteristicGroup] =
+        EmptyFilteredRow
+      if (filterColumn) {
+        ;[filteredColumn, _yearAndMonth, _snapshots, _offenders, _positives, _negatives, someCharacteristicGroup] =
+          row as StitchedRowFiltered
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ;[_yearAndMonth, _snapshots, _offenders, _positives, _negatives, someCharacteristicGroup] =
+          row as StitchedRowNational
+      }
+      return (
+        // it's possible for characteristic group to be null
+        someCharacteristicGroup &&
+        // if not national filter only selected PGD region or prison
+        (!filterColumn || filteredColumn === filterValue) &&
+        someCharacteristicGroup.trim() === characteristicGroup
+      )
+    })
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
@@ -794,7 +807,17 @@ export default class AnalyticsService {
     const columns = ['Positive', 'Negative']
     let rows = mapRowsForMonthlyTrends<StitchedRow>(
       filteredTables,
-      ([_prison, yearAndMonth, snapshots, offenders, positives, negatives, _someCharacteristic]) => {
+      row => {
+        let [_filteredColumn, yearAndMonth, snapshots, offenders, positives, negatives, _someCharacteristic] =
+          EmptyFilteredRow
+        if (filterColumn) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ;[_filteredColumn, yearAndMonth, snapshots, offenders, positives, negatives, _someCharacteristic] =
+            row as StitchedRowFiltered
+        } else {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ;[yearAndMonth, snapshots, offenders, positives, negatives, _someCharacteristic] = row as StitchedRowNational
+        }
         return [
           {
             yearAndMonth,

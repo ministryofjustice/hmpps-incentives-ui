@@ -766,7 +766,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristicGroup}]: returns 12 months`, async () => {
       const report = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        'MDI',
+        Filtering.byPrison('MDI'),
         ProtectedCharacteristic.Ethnicity,
         characteristicGroup,
       )
@@ -775,7 +775,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristicGroup}]: plots percentage values`, async () => {
       const report = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        'MDI',
+        Filtering.byPrison('MDI'),
         ProtectedCharacteristic.Ethnicity,
         characteristicGroup,
       )
@@ -785,7 +785,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristicGroup}]: shows population`, async () => {
       const report = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        'MDI',
+        Filtering.byPrison('MDI'),
         ProtectedCharacteristic.Ethnicity,
         characteristicGroup,
       )
@@ -799,7 +799,7 @@ describe('AnalyticsService', () => {
 
       await expect(
         analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-          'MDI',
+          Filtering.byPrison('MDI'),
           ProtectedCharacteristic.Ethnicity,
           characteristicGroup,
         ),

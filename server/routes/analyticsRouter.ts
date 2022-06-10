@@ -290,7 +290,7 @@ export default function routes(router: Router): Router {
       ),
       analyticsService.getBehaviourEntriesByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
       analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        activeCaseLoad,
+        filterByPrison,
         protectedCharacteristic,
         trendsEntriesGroup,
       ),

@@ -149,7 +149,7 @@ export default function routes(router: Router): Router {
     const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [
       analyticsService.getBehaviourEntriesByLocation(filterByPrison),
-      analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad),
+      analyticsService.getPrisonersWithEntriesByLocation(filterByPrison),
       analyticsService.getBehaviourEntryTrends(filterByPrison),
     ].map(transformAnalyticsError)
     const [behaviourEntries, prisonersWithEntries, trends] = await Promise.all(charts)

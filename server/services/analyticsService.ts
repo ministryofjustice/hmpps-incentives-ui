@@ -147,7 +147,7 @@ export default class AnalyticsService {
     if (filterColumn) {
       filteredTables = filteredTables.filter(
         ([filteredColumn]) =>
-          // filter only selected prison
+          // filter only selected PGD region/prison
           filteredColumn === filterValue,
       )
     }
@@ -182,9 +182,19 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
-  async getPrisonersWithEntriesByLocation(prison: string): Promise<Report<PrisonersWithEntriesByLocation>> {
-    const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
-    type StitchedRow = [string, string, number, number]
+  async getPrisonersWithEntriesByLocation({
+    filterColumn,
+    filterValue,
+    groupBy,
+  }: Query): Promise<Report<PrisonersWithEntriesByLocation>> {
+    const columnsToStitch = filterColumn
+      ? [filterColumn, groupBy, 'positives', 'negatives']
+      : [groupBy, 'positives', 'negatives']
+
+    type StitchedRowFiltered = [string, string, number, number]
+    type StitchedRowNational = [string, number, number]
+    type StitchedRow = StitchedRowFiltered | StitchedRowNational
+    const EmptyFilteredRow: StitchedRowFiltered = ['', '', 0, 0]
 
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
       this,
@@ -192,11 +202,14 @@ export default class AnalyticsService {
       columnsToStitch,
     )
 
-    const filteredTables = stitchedTable.filter(
-      ([somePrison]) =>
-        // filter only selected prison
-        somePrison === prison,
-    )
+    let filteredTables = stitchedTable
+    if (filterColumn) {
+      filteredTables = filteredTables.filter(
+        ([filteredColumn]) =>
+          // filter only selected PGD region/prison
+          filteredColumn === filterValue,
+      )
+    }
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
@@ -208,24 +221,32 @@ export default class AnalyticsService {
     type AggregateRow = [string, number, number, number, number]
     const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
-      ([_prison, wing, positives, negatives]) => {
+      row => {
+        let [_filteredColumn, groupedColumn, positives, negatives] = EmptyFilteredRow
+        if (filterColumn) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ;[_filteredColumn, groupedColumn, positives, negatives] = row as StitchedRowFiltered
+        } else {
+          ;[groupedColumn, positives, negatives] = row as StitchedRowNational
+        }
+
         if (positives > 0 && negatives > 0) {
-          return [wing, 0, 0, 1, 0]
+          return [groupedColumn, 0, 0, 1, 0]
         }
         if (positives > 0) {
-          return [wing, 1, 0, 0, 0]
+          return [groupedColumn, 1, 0, 0, 0]
         }
         if (negatives > 0) {
-          return [wing, 0, 1, 0, 0]
+          return [groupedColumn, 0, 1, 0, 0]
         }
-        return [wing, 0, 0, 0, 1]
+        return [groupedColumn, 0, 0, 0, 1]
       },
       4,
     )
 
-    const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([location, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
-      return { label: location, href, values }
+    const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([groupedColumn, ...values], index) => {
+      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, groupedColumn)
+      return { label: groupedColumn, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }

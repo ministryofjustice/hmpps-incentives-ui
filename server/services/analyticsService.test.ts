@@ -265,7 +265,7 @@ describe('AnalyticsService', () => {
     })
 
     it('has a totals row', async () => {
-      const { rows: entries } = await analyticsService.getBehaviourEntriesByLocation('MDI')
+      const { rows: entries } = await analyticsService.getBehaviourEntriesByLocation(Filtering.byPrison('MDI'))
       expect(entries).toHaveLength(prisonLocations.MDI.length)
 
       const prisonTotal = entries.shift()
@@ -285,14 +285,16 @@ describe('AnalyticsService', () => {
     it('throws an error when the table is empty', async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
-      await expect(analyticsService.getBehaviourEntriesByLocation('MDI')).rejects.toThrow(AnalyticsError)
+      await expect(analyticsService.getBehaviourEntriesByLocation(Filtering.byPrison('MDI'))).rejects.toThrow(
+        AnalyticsError,
+      )
     })
 
     describe.each(Object.entries(prisonLocations))(
       'lists locations in the correct order',
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
-          const { rows } = await analyticsService.getBehaviourEntriesByLocation(prison)
+          const { rows } = await analyticsService.getBehaviourEntriesByLocation(Filtering.byPrison(prison))
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })

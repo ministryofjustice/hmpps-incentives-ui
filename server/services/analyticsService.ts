@@ -123,9 +123,19 @@ export default class AnalyticsService {
     })
   }
 
-  async getBehaviourEntriesByLocation(prison: string): Promise<Report<BehaviourEntriesByLocation>> {
-    const columnsToStitch = ['prison', 'wing', 'positives', 'negatives']
-    type StitchedRow = [string, string, number, number]
+  async getBehaviourEntriesByLocation({
+    filterColumn,
+    filterValue,
+    groupBy,
+  }: Query): Promise<Report<BehaviourEntriesByLocation>> {
+    const columnsToStitch = [groupBy, 'positives', 'negatives']
+    if (filterColumn) {
+      columnsToStitch.unshift(filterColumn)
+    }
+    type StitchedRowFiltered = [string, string, number, number]
+    type StitchedRowNational = [string, number, number]
+    type StitchedRow = StitchedRowFiltered | StitchedRowNational
+    const EmptyFilteredRow: StitchedRowFiltered = ['', '', 0, 0]
 
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
       this,
@@ -133,11 +143,15 @@ export default class AnalyticsService {
       columnsToStitch,
     )
 
-    const filteredTables = stitchedTable.filter(
-      ([somePrison]) =>
-        // filter only selected prison
-        somePrison === prison,
-    )
+    let filteredTables = stitchedTable
+    if (filterColumn) {
+      filteredTables = filteredTables.filter(
+        ([filteredColumn]) =>
+          // filter only selected prison
+          filteredColumn === filterValue,
+      )
+    }
+
     if (filteredTables.length === 0) {
       throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered BehaviourEntriesByLocation report has no rows')
     }
@@ -146,13 +160,23 @@ export default class AnalyticsService {
     type AggregateRow = [string, number, number]
     const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
       filteredTables,
-      ([_prison, wing, positives, negatives]) => [wing, positives, negatives],
+      row => {
+        let [_filteredColumn, groupedColumn, positives, negatives] = EmptyFilteredRow
+        if (filterColumn) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ;[_filteredColumn, groupedColumn, positives, negatives] = row as StitchedRowFiltered
+        } else {
+          ;[groupedColumn, positives, negatives] = row as StitchedRowNational
+        }
+
+        return [groupedColumn, positives, negatives]
+      },
       2,
     )
 
-    const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([location, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(prison, location)
-      return { label: location, href, values }
+    const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([groupedColumn, ...values], index) => {
+      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, groupedColumn)
+      return { label: groupedColumn, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }

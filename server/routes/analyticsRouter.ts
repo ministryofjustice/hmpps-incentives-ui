@@ -146,10 +146,11 @@ export default function routes(router: Router): Router {
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
+    const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [
-      analyticsService.getBehaviourEntriesByLocation(activeCaseLoad),
+      analyticsService.getBehaviourEntriesByLocation(filterByPrison),
       analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad),
-      analyticsService.getBehaviourEntryTrends(Filtering.byPrison(activeCaseLoad)),
+      analyticsService.getBehaviourEntryTrends(filterByPrison),
     ].map(transformAnalyticsError)
     const [behaviourEntries, prisonersWithEntries, trends] = await Promise.all(charts)
 

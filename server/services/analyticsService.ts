@@ -451,9 +451,15 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
-  async getBehaviourEntryTrends(prison: string): Promise<TrendsReport> {
-    const columnsToStitch = ['prison', 'year_month_str', 'snapshots', 'offenders', 'positives', 'negatives']
-    type StitchedRow = [string, string, number, number, number, number]
+  async getBehaviourEntryTrends({ filterColumn, filterValue }: Query): Promise<TrendsReport> {
+    const columnsToStitch = ['year_month_str', 'snapshots', 'offenders', 'positives', 'negatives']
+    if (filterColumn) {
+      columnsToStitch.unshift(filterColumn)
+    }
+    type StitchedRowFiltered = [string, string, number, number, number, number]
+    type StitchedRowNational = [string, number, number, number, number]
+    type StitchedRow = StitchedRowFiltered | StitchedRowNational
+    const EmptyFilteredRow = ['', '', 0, 0, 0, 0]
 
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
       this,
@@ -461,11 +467,14 @@ export default class AnalyticsService {
       columnsToStitch,
     )
 
-    const filteredTables = stitchedTable.filter(
-      ([somePrison]) =>
-        // filter only selected prison
-        somePrison === prison,
-    )
+    let filteredTables = stitchedTable
+    if (filterColumn) {
+      filteredTables = filteredTables.filter(
+        ([filteredColumn]) =>
+          // filter only selected PGD region/prison
+          filteredColumn === filterValue,
+      )
+    }
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
@@ -476,7 +485,14 @@ export default class AnalyticsService {
     const columns = ['Positive', 'Negative']
     let rows = mapRowsForMonthlyTrends<StitchedRow>(
       filteredTables,
-      ([_prison, yearAndMonth, snapshots, offenders, positives, negatives]) => {
+      row => {
+        let [_filteredColumn, yearAndMonth, snapshots, offenders, positives, negatives] = EmptyFilteredRow
+        if (filterColumn) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ;[_filteredColumn, yearAndMonth, snapshots, offenders, positives, negatives] = row as StitchedRowFiltered
+        } else {
+          ;[yearAndMonth, snapshots, offenders, positives, negatives] = row as StitchedRowNational
+        }
         return [
           {
             yearAndMonth,

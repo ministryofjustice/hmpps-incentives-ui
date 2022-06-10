@@ -294,7 +294,7 @@ export default function routes(router: Router): Router {
         protectedCharacteristic,
         trendsEntriesGroup,
       ),
-      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
     ].map(transformAnalyticsError)
     const [
       incentiveLevelsByCharacteristic,

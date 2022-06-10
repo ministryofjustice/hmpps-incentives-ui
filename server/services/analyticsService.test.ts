@@ -574,7 +574,10 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristic}]: has a totals row`, async () => {
       const { columns, rows: behaviourEntriesByPc } =
-        await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(Filtering.byPrison('MDI'), characteristic)
+        await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(
+          Filtering.byPrison('MDI'),
+          characteristic,
+        )
       expect(behaviourEntriesByPc).toHaveLength(expectedCharacteristics.length)
 
       const all = behaviourEntriesByPc.shift()

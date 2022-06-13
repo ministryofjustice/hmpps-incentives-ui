@@ -35,31 +35,39 @@ import {
 } from './analyticsServiceUtils'
 import PrisonRegister from '../data/prisonRegister'
 
+const PGD_REGION_COLUMN = 'pgd_region'
+const PRISON_COLUMN = 'prison'
+const WING_COLUMN = 'wing'
+
+type PGD_REGION_COLUMN = typeof PGD_REGION_COLUMN
+type PRISON_COLUMN = typeof PRISON_COLUMN
+type WING_COLUMN = typeof WING_COLUMN
+
 type Query =
-  | { filterColumn: 'prison'; filterValue: string; groupBy: 'wing' }
-  | { filterColumn: 'pgd_region'; filterValue: string; groupBy: 'prison' }
-  | { filterColumn: null; filterValue: null; groupBy: 'pgd_region' }
+  | { filterColumn: PRISON_COLUMN; filterValue: string; groupBy: WING_COLUMN }
+  | { filterColumn: PGD_REGION_COLUMN; filterValue: string; groupBy: PRISON_COLUMN }
+  | { filterColumn: null; filterValue: null; groupBy: PGD_REGION_COLUMN }
 
 export const Filtering = {
   byPrison: (prisonId: string): Query => {
     return {
-      filterColumn: 'prison',
+      filterColumn: PRISON_COLUMN,
       filterValue: prisonId,
-      groupBy: 'wing',
+      groupBy: WING_COLUMN,
     }
   },
   byPgdRegion: (pgdRegion: string): Query => {
     return {
-      filterColumn: 'pgd_region',
+      filterColumn: PGD_REGION_COLUMN,
       filterValue: pgdRegion,
-      groupBy: 'prison',
+      groupBy: PRISON_COLUMN,
     }
   },
   national: (): Query => {
     return {
       filterColumn: null,
       filterValue: null,
-      groupBy: 'pgd_region',
+      groupBy: PGD_REGION_COLUMN,
     }
   },
 }
@@ -378,7 +386,7 @@ export default class AnalyticsService {
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (
-      filterColumn === 'prison' &&
+      filterColumn === PRISON_COLUMN &&
       protectedCharacteristic === ProtectedCharacteristic.Age &&
       !PrisonRegister.isYouthCustodyService(filterValue)
     ) {
@@ -455,7 +463,7 @@ export default class AnalyticsService {
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (
-      filterColumn === 'prison' &&
+      filterColumn === PRISON_COLUMN &&
       protectedCharacteristic === ProtectedCharacteristic.Age &&
       !PrisonRegister.isYouthCustodyService(filterValue)
     ) {
@@ -753,7 +761,7 @@ export default class AnalyticsService {
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (
-      filterColumn === 'prison' &&
+      filterColumn === PRISON_COLUMN &&
       protectedCharacteristic === ProtectedCharacteristic.Age &&
       !PrisonRegister.isYouthCustodyService(filterValue)
     ) {

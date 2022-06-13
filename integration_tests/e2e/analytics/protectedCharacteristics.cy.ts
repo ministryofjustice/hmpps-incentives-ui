@@ -5,7 +5,7 @@ import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 import AnalyticsProtectedCharacteristics from '../../pages/analytics/protectedCharacteristics'
 import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 import { ChartId } from '../../../server/routes/analyticsChartTypes'
-import PrisonGroupSelection from '../../pages/analytics/prisonGroupSelection'
+import PgdRegionSelection from '../../pages/analytics/pgdRegionSelection'
 
 context('Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
@@ -258,7 +258,7 @@ context('Analytics section > Protected characteristics page', () => {
   })
 })
 
-context('Prison Group selection > Analytics section > Protected characteristics page', () => {
+context('Pgd Region selection > Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
@@ -266,15 +266,15 @@ context('Prison Group selection > Analytics section > Protected characteristics 
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
-    homePage.selectPrisonGroupLink().click()
-    const locationSelectionPage = Page.verifyOnPage(PrisonGroupSelection)
-    locationSelectionPage.changePrisonGroupSelect().select('National')
+    homePage.selectPgdRegionLink().click()
+    const locationSelectionPage = Page.verifyOnPage(PgdRegionSelection)
+    locationSelectionPage.changePgdRegionSelect().select('National')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 
-  it('selector allows user to change protected characteristic for that prison group', () => {
+  it('selector allows user to change protected characteristic for that pgdRegion', () => {
     cy.get('#characteristic').select('Sexual orientation')
     cy.get('#form-select-characteristic button').click()
 
@@ -284,7 +284,7 @@ context('Prison Group selection > Analytics section > Protected characteristics 
       .contains('Percentage and number of prisoners in the establishment by sexual orientation')
   })
 
-  it('PC groups dropdowns are working for that prison group', () => {
+  it('PC groups dropdowns are working for that pgdRegion', () => {
     // Change group for incentive level trends chart
     cy.get('#trendsIncentiveLevelsGroup').select('26-35')
     cy.get('#form-select-trendsIncentiveLevelsGroup button').click()

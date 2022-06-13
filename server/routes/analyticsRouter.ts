@@ -21,7 +21,7 @@ import {
 import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
-import PrisonGroupService, { National, PgdRegion } from '../services/prisonGroupService'
+import PgdRegionService, { National, PgdRegion } from '../services/pgdRegionService'
 
 export const protectedCharacteristicRoutes = {
   age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
@@ -95,31 +95,31 @@ export default function routes(router: Router): Router {
   })
 
   if (config.featureFlags.showRegionalNational) {
-    get('/select-prison-group', async (req, res) => {
+    get('/select-pgd-region', async (req, res) => {
       const options = [{ value: National, text: National }].concat(
-        PrisonGroupService.getAllPrisonGroups().map((pgdRegion: PgdRegion) => ({
+        PgdRegionService.getAllPgdRegions().map((pgdRegion: PgdRegion) => ({
           value: pgdRegion.code,
           text: pgdRegion.name,
         })),
       )
 
-      res.render('pages/analytics/changePrisonGroup.njk', {
+      res.render('pages/analytics/changePgdRegion.njk', {
         title: 'Select a view',
         options,
         backUrl: '/',
       })
     })
 
-    post('/select-prison-group', async (req, res) => {
-      const { prisonGroupCode } = req.body
+    post('/select-pgd-region', async (req, res) => {
+      const { pgdRegionCode } = req.body
 
-      if (!prisonGroupCode) {
-        logger.error(req.originalUrl, 'prisonGroup is missing')
-        res.redirect('/analytics/select-prison-group')
+      if (!pgdRegionCode) {
+        logger.error(req.originalUrl, 'pgdRegionCode is missing')
+        res.redirect('/analytics/select-pgd-region')
         return
       }
 
-      res.redirect(`/analytics/${prisonGroupCode}/incentive-levels`)
+      res.redirect(`/analytics/${pgdRegionCode}/incentive-levels`)
     })
   }
 
@@ -145,18 +145,18 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
-    const { prisonGroupCode } = req.params
-    let prisonGroupName
-    if (prisonGroupCode) {
-      if (prisonGroupCode === National) {
-        prisonGroupName = National
+    const { pgdRegionCode } = req.params
+    let pgdRegionName
+    if (pgdRegionCode) {
+      if (pgdRegionCode === National) {
+        pgdRegionName = National
       } else {
-        const prisonGroup = PrisonGroupService.getPrisonGroup(prisonGroupCode)
-        if (!prisonGroup) {
-          res.redirect('/analytics/select-prison-group')
+        const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
+        if (!pgdRegion) {
+          res.redirect('/analytics/select-pgd-region')
           return
         }
-        prisonGroupName = prisonGroup.name
+        pgdRegionName = pgdRegion.name
       }
     }
 
@@ -174,8 +174,8 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/behaviourEntries', {
       ...templateContext(req),
-      prisonGroupName,
-      prisonGroupCode,
+      pgdRegionName,
+      pgdRegionCode,
       behaviourEntries,
       prisonersWithEntries,
       trends,
@@ -187,18 +187,18 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
-    const { prisonGroupCode } = req.params
-    let prisonGroupName
-    if (prisonGroupCode) {
-      if (prisonGroupCode === National) {
-        prisonGroupName = National
+    const { pgdRegionCode } = req.params
+    let pgdRegionName
+    if (pgdRegionCode) {
+      if (pgdRegionCode === National) {
+        pgdRegionName = National
       } else {
-        const prisonGroup = PrisonGroupService.getPrisonGroup(prisonGroupCode)
-        if (!prisonGroup) {
-          res.redirect('/analytics/select-prison-group')
+        const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
+        if (!pgdRegion) {
+          res.redirect('/analytics/select-pgd-region')
           return
         }
-        prisonGroupName = prisonGroup.name
+        pgdRegionName = pgdRegion.name
       }
     }
 
@@ -215,8 +215,8 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/incentiveLevels', {
       ...templateContext(req),
-      prisonGroupName,
-      prisonGroupCode,
+      pgdRegionName,
+      pgdRegionCode,
       prisonersOnLevels,
       trends,
       IncentiveLevelsChartsContent,
@@ -262,18 +262,18 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
-    const { prisonGroupCode } = req.params
-    let prisonGroupName
-    if (prisonGroupCode) {
-      if (prisonGroupCode === National) {
-        prisonGroupName = National
+    const { pgdRegionCode } = req.params
+    let pgdRegionName
+    if (pgdRegionCode) {
+      if (pgdRegionCode === National) {
+        pgdRegionName = National
       } else {
-        const prisonGroup = PrisonGroupService.getPrisonGroup(prisonGroupCode)
-        if (!prisonGroup) {
-          res.redirect('/analytics/select-prison-group')
+        const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
+        if (!pgdRegion) {
+          res.redirect('/analytics/select-pgd-region')
           return
         }
-        prisonGroupName = prisonGroup.name
+        pgdRegionName = pgdRegion.name
       }
     }
 
@@ -353,8 +353,8 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
-      prisonGroupName,
-      prisonGroupCode,
+      pgdRegionName,
+      pgdRegionCode,
       characteristicName,
       characteristicOptions,
       trendsIncentiveLevelsOptions,

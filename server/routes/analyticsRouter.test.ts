@@ -63,10 +63,10 @@ describe('Home page', () => {
   })
 })
 
-describe('GET /select-prison-group', () => {
-  it('renders prison group selection page', () => {
+describe('GET /select-pgd-region', () => {
+  it('renders prison pgdRegionCode page', () => {
     return request(app)
-      .get('/analytics/select-prison-group')
+      .get('/analytics/select-pgd-region')
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Select a view')
@@ -77,52 +77,52 @@ describe('GET /select-prison-group', () => {
   })
 })
 
-describe('POST /select-prison-group', () => {
-  describe('when prisonGroupCode is missing', () => {
-    it('redirects to prison group selection page', () => {
+describe('POST /select-pgd-region', () => {
+  describe('when pgdRegionCode is missing', () => {
+    it('redirects to pgdRegion selection page', () => {
       return request(app)
-        .post('/analytics/select-prison-group')
+        .post('/analytics/select-pgd-region')
         .expect(res => {
           expect(res.redirect).toBeTruthy()
-          expect(res.headers.location).toBe('/analytics/select-prison-group')
+          expect(res.headers.location).toBe('/analytics/select-pgd-region')
         })
     })
   })
 
-  describe('Invalid prisonGroupCode', () => {
-    it('redirects to prison group selection page from Behaviour entries page', () => {
+  describe('Invalid pgdRegionCode', () => {
+    it('redirects to pgdRegion selection page from Behaviour entries page', () => {
       return request(app)
         .get('/analytics/test/behaviour-entries')
         .expect(res => {
           expect(res.redirect).toBeTruthy()
-          expect(res.headers.location).toBe('/analytics/select-prison-group')
+          expect(res.headers.location).toBe('/analytics/select-pgd-region')
         })
     })
 
-    it('redirects to prison group selection page from Incentive levels page', () => {
+    it('redirects to pgdRegion selection page from Incentive levels page', () => {
       return request(app)
         .get('/analytics/test/incentive-levels')
         .expect(res => {
           expect(res.redirect).toBeTruthy()
-          expect(res.headers.location).toBe('/analytics/select-prison-group')
+          expect(res.headers.location).toBe('/analytics/select-pgd-region')
         })
     })
 
-    it('redirects to prison group selection page from Protected Characteristic page', () => {
+    it('redirects to pgdRegion selection page from Protected Characteristic page', () => {
       return request(app)
         .get('/analytics/test/protected-characteristic?characteristic=disability')
         .expect(res => {
           expect(res.redirect).toBeTruthy()
-          expect(res.headers.location).toBe('/analytics/select-prison-group')
+          expect(res.headers.location).toBe('/analytics/select-pgd-region')
         })
     })
   })
 
-  describe('Valid prisonGroupCode', () => {
+  describe('Valid pgdRegionCode', () => {
     it('routes to the National incentive level page', () => {
       return request(app)
-        .post('/analytics/select-prison-group')
-        .send({ prisonGroupCode: 'National' })
+        .post('/analytics/select-pgd-region')
+        .send({ pgdRegionCode: 'National' })
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(res.headers.location).toBe('/analytics/National/incentive-levels')
@@ -131,8 +131,8 @@ describe('POST /select-prison-group', () => {
 
     it('routes to the West Midlands incentive level page', () => {
       return request(app)
-        .post('/analytics/select-prison-group')
-        .send({ prisonGroupCode: 'WM' })
+        .post('/analytics/select-pgd-region')
+        .send({ pgdRegionCode: 'WM' })
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(res.headers.location).toBe('/analytics/WM/incentive-levels')

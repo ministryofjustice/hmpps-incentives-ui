@@ -2,17 +2,17 @@
 {% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
 
 {% block content %}
-  {% if prisonGroupName %}
-    <div class="prison-group">
+  {% if pgdRegionName %}
+    <div class="pgd-region">
       <h1 class="govuk-heading-xl">
-        {{ prisonGroupName }}
+        {{ pgdRegionName }}
       </h1>
-      <a href="/analytics/select-prison-group" class="govuk-link">Select another prison group</a>
+      <a href="/analytics/select-pgd-region" class="govuk-link">Select another prison group</a>
     </div>
 
-    {% set incentiveLevelsLink = "/analytics/" + prisonGroupCode + "/incentive-levels" %}
-    {% set behaviourEntriesLink = "/analytics/" + prisonGroupCode + "/behaviour-entries" %}
-    {% set protectedCharacteristicLink = "/analytics/" + prisonGroupCode + "/protected-characteristic?characteristic=age" %}
+    {% set incentiveLevelsLink = "/analytics/" + pgdRegionCode + "/incentive-levels" %}
+    {% set behaviourEntriesLink = "/analytics/" + pgdRegionCode + "/behaviour-entries" %}
+    {% set protectedCharacteristicLink = "/analytics/" + pgdRegionCode + "/protected-characteristic?characteristic=age" %}
   {% else %}
     {% set incentiveLevelsLink = "/analytics/incentive-levels" %}
     {% set behaviourEntriesLink = "/analytics/behaviour-entries" %}

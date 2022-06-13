@@ -11,7 +11,7 @@ export interface Prison {
   code: string
 }
 
-const allPrisonGroups: PgdRegion[] = [
+const allPgdRegions: PgdRegion[] = [
   {
     name: 'West Midlands',
     code: 'WM',
@@ -53,12 +53,12 @@ const allPrisonGroups: PgdRegion[] = [
   // other prison groups
 ]
 
-export default class PrisonGroupService {
-  static getAllPrisonGroups(): PgdRegion[] {
-    return allPrisonGroups
+export default class PgdRegionService {
+  static getAllPgdRegions(): PgdRegion[] {
+    return allPgdRegions
   }
 
-  static getPrisonGroup(prisonGroupCode: string): PgdRegion {
-    return this.getAllPrisonGroups().find(pgdRegion => pgdRegion.code === prisonGroupCode)
+  static getPgdRegion(pgdRegionCode: string): PgdRegion {
+    return this.getAllPgdRegions().find(pgdRegion => pgdRegion.code === pgdRegionCode)
   }
 }

@@ -15,7 +15,7 @@ export default function routes(userService: UserService): Router {
 
   router.use('/select-location', selectLocationRoutes(standardRouter(userService)))
   router.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
-  router.use('/analytics/:prisonGroupCode([A-Z0-9]{2,5}|National)?', analyticsRouter(standardRouter(userService)))
+  router.use('/analytics/:pgdRegionCode([A-Z0-9]{2,5}|National)?', analyticsRouter(standardRouter(userService)))
   router.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(imageRouter()))
   router.use('/throw-test-error', throwTestErrorRouter(standardRouter(userService)))
   router.use('/', homeRoutes(standardRouter(userService)))

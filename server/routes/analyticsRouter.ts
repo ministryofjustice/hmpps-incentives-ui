@@ -6,7 +6,7 @@ import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
-import AnalyticsService from '../services/analyticsService'
+import AnalyticsService, { Filtering } from '../services/analyticsService'
 import {
   AgeYoungPeople,
   AnalyticsError,
@@ -165,10 +165,11 @@ export default function routes(router: Router): Router {
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
+    const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [
-      analyticsService.getBehaviourEntriesByLocation(activeCaseLoad),
-      analyticsService.getPrisonersWithEntriesByLocation(activeCaseLoad),
-      analyticsService.getBehaviourEntryTrends(activeCaseLoad),
+      analyticsService.getBehaviourEntriesByLocation(filterByPrison),
+      analyticsService.getPrisonersWithEntriesByLocation(filterByPrison),
+      analyticsService.getBehaviourEntryTrends(filterByPrison),
     ].map(transformAnalyticsError)
     const [behaviourEntries, prisonersWithEntries, trends] = await Promise.all(charts)
 
@@ -207,9 +208,10 @@ export default function routes(router: Router): Router {
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
+    const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [
-      analyticsService.getIncentiveLevelsByLocation(activeCaseLoad),
-      analyticsService.getIncentiveLevelTrends(activeCaseLoad),
+      analyticsService.getIncentiveLevelsByLocation(filterByPrison),
+      analyticsService.getIncentiveLevelTrends(filterByPrison),
     ].map(transformAnalyticsError)
     const [prisonersOnLevels, trends] = await Promise.all(charts)
 
@@ -328,20 +330,21 @@ export default function routes(router: Router): Router {
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
+    const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
       analyticsService.getIncentiveLevelTrendsByCharacteristic(
-        activeCaseLoad,
+        filterByPrison,
         protectedCharacteristic,
         trendsIncentiveLevelsGroup,
       ),
-      analyticsService.getBehaviourEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getBehaviourEntriesByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
       analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        activeCaseLoad,
+        filterByPrison,
         protectedCharacteristic,
         trendsEntriesGroup,
       ),
-      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(activeCaseLoad, protectedCharacteristic),
+      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
     ].map(transformAnalyticsError)
     const [
       incentiveLevelsByCharacteristic,

@@ -15,8 +15,7 @@ export default function routes(userService: UserService): Router {
 
   router.use('/select-location', selectLocationRoutes(standardRouter(userService)))
   router.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
-  // TODO: with INC-597 we'll put together the list of prison groups and this regex may change
-  router.use('/analytics/:prisonGroup([A-Z0-9]{3,5}|National)?', analyticsRouter(standardRouter(userService)))
+  router.use('/analytics/:pgdRegionCode([A-Z0-9]{2,5}|National)?', analyticsRouter(standardRouter(userService)))
   router.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(imageRouter()))
   router.use('/throw-test-error', throwTestErrorRouter(standardRouter(userService)))
   router.use('/', homeRoutes(standardRouter(userService)))

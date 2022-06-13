@@ -1,6 +1,6 @@
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
-import PrisonGroupSelection from '../../pages/analytics/prisonGroupSelection'
+import PgdRegionSelection from '../../pages/analytics/pgdRegionSelection'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 
 context('Prison group selection', () => {
@@ -11,12 +11,12 @@ context('Prison group selection', () => {
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
-    homePage.selectPrisonGroupLink().click()
+    homePage.selectPgdRegionLink().click()
   })
 
   it('user can select national', () => {
-    const locationSelectionPage = Page.verifyOnPage(PrisonGroupSelection)
-    locationSelectionPage.changePrisonGroupSelect().select('National')
+    const locationSelectionPage = Page.verifyOnPage(PgdRegionSelection)
+    locationSelectionPage.changePgdRegionSelect().select('National')
     locationSelectionPage.continueButton().click()
 
     Page.verifyOnPage(AnalyticsIncentiveLevels)
@@ -24,8 +24,12 @@ context('Prison group selection', () => {
     cy.get('.govuk-heading-xl').contains('Incentive levels')
   })
 
-  // TODO: with INC-597 we'll introduce additional prison groups and can test this
-  // when a user clicks 'Select another prison group'
-  // it('user can change prison group', () => {
-  // })
+  it('user can navigate back to the change pgdRegion screen', () => {
+    const locationSelectionPage = Page.verifyOnPage(PgdRegionSelection)
+    locationSelectionPage.changePgdRegionSelect().select('National')
+    locationSelectionPage.continueButton().click()
+
+    cy.get('.pgd-region a').click()
+    Page.verifyOnPage(PgdRegionSelection)
+  })
 })

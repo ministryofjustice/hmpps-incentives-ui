@@ -143,9 +143,10 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
+    const sourceTable = AnalyticsService.behaviourEntriesSourceTableFor({ filterColumn })
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
       this,
-      TableType.behaviourEntries,
+      sourceTable,
       columnsToStitch,
     )
 
@@ -198,9 +199,10 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
+    const sourceTable = AnalyticsService.behaviourEntriesSourceTableFor({ filterColumn })
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
       this,
-      TableType.behaviourEntries,
+      sourceTable,
       columnsToStitch,
     )
 
@@ -851,6 +853,19 @@ export default class AnalyticsService {
       verticalAxisTitle: 'Entries',
       monthlyTotalName: `All ${characteristicGroup} entries`,
       populationTotalName: `Total ${characteristicGroup} population`,
+    }
+  }
+
+  private static behaviourEntriesSourceTableFor({ filterColumn }: Pick<Query, 'filterColumn'>): TableType {
+    switch (filterColumn) {
+      case PRISON_COLUMN:
+        return TableType.behaviourEntries
+      case PGD_REGION_COLUMN:
+        return TableType.behaviourEntriesRegional
+      case null:
+        return TableType.behaviourEntriesNational
+      default:
+        throw new Error('Unexpected filterColumn param')
     }
   }
 }

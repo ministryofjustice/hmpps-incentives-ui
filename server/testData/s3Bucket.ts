@@ -10,6 +10,8 @@ import { TableType } from '../services/analyticsServiceTypes'
 
 const fileDates = {
   [TableType.behaviourEntries]: new Date('2022-04-11T12:00:00Z'),
+  [TableType.behaviourEntriesRegional]: new Date('2022-06-06T12:00:00Z'),
+  [TableType.behaviourEntriesNational]: new Date('2022-06-06T12:00:00Z'),
   [TableType.incentiveLevels]: new Date('2022-06-06T12:00:00Z'),
   [TableType.trends]: new Date('2022-05-11T21:10:00Z'),
 }

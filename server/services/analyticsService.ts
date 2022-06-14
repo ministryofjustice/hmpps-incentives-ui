@@ -150,14 +150,17 @@ export default class AnalyticsService {
       columnsToStitch,
     )
 
-    let filteredTables = stitchedTable
-    if (filterColumn) {
-      filteredTables = filteredTables.filter(
-        ([filteredColumn]) =>
-          // filter only selected PGD region/prison
-          filteredColumn === filterValue,
+    const filteredTables = stitchedTable.filter(row => {
+      const [filteredColumn, groupedColumn] = filterColumn
+        ? (row as StitchedRowFiltered)
+        : ['', ...(row as StitchedRowNational)]
+
+      return (
+        groupedColumn &&
+        // filter only selected PGD region/prison
+        (!filterColumn || filteredColumn === filterValue)
       )
-    }
+    })
 
     if (filteredTables.length === 0) {
       throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered BehaviourEntriesByLocation report has no rows')
@@ -206,14 +209,18 @@ export default class AnalyticsService {
       columnsToStitch,
     )
 
-    let filteredTables = stitchedTable
-    if (filterColumn) {
-      filteredTables = filteredTables.filter(
-        ([filteredColumn]) =>
-          // filter only selected PGD region/prison
-          filteredColumn === filterValue,
+    const filteredTables = stitchedTable.filter(row => {
+      const [filteredColumn, groupedColumn] = filterColumn
+        ? (row as StitchedRowFiltered)
+        : ['', ...(row as StitchedRowNational)]
+
+      return (
+        groupedColumn &&
+        // filter only selected PGD region/prison
+        (!filterColumn || filteredColumn === filterValue)
       )
-    }
+    })
+
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,

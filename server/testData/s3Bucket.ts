@@ -8,6 +8,12 @@ import type { GetObjectOutput, ListObjectsV2Output } from '@aws-sdk/client-s3'
 import type S3Client from '../data/s3Client'
 import { TableType } from '../services/analyticsServiceTypes'
 
+const fileDates = {
+  [TableType.behaviourEntries]: new Date('2022-04-11T12:00:00Z'),
+  [TableType.incentiveLevels]: new Date('2022-06-06T12:00:00Z'),
+  [TableType.trends]: new Date('2022-05-11T21:10:00Z'),
+}
+
 export enum MockTable {
   /** mimics a normal table */
   Sample,
@@ -21,15 +27,14 @@ function mockedListObjects(prefix: string, tableResponse: MockTable): { key: str
   if (tableResponse === MockTable.Missing) {
     return []
   }
-  if (prefix === `${TableType.behaviourEntries}/`) {
-    return [{ key: `${TableType.behaviourEntries}/2022-04-11.json`, modified: new Date('2022-04-12T12:00:00Z') }]
+
+  const [tableType] = prefix.split('/', 1)
+  if (tableType in fileDates) {
+    const fileDate = fileDates[tableType]
+    const fileName = filenameFromDate(fileDate)
+    return [{ key: `${tableType}/${fileName}`, modified: fileDate }]
   }
-  if (prefix === `${TableType.incentiveLevels}/`) {
-    return [{ key: `${TableType.incentiveLevels}/2022-06-06.json`, modified: new Date('2022-06-06T12:00:00Z') }]
-  }
-  if (prefix === `${TableType.trends}/`) {
-    return [{ key: `${TableType.trends}/2022-05-11.json`, modified: new Date('2022-05-11T21:10:00Z') }]
-  }
+
   throw new Error('Not implemented')
 }
 
@@ -40,12 +45,9 @@ function mockedGetObject(key: string, tableResponse: MockTable): string {
   const [tableType] = key.split('/', 1)
   let fileName = 'empty.json'
   if (tableResponse !== MockTable.Empty) {
-    if (tableType === TableType.behaviourEntries) {
-      fileName = '2022-04-11.json'
-    } else if (tableType === TableType.incentiveLevels) {
-      fileName = '2022-06-06.json'
-    } else if (tableType === TableType.trends) {
-      fileName = '2022-05-11.json'
+    if (tableType in fileDates) {
+      const fileDate = fileDates[tableType]
+      fileName = filenameFromDate(fileDate)
     } else {
       throw new Error('Not implemented')
     }
@@ -88,4 +90,14 @@ export function mockSdkS3ClientReponse(
     }
     throw new Error('Not implemented')
   })
+}
+
+/**
+ * Returns the JSON filename for a date
+ *
+ * e.g. 31st January 2022 => '2022-01-31.json'
+ */
+function filenameFromDate(date: Date): string {
+  const dateStr = date.toISOString().split('T')[0]
+  return `${dateStr}.json`
 }

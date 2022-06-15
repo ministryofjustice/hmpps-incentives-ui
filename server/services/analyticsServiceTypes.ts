@@ -9,6 +9,8 @@ export type Table = Record<string, Record<string, number | string>>
  */
 export enum TableType {
   behaviourEntries = 'behaviour_entries_28d',
+  behaviourEntriesRegional = 'behaviours_28d_prison',
+  behaviourEntriesNational = 'behaviours_28d_pgdregion',
   incentiveLevels = 'incentives_latest_narrow',
   trends = 'incentives_trends',
 }

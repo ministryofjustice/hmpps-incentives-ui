@@ -22,50 +22,66 @@ const destPath = path.resolve(
   `../server/testData/s3Bucket/${TableType[chosenTableType]}/${path.basename(sourcePath)}`,
 )
 
+const characteristicsToKeep: ReadonlySet<string> = new Set([
+  'ethnic_group',
+  'age_group_10yr',
+  'religion_group',
+  'disability',
+  'sex_orientation',
+])
+
 let columnsToKeep: string[]
 let rowFilter: (rowIndex: string, table: Table) => boolean
-if (chosenTableType === 'behaviourEntries') {
-  columnsToKeep = ['pgd_region', 'prison', 'wing', 'positives', 'negatives']
-  rowFilter = () => true
-} else if (chosenTableType === 'incentiveLevels') {
-  columnsToKeep = [
-    'pgd_region',
-    'prison',
-    'wing',
-    'incentive',
-    'behaviour_profile',
-    'characteristic',
-    'charac_group',
-    'positives',
-    'negatives',
-  ]
-  const characteristicsToKeep: ReadonlySet<string> = new Set([
-    'ethnic_group',
-    'age_group_10yr',
-    'religion_group',
-    'disability',
-    'sex_orientation',
-  ])
-  rowFilter = (rowIndex, table) => characteristicsToKeep.has(table.characteristic[rowIndex] as string)
-} else if (chosenTableType === 'trends') {
-  columnsToKeep = [
-    'year_month_str',
-    'snapshots',
-    'pgd_region',
-    'prison',
-    'offenders',
-    'incentive',
-    'positives',
-    'negatives',
-    'ethnic_group',
-    'age_group_10yr',
-    'religion_group',
-    'disability',
-    'sex_orientation',
-  ]
-  rowFilter = () => true
-} else {
-  throw new Error(`Not implemented for: ${chosenTableType}`)
+let filterByPrison = true
+
+switch (chosenTableType) {
+  case 'behaviourEntries':
+    columnsToKeep = ['prison', 'wing', 'positives', 'negatives']
+    rowFilter = () => true
+    break
+  case 'behaviourEntriesRegional':
+    columnsToKeep = ['pgd_region', 'prison', 'positives', 'negatives']
+    rowFilter = () => true
+    break
+  case 'behaviourEntriesNational':
+    columnsToKeep = ['pgd_region', 'positives', 'negatives']
+    rowFilter = () => true
+    filterByPrison = false
+    break
+  case 'incentiveLevels':
+    columnsToKeep = [
+      'pgd_region',
+      'prison',
+      'wing',
+      'incentive',
+      'behaviour_profile',
+      'characteristic',
+      'charac_group',
+      'positives',
+      'negatives',
+    ]
+    rowFilter = (rowIndex, table) => characteristicsToKeep.has(table.characteristic[rowIndex] as string)
+    break
+  case 'trends':
+    columnsToKeep = [
+      'year_month_str',
+      'snapshots',
+      'pgd_region',
+      'prison',
+      'offenders',
+      'incentive',
+      'positives',
+      'negatives',
+      'ethnic_group',
+      'age_group_10yr',
+      'religion_group',
+      'disability',
+      'sex_orientation',
+    ]
+    rowFilter = () => true
+    break
+  default:
+    throw new Error(`Not implemented for: ${chosenTableType}`)
 }
 
 process.stderr.write('Reading source table…\n')
@@ -78,16 +94,23 @@ Object.keys(sourceTable)
   .filter(column => !columnsToKeep.includes(column))
   .forEach(columnToDelete => delete sourceTable[columnToDelete])
 
-const prisonsToKeep: ReadonlySet<string> = new Set(['BWI', 'MDI', 'WRI'])
-process.stderr.write(`Selecting ${prisonsToKeep.size} prisons…\n`)
-const prisonColumn = sourceTable.prison as Record<string, string>
-const newPrisonColumn: Record<string, string> = Object.fromEntries(
-  Object.entries(prisonColumn).filter(([_rowIndex, prison]) => prisonsToKeep.has(prison)),
-)
-sourceTable.prison = newPrisonColumn
+let rowIndicesToKeep
+if (filterByPrison) {
+  const prisonsToKeep: ReadonlySet<string> = new Set(['BWI', 'MDI', 'WRI'])
+  process.stderr.write(`Selecting ${prisonsToKeep.size} prisons…\n`)
+  const prisonColumn = sourceTable.prison as Record<string, string>
+  const newPrisonColumn: Record<string, string> = Object.fromEntries(
+    Object.entries(prisonColumn).filter(([_rowIndex, prison]) => prisonsToKeep.has(prison)),
+  )
+  sourceTable.prison = newPrisonColumn
 
-process.stderr.write('Filtering rows…\n')
-const rowIndicesToKeep = Object.keys(newPrisonColumn).filter(rowIndex => rowFilter(rowIndex, sourceTable))
+  process.stderr.write('Filtering rows…\n')
+  rowIndicesToKeep = Object.keys(newPrisonColumn).filter(rowIndex => rowFilter(rowIndex, sourceTable))
+} else {
+  // Keep all rows
+  rowIndicesToKeep = Object.keys(sourceTable[columnsToKeep[0]])
+}
+
 process.stderr.write('Shuffling rows…\n')
 for (let i = rowIndicesToKeep.length - 1; i > 0; i -= 1) {
   const j: number = Math.floor(Math.random() * (i + 1))

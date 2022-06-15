@@ -144,12 +144,14 @@ export default function routes(router: Router): Router {
   ]
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
+    let filterQuery
 
     const { pgdRegionCode } = req.params
     let pgdRegionName
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
         pgdRegionName = National
+        filterQuery = Filtering.national()
       } else {
         const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
         if (!pgdRegion) {
@@ -157,19 +159,20 @@ export default function routes(router: Router): Router {
           return
         }
         pgdRegionName = pgdRegion.name
+        filterQuery = Filtering.byPgdRegion(pgdRegionName)
       }
+    } else {
+      const activeCaseLoad = res.locals.user.activeCaseload.id
+      filterQuery = Filtering.byPrison(activeCaseLoad)
     }
-
-    const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
-    const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [
-      analyticsService.getBehaviourEntriesByLocation(filterByPrison),
-      analyticsService.getPrisonersWithEntriesByLocation(filterByPrison),
-      analyticsService.getBehaviourEntryTrends(filterByPrison),
+      analyticsService.getBehaviourEntriesByLocation(filterQuery),
+      analyticsService.getPrisonersWithEntriesByLocation(filterQuery),
+      analyticsService.getBehaviourEntryTrends(filterQuery),
     ].map(transformAnalyticsError)
     const [behaviourEntries, prisonersWithEntries, trends] = await Promise.all(charts)
 
@@ -187,12 +190,14 @@ export default function routes(router: Router): Router {
   const incentiveLevelChartIds: ChartId[] = ['incentive-levels-by-location', 'trends-incentive-levels']
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
+    let filterQuery
 
     const { pgdRegionCode } = req.params
     let pgdRegionName
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
         pgdRegionName = National
+        filterQuery = Filtering.national()
       } else {
         const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
         if (!pgdRegion) {
@@ -200,18 +205,19 @@ export default function routes(router: Router): Router {
           return
         }
         pgdRegionName = pgdRegion.name
+        filterQuery = Filtering.byPgdRegion(pgdRegionName)
       }
+    } else {
+      const activeCaseLoad = res.locals.user.activeCaseload.id
+      filterQuery = Filtering.byPrison(activeCaseLoad)
     }
-
-    const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
-    const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [
-      analyticsService.getIncentiveLevelsByLocation(filterByPrison),
-      analyticsService.getIncentiveLevelTrends(filterByPrison),
+      analyticsService.getIncentiveLevelsByLocation(filterQuery),
+      analyticsService.getIncentiveLevelTrends(filterQuery),
     ].map(transformAnalyticsError)
     const [prisonersOnLevels, trends] = await Promise.all(charts)
 
@@ -264,11 +270,15 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
+    let filterQuery
+    const activeCaseLoad = res.locals.user.activeCaseload.id
+
     const { pgdRegionCode } = req.params
     let pgdRegionName
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
         pgdRegionName = National
+        filterQuery = Filtering.national()
       } else {
         const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
         if (!pgdRegion) {
@@ -276,12 +286,13 @@ export default function routes(router: Router): Router {
           return
         }
         pgdRegionName = pgdRegion.name
+        filterQuery = Filtering.byPgdRegion(pgdRegionName)
       }
+    } else {
+      filterQuery = Filtering.byPrison(activeCaseLoad)
     }
 
     const characteristicName = (req.query.characteristic || 'age') as string
-    const activeCaseLoad = res.locals.user.activeCaseload.id
-
     if (!(characteristicName in protectedCharacteristicRoutes)) {
       next(new NotFound())
       return
@@ -330,21 +341,20 @@ export default function routes(router: Router): Router {
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlForLocation)
 
-    const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(filterQuery, protectedCharacteristic),
       analyticsService.getIncentiveLevelTrendsByCharacteristic(
-        filterByPrison,
+        filterQuery,
         protectedCharacteristic,
         trendsIncentiveLevelsGroup,
       ),
-      analyticsService.getBehaviourEntriesByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
+      analyticsService.getBehaviourEntriesByProtectedCharacteristic(filterQuery, protectedCharacteristic),
       analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        filterByPrison,
+        filterQuery,
         protectedCharacteristic,
         trendsEntriesGroup,
       ),
-      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(filterByPrison, protectedCharacteristic),
+      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(filterQuery, protectedCharacteristic),
     ].map(transformAnalyticsError)
     const [
       incentiveLevelsByCharacteristic,

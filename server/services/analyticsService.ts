@@ -143,20 +143,24 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
+    const sourceTable = AnalyticsService.behaviourEntriesSourceTableFor({ filterColumn })
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
       this,
-      TableType.behaviourEntries,
+      sourceTable,
       columnsToStitch,
     )
 
-    let filteredTables = stitchedTable
-    if (filterColumn) {
-      filteredTables = filteredTables.filter(
-        ([filteredColumn]) =>
-          // filter only selected PGD region/prison
-          filteredColumn === filterValue,
+    const filteredTables = stitchedTable.filter(row => {
+      const [filteredColumn, groupedColumn] = filterColumn
+        ? (row as StitchedRowFiltered)
+        : ['', ...(row as StitchedRowNational)]
+
+      return (
+        groupedColumn &&
+        // filter only selected PGD region/prison
+        (!filterColumn || filteredColumn === filterValue)
       )
-    }
+    })
 
     if (filteredTables.length === 0) {
       throw new AnalyticsError(AnalyticsErrorType.EmptyTable, 'Filtered BehaviourEntriesByLocation report has no rows')
@@ -198,20 +202,25 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
+    const sourceTable = AnalyticsService.behaviourEntriesSourceTableFor({ filterColumn })
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
       this,
-      TableType.behaviourEntries,
+      sourceTable,
       columnsToStitch,
     )
 
-    let filteredTables = stitchedTable
-    if (filterColumn) {
-      filteredTables = filteredTables.filter(
-        ([filteredColumn]) =>
-          // filter only selected PGD region/prison
-          filteredColumn === filterValue,
+    const filteredTables = stitchedTable.filter(row => {
+      const [filteredColumn, groupedColumn] = filterColumn
+        ? (row as StitchedRowFiltered)
+        : ['', ...(row as StitchedRowNational)]
+
+      return (
+        groupedColumn &&
+        // filter only selected PGD region/prison
+        (!filterColumn || filteredColumn === filterValue)
       )
-    }
+    })
+
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
@@ -851,6 +860,19 @@ export default class AnalyticsService {
       verticalAxisTitle: 'Entries',
       monthlyTotalName: `All ${characteristicGroup} entries`,
       populationTotalName: `Total ${characteristicGroup} population`,
+    }
+  }
+
+  private static behaviourEntriesSourceTableFor({ filterColumn }: Pick<Query, 'filterColumn'>): TableType {
+    switch (filterColumn) {
+      case PRISON_COLUMN:
+        return TableType.behaviourEntries
+      case PGD_REGION_COLUMN:
+        return TableType.behaviourEntriesRegional
+      case null:
+        return TableType.behaviourEntriesNational
+      default:
+        throw new Error('Unexpected filterColumn param')
     }
   }
 }

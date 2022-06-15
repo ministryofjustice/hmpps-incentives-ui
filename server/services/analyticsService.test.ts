@@ -307,8 +307,8 @@ describe('AnalyticsService', () => {
       )
 
       expect(rows).toEqual([
-        { href: undefined, label: 'All', values: [125, 133] },
-        { href: '', label: 'WRI', values: [125, 133] },
+        { href: undefined, label: 'All', values: [82, 158] },
+        { href: '', label: 'WRI', values: [82, 158] },
       ])
     })
 
@@ -316,10 +316,27 @@ describe('AnalyticsService', () => {
       const { rows } = await analyticsService.getBehaviourEntriesByLocation(Filtering.national())
 
       expect(rows).toEqual([
-        { href: undefined, label: 'All', values: [765, 1278] },
-        { href: '', label: 'HMPPS Wales', values: [508, 815] },
-        { href: '', label: 'Long Term & High Security', values: [125, 133] },
-        { href: '', label: 'Yorkshire', values: [132, 330] },
+        { href: undefined, label: 'All', values: [26319, 31951] },
+        { href: '', label: 'Avon and South Dorset Prison', values: [636, 642] },
+        { href: '', label: 'Bedfordshire, Cambridgeshire and Norfolk', values: [1399, 1465] },
+        { href: '', label: 'Cumbria and Lancashire', values: [602, 862] },
+        { href: '', label: 'Devon and North Dorset Prison', values: [524, 901] },
+        { href: '', label: 'East Midlands', values: [1056, 1055] },
+        { href: '', label: 'Greater Manchester, Merseyside and Cheshire', values: [915, 1311] },
+        { href: '', label: 'Hertfordshire, Essex and Suffolk', values: [1819, 1435] },
+        { href: '', label: 'HMPPS Wales', values: [854, 1161] },
+        { href: '', label: 'Immigration Removal and Foreign National Prisons', values: [561, 323] },
+        { href: '', label: 'Kent, Surrey and Sussex', values: [1420, 1547] },
+        { href: '', label: 'London', values: [2531, 2799] },
+        { href: '', label: 'Long Term & High Security', values: [2912, 4036] },
+        { href: '', label: 'North Midlands', values: [1731, 1383] },
+        { href: '', label: 'Privately Managed Prisons', values: [2329, 3766] },
+        { href: '', label: 'South Central', values: [913, 998] },
+        { href: '', label: 'Tees and Wear', values: [377, 998] },
+        { href: '', label: 'West Midlands', values: [1305, 2055] },
+        { href: '', label: 'Women’s Estate', values: [1494, 1279] },
+        { href: '', label: 'Yorkshire', values: [1818, 2358] },
+        { href: '', label: 'Youth Custody Estate', values: [1123, 1577] },
       ])
     })
   })
@@ -376,8 +393,8 @@ describe('AnalyticsService', () => {
       )
 
       expect(rows).toEqual([
-        { href: undefined, label: 'All', values: [59, 54, 17, 232] },
-        { href: '', label: 'WRI', values: [59, 54, 17, 232] },
+        { href: undefined, label: 'All', values: [44, 63, 16, 205] },
+        { href: '', label: 'WRI', values: [44, 63, 16, 205] },
       ])
     })
 
@@ -385,10 +402,27 @@ describe('AnalyticsService', () => {
       const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(Filtering.national())
 
       expect(rows).toEqual([
-        { href: undefined, label: 'All', values: [476, 556, 97, 2619] },
-        { href: '', label: 'HMPPS Wales', values: [324, 336, 63, 1469] },
-        { href: '', label: 'Long Term & High Security', values: [59, 54, 17, 232] },
-        { href: '', label: 'Yorkshire', values: [93, 166, 17, 918] },
+        { href: undefined, label: 'All', values: [13636, 12650, 3560, 59005] },
+        { href: '', label: 'Avon and South Dorset Prison', values: [346, 232, 77, 1632] },
+        { href: '', label: 'Bedfordshire, Cambridgeshire and Norfolk', values: [692, 498, 188, 2590] },
+        { href: '', label: 'Cumbria and Lancashire', values: [375, 409, 85, 2517] },
+        { href: '', label: 'Devon and North Dorset Prison', values: [267, 371, 98, 1648] },
+        { href: '', label: 'East Midlands', values: [557, 399, 125, 1829] },
+        { href: '', label: 'Greater Manchester, Merseyside and Cheshire', values: [521, 508, 121, 2342] },
+        { href: '', label: 'Hertfordshire, Essex and Suffolk', values: [924, 551, 216, 2299] },
+        { href: '', label: 'HMPPS Wales', values: [525, 560, 92, 4355] },
+        { href: '', label: 'Immigration Removal and Foreign National Prisons', values: [316, 157, 49, 758] },
+        { href: '', label: 'Kent, Surrey and Sussex', values: [755, 602, 176, 2406] },
+        { href: '', label: 'London', values: [1213, 1171, 285, 4302] },
+        { href: '', label: 'Long Term & High Security', values: [1431, 1369, 468, 5457] },
+        { href: '', label: 'North Midlands', values: [910, 501, 183, 2230] },
+        { href: '', label: 'Privately Managed Prisons', values: [1471, 1963, 273, 11256] },
+        { href: '', label: 'South Central', values: [497, 378, 132, 1823] },
+        { href: '', label: 'Tees and Wear', values: [239, 478, 56, 2150] },
+        { href: '', label: 'West Midlands', values: [757, 936, 202, 3734] },
+        { href: '', label: 'Women’s Estate', values: [692, 396, 230, 1439] },
+        { href: '', label: 'Yorkshire', values: [1041, 1056, 230, 4143] },
+        { href: '', label: 'Youth Custody Estate', values: [107, 115, 274, 95] },
       ])
     })
   })

@@ -6,7 +6,7 @@ import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
-import AnalyticsService, { Filtering } from '../services/analyticsService'
+import AnalyticsService, { Filtering, UrlForLocationFunction } from '../services/analyticsService'
 import {
   AgeYoungPeople,
   AnalyticsError,
@@ -147,9 +147,15 @@ export default function routes(router: Router): Router {
 
     const { pgdRegionCode } = req.params
     let pgdRegionName
+    let urlFunction: UrlForLocationFunction
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
         pgdRegionName = National
+        // Link to PGD region page
+        urlFunction = (_, regionName) => {
+          const pgdRegion = PgdRegionService.getPgdRegionByName(regionName)
+          return pgdRegion ? `/analytics/${pgdRegion.code}/behaviour-entries` : null
+        }
       } else {
         const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
         if (!pgdRegion) {
@@ -157,13 +163,18 @@ export default function routes(router: Router): Router {
           return
         }
         pgdRegionName = pgdRegion.name
+        // No links from regional charts
+        urlFunction = (_pgdRegion, _prisonId) => null
       }
+    } else {
+      // Link to Incentives table from prison-level charts
+      urlFunction = urlForLocation
     }
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
-    const analyticsService = new AnalyticsService(s3Client, urlForLocation)
+    const analyticsService = new AnalyticsService(s3Client, urlFunction)
 
     const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [
@@ -190,9 +201,15 @@ export default function routes(router: Router): Router {
 
     const { pgdRegionCode } = req.params
     let pgdRegionName
+    let urlFunction: UrlForLocationFunction
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
         pgdRegionName = National
+        // Link to PGD region page
+        urlFunction = (_, regionName) => {
+          const pgdRegion = PgdRegionService.getPgdRegionByName(regionName)
+          return pgdRegion ? `/analytics/${pgdRegion.code}/incentive-levels` : null
+        }
       } else {
         const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
         if (!pgdRegion) {
@@ -200,13 +217,18 @@ export default function routes(router: Router): Router {
           return
         }
         pgdRegionName = pgdRegion.name
+        // No links from regional charts
+        urlFunction = (_pgdRegion, _prisonId) => null
       }
+    } else {
+      // Link to Incentives table from prison-level charts
+      urlFunction = urlForLocation
     }
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
-    const analyticsService = new AnalyticsService(s3Client, urlForLocation)
+    const analyticsService = new AnalyticsService(s3Client, urlFunction)
 
     const filterByPrison = Filtering.byPrison(activeCaseLoad)
     const charts = [

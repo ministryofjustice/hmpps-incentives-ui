@@ -9,7 +9,9 @@ const pgdRegions = {
   HESG: 'Hertfordshire, Essex and Suffolk Group',
   LTHS: 'Long Term & High Security',
   WE: 'Women’s Estate',
+  WLS: 'HMPPS Wales',
   WM: 'West Midlands',
+  YRKS: 'Yorkshire',
   // other prison groups
 }
 

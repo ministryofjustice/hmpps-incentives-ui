@@ -145,23 +145,43 @@ type AnalyticsPage = {
   name: string
   url: string
   expectedHeading: string
-  locationsLinkingToIncentivesTable?: string[]
+  linksFromCharts?: string[]
   chartIds: ChartId[]
 }
 
 const analyticsPages: AnalyticsPage[] = [
   {
-    name: 'Behaviour entries',
+    name: 'Prison (MDI) Behaviour entries',
     url: '/analytics/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
-    locationsLinkingToIncentivesTable: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
+    linksFromCharts: [
+      '/incentive-summary/MDI-1',
+      '/incentive-summary/MDI-2',
+      '/incentive-summary/MDI-3',
+      '/incentive-summary/MDI-4',
+      '/incentive-summary/MDI-5',
+      '/incentive-summary/MDI-6',
+      '/incentive-summary/MDI-7',
+      '/incentive-summary/MDI-8',
+      '/incentive-summary/MDI-SEG',
+    ],
     chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
-    name: 'Incentive levels',
+    name: 'Prison (MDI) Incentive levels',
     url: '/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
-    locationsLinkingToIncentivesTable: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
+    linksFromCharts: [
+      '/incentive-summary/MDI-1',
+      '/incentive-summary/MDI-2',
+      '/incentive-summary/MDI-3',
+      '/incentive-summary/MDI-4',
+      '/incentive-summary/MDI-5',
+      '/incentive-summary/MDI-6',
+      '/incentive-summary/MDI-7',
+      '/incentive-summary/MDI-8',
+      '/incentive-summary/MDI-SEG',
+    ],
     chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
@@ -179,178 +199,173 @@ const analyticsPages: AnalyticsPage[] = [
   },
 ]
 
-const samplePrison = 'MDI'
+describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHeading, chartIds, linksFromCharts }) => {
+  beforeEach(() => {
+    mockSdkS3ClientReponse(s3.send)
+    StitchedTablesCache.clear()
+  })
 
-describe.each(analyticsPages)(
-  'Analytics data pages',
-  ({ name, url, expectedHeading, chartIds, locationsLinkingToIncentivesTable }) => {
-    beforeEach(() => {
+  it(`${name} page loads`, () => {
+    return request(app)
+      .get(url)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain(expectedHeading)
+        expect(res.text).not.toContain('Page not found')
+      })
+  })
+
+  it(`error is presented on ${name} page if no source table was found`, () => {
+    mockSdkS3ClientReponse(s3.send, MockTable.Missing)
+
+    return request(app)
+      .get(url)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain(expectedHeading)
+        expect(res.text).toContain('There is a problem with this data – try again later')
+      })
+  })
+
+  it(`error is presented on ${name} page if source table contains no data`, () => {
+    mockSdkS3ClientReponse(s3.send, MockTable.Empty)
+
+    return request(app)
+      .get(url)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain(expectedHeading)
+        expect(res.text).toContain('There is a problem with this data – try again later')
+      })
+  })
+
+  if (linksFromCharts) {
+    it(`${name} page has charts that link to PGD region charts or incentive table for location`, () => {
+      return request(app)
+        .get(url)
+        .expect(res => {
+          linksFromCharts.forEach(link => {
+            expect(res.text).toContain(`href="${link}"`)
+          })
+        })
+    })
+  }
+
+  it(`shows a disclaimer on ${name} page`, () => {
+    return request(app)
+      .get(url)
+      .expect(res => {
+        expect(res.text).toContain('A note on our data')
+      })
+  })
+
+  describe.each(chartIds)('charts have feedback forms', chartId => {
+    beforeAll(() => {
       mockSdkS3ClientReponse(s3.send)
-      StitchedTablesCache.clear()
     })
 
-    it(`${name} page loads`, () => {
-      return request(app)
-        .get(url)
-        .expect(200)
-        .expect(res => {
-          expect(res.text).toContain(expectedHeading)
-          expect(res.text).not.toContain('Page not found')
-        })
-    })
-
-    it(`error is presented on ${name} page if no source table was found`, () => {
-      mockSdkS3ClientReponse(s3.send, MockTable.Missing)
-
-      return request(app)
-        .get(url)
-        .expect(200)
-        .expect(res => {
-          expect(res.text).toContain(expectedHeading)
-          expect(res.text).toContain('There is a problem with this data – try again later')
-        })
-    })
-
-    it(`error is presented on ${name} page if source table contains no data`, () => {
-      mockSdkS3ClientReponse(s3.send, MockTable.Empty)
-
-      return request(app)
-        .get(url)
-        .expect(200)
-        .expect(res => {
-          expect(res.text).toContain(expectedHeading)
-          expect(res.text).toContain('There is a problem with this data – try again later')
-        })
-    })
-
-    if (locationsLinkingToIncentivesTable) {
-      it(`${name} page has charts that link to incentive tables for locations`, () => {
-        return request(app)
-          .get(url)
-          .expect(res => {
-            locationsLinkingToIncentivesTable.forEach(location => {
-              expect(res.text).toContain(`href="/incentive-summary/${samplePrison}-${location}"`)
-            })
-          })
-      })
-    }
-
-    it(`shows a disclaimer on ${name} page`, () => {
-      return request(app)
-        .get(url)
-        .expect(res => {
-          expect(res.text).toContain('A note on our data')
-        })
-    })
-
-    describe.each(chartIds)('charts have feedback forms', chartId => {
-      beforeAll(() => {
-        mockSdkS3ClientReponse(s3.send)
-      })
-
-      it(`${name} page can post simple feedback on ${chartId} chart`, () => {
-        return request(app)
-          .post(url)
-          .send({ formId: chartId, chartUseful: 'yes' })
-          .expect(200)
-          .expect(res => {
-            expect(res.text).toContain(expectedHeading)
-            expect(mockedZendeskClientClass).toHaveBeenCalled()
-            const mockedZendeskClient = mockedZendeskClientClass.mock.instances[0] as jest.Mocked<ZendeskClient>
-            expect(mockedZendeskClient.createTicket).toHaveBeenCalledWith({
-              subject: `Feedback on chart ${chartId}`,
-              comment: { body: expect.any(String) },
-              type: 'task',
-              tags: ['hmpps-incentives', 'chart-feedback', `chart-${chartId}`, 'useful-yes'],
-              custom_fields: [
-                // Service
-                { id: 23757677, value: 'hmpps_incentives' },
-                // Environment
-                { id: 32342378, value: config.environment },
-                // URL
-                { id: 23730083, value: expect.stringContaining(url) },
-                // Prison
-                { id: 23984153, value: 'MDI' },
-              ],
-            })
-            const createTicketRequest = mockedZendeskClient.createTicket.mock.calls[0][0]
-            expect(createTicketRequest.comment.body).toContain('Is this chart useful? yes')
-            expect(createTicketRequest.comment.body).toContain('Prison: MDI')
-            expect(createTicketRequest.comment.body).not.toContain('Comments:')
-          })
-      })
-
-      it(`${name} page can post more complex feedback on ${chartId} chart`, () => {
-        return request(app)
-          .post(url)
-          .send({
-            formId: chartId,
-            chartUseful: 'no',
-            mainNoReason: 'do-not-understand',
-            noComments: 'How do I use this?',
-          })
-          .expect(200)
-          .expect(res => {
-            expect(res.text).toContain(expectedHeading)
-            expect(res.text).toContain('Your feedback has been submitted')
-            const mockedZendeskClient = mockedZendeskClientClass.mock.instances[0] as jest.Mocked<ZendeskClient>
-            expect(mockedZendeskClient.createTicket).toHaveBeenCalledWith({
-              subject: expect.any(String),
-              comment: { body: expect.any(String) },
-              type: 'task',
-              tags: [
-                'hmpps-incentives',
-                'chart-feedback',
-                `chart-${chartId}`,
-                'useful-no',
-                'not-useful-do-not-understand',
-              ],
-              custom_fields: expect.anything(),
-            })
-            expect(mockedZendeskClientClass).toHaveBeenCalled()
-            const createTicketRequest = mockedZendeskClient.createTicket.mock.calls[0][0]
-            expect(createTicketRequest.comment.body).toContain('Is this chart useful? no')
-            expect(createTicketRequest.comment.body).toContain('Prison: MDI')
-            expect(createTicketRequest.comment.body).toContain('Main reason: do-not-understand')
-            expect(createTicketRequest.comment.body).toContain('Comments:')
-            expect(createTicketRequest.comment.body).toContain('How do I use this?')
-          })
-      })
-
-      it(`${name} page will not post invalid feedback on ${chartId} chart`, () => {
-        return request(app)
-          .post(url)
-          .send({
-            formId: chartId,
-            chartUseful: 'no',
-            noComments: 'Do I have to choose only one reason?',
-          })
-          .expect(200)
-          .expect(res => {
-            expect(res.text).toContain(expectedHeading)
-            expect(res.text).not.toContain('Your feedback has been submitted')
-            expect(res.text).toContain('There is a problem') // error summary
-            expect(res.text).toContain(`#${chartId}-mainNoReason`) // link to field
-            expect(res.text).toContain('Select a reason for your answer') // error message
-            expect(res.text).toContain(`id="${chartId}-mainNoReason"`) // field with error
-            expect(res.text).toContain('Do I have to choose only one reason?') // comment not forgotten
-            expect(mockedZendeskClientClass).not.toHaveBeenCalled()
-          })
-      })
-    })
-
-    it(`${name} page will not accept a post without a formId parameter`, () => {
+    it(`${name} page can post simple feedback on ${chartId} chart`, () => {
       return request(app)
         .post(url)
-        .send({ chartUseful: 'yes' })
-        .expect(400)
+        .send({ formId: chartId, chartUseful: 'yes' })
+        .expect(200)
         .expect(res => {
-          expect(res.text).toContain('Sorry, there is a problem with the service')
+          expect(res.text).toContain(expectedHeading)
+          expect(mockedZendeskClientClass).toHaveBeenCalled()
+          const mockedZendeskClient = mockedZendeskClientClass.mock.instances[0] as jest.Mocked<ZendeskClient>
+          expect(mockedZendeskClient.createTicket).toHaveBeenCalledWith({
+            subject: `Feedback on chart ${chartId}`,
+            comment: { body: expect.any(String) },
+            type: 'task',
+            tags: ['hmpps-incentives', 'chart-feedback', `chart-${chartId}`, 'useful-yes'],
+            custom_fields: [
+              // Service
+              { id: 23757677, value: 'hmpps_incentives' },
+              // Environment
+              { id: 32342378, value: config.environment },
+              // URL
+              { id: 23730083, value: expect.stringContaining(url) },
+              // Prison
+              { id: 23984153, value: 'MDI' },
+            ],
+          })
+          const createTicketRequest = mockedZendeskClient.createTicket.mock.calls[0][0]
+          expect(createTicketRequest.comment.body).toContain('Is this chart useful? yes')
+          expect(createTicketRequest.comment.body).toContain('Prison: MDI')
+          expect(createTicketRequest.comment.body).not.toContain('Comments:')
+        })
+    })
+
+    it(`${name} page can post more complex feedback on ${chartId} chart`, () => {
+      return request(app)
+        .post(url)
+        .send({
+          formId: chartId,
+          chartUseful: 'no',
+          mainNoReason: 'do-not-understand',
+          noComments: 'How do I use this?',
+        })
+        .expect(200)
+        .expect(res => {
+          expect(res.text).toContain(expectedHeading)
+          expect(res.text).toContain('Your feedback has been submitted')
+          const mockedZendeskClient = mockedZendeskClientClass.mock.instances[0] as jest.Mocked<ZendeskClient>
+          expect(mockedZendeskClient.createTicket).toHaveBeenCalledWith({
+            subject: expect.any(String),
+            comment: { body: expect.any(String) },
+            type: 'task',
+            tags: [
+              'hmpps-incentives',
+              'chart-feedback',
+              `chart-${chartId}`,
+              'useful-no',
+              'not-useful-do-not-understand',
+            ],
+            custom_fields: expect.anything(),
+          })
+          expect(mockedZendeskClientClass).toHaveBeenCalled()
+          const createTicketRequest = mockedZendeskClient.createTicket.mock.calls[0][0]
+          expect(createTicketRequest.comment.body).toContain('Is this chart useful? no')
+          expect(createTicketRequest.comment.body).toContain('Prison: MDI')
+          expect(createTicketRequest.comment.body).toContain('Main reason: do-not-understand')
+          expect(createTicketRequest.comment.body).toContain('Comments:')
+          expect(createTicketRequest.comment.body).toContain('How do I use this?')
+        })
+    })
+
+    it(`${name} page will not post invalid feedback on ${chartId} chart`, () => {
+      return request(app)
+        .post(url)
+        .send({
+          formId: chartId,
+          chartUseful: 'no',
+          noComments: 'Do I have to choose only one reason?',
+        })
+        .expect(200)
+        .expect(res => {
+          expect(res.text).toContain(expectedHeading)
+          expect(res.text).not.toContain('Your feedback has been submitted')
+          expect(res.text).toContain('There is a problem') // error summary
+          expect(res.text).toContain(`#${chartId}-mainNoReason`) // link to field
+          expect(res.text).toContain('Select a reason for your answer') // error message
+          expect(res.text).toContain(`id="${chartId}-mainNoReason"`) // field with error
+          expect(res.text).toContain('Do I have to choose only one reason?') // comment not forgotten
           expect(mockedZendeskClientClass).not.toHaveBeenCalled()
         })
     })
-  },
-)
+  })
+
+  it(`${name} page will not accept a post without a formId parameter`, () => {
+    return request(app)
+      .post(url)
+      .send({ chartUseful: 'yes' })
+      .expect(400)
+      .expect(res => {
+        expect(res.text).toContain('Sorry, there is a problem with the service')
+        expect(mockedZendeskClientClass).not.toHaveBeenCalled()
+      })
+  })
+})
 
 // Tests specific of Protected Characteristic pages
 describe('Protected characteristic pages', () => {

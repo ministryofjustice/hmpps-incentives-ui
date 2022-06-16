@@ -151,17 +151,37 @@ type AnalyticsPage = {
 
 const analyticsPages: AnalyticsPage[] = [
   {
-    name: 'Behaviour entries',
+    name: 'Prison (MDI) Behaviour entries',
     url: '/analytics/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
-    locationsLinkingToIncentivesTable: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
+    locationsLinkingToIncentivesTable: [
+      '/incentive-summary/MDI-1',
+      '/incentive-summary/MDI-2',
+      '/incentive-summary/MDI-3',
+      '/incentive-summary/MDI-4',
+      '/incentive-summary/MDI-5',
+      '/incentive-summary/MDI-6',
+      '/incentive-summary/MDI-7',
+      '/incentive-summary/MDI-8',
+      '/incentive-summary/MDI-SEG',
+    ],
     chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
-    name: 'Incentive levels',
+    name: 'Prison (MDI) Incentive levels',
     url: '/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
-    locationsLinkingToIncentivesTable: ['1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
+    locationsLinkingToIncentivesTable: [
+      '/incentive-summary/MDI-1',
+      '/incentive-summary/MDI-2',
+      '/incentive-summary/MDI-3',
+      '/incentive-summary/MDI-4',
+      '/incentive-summary/MDI-5',
+      '/incentive-summary/MDI-6',
+      '/incentive-summary/MDI-7',
+      '/incentive-summary/MDI-8',
+      '/incentive-summary/MDI-SEG',
+    ],
     chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
@@ -178,8 +198,6 @@ const analyticsPages: AnalyticsPage[] = [
     ],
   },
 ]
-
-const samplePrison = 'MDI'
 
 describe.each(analyticsPages)(
   'Analytics data pages',
@@ -224,12 +242,12 @@ describe.each(analyticsPages)(
     })
 
     if (locationsLinkingToIncentivesTable) {
-      it(`${name} page has charts that link to incentive tables for locations`, () => {
+      it(`${name} page has charts that link to PGD region charts or incentive table for location`, () => {
         return request(app)
           .get(url)
           .expect(res => {
-            locationsLinkingToIncentivesTable.forEach(location => {
-              expect(res.text).toContain(`href="/incentive-summary/${samplePrison}-${location}"`)
+            locationsLinkingToIncentivesTable.forEach(link => {
+              expect(res.text).toContain(`href="${link}"`)
             })
           })
       })

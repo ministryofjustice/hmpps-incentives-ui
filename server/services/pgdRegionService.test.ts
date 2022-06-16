@@ -3,7 +3,7 @@ import PgdRegionService from './pgdRegionService'
 describe('PgdRegion Service', () => {
   it('getAllPgdRegions() returns all PgdRegions', () => {
     const allGroups = PgdRegionService.getAllPgdRegions()
-    expect(allGroups.length).toEqual(4)
+    expect(allGroups.length).toEqual(6)
     expect(allGroups).toContainEqual({ code: 'WM', name: 'West Midlands' })
   })
 

@@ -6,7 +6,8 @@ import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
-import AnalyticsService, { Filtering, UrlForLocationFunction } from '../services/analyticsService'
+import AnalyticsService, { Filtering } from '../services/analyticsService'
+import type { UrlForLocationFunction } from '../services/analyticsService'
 import {
   AgeYoungPeople,
   AnalyticsError,

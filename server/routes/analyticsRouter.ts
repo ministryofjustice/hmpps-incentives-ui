@@ -151,7 +151,7 @@ export default function routes(router: Router): Router {
       if (pgdRegionCode === National) {
         pgdRegionName = National
       } else {
-        const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
+        const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
         if (!pgdRegion) {
           res.redirect('/analytics/select-pgd-region')
           return
@@ -194,7 +194,7 @@ export default function routes(router: Router): Router {
       if (pgdRegionCode === National) {
         pgdRegionName = National
       } else {
-        const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
+        const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
         if (!pgdRegion) {
           res.redirect('/analytics/select-pgd-region')
           return
@@ -270,7 +270,7 @@ export default function routes(router: Router): Router {
       if (pgdRegionCode === National) {
         pgdRegionName = National
       } else {
-        const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
+        const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
         if (!pgdRegion) {
           res.redirect('/analytics/select-pgd-region')
           return

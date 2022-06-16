@@ -58,7 +58,11 @@ export default class PgdRegionService {
     return allPgdRegions
   }
 
-  static getPgdRegion(pgdRegionCode: string): PgdRegion {
+  static getPgdRegionByCode(pgdRegionCode: string): PgdRegion {
     return this.getAllPgdRegions().find(pgdRegion => pgdRegion.code === pgdRegionCode)
+  }
+
+  static getPgdRegionByName(pgdRegionName: string): PgdRegion {
+    return this.getAllPgdRegions().find(pgdRegion => pgdRegion.name === pgdRegionName)
   }
 }

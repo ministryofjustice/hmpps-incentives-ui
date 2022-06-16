@@ -145,7 +145,7 @@ type AnalyticsPage = {
   name: string
   url: string
   expectedHeading: string
-  locationsLinkingToIncentivesTable?: string[]
+  linksFromCharts?: string[]
   chartIds: ChartId[]
 }
 
@@ -154,7 +154,7 @@ const analyticsPages: AnalyticsPage[] = [
     name: 'Prison (MDI) Behaviour entries',
     url: '/analytics/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
-    locationsLinkingToIncentivesTable: [
+    linksFromCharts: [
       '/incentive-summary/MDI-1',
       '/incentive-summary/MDI-2',
       '/incentive-summary/MDI-3',
@@ -171,7 +171,7 @@ const analyticsPages: AnalyticsPage[] = [
     name: 'Prison (MDI) Incentive levels',
     url: '/analytics/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
-    locationsLinkingToIncentivesTable: [
+    linksFromCharts: [
       '/incentive-summary/MDI-1',
       '/incentive-summary/MDI-2',
       '/incentive-summary/MDI-3',
@@ -201,7 +201,7 @@ const analyticsPages: AnalyticsPage[] = [
 
 describe.each(analyticsPages)(
   'Analytics data pages',
-  ({ name, url, expectedHeading, chartIds, locationsLinkingToIncentivesTable }) => {
+  ({ name, url, expectedHeading, chartIds, linksFromCharts }) => {
     beforeEach(() => {
       mockSdkS3ClientReponse(s3.send)
       StitchedTablesCache.clear()
@@ -241,12 +241,12 @@ describe.each(analyticsPages)(
         })
     })
 
-    if (locationsLinkingToIncentivesTable) {
+    if (linksFromCharts) {
       it(`${name} page has charts that link to PGD region charts or incentive table for location`, () => {
         return request(app)
           .get(url)
           .expect(res => {
-            locationsLinkingToIncentivesTable.forEach(link => {
+            linksFromCharts.forEach(link => {
               expect(res.text).toContain(`href="${link}"`)
             })
           })

@@ -4,6 +4,7 @@ describe('PgdRegion Service', () => {
   it('getAllPgdRegions() returns all PgdRegions', () => {
     const allGroups = PgdRegionService.getAllPgdRegions()
     expect(allGroups.length).toEqual(4)
+    expect(allGroups).toContainEqual({ code: 'WM', name: 'West Midlands' })
   })
 
   describe('getPgdRegionByCode()', () => {
@@ -14,7 +15,7 @@ describe('PgdRegion Service', () => {
 
     it('does not return a PgdRegion if it cannot find one', () => {
       const pgdRegion = PgdRegionService.getPgdRegionByCode('test')
-      expect(pgdRegion).toBeUndefined()
+      expect(pgdRegion).toBeNull()
     })
   })
 
@@ -28,7 +29,7 @@ describe('PgdRegion Service', () => {
 
     it('returns undefined when it cannot find a matching PGD Region', () => {
       const pgdRegion = PgdRegionService.getPgdRegionByName('Non-existant West Midlands')
-      expect(pgdRegion).toBeUndefined()
+      expect(pgdRegion).toBeNull()
     })
   })
 })

@@ -3,66 +3,40 @@ export const National: string = 'National' as const
 export interface PgdRegion {
   name: string
   code: string
-  prisons: Prison[]
 }
 
-export interface Prison {
-  name: string
-  code: string
-}
-
-const allPgdRegions: PgdRegion[] = [
-  {
-    name: 'West Midlands',
-    code: 'WM',
-    prisons: [
-      { name: 'Birmingham (HMP)', code: 'BMI' },
-      { name: 'Brinsford (HMP & YOI)', code: 'BSI' },
-      { name: 'Featherstone (HMP)', code: 'FSI' },
-      { name: 'Hewell (HMP)', code: 'HEI' },
-      { name: 'Stafford (HMP)', code: 'SFI' },
-      { name: 'Stoke Heath (HMP & YOI)', code: 'SHI' },
-      { name: 'Swinfen Hall (HMP & YOI)', code: 'SNI' },
-      // taken from design on Miro, there are potentially other WM prisons
-    ],
-  },
-  {
-    name: 'Hertfordshire, Essex and Suffolk Group',
-    code: 'HESG',
-    prisons: [
-      { name: 'Chelmsford (HMP & YOI)"', code: 'CDI' },
-      // other HESG prisons
-    ],
-  },
-  {
-    name: 'Women’s Estate',
-    code: 'WE',
-    prisons: [
-      { name: 'AGI', code: 'AGI' },
-      // other women's prisons
-    ],
-  },
-  {
-    name: 'Long Term & High Security',
-    code: 'LTHS',
-    prisons: [
-      { name: 'WDI', code: 'WDI' },
-      // other LHTS prisons
-    ],
-  },
+const pgdRegions = {
+  HESG: 'Hertfordshire, Essex and Suffolk Group',
+  LTHS: 'Long Term & High Security',
+  WE: 'Women’s Estate',
+  WM: 'West Midlands',
   // other prison groups
-]
+}
 
 export default class PgdRegionService {
   static getAllPgdRegions(): PgdRegion[] {
-    return allPgdRegions
+    return Object.entries(pgdRegions).map(([code, name]) => {
+      return { code, name }
+    })
   }
 
   static getPgdRegionByCode(pgdRegionCode: string): PgdRegion {
-    return this.getAllPgdRegions().find(pgdRegion => pgdRegion.code === pgdRegionCode)
+    const pgdRegionName = pgdRegions[pgdRegionCode]
+    if (pgdRegionName) {
+      return { code: pgdRegionCode, name: pgdRegionName }
+    }
+
+    return null
   }
 
   static getPgdRegionByName(pgdRegionName: string): PgdRegion {
-    return this.getAllPgdRegions().find(pgdRegion => pgdRegion.name === pgdRegionName)
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [code, name] of Object.entries(pgdRegions)) {
+      if (name === pgdRegionName) {
+        return { code, name }
+      }
+    }
+
+    return null
   }
 }

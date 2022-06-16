@@ -22,7 +22,6 @@ describe('PgdRegion Service', () => {
   describe('getPgdRegionByName', () => {
     it('when it can find it by name, returns the correct region', () => {
       const pgdRegion = PgdRegionService.getPgdRegionByName('West Midlands')
-      expect(pgdRegion).not.toBeUndefined()
       expect(pgdRegion.name).toEqual('West Midlands')
       expect(pgdRegion.code).toEqual('WM')
     })

@@ -19,13 +19,13 @@ export enum TableType {
  * Source data table from Analytical Platform
  */
 export interface CaseEntriesTable extends Table {
+  pgd_region: Record<string, string>
   prison: Record<string, string>
   wing: Record<string, string>
   positives: Record<string, number>
   negatives: Record<string, number>
   // Unused columns; not currently stored in test data:
   // offender_book_id: Record<string, number>
-  // pgd_region: Record<string, string>
   // behav_profile: Record<string, string>
 }
 
@@ -34,6 +34,7 @@ export interface CaseEntriesTable extends Table {
  * NB: must always be filtered by _some_ characteristic to get by-wing aggregates
  */
 export interface IncentiveLevelsTable extends Table {
+  pgd_region: Record<string, string>
   prison: Record<string, string>
   wing: Record<string, string>
   incentive: Record<string, string>
@@ -45,7 +46,6 @@ export interface IncentiveLevelsTable extends Table {
   // Unused columns; not currently stored in test data:
   // date: Record<string, number>
   // offender_book_id: Record<string, number>
-  // pgd_region: Record<string, string>
 }
 
 /**
@@ -54,6 +54,7 @@ export interface IncentiveLevelsTable extends Table {
 export interface TrendsTable extends Table {
   year_month_str: Record<string, string>
   snapshots: Record<string, number>
+  pgd_region: Record<string, string>
   prison: Record<string, string>
   offenders: Record<string, number>
   incentive: Record<string, string>
@@ -64,8 +65,6 @@ export interface TrendsTable extends Table {
   religion_group: Record<string, string>
   disability: Record<string, string>
   sex_orientation: Record<string, string>
-  // Unused columns; not currently stored in test data:
-  // pgd_region: Record<string, string>
 }
 
 /**

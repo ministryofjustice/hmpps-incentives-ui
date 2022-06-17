@@ -7,6 +7,25 @@ import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 import { ChartId } from '../../../server/routes/analyticsChartTypes'
 import PgdRegionSelection from '../../pages/analytics/pgdRegionSelection'
 
+const assertTestData = (testData, page) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [chartId, removeLastRow, expectedData] of testData) {
+    getTextFromTable(page.getChartTable(chartId)).then(rows => {
+      const cleanedRows = cleanRows(rows, removeLastRow)
+      expect(cleanedRows).to.deep.equal(expectedData)
+    })
+  }
+}
+
+const cleanRows = (rows: string[][], removeLastRow) => {
+  return rows.map(row => {
+    if (removeLastRow) {
+      row.pop() // remove last column as it's empty
+    }
+    return row.map(cell => cell.split(/\s/)[0])
+  })
+}
+
 context('Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
     cy.task('reset')
@@ -58,15 +77,6 @@ context('Analytics section > Protected characteristics page', () => {
 
   it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
-
-    const cleanRows = (rows: string[][], removeLastRow) => {
-      return rows.map(row => {
-        if (removeLastRow) {
-          row.pop() // remove last column as it's empty
-        }
-        return row.map(cell => cell.split(/\s/)[0])
-      })
-    }
 
     const testData: [ChartId, boolean, string[][]][] = [
       [
@@ -147,13 +157,7 @@ context('Analytics section > Protected characteristics page', () => {
       ],
     ]
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [chartId, removeLastRow, expectedData] of testData) {
-      getTextFromTable(page.getChartTable(chartId)).then(rows => {
-        const cleanedRows = cleanRows(rows, removeLastRow)
-        expect(cleanedRows).to.deep.equal(expectedData)
-      })
-    }
+    assertTestData(testData, page)
   })
 
   it('guidance box for analytics is tracked', () => {
@@ -258,7 +262,7 @@ context('Analytics section > Protected characteristics page', () => {
   })
 })
 
-context('Pgd Region selection > Analytics section > Protected characteristics page', () => {
+context('Pgd Region selection > National > Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
@@ -298,5 +302,200 @@ context('Pgd Region selection > Analytics section > Protected characteristics pa
 
     // Still on National page
     cy.get('.govuk-heading-xl').contains('National')
+  })
+
+  it('users see analytics', () => {
+    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+
+    const testData: [ChartId, boolean, string[][]][] = [
+      [
+        'population-by-age',
+        true,
+        [
+          ['All', '100%', '3,095'],
+          [''],
+          ['15-17', '0%', '0'],
+          ['18-25', '18%', '546'],
+          ['26-35', '36%', '1,127'],
+          ['36-45', '24%', '752'],
+          ['46-55', '13%', '410'],
+          ['56-65', '5%', '160'],
+          ['66+', '3%', '100'],
+        ],
+      ],
+      [
+        'incentive-levels-by-age',
+        true,
+        [
+          ['All', '3%', '43%', '54%'],
+          [''],
+          ['15-17', '0%', '0%', '0%'],
+          ['18-25', '6%', '61%', '33%'],
+          ['26-35', '4%', '43%', '54%'],
+          ['36-45', '2%', '36%', '61%'],
+          ['46-55', '1%', '37%', '62%'],
+          ['56-65', '0%', '31%', '69%'],
+          ['66+', '1%', '37%', '62%'],
+        ],
+      ],
+      [
+        'trends-incentive-levels-by-age',
+        false,
+        [
+          ['Basic', '3', '1', '1', '3', '9', '16', '14', '18', '17', '21', '22', '22'],
+          ['Standard', '348', '340', '327', '314', '297', '282', '281', '287', '297', '293', '310', '329'],
+          ['Enhanced', '142', '143', '142', '153', '152', '152', '153', '149', '152', '153', '155', '164'],
+          ['Total', '492', '484', '469', '470', '457', '450', '448', '454', '467', '467', '487', '515'],
+        ],
+      ],
+      [
+        'entries-by-age',
+        true,
+        [
+          ['All', '42%', '58%'],
+          [''],
+          ['15-17', '0%', '0%'],
+          ['18-25', '27%', '73%'],
+          ['26-35', '42%', '58%'],
+          ['36-45', '53%', '47%'],
+          ['46-55', '57%', '43%'],
+          ['56-65', '78%', '22%'],
+          ['66+', '32%', '68%'],
+        ],
+      ],
+      [
+        'trends-entries-by-age',
+        false,
+        [
+          ['Positive', '83', '55', '133', '158', '115', '99', '112', '90', '108', '82', '117', '143'],
+          ['Negative', '388', '379', '410', '385', '368', '392', '421', '433', '380', '330', '395', '390'],
+          ['All', '471', '434', '543', '543', '483', '491', '533', '523', '488', '412', '512', '533'],
+          ['Total', '492', '484', '469', '470', '457', '450', '448', '454', '467', '467', '487', '515'],
+        ],
+      ],
+      [
+        'prisoners-with-entries-by-age',
+        true,
+        [
+          ['All', '17%', '17%', '4%', '62%'],
+          [''],
+          ['15-17', '0%', '0%', '0%', '0%'],
+          ['18-25', '16%', '30%', '6%', '48%'],
+          ['26-35', '18%', '19%', '5%', '58%'],
+          ['36-45', '20%', '13%', '3%', '64%'],
+          ['46-55', '16%', '9%', '2%', '73%'],
+          ['56-65', '12%', '4%', '1%', '83%'],
+          ['66+', '6%', '3%', '0%', '91%'],
+        ],
+      ],
+    ]
+
+    assertTestData(testData, page)
+  })
+})
+
+context('Pgd Region selection > LTHS > Analytics section > Protected characteristics page', () => {
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubAuthUser')
+
+    cy.signIn()
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.selectPgdRegionLink().click()
+    const locationSelectionPage = Page.verifyOnPage(PgdRegionSelection)
+    locationSelectionPage.changePgdRegionSelect().select('LTHS')
+    locationSelectionPage.continueButton().click()
+    const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    analyticsPage.protectedCharacteristicsNavItem.click()
+  })
+
+  it('users see analytics', () => {
+    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
+
+    const testData: [ChartId, boolean, string[][]][] = [
+      [
+        'population-by-age',
+        true,
+        [
+          ['All', '100%', '318'],
+          [''],
+          ['15-17', '0%', '0'],
+          ['18-25', '13%', '42'],
+          ['26-35', '31%', '99'],
+          ['36-45', '26%', '84'],
+          ['46-55', '16%', '52'],
+          ['56-65', '11%', '34'],
+          ['66+', '2%', '7'],
+        ],
+      ],
+      [
+        'incentive-levels-by-age',
+        true,
+        [
+          ['All', '3%', '31%', '66%'],
+          [''],
+          ['15-17', '0%', '0%', '0%'],
+          ['18-25', '5%', '55%', '40%'],
+          ['26-35', '2%', '36%', '62%'],
+          ['36-45', '5%', '23%', '73%'],
+          ['46-55', '2%', '25%', '73%'],
+          ['56-65', '0%', '18%', '82%'],
+          ['66+', '0%', '14%', '86%'],
+        ],
+      ],
+      [
+        'trends-incentive-levels-by-age',
+        false,
+        [
+          ['Basic', '2', '1', '1', '1', '1', '1', '1', '1', '0', '3', '3', '3'],
+          ['Standard', '35', '32', '28', '27', '23', '20', '20', '21', '24', '21', '24', '24'],
+          ['Enhanced', '12', '16', '16', '15', '15', '14', '14', '12', '12', '14', '14', '15'],
+          ['Total', '49', '48', '45', '43', '39', '35', '34', '35', '37', '38', '41', '41'],
+        ],
+      ],
+      [
+        'entries-by-age',
+        true,
+        [
+          ['All', '32%', '68%'],
+          [''],
+          ['15-17', '0%', '0%'],
+          ['18-25', '22%', '78%'],
+          ['26-35', '29%', '71%'],
+          ['36-45', '41%', '59%'],
+          ['46-55', '31%', '69%'],
+          ['56-65', '82%', '18%'],
+          ['66+', '0%', '0%'],
+        ],
+      ],
+      [
+        'trends-entries-by-age',
+        false,
+        [
+          ['Positive', '14', '8', '12', '27', '12', '5', '3', '2', '4', '5', '22', '20'],
+          ['Negative', '66', '60', '66', '68', '53', '69', '49', '47', '63', '38', '55', '39'],
+          ['All', '80', '68', '78', '95', '65', '74', '52', '49', '67', '43', '77', '59'],
+          ['Total', '49', '48', '45', '43', '39', '35', '34', '35', '37', '38', '41', '41'],
+        ],
+      ],
+      [
+        'prisoners-with-entries-by-age',
+        true,
+        [
+          ['All', '14%', '22%', '5%', '60%'],
+          [''],
+          ['15-17', '0%', '0%', '0%', '0%'],
+          ['18-25', '14%', '45%', '14%', '26%'],
+          ['26-35', '9%', '28%', '6%', '57%'],
+          ['36-45', '20%', '17%', '4%', '60%'],
+          ['46-55', '12%', '13%', '0%', '75%'],
+          ['56-65', '15%', '3%', '3%', '79%'],
+          ['66+', '0%', '0%', '0%', '100%'],
+        ],
+      ],
+    ]
+
+    assertTestData(testData, page)
   })
 })

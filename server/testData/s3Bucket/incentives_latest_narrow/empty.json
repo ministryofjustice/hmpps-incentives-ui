@@ -1,7 +1,11 @@
 {
+  "pgd_region": {},
   "prison": {},
   "wing": {},
   "incentive": {},
+  "behaviour_profile": {},
   "characteristic": {},
-  "charac_group": {}
+  "charac_group": {},
+  "positives": {},
+  "negatives": {}
 }

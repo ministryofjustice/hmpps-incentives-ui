@@ -151,6 +151,18 @@ type AnalyticsPage = {
 
 const analyticsPages: AnalyticsPage[] = [
   {
+    name: 'National Behaviour entries',
+    url: '/analytics/National/behaviour-entries',
+    expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
+    chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
+  },
+  {
+    name: 'PGD region Behaviour entries',
+    url: '/analytics/LTHS/behaviour-entries',
+    expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
+    chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
+  },
+  {
     name: 'Prison (MDI) Behaviour entries',
     url: '/analytics/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
@@ -166,6 +178,18 @@ const analyticsPages: AnalyticsPage[] = [
       '/incentive-summary/MDI-SEG',
     ],
     chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
+  },
+  {
+    name: 'National Incentive levels',
+    url: '/analytics/National/incentive-levels',
+    expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
+    chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
+  },
+  {
+    name: 'PGD region Incentive levels',
+    url: '/analytics/LTHS/incentive-levels',
+    expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
+    chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
     name: 'Prison (MDI) Incentive levels',
@@ -185,7 +209,33 @@ const analyticsPages: AnalyticsPage[] = [
     chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
-    name: 'Protected characteristics',
+    name: 'National Protected characteristics',
+    url: '/analytics/National/protected-characteristic?characteristic=disability',
+    expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
+    chartIds: [
+      'population-by-disability',
+      'incentive-levels-by-disability',
+      'trends-incentive-levels-by-disability',
+      'entries-by-disability',
+      'trends-entries-by-disability',
+      'prisoners-with-entries-by-disability',
+    ],
+  },
+  {
+    name: 'PGD region Protected characteristics',
+    url: '/analytics/LTHS/protected-characteristic?characteristic=disability',
+    expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
+    chartIds: [
+      'population-by-disability',
+      'incentive-levels-by-disability',
+      'trends-incentive-levels-by-disability',
+      'entries-by-disability',
+      'trends-entries-by-disability',
+      'prisoners-with-entries-by-disability',
+    ],
+  },
+  {
+    name: 'Prison (MDI) Protected characteristics',
     url: '/analytics/protected-characteristic?characteristic=disability',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
     chartIds: [

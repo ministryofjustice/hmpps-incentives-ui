@@ -177,8 +177,6 @@ export default function routes(router: Router): Router {
       urlFunction = urlForLocation
     }
 
-    const activeCaseLoad = res.locals.user.activeCaseload.id
-
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlFunction)
 
@@ -234,8 +232,6 @@ export default function routes(router: Router): Router {
       // Link to Incentives table from prison-level charts
       urlFunction = urlForLocation
     }
-
-    const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, urlFunction)

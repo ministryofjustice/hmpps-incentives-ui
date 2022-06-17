@@ -3,6 +3,7 @@ import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
+import PgdRegionSelection from '../../pages/analytics/pgdRegionSelection'
 
 context('Analytics section > Incentive levels page', () => {
   beforeEach(() => {
@@ -157,5 +158,97 @@ context('Analytics section > Incentive levels page', () => {
 
   it('users will see errors if they submit invalid feedback on chart', () => {
     testInvalidFeedbackSubmission(AnalyticsIncentiveLevels, ['incentive-levels-by-location', 'trends-incentive-levels'])
+  })
+})
+
+context('Pgd Region selection > National > Analytics section > Incentive levels page', () => {
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubAuthUser')
+
+    cy.signIn()
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.selectPgdRegionLink().click()
+    const locationSelectionPage = Page.verifyOnPage(PgdRegionSelection)
+    locationSelectionPage.changePgdRegionSelect().select('National')
+    locationSelectionPage.continueButton().click()
+    Page.verifyOnPage(AnalyticsIncentiveLevels)
+  })
+
+  it('users see analytics', () => {
+    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+    page
+      .getChartTable('incentive-levels-by-location')
+      .first()
+      .then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('3,095')
+      })
+
+    getTextFromTable(page.getChartTable('trends-incentive-levels')).then(rows => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [_basicRow, standardRow, _enhancedRow, populationRow] = rows
+      // remove header column
+      standardRow.shift()
+      populationRow.shift()
+
+      expect(standardRow.map(text => text.split(/\s/)[0])).to.deep.equal(
+        // monthly average population on standard level
+        ['1,598', '1,590', '1,544', '1,470', '1,405', '1,388', '1,403', '1,421', '1,427', '1,383', '1,353', '1,360'],
+      )
+      expect(populationRow).to.deep.equal(
+        // monthly average population
+        ['3,102', '3,077', '3,070', '3,059', '3,047', '3,036', '3,057', '3,060', '3,066', '3,054', '3,059', '3,063'],
+      )
+    })
+  })
+})
+
+context('Pgd Region selection > LTHS > Analytics section > Incentive levels page', () => {
+  beforeEach(() => {
+    cy.task('reset')
+    cy.task('stubSignIn')
+    cy.task('stubAuthUser')
+
+    cy.signIn()
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.selectPgdRegionLink().click()
+    const locationSelectionPage = Page.verifyOnPage(PgdRegionSelection)
+    locationSelectionPage.changePgdRegionSelect().select('LTHS')
+    locationSelectionPage.continueButton().click()
+    Page.verifyOnPage(AnalyticsIncentiveLevels)
+  })
+
+  it('users see analytics', () => {
+    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+    page
+      .getChartTable('incentive-levels-by-location')
+      .first()
+      .then(totalsRow => {
+        const location = totalsRow.find('td:first-child').text()
+        expect(location).to.contain('All')
+        expect(location).to.contain('318')
+      })
+
+    getTextFromTable(page.getChartTable('trends-incentive-levels')).then(rows => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [_basicRow, standardRow, _enhancedRow, populationRow] = rows
+      // remove header column
+      standardRow.shift()
+      populationRow.shift()
+
+      expect(standardRow.map(text => text.split(/\s/)[0])).to.deep.equal(
+        // monthly average population on standard level
+        ['147', '133', '116', '100', '92', '95', '96', '98', '103', '104', '112', '106'],
+      )
+      expect(populationRow).to.deep.equal(
+        // monthly average population
+        ['406', '372', '342', '322', '315', '312', '317', '315', '314', '318', '323', '321'],
+      )
+    })
   })
 })

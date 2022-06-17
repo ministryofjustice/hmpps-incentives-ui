@@ -72,13 +72,17 @@ export const Filtering = {
   },
 }
 
+// Function returning the URL to a specific location (be it wing, prison or PGD Region)
+//
+// filterValue could be null (for national), a PGD region name or prison ID
+// groupValue could be a PGD region name, a prison ID or a residential location ID
+// for national, regional and prison views respectively
+export type UrlForLocationFunction = (filterValue: string | null, groupValue: string) => string | null
+
 export default class AnalyticsService {
   private readonly cache = StitchedTablesCache
 
-  constructor(
-    private readonly client: S3Client,
-    private readonly urlForLocation: (prison: string, location: string) => string,
-  ) {}
+  constructor(private readonly client: S3Client, private readonly urlForLocation: UrlForLocationFunction) {}
 
   async findLatestTable(tableType: TableType): Promise<{ key: string; date: Date; modified: Date }> {
     logger.debug(`Finding latest "${tableType}" table`)

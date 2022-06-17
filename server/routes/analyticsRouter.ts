@@ -7,6 +7,7 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import AnalyticsService, { Filtering } from '../services/analyticsService'
+import type { UrlForLocationFunction } from '../services/analyticsService'
 import {
   AgeYoungPeople,
   AnalyticsError,
@@ -148,26 +149,38 @@ export default function routes(router: Router): Router {
 
     const { pgdRegionCode } = req.params
     let pgdRegionName
+    let urlFunction: UrlForLocationFunction
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
         pgdRegionName = National
         filterQuery = Filtering.national()
+        // Link to PGD region page
+        urlFunction = (_, regionName) => {
+          const pgdRegion = PgdRegionService.getPgdRegionByName(regionName)
+          return pgdRegion ? `/analytics/${pgdRegion.code}/behaviour-entries` : null
+        }
       } else {
-        const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
+        const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
         if (!pgdRegion) {
           res.redirect('/analytics/select-pgd-region')
           return
         }
         pgdRegionName = pgdRegion.name
         filterQuery = Filtering.byPgdRegion(pgdRegionName)
+        // No links from regional charts
+        urlFunction = (_pgdRegion, _prisonId) => null
       }
     } else {
       const activeCaseLoad = res.locals.user.activeCaseload.id
       filterQuery = Filtering.byPrison(activeCaseLoad)
+      // Link to Incentives table from prison-level charts
+      urlFunction = urlForLocation
     }
 
+    const activeCaseLoad = res.locals.user.activeCaseload.id
+
     const s3Client = new S3Client(config.s3)
-    const analyticsService = new AnalyticsService(s3Client, urlForLocation)
+    const analyticsService = new AnalyticsService(s3Client, urlFunction)
 
     const charts = [
       analyticsService.getBehaviourEntriesByLocation(filterQuery),
@@ -194,26 +207,38 @@ export default function routes(router: Router): Router {
 
     const { pgdRegionCode } = req.params
     let pgdRegionName
+    let urlFunction: UrlForLocationFunction
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
         pgdRegionName = National
         filterQuery = Filtering.national()
+        // Link to PGD region page
+        urlFunction = (_, regionName) => {
+          const pgdRegion = PgdRegionService.getPgdRegionByName(regionName)
+          return pgdRegion ? `/analytics/${pgdRegion.code}/incentive-levels` : null
+        }
       } else {
-        const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
+        const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
         if (!pgdRegion) {
           res.redirect('/analytics/select-pgd-region')
           return
         }
         pgdRegionName = pgdRegion.name
         filterQuery = Filtering.byPgdRegion(pgdRegionName)
+        // No links from regional charts
+        urlFunction = (_pgdRegion, _prisonId) => null
       }
     } else {
       const activeCaseLoad = res.locals.user.activeCaseload.id
       filterQuery = Filtering.byPrison(activeCaseLoad)
+      // Link to Incentives table from prison-level charts
+      urlFunction = urlForLocation
     }
 
+    const activeCaseLoad = res.locals.user.activeCaseload.id
+
     const s3Client = new S3Client(config.s3)
-    const analyticsService = new AnalyticsService(s3Client, urlForLocation)
+    const analyticsService = new AnalyticsService(s3Client, urlFunction)
 
     const charts = [
       analyticsService.getIncentiveLevelsByLocation(filterQuery),
@@ -280,7 +305,7 @@ export default function routes(router: Router): Router {
         pgdRegionName = National
         filterQuery = Filtering.national()
       } else {
-        const pgdRegion = PgdRegionService.getPgdRegion(pgdRegionCode)
+        const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
         if (!pgdRegion) {
           res.redirect('/analytics/select-pgd-region')
           return

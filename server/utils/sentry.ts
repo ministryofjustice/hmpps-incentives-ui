@@ -1,4 +1,4 @@
-import type { Express, RequestHandler, ErrorRequestHandler } from 'express'
+import type { Express } from 'express'
 import * as Sentry from '@sentry/node'
 
 import config from '../config'
@@ -19,15 +19,17 @@ export function setUpSentryRequestHandler(app: Express): void {
   if (config.sentry.dsn) {
     app.use(
       Sentry.Handlers.requestHandler({
-        ip: false,
-        user: false,
-      }) as RequestHandler,
+        include: {
+          ip: false,
+          user: false,
+        },
+      }),
     )
   }
 }
 
 export function setUpSentryErrorHandler(app: Express): void {
   if (config.sentry.dsn) {
-    app.use(Sentry.Handlers.errorHandler() as ErrorRequestHandler)
+    app.use(Sentry.Handlers.errorHandler())
   }
 }

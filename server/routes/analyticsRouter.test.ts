@@ -155,6 +155,11 @@ const analyticsPages: AnalyticsPage[] = [
     url: '/analytics/National/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
     chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
+    linksFromCharts: [
+      '/analytics/LTHS/behaviour-entries',
+      '/analytics/WLS/behaviour-entries',
+      '/analytics/YRKS/behaviour-entries',
+    ],
   },
   {
     name: 'PGD region Behaviour entries',
@@ -184,6 +189,11 @@ const analyticsPages: AnalyticsPage[] = [
     url: '/analytics/National/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
     chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
+    linksFromCharts: [
+      '/analytics/LTHS/incentive-levels',
+      '/analytics/WLS/incentive-levels',
+      '/analytics/YRKS/incentive-levels',
+    ],
   },
   {
     name: 'PGD region Incentive levels',

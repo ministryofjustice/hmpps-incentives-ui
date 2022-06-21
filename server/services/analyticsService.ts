@@ -282,8 +282,7 @@ export default class AnalyticsService {
 
     const columnSet: Set<string> = new Set()
     const filteredTables = stitchedTable.filter(row => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [filteredColumn, _groupedColumn, incentive, characteristic] = filterColumn ? row : ['', ...row]
+      const [filteredColumn, groupedColumn, incentive, characteristic] = filterColumn ? row : ['', ...row]
 
       const include =
         // if not national filter only selected PGD region or prison
@@ -291,7 +290,9 @@ export default class AnalyticsService {
         // arbitrarily filter by a characteristic (using one is required)
         characteristic === 'age_group_10yr' &&
         // it's possible for incentive level to be null
-        incentive
+        incentive &&
+        // it's possible for 'groupedColumn' (e.g. PGD region) to be null
+        groupedColumn
       if (include) {
         columnSet.add(incentive)
       }
@@ -345,8 +346,7 @@ export default class AnalyticsService {
 
     const columnSet: Set<string> = new Set()
     const filteredTables = stitchedTable.filter(row => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [filteredColumn, _groupedColumn, incentive, characteristic, characteristicGroup] = filterColumn
+      const [filteredColumn, groupedColumn, incentive, characteristic, characteristicGroup] = filterColumn
         ? row
         : ['', ...row]
 
@@ -359,7 +359,9 @@ export default class AnalyticsService {
         // it's possible for characteristic to be null
         characteristicGroup &&
         // it's possible for incentive level to be null
-        incentive
+        incentive &&
+        // it's possible for 'groupedColumn' (e.g. PGD region) to be null
+        groupedColumn
       if (include) {
         columnSet.add(incentive)
       }

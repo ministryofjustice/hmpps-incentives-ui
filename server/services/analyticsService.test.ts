@@ -14,7 +14,7 @@ import {
 } from './analyticsServiceTypes'
 import type { PrisonersOnLevelsByProtectedCharacteristic, TrendsReportRow, TrendsTable } from './analyticsServiceTypes'
 import { mapRowsAndSumTotals, mapRowsForMonthlyTrends } from './analyticsServiceUtils'
-import StitchedTablesCache from './stitchedTablesCache'
+import { MemoryStitchedTablesCache } from './stitchedTablesCache'
 import { MockTable, mockAppS3ClientResponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
@@ -39,7 +39,7 @@ describe('AnalyticsService', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    const cache = new StitchedTablesCache()
+    const cache = new MemoryStitchedTablesCache()
     analyticsService = new AnalyticsService(s3Client, cache, () => '')
   })
 

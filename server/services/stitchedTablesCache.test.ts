@@ -1,14 +1,25 @@
 import S3Client from '../data/s3Client'
 import AnalyticsService from './analyticsService'
 import { AnalyticsError, TableType } from './analyticsServiceTypes'
-import StitchedTablesCache from './stitchedTablesCache'
+import { MemoryStitchedTablesCache } from './stitchedTablesCache'
 
 jest.mock('@aws-sdk/client-s3')
 jest.mock('../data/s3Client')
 
 describe('StitchedTablesCache', () => {
+  it('makes cache keys', () => {
+    const cache = new MemoryStitchedTablesCache()
+
+    expect(cache.getCacheKey(TableType.incentiveLevels, [])).toEqual(TableType.incentiveLevels)
+    expect(cache.getCacheKey(TableType.behaviourEntries, ['positives', 'negatives'])).toEqual(
+      `${TableType.behaviourEntries},positives,negatives`,
+    )
+  })
+})
+
+describe('MemoryStitchedTablesCache', () => {
   const s3Client = new S3Client({ region: 'eu-west-1', bucket: 'incentives' }) as jest.Mocked<S3Client>
-  const cache = new StitchedTablesCache()
+  const cache = new MemoryStitchedTablesCache()
   const analyticsService = new AnalyticsService(s3Client, cache, () => '')
   const modified = new Date('2022-03-14T12:00:00Z')
 
@@ -26,12 +37,12 @@ describe('StitchedTablesCache', () => {
 
     beforeEach(async () => {
       // Warm-up cache
-      await cache.getStitchedTable(analyticsService, TableType.behaviourEntries, columnsToStitch)
+      await analyticsService.getStitchedTable(TableType.behaviourEntries, columnsToStitch)
       s3Client.getObject.mockClear()
     })
 
     it('clears the cache', async () => {
-      await cache.getStitchedTable(analyticsService, TableType.behaviourEntries, columnsToStitch)
+      await analyticsService.getStitchedTable(TableType.behaviourEntries, columnsToStitch)
       // Fresh data in cache, S3 not used
       expect(s3Client.getObject).toHaveBeenCalledTimes(0)
 
@@ -39,11 +50,7 @@ describe('StitchedTablesCache', () => {
       cache.clear()
 
       // Cache is now empty, takes fresh data from S3
-      const { stitchedTable } = await cache.getStitchedTable(
-        analyticsService,
-        TableType.behaviourEntries,
-        columnsToStitch,
-      )
+      const { stitchedTable } = await analyticsService.getStitchedTable(TableType.behaviourEntries, columnsToStitch)
       expect(s3Client.getObject).toHaveBeenCalledTimes(1)
       expect(stitchedTable).toEqual([['ABC'], ['DEF']])
     })
@@ -55,10 +62,7 @@ describe('StitchedTablesCache', () => {
     })
 
     it('returns the stitched table and date/updated metadata', async () => {
-      const result = await cache.getStitchedTable(analyticsService, TableType.behaviourEntries, [
-        'prison',
-        'someColumn',
-      ])
+      const result = await analyticsService.getStitchedTable(TableType.behaviourEntries, ['prison', 'someColumn'])
 
       const expectedStitchedTable = [
         ['ABC', 'Value 1'],
@@ -77,7 +81,7 @@ describe('StitchedTablesCache', () => {
       })
 
       it('they bubble up', async () => {
-        const result = cache.getStitchedTable(analyticsService, TableType.behaviourEntries, ['prison'])
+        const result = analyticsService.getStitchedTable(TableType.behaviourEntries, ['prison'])
         await expect(result).rejects.toThrow(AnalyticsError)
       })
     })
@@ -88,7 +92,7 @@ describe('StitchedTablesCache', () => {
       })
 
       it('takes fresh data from S3', async () => {
-        await cache.getStitchedTable(analyticsService, TableType.behaviourEntries, ['prison'])
+        await analyticsService.getStitchedTable(TableType.behaviourEntries, ['prison'])
         // Cache is empty, takes fresh data from S3
         expect(s3Client.getObject).toHaveBeenCalledTimes(1)
       })
@@ -99,7 +103,7 @@ describe('StitchedTablesCache', () => {
 
       beforeEach(async () => {
         // Warm-up cache
-        await cache.getStitchedTable(analyticsService, TableType.behaviourEntries, columnsToStitch)
+        await analyticsService.getStitchedTable(TableType.behaviourEntries, columnsToStitch)
         s3Client.getObject.mockClear()
 
         // Fresh data available
@@ -117,7 +121,7 @@ describe('StitchedTablesCache', () => {
 
       it('takes fresh data from S3', async () => {
         // Cache is stale, takes fresh data from S3
-        await cache.getStitchedTable(analyticsService, TableType.behaviourEntries, columnsToStitch)
+        await analyticsService.getStitchedTable(TableType.behaviourEntries, columnsToStitch)
         expect(s3Client.getObject).toHaveBeenCalledTimes(1)
       })
     })
@@ -125,11 +129,10 @@ describe('StitchedTablesCache', () => {
     describe('when stitching different columns from same source table', () => {
       beforeEach(async () => {
         // Warm-up cache but with different set of columns
-        const { stitchedTable: stitchedTable1 } = await cache.getStitchedTable(
-          analyticsService,
-          TableType.behaviourEntries,
-          ['prison', 'someColumn'],
-        )
+        const { stitchedTable: stitchedTable1 } = await analyticsService.getStitchedTable(TableType.behaviourEntries, [
+          'prison',
+          'someColumn',
+        ])
         expect(stitchedTable1).toEqual([
           ['ABC', 'Value 1'],
           ['DEF', 'Value 2'],
@@ -140,11 +143,9 @@ describe('StitchedTablesCache', () => {
 
       it('gets fresh data from S3', async () => {
         // Same source table, different columns
-        const { stitchedTable: stitchedTable2 } = await cache.getStitchedTable(
-          analyticsService,
-          TableType.behaviourEntries,
-          ['prison'],
-        )
+        const { stitchedTable: stitchedTable2 } = await analyticsService.getStitchedTable(TableType.behaviourEntries, [
+          'prison',
+        ])
         expect(stitchedTable2).toEqual([['ABC'], ['DEF']])
         expect(s3Client.getObject).toHaveBeenCalledTimes(1)
       })
@@ -153,7 +154,7 @@ describe('StitchedTablesCache', () => {
     describe('when stitching from different source table', () => {
       beforeEach(async () => {
         // Warm-up cache but from different source table
-        const { stitchedTable } = await cache.getStitchedTable(analyticsService, TableType.behaviourEntries, [
+        const { stitchedTable } = await analyticsService.getStitchedTable(TableType.behaviourEntries, [
           'prison',
           'someColumn',
         ])
@@ -173,10 +174,7 @@ describe('StitchedTablesCache', () => {
 
       it('gets fresh data from S3', async () => {
         // Same source table, different columns
-        const result = await cache.getStitchedTable(analyticsService, TableType.incentiveLevels, [
-          'prison',
-          'incentive',
-        ])
+        const result = await analyticsService.getStitchedTable(TableType.incentiveLevels, ['prison', 'incentive'])
         expect(result).toEqual({
           date: new Date(2022, 2, 13),
           modified,

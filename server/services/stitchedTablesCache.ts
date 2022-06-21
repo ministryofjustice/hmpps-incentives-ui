@@ -1,17 +1,19 @@
-import { Table, TableType } from './analyticsServiceTypes'
+// eslint-disable-next-line max-classes-per-file
+import type { TableType } from './analyticsServiceTypes'
 import type AnalyticsService from './analyticsService'
 
+type CachedValue = {
+  date: Date
+  modified: Date
+  stitchedTable: [string, ...(number | string)[]][]
+}
+
 /**
- * In-memory cache of the stiched tables values.
- *
  * The source tables are stored in S3, these files can be over 100MB
  * and tranform them into a more useful format is also relatively "slow".
  *
  * It's wasteful to transfer these files from S3 and transform them from
  * JSON to a matrix format for each request.
- *
- * A typical value would be ~30MB so small enough to be kept in memory.
- * This has the advantage of clearing the cache if application is restarted.
  *
  * Values are cached based on source filename and list of columns.
  * This means that potentially two charts could use the same source table
@@ -21,7 +23,29 @@ import type AnalyticsService from './analyticsService'
  * would still filter them by prison or else. This filtering is relatively
  * fast so we don't store all the small artefacts for each of the prisons.
  */
-export default class StitchedTablesCache {
+export abstract class StitchedTablesCache {
+  getCacheKey(tableType: TableType, columnsToStitch: string[]): string {
+    return [tableType, ...columnsToStitch].join(',')
+  }
+
+  abstract clear(): void
+
+  abstract get<Row extends [string, ...(number | string)[]]>(
+    analyticsService: AnalyticsService,
+    tableType: TableType,
+    cacheKey: string,
+  ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] } | null>
+
+  abstract set(cacheKey: string, value: CachedValue): void
+}
+
+/**
+ * In-memory cache of the stiched tables values.
+ *
+ * A typical value would be ~30MB so small enough to be kept in memory.
+ * This has the advantage of clearing the cache if application is restarted.
+ */
+export class MemoryStitchedTablesCache extends StitchedTablesCache {
   /**
    * A map-like object where the key is a unique string derived from
    * the source table name and the columns (e.g. 'incentives_latest_narrow,prison,wing').
@@ -31,47 +55,21 @@ export default class StitchedTablesCache {
    */
   private cache: Record<
     string, // cacheKey [TableType, ...columnsToStitch].join(',')
-    {
-      date: Date
-      modified: Date
-      stitchedTable: [string, ...(number | string)[]][]
-    }
+    CachedValue
   > = {}
 
   /**
    * Clears the cache. Particularly useful when running tests when caching
    * may not be desirable.
    */
-  clear() {
+  clear(): void {
     // eslint-disable-next-line no-restricted-syntax
     for (const key of Object.keys(this.cache)) {
       delete this.cache[key]
     }
   }
 
-  async getStitchedTable<T extends Table, Row extends [string, ...(number | string)[]]>(
-    analyticsService: AnalyticsService,
-    tableType: TableType,
-    columnsToStitch: string[],
-  ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] }> {
-    const cacheKey = [tableType, ...columnsToStitch].join(',')
-
-    let value = await this.get<Row>(analyticsService, tableType, cacheKey)
-    if (value) {
-      return value
-    }
-
-    // No cached value found or cache is stale: Get/calculate fresh value
-    const { table, date, modified } = await analyticsService.findTable<T>(tableType)
-    const stitchedTable = analyticsService.stitchTable<T, Row>(table, columnsToStitch)
-
-    value = { date, modified, stitchedTable }
-    this.cache[cacheKey] = value
-
-    return value
-  }
-
-  private async get<Row extends [string, ...(number | string)[]]>(
+  async get<Row extends [string, ...(number | string)[]]>(
     analyticsService: AnalyticsService,
     tableType: TableType,
     cacheKey: string,
@@ -91,5 +89,9 @@ export default class StitchedTablesCache {
     }
 
     return null
+  }
+
+  set(cacheKey: string, value: CachedValue): void {
+    this.cache[cacheKey] = value
   }
 }

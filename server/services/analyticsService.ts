@@ -32,7 +32,7 @@ import {
   removeSortingPrefix,
   removeMonthsOutsideBounds,
 } from './analyticsServiceUtils'
-import StitchedTablesCache from './stitchedTablesCache'
+import type { StitchedTablesCache } from './stitchedTablesCache'
 
 const PGD_REGION_COLUMN = 'pgd_region'
 const PRISON_COLUMN = 'prison'
@@ -136,6 +136,30 @@ export default class AnalyticsService {
     })
   }
 
+  /**
+   * Looks up a cached stitched table or loads and caches a fresh one
+   */
+  async getStitchedTable<T extends Table, Row extends [string, ...(number | string)[]]>(
+    tableType: TableType,
+    columnsToStitch: string[],
+  ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] }> {
+    const cacheKey = this.cache.getCacheKey(tableType, columnsToStitch)
+
+    let value = await this.cache.get<Row>(this, tableType, cacheKey)
+    if (value) {
+      return value
+    }
+
+    // No cached value found or cache is stale: Get/calculate fresh value
+    const { table, date, modified } = await this.findTable<T>(tableType)
+    const stitchedTable = this.stitchTable<T, Row>(table, columnsToStitch)
+
+    value = { date, modified, stitchedTable }
+    this.cache.set(cacheKey, value)
+
+    return value
+  }
+
   async getBehaviourEntriesByLocation({
     filterColumn,
     filterValue,
@@ -149,8 +173,7 @@ export default class AnalyticsService {
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
     const sourceTable = AnalyticsService.behaviourEntriesSourceTableFor({ filterColumn })
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<CaseEntriesTable, StitchedRow>(
       sourceTable,
       columnsToStitch,
     )
@@ -208,8 +231,7 @@ export default class AnalyticsService {
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
     const sourceTable = AnalyticsService.behaviourEntriesSourceTableFor({ filterColumn })
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<CaseEntriesTable, StitchedRow>(
       sourceTable,
       columnsToStitch,
     )
@@ -275,8 +297,7 @@ export default class AnalyticsService {
       : [groupBy, 'incentive', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string, string?]
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       TableType.incentiveLevels,
       columnsToStitch,
     )
@@ -338,8 +359,7 @@ export default class AnalyticsService {
       : [groupBy, 'incentive', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string, string?]
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       TableType.incentiveLevels,
       columnsToStitch,
     )
@@ -423,8 +443,7 @@ export default class AnalyticsService {
       : ['behaviour_profile', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string?]
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       TableType.incentiveLevels,
       columnsToStitch,
     )
@@ -499,8 +518,7 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, number, number, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<TrendsTable, StitchedRow>(
       TableType.trends,
       columnsToStitch,
     )
@@ -569,8 +587,7 @@ export default class AnalyticsService {
     type StitchedRowFiltered = [string, string, number, number, string]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<TrendsTable, StitchedRow>(
       TableType.trends,
       columnsToStitch,
     )
@@ -645,8 +662,7 @@ export default class AnalyticsService {
     type StitchedRowFiltered = [string, string, number, number, string, string]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<TrendsTable, StitchedRow>(
       TableType.trends,
       columnsToStitch,
     )
@@ -727,8 +743,7 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       TableType.incentiveLevels,
       columnsToStitch,
     )
@@ -801,8 +816,7 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, number, number, number, number, string]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<TrendsTable, StitchedRow>(
       TableType.trends,
       columnsToStitch,
     )

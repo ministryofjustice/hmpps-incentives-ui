@@ -56,7 +56,7 @@ export default class StitchedTablesCache {
   ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] }> {
     const cacheKey = [tableType, ...columnsToStitch].join(',')
 
-    let value = await this.get<Row>(analyticsService, cacheKey)
+    let value = await this.get<Row>(analyticsService, tableType, cacheKey)
     if (value) {
       return value
     }
@@ -73,12 +73,12 @@ export default class StitchedTablesCache {
 
   private async get<Row extends [string, ...(number | string)[]]>(
     analyticsService: AnalyticsService,
+    tableType: TableType,
     cacheKey: string,
   ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] } | null> {
     // Check if there is a cached value
     if (cacheKey in this.cache) {
       // Check whether it matches modified in S3
-      const tableType = cacheKey.split(',')[0] as TableType
       const { modified: modifiedInCache } = this.cache[cacheKey]
       const { modified: modifiedInS3 } = await analyticsService.findLatestTable(tableType)
 

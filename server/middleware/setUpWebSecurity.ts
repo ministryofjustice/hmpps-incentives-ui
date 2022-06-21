@@ -2,6 +2,8 @@ import crypto from 'crypto'
 import express, { Router, Request, Response } from 'express'
 import helmet from 'helmet'
 
+import config from '../config'
+
 export default function setUpWebSecurity(): Router {
   const router = express.Router()
 
@@ -17,6 +19,7 @@ export default function setUpWebSecurity(): Router {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
+          formAction: ["'self'", new URL(config.apis.hmppsAuth.url).hostname],
           scriptSrc: [
             "'self'",
             '*.google-analytics.com',

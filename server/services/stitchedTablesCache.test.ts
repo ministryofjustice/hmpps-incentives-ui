@@ -1,6 +1,7 @@
 import S3Client from '../data/s3Client'
-import AnalyticsService, { StitchedTablesCache } from './analyticsService'
+import AnalyticsService from './analyticsService'
 import { AnalyticsError, TableType } from './analyticsServiceTypes'
+import StitchedTablesCache from './stitchedTablesCache'
 
 jest.mock('@aws-sdk/client-s3')
 jest.mock('../data/s3Client')

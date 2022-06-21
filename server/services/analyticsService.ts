@@ -79,9 +79,11 @@ export const Filtering = {
 export type UrlForLocationFunction = (filterValue: string | null, groupValue: string) => string | null
 
 export default class AnalyticsService {
-  private readonly cache = StitchedTablesCache
-
-  constructor(private readonly client: S3Client, private readonly urlForLocation: UrlForLocationFunction) {}
+  constructor(
+    private readonly client: S3Client,
+    private readonly cache: StitchedTablesCache,
+    private readonly urlForLocation: UrlForLocationFunction,
+  ) {}
 
   async findLatestTable(tableType: TableType): Promise<{ key: string; date: Date; modified: Date }> {
     logger.debug(`Finding latest "${tableType}" table`)

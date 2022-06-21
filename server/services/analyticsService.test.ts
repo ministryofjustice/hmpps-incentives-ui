@@ -39,8 +39,8 @@ describe('AnalyticsService', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    StitchedTablesCache.clear()
-    analyticsService = new AnalyticsService(s3Client, () => '')
+    const cache = new StitchedTablesCache()
+    analyticsService = new AnalyticsService(s3Client, cache, () => '')
   })
 
   describe('findTable()', () => {

@@ -29,7 +29,7 @@ export default class StitchedTablesCache {
    * The value contains the actual cached value, including
    * the `stichedTable` matrix and the `date`/`modified` dates.
    */
-  private static cache: Record<
+  private cache: Record<
     string, // cacheKey [TableType, ...columnsToStitch].join(',')
     {
       date: Date
@@ -42,14 +42,14 @@ export default class StitchedTablesCache {
    * Clears the cache. Particularly useful when running tests when caching
    * may not be desirable.
    */
-  static clear() {
+  clear() {
     // eslint-disable-next-line no-restricted-syntax
     for (const key of Object.keys(this.cache)) {
       delete this.cache[key]
     }
   }
 
-  static async getStitchedTable<T extends Table, Row extends [string, ...(number | string)[]]>(
+  async getStitchedTable<T extends Table, Row extends [string, ...(number | string)[]]>(
     analyticsService: AnalyticsService,
     tableType: TableType,
     columnsToStitch: string[],
@@ -71,7 +71,7 @@ export default class StitchedTablesCache {
     return value
   }
 
-  private static async get<Row extends [string, ...(number | string)[]]>(
+  private async get<Row extends [string, ...(number | string)[]]>(
     analyticsService: AnalyticsService,
     cacheKey: string,
   ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] } | null> {

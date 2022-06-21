@@ -4,9 +4,8 @@ import request from 'supertest'
 import PrisonRegister from '../data/prisonRegister'
 import config from '../config'
 import ZendeskClient from '../data/zendeskClient'
-import StitchedTablesCache from '../services/stitchedTablesCache'
 import type { ChartId } from './analyticsChartTypes'
-import { protectedCharacteristicRoutes } from './analyticsRouter'
+import { cache, protectedCharacteristicRoutes } from './analyticsRouter'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { MockTable, mockSdkS3ClientReponse } from '../testData/s3Bucket'
 
@@ -262,7 +261,7 @@ const analyticsPages: AnalyticsPage[] = [
 describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHeading, chartIds, linksFromCharts }) => {
   beforeEach(() => {
     mockSdkS3ClientReponse(s3.send)
-    StitchedTablesCache.clear()
+    cache.clear()
   })
 
   it(`${name} page loads`, () => {
@@ -533,7 +532,7 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
   (characteristicName, { label }) => {
     beforeEach(() => {
       mockSdkS3ClientReponse(s3.send)
-      StitchedTablesCache.clear()
+      cache.clear()
     })
 
     const url = `/analytics/protected-characteristic?characteristic=${characteristicName}`

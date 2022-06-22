@@ -7,7 +7,7 @@ import { TableType } from './analyticsServiceTypes'
 describe('PgdRegion Service', () => {
   it('getAllPgdRegions() returns all PgdRegions', () => {
     const allGroups = PgdRegionService.getAllPgdRegions()
-    expect(allGroups.length).toEqual(6)
+    expect(allGroups.length).toEqual(20)
     expect(allGroups).toContainEqual({ code: 'WM', name: 'West Midlands' })
   })
 
@@ -38,7 +38,7 @@ describe('PgdRegion Service', () => {
     it('all PGD regions in the source tables are found', () => {
       const filename = path.resolve(
         __dirname,
-        `../testData/s3Bucket/${TableType.behaviourEntriesNational}/2022-06-06.json`,
+        `../testData/s3Bucket/${TableType.behaviourEntriesNational}/2022-06-21.json`,
       )
       const fileContents = fs.readFileSync(filename, { encoding: 'utf8' })
       const pgdRegions = JSON.parse(fileContents).pgd_region

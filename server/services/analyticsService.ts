@@ -155,7 +155,7 @@ export default class AnalyticsService {
     const stitchedTable = this.stitchTable<T, Row>(table, columnsToStitch)
 
     value = { date, modified, stitchedTable }
-    this.cache.set(cacheKey, value)
+    await this.cache.set(cacheKey, value)
 
     return value
   }

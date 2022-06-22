@@ -8,7 +8,7 @@ import { StitchedTablesCache } from '../services/analyticsService'
 import type { ChartId } from './analyticsChartTypes'
 import { protectedCharacteristicRoutes } from './analyticsRouter'
 import { appWithAllRoutes } from './testutils/appSetup'
-import { MockTable, mockSdkS3ClientReponse } from '../testData/s3Bucket'
+import { MockTable, mockSdkS3ClientResponse } from '../testData/s3Bucket'
 
 const s3 = {
   send: jest.fn(),
@@ -261,7 +261,7 @@ const analyticsPages: AnalyticsPage[] = [
 
 describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHeading, chartIds, linksFromCharts }) => {
   beforeEach(() => {
-    mockSdkS3ClientReponse(s3.send)
+    mockSdkS3ClientResponse(s3.send)
     StitchedTablesCache.clear()
   })
 
@@ -276,7 +276,7 @@ describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHead
   })
 
   it(`error is presented on ${name} page if no source table was found`, () => {
-    mockSdkS3ClientReponse(s3.send, MockTable.Missing)
+    mockSdkS3ClientResponse(s3.send, MockTable.Missing)
 
     return request(app)
       .get(url)
@@ -288,7 +288,7 @@ describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHead
   })
 
   it(`error is presented on ${name} page if source table contains no data`, () => {
-    mockSdkS3ClientReponse(s3.send, MockTable.Empty)
+    mockSdkS3ClientResponse(s3.send, MockTable.Empty)
 
     return request(app)
       .get(url)
@@ -321,7 +321,7 @@ describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHead
 
   describe.each(chartIds)('charts have feedback forms', chartId => {
     beforeAll(() => {
-      mockSdkS3ClientReponse(s3.send)
+      mockSdkS3ClientResponse(s3.send)
     })
 
     it(`${name} page can post simple feedback on ${chartId} chart`, () => {
@@ -532,7 +532,7 @@ describe.each(Object.entries(protectedCharacteristicRoutes))(
   'Protected characteristic pages',
   (characteristicName, { label }) => {
     beforeEach(() => {
-      mockSdkS3ClientReponse(s3.send)
+      mockSdkS3ClientResponse(s3.send)
       StitchedTablesCache.clear()
     })
 

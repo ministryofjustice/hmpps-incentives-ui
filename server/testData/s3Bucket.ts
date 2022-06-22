@@ -73,7 +73,7 @@ export function mockAppS3ClientResponse(s3Client: jest.Mocked<S3Client>, tableRe
 /**
  * Mocks the response for the S3Client in the AWS SDK (for testing the S3Client in this application)
  */
-export function mockSdkS3ClientReponse(
+export function mockSdkS3ClientResponse(
   send: jest.Mock<Promise<GetObjectOutput | ListObjectsV2Output>, [GetObjectCommand | ListObjectsV2Command]>,
   tableResponse = MockTable.Sample,
 ) {

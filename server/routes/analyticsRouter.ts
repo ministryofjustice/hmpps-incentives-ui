@@ -23,7 +23,11 @@ import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
 import PgdRegionService, { National, PgdRegion } from '../services/pgdRegionService'
-import { MemoryStitchedTablesCache } from '../services/stitchedTablesCache'
+import {
+  StitchedTablesCache,
+  MemoryStitchedTablesCache,
+  FileStitchedTablesCache,
+} from '../services/stitchedTablesCache'
 
 export const protectedCharacteristicRoutes = {
   age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
@@ -88,7 +92,9 @@ async function transformAnalyticsError<R>(reportPromise: Promise<R>): Promise<R>
   }
 }
 
-export const cache = new MemoryStitchedTablesCache()
+export const cache: StitchedTablesCache = config.featureFlags.useFileSystemCache
+  ? new FileStitchedTablesCache()
+  : new MemoryStitchedTablesCache()
 
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))

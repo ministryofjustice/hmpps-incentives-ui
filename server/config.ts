@@ -136,6 +136,7 @@ export default {
     hideDaysColumnsInIncentivesTable: flag('FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE', false),
     showAnalyticsPcTrends: flag('FEATURE_SHOW_ANALYTICS_PC_TRENDS', false),
     showRegionalNational: flag('FEATURE_SHOW_REGIONAL_NATIONAL', false),
+    useFileSystemCache: flag('FEATURE_FS_CACHE', false),
   },
   feedbackUrl: get('FEEDBACK_URL', ''),
   feedbackUrlForAnalytics: get('FEEDBACK_URL_ANALYTICS', ''),

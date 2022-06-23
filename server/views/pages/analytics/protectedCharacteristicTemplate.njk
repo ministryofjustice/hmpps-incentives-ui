@@ -34,9 +34,9 @@
             Select a protected characteristic
           </label>
           <select class="govuk-select" id="characteristic" name="characteristic">
-              {%- for option in characteristicOptions -%}
-                <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.label }}</option>
-              {%- endfor %}
+            {% for option in characteristicOptions %}
+              <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.label }}</option>
+            {% endfor %}
           </select>
 
           <button class="govuk-button govuk-!-margin-left-2" data-module="govuk-button" data-prevent-double-click="true">
@@ -87,130 +87,127 @@
     </section>
   </div>
 
-  {% if featureFlags.showAnalyticsPcTrends %}
+  {% macro pcGroupDropdown(
+    chartId,
+    hiddenInputs,
+    groupDropdownLabel,
+    fieldName,
+    options
+  ) %}
 
-    {% macro pcGroupDropdown(
-      chartId,
-      hiddenInputs,
-      groupDropdownLabel,
-      fieldName,
-      options
-    ) %}
+    <form id="form-select-{{ fieldName }}" method="get" action="#heading-{{ chartId }}" novalidate>
+      {% for name, value in hiddenInputs %}
+        <input type="hidden" name="{{ name }}" value="{{ value }}">
+      {% endfor %}
 
-      <form id="form-select-{{ fieldName }}" method="get" action="#heading-{{ chartId }}" novalidate>
-        {%- for name, value in hiddenInputs -%}
-          <input type="hidden" name="{{ name }}" value="{{ value }}">
-        {%- endfor %}
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="{{ fieldName }}">
+          {{ groupDropdownLabel }}
+        </label>
+        <select class="govuk-select" id="{{ fieldName }}" name="{{ fieldName }}">
+          {% for option in options %}
+            <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.value }}</option>
+          {% endfor %}
+        </select>
 
-        <div class="govuk-form-group">
-          <label class="govuk-label" for="{{ fieldName }}">
-            {{ groupDropdownLabel }}
-          </label>
-          <select class="govuk-select" id="{{ fieldName }}" name="{{ fieldName }}">
-            {%- for option in options -%}
-              <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.value }}</option>
-            {%- endfor %}
-          </select>
+        <button class="govuk-button govuk-!-margin-left-2" data-module="govuk-button" data-prevent-double-click="true">
+          Show results
+        </button>
+      </div>
+    </form>
 
-          <button class="govuk-button govuk-!-margin-left-2" data-module="govuk-button" data-prevent-double-click="true">
-            Show results
-          </button>
-        </div>
-      </form>
+  {% endmacro %}
 
-    {% endmacro %}
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
-    <div class="govuk-grid-row">
-      <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+      {% set chartId = "trends-incentive-levels-by-" + characteristicName %}
 
-        {% set chartId = "trends-incentive-levels-by-" + characteristicName %}
+      {% set afterHeaderHtml %}
+        {% set hiddenInputs = {
+          characteristic: characteristicName,
+          trendsEntriesGroup: trendsEntriesGroup
+        } %}
 
-        {% set afterHeaderHtml %}
-          {% set hiddenInputs = {
-            characteristic: characteristicName,
-            trendsEntriesGroup: trendsEntriesGroup
-          } %}
-
-          {{ pcGroupDropdown(
-              chartId,
-              hiddenInputs,
-              groupDropdownLabel,
-              fieldName="trendsIncentiveLevelsGroup",
-              options=trendsIncentiveLevelsOptions
-          ) }}
-        {% endset %}
-
-        {{ chartTrends(
-          title=ProtectedCharacteristicsChartsContent[chartId].title,
-          guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
-          chartId=chartId,
-          googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
-          activeCaseload=user.activeCaseload.id,
-          form=forms[chartId],
-          csrfToken=csrfToken,
-          report=incentiveLevelsTrendsByCharacteristic,
-          showTotalPopulation=false,
-          afterHeaderHtml=afterHeaderHtml
+        {{ pcGroupDropdown(
+            chartId,
+            hiddenInputs,
+            groupDropdownLabel,
+            fieldName="trendsIncentiveLevelsGroup",
+            options=trendsIncentiveLevelsOptions
         ) }}
+      {% endset %}
 
-      </section>
-    </div>
+      {{ chartTrends(
+        title=ProtectedCharacteristicsChartsContent[chartId].title,
+        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+        chartId=chartId,
+        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+        activeCaseload=user.activeCaseload.id,
+        form=forms[chartId],
+        csrfToken=csrfToken,
+        report=incentiveLevelsTrendsByCharacteristic,
+        showTotalPopulation=false,
+        afterHeaderHtml=afterHeaderHtml
+      ) }}
 
-    <div class="govuk-grid-row">
-      <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+    </section>
+  </div>
 
-        {% set chartId = "entries-by-" + characteristicName %}
-        {{ chartBehaviourEntries(
-          title=ProtectedCharacteristicsChartsContent[chartId].title,
-          guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
-          labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
-          chartId=chartId,
-          googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
-          activeCaseload=user.activeCaseload.id,
-          form=forms[chartId],
-          csrfToken=csrfToken,
-          report=behaviourEntriesByCharacteristic,
-          wideLabel=ProtectedCharacteristicsChartsContent[chartId].wideLabel
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+      {% set chartId = "entries-by-" + characteristicName %}
+      {{ chartBehaviourEntries(
+        title=ProtectedCharacteristicsChartsContent[chartId].title,
+        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+        labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
+        chartId=chartId,
+        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+        activeCaseload=user.activeCaseload.id,
+        form=forms[chartId],
+        csrfToken=csrfToken,
+        report=behaviourEntriesByCharacteristic,
+        wideLabel=ProtectedCharacteristicsChartsContent[chartId].wideLabel
+      ) }}
+
+    </section>
+  </div>
+
+  <div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+
+      {% set chartId = "trends-entries-by-" + characteristicName %}
+
+      {% set afterHeaderHtml %}
+        {% set hiddenInputs = {
+          characteristic: characteristicName,
+          trendsIncentiveLevelsGroup: trendsIncentiveLevelsGroup
+        } %}
+
+        {{ pcGroupDropdown(
+            chartId,
+            hiddenInputs,
+            groupDropdownLabel,
+            fieldName="trendsEntriesGroup",
+            options=trendsEntriesOptions
         ) }}
+      {% endset %}
 
-      </section>
-    </div>
+      {{ chartTrends(
+        title=ProtectedCharacteristicsChartsContent[chartId].title,
+        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+        chartId=chartId,
+        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+        activeCaseload=user.activeCaseload.id,
+        form=forms[chartId],
+        csrfToken=csrfToken,
+        report=behaviourEntryTrendsByCharacteristic,
+        afterHeaderHtml=afterHeaderHtml
+      ) }}
 
-    <div class="govuk-grid-row">
-      <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
-
-        {% set chartId = "trends-entries-by-" + characteristicName %}
-
-        {% set afterHeaderHtml %}
-          {% set hiddenInputs = {
-            characteristic: characteristicName,
-            trendsIncentiveLevelsGroup: trendsIncentiveLevelsGroup
-          } %}
-
-          {{ pcGroupDropdown(
-              chartId,
-              hiddenInputs,
-              groupDropdownLabel,
-              fieldName="trendsEntriesGroup",
-              options=trendsEntriesOptions
-          ) }}
-        {% endset %}
-
-        {{ chartTrends(
-          title=ProtectedCharacteristicsChartsContent[chartId].title,
-          guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
-          chartId=chartId,
-          googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
-          activeCaseload=user.activeCaseload.id,
-          form=forms[chartId],
-          csrfToken=csrfToken,
-          report=behaviourEntryTrendsByCharacteristic,
-          afterHeaderHtml=afterHeaderHtml
-        ) }}
-
-      </section>
-    </div>
-  {% endif %}
+    </section>
+  </div>
 
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">

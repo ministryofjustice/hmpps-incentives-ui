@@ -1,8 +1,4 @@
-import fs from 'fs'
-import path from 'path'
-
 import PgdRegionService from './pgdRegionService'
-import { TableType } from './analyticsServiceTypes'
 
 describe('PgdRegion Service', () => {
   it('getAllPgdRegions() returns all PgdRegions', () => {
@@ -33,23 +29,6 @@ describe('PgdRegion Service', () => {
     it('returns undefined when it cannot find a matching PGD Region', () => {
       const pgdRegion = PgdRegionService.getPgdRegionByName('Non-existant West Midlands')
       expect(pgdRegion).toBeNull()
-    })
-
-    it('all PGD regions in the source tables are found', () => {
-      const filename = path.resolve(
-        __dirname,
-        `../testData/s3Bucket/${TableType.behaviourEntriesNational}/2022-06-21.json`,
-      )
-      const fileContents = fs.readFileSync(filename, { encoding: 'utf8' })
-      const pgdRegions = JSON.parse(fileContents).pgd_region
-
-      Object.entries(pgdRegions).forEach(([_, pgdRegionName]) => {
-        if (!PgdRegionService.getPgdRegionByName(pgdRegionName as string)) {
-          throw new Error(
-            `PGD region named '${pgdRegionName}' not recognised, is this a new PGD region? Did the name change?`,
-          )
-        }
-      })
     })
   })
 })

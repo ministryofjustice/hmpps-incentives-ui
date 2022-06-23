@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { type Table, TableType } from '../server/services/analyticsServiceTypes'
+import PgdRegionService from '../server/services/pgdRegionService'
 
 const tableTypes: ReadonlyArray<string> = Object.keys(TableType).sort()
 
@@ -95,6 +96,18 @@ process.stderr.write('Deleting unnecessary columns…\n')
 Object.keys(sourceTable)
   .filter(column => !columnsToKeep.includes(column))
   .forEach(columnToDelete => delete sourceTable[columnToDelete])
+
+// Check all PGD regions in file matches ones in PgdRegionService
+if (columnsToKeep.includes('pgd_region')) {
+  Object.entries(sourceTable.pgd_region).forEach(([_, pgdRegionName]) => {
+    if (!PgdRegionService.getPgdRegionByName(pgdRegionName as string)) {
+      process.stderr.write(
+        `ERROR: File contains an unrecognised PGD region '${pgdRegionName}', is this a new PGD region? Did the name change?`,
+      )
+      process.exit(1)
+    }
+  })
+}
 
 let rowIndicesToKeep
 if (filterByPrison) {

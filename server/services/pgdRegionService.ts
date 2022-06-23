@@ -6,13 +6,26 @@ export interface PgdRegion {
 }
 
 const pgdRegions = {
-  HESG: 'Hertfordshire, Essex and Suffolk Group',
-  LTHS: 'Long Term & High Security',
-  WE: 'Women’s Estate',
-  WLS: 'HMPPS Wales',
+  ASD: 'Avon and South Dorset',
+  BCN: 'Bedfordshire, Cambridgeshire and Norfolk',
+  CNTR: 'Contracted',
+  CL: 'Cumbria and Lancashire',
+  DND: 'Devon and North Dorset',
+  EM: 'East Midlands',
+  GMMC: 'Greater Manchester, Merseyside and Cheshire',
+  HES: 'Hertfordshire, Essex and Suffolk',
+  IFNP: 'Immigration and foreign national prisons',
+  KSS: 'Kent, Surrey and Sussex',
+  LNDN: 'London',
+  LTHS: 'Long-term and high security',
+  NM: 'North Midlands',
+  SC: 'South Central',
+  TW: 'Tees and Wear',
+  WLS: 'Wales',
   WM: 'West Midlands',
+  WMN: 'Women',
   YRKS: 'Yorkshire',
-  // other prison groups
+  YCS: 'Youth custody service',
 }
 
 export default class PgdRegionService {

@@ -9,11 +9,11 @@ import type S3Client from '../data/s3Client'
 import { TableType } from '../services/analyticsServiceTypes'
 
 const fileDates = {
-  [TableType.behaviourEntries]: new Date('2022-04-11T12:00:00Z'),
-  [TableType.behaviourEntriesRegional]: new Date('2022-06-06T12:00:00Z'),
-  [TableType.behaviourEntriesNational]: new Date('2022-06-06T12:00:00Z'),
-  [TableType.incentiveLevels]: new Date('2022-06-06T12:00:00Z'),
-  [TableType.trends]: new Date('2022-05-11T21:10:00Z'),
+  [TableType.behaviourEntries]: new Date('2022-06-21T12:00:00Z'),
+  [TableType.behaviourEntriesRegional]: new Date('2022-06-21T12:00:00Z'),
+  [TableType.behaviourEntriesNational]: new Date('2022-06-21T12:00:00Z'),
+  [TableType.incentiveLevels]: new Date('2022-06-21T12:00:00Z'),
+  [TableType.trends]: new Date('2022-06-21T21:10:00Z'),
 }
 
 export enum MockTable {
@@ -73,7 +73,7 @@ export function mockAppS3ClientResponse(s3Client: jest.Mocked<S3Client>, tableRe
 /**
  * Mocks the response for the S3Client in the AWS SDK (for testing the S3Client in this application)
  */
-export function mockSdkS3ClientReponse(
+export function mockSdkS3ClientResponse(
   send: jest.Mock<Promise<GetObjectOutput | ListObjectsV2Output>, [GetObjectCommand | ListObjectsV2Command]>,
   tableResponse = MockTable.Sample,
 ) {

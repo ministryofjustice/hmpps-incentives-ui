@@ -21,6 +21,7 @@ export enum TableType {
 export interface CaseEntriesTable extends Table {
   pgd_region: Record<string, string>
   prison: Record<string, string>
+  prison_name: Record<string, string>
   wing: Record<string, string>
   positives: Record<string, number>
   negatives: Record<string, number>
@@ -36,6 +37,7 @@ export interface CaseEntriesTable extends Table {
 export interface IncentiveLevelsTable extends Table {
   pgd_region: Record<string, string>
   prison: Record<string, string>
+  prison_name: Record<string, string>
   wing: Record<string, string>
   incentive: Record<string, string>
   behaviour_profile: Record<string, string>
@@ -56,6 +58,7 @@ export interface TrendsTable extends Table {
   snapshots: Record<string, number>
   pgd_region: Record<string, string>
   prison: Record<string, string>
+  prison_name: Record<string, string>
   offenders: Record<string, number>
   incentive: Record<string, string>
   positives: Record<string, number>

@@ -10,22 +10,7 @@
 
 {% set extraWideLabel = not filterQuery.filterColumn %}
 
-{% block content %}
-  {{ super() }}
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-
-      {% include "../../partials/messages.njk" %}
-
-      {% include "../../partials/formErrorSummary.njk" %}
-
-      <h1 class="govuk-heading-xl">
-        {{ chartPageTitle }}
-      </h1>
-
-    </div>
-  </div>
+{% block chartContent %}
 
   <div class="govuk-grid-row">
     <section class="{% if extraWideLabel %}govuk-grid-column-two-thirds{% else %}govuk-grid-column-one-half{% endif %} govuk-!-margin-bottom-9">
@@ -86,5 +71,4 @@
     </section>
   </div>
 
-  {% include "../../partials/analytics/disclaimer.njk" %}
 {% endblock %}

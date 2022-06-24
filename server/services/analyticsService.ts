@@ -141,9 +141,9 @@ export default class AnalyticsService {
     groupBy,
   }: Query): Promise<Report<BehaviourEntriesByLocation>> {
     const columnsToStitch = filterColumn
-      ? [filterColumn, groupBy, 'positives', 'negatives']
+      ? [filterColumn, groupBy, 'positives', 'negatives', 'prison_name']
       : [groupBy, 'positives', 'negatives']
-    type StitchedRowFiltered = [string, string, number, number]
+    type StitchedRowFiltered = [string, string, number, number, string]
     type StitchedRowNational = [string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
@@ -176,18 +176,20 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_filteredColumn, groupedColumn, positives, negatives] = filterColumn
+        const [_filteredColumn, groupedColumn, positives, negatives, prisonName] = filterColumn
           ? (row as StitchedRowFiltered)
           : ['', ...(row as StitchedRowNational)]
 
-        return [groupedColumn, positives, negatives]
+        const label = filterColumn && groupBy === PRISON_COLUMN ? prisonName : groupedColumn
+
+        return [label, positives, negatives]
       },
       2,
     )
 
-    const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([groupedColumn, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, groupedColumn)
-      return { label: groupedColumn, href, values }
+    const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([label, ...values], index) => {
+      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, label)
+      return { label, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
@@ -199,10 +201,10 @@ export default class AnalyticsService {
     groupBy,
   }: Query): Promise<Report<PrisonersWithEntriesByLocation>> {
     const columnsToStitch = filterColumn
-      ? [filterColumn, groupBy, 'positives', 'negatives']
+      ? [filterColumn, groupBy, 'positives', 'negatives', 'prison_name']
       : [groupBy, 'positives', 'negatives']
 
-    type StitchedRowFiltered = [string, string, number, number]
+    type StitchedRowFiltered = [string, string, number, number, string]
     type StitchedRowNational = [string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
@@ -238,27 +240,29 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_filteredColumn, groupedColumn, positives, negatives] = filterColumn
+        const [_filteredColumn, groupedColumn, positives, negatives, prisonName] = filterColumn
           ? (row as StitchedRowFiltered)
           : ['', ...(row as StitchedRowNational)]
 
+        const label = filterColumn && groupBy === PRISON_COLUMN ? prisonName : groupedColumn
+
         if (positives > 0 && negatives > 0) {
-          return [groupedColumn, 0, 0, 1, 0]
+          return [label, 0, 0, 1, 0]
         }
         if (positives > 0) {
-          return [groupedColumn, 1, 0, 0, 0]
+          return [label, 1, 0, 0, 0]
         }
         if (negatives > 0) {
-          return [groupedColumn, 0, 1, 0, 0]
+          return [label, 0, 1, 0, 0]
         }
-        return [groupedColumn, 0, 0, 0, 1]
+        return [label, 0, 0, 0, 1]
       },
       4,
     )
 
-    const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([groupedColumn, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, groupedColumn)
-      return { label: groupedColumn, href, values }
+    const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([label, ...values], index) => {
+      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, label)
+      return { label, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
@@ -270,9 +274,9 @@ export default class AnalyticsService {
     groupBy,
   }: Query): Promise<Report<PrisonersOnLevelsByLocation>> {
     const columnsToStitch = filterColumn
-      ? [filterColumn, groupBy, 'incentive', 'characteristic', 'charac_group']
+      ? [filterColumn, groupBy, 'incentive', 'characteristic', 'charac_group', 'prison_name']
       : [groupBy, 'incentive', 'characteristic', 'charac_group']
-    type StitchedRow = [string, string, string, string, string?]
+    type StitchedRow = [string, string, string, string, string?, string?]
 
     const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       this,
@@ -309,20 +313,24 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_filteredColumn, groupedColumn, incentive] = filterColumn ? row : ['', ...row]
+        const [_filteredColumn, groupedColumn, incentive, _characteristic, _characGroup, prisonName] = filterColumn
+          ? row
+          : ['', ...row]
 
         const levels = Array(columns.length).fill(0)
         const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
         levels[levelIndex] = 1
-        return [groupedColumn, ...levels]
+
+        const label = filterColumn && groupBy === PRISON_COLUMN ? prisonName : groupedColumn
+        return [label, ...levels]
       },
       columns.length,
     )
     columns = columns.map(removeSortingPrefix)
 
-    const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([groupedColumn, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, groupedColumn)
-      return { label: groupedColumn, href, values }
+    const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([label, ...values], index) => {
+      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, label)
+      return { label, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }

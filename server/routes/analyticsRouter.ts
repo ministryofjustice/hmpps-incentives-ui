@@ -23,6 +23,11 @@ import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
 import PgdRegionService, { National, PgdRegion } from '../services/pgdRegionService'
+import {
+  StitchedTablesCache,
+  MemoryStitchedTablesCache,
+  FileStitchedTablesCache,
+} from '../services/stitchedTablesCache'
 
 export const protectedCharacteristicRoutes = {
   age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
@@ -86,6 +91,10 @@ async function transformAnalyticsError<R>(reportPromise: Promise<R>): Promise<R>
     throw error
   }
 }
+
+export const cache: StitchedTablesCache = config.featureFlags.useFileSystemCache
+  ? new FileStitchedTablesCache()
+  : new MemoryStitchedTablesCache()
 
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
@@ -178,7 +187,7 @@ export default function routes(router: Router): Router {
     }
 
     const s3Client = new S3Client(config.s3)
-    const analyticsService = new AnalyticsService(s3Client, urlFunction)
+    const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
     const charts = [
       analyticsService.getBehaviourEntriesByLocation(filterQuery),
@@ -234,7 +243,7 @@ export default function routes(router: Router): Router {
     }
 
     const s3Client = new S3Client(config.s3)
-    const analyticsService = new AnalyticsService(s3Client, urlFunction)
+    const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
     const charts = [
       analyticsService.getIncentiveLevelsByLocation(filterQuery),
@@ -360,7 +369,7 @@ export default function routes(router: Router): Router {
     const { groupDropdownLabel } = protectedCharacteristicRoutes[characteristicName]
 
     const s3Client = new S3Client(config.s3)
-    const analyticsService = new AnalyticsService(s3Client, urlForLocation)
+    const analyticsService = new AnalyticsService(s3Client, cache, urlForLocation)
 
     const charts = [
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(filterQuery, protectedCharacteristic),

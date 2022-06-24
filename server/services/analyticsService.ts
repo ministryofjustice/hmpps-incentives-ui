@@ -1,7 +1,6 @@
-// eslint-disable-next-line max-classes-per-file
-import type S3Client from '../data/s3Client'
 import logger from '../../logger'
-
+import PrisonRegister from '../data/prisonRegister'
+import type S3Client from '../data/s3Client'
 import type {
   BehaviourEntriesByLocation,
   CaseEntriesTable,
@@ -33,7 +32,7 @@ import {
   removeSortingPrefix,
   removeMonthsOutsideBounds,
 } from './analyticsServiceUtils'
-import PrisonRegister from '../data/prisonRegister'
+import type { StitchedTablesCache } from './stitchedTablesCache'
 
 const PGD_REGION_COLUMN = 'pgd_region'
 const PRISON_COLUMN = 'prison'
@@ -80,9 +79,11 @@ export const Filtering = {
 export type UrlForLocationFunction = (filterValue: string | null, groupValue: string) => string | null
 
 export default class AnalyticsService {
-  private readonly cache = StitchedTablesCache
-
-  constructor(private readonly client: S3Client, private readonly urlForLocation: UrlForLocationFunction) {}
+  constructor(
+    private readonly client: S3Client,
+    private readonly cache: StitchedTablesCache,
+    private readonly urlForLocation: UrlForLocationFunction,
+  ) {}
 
   async findLatestTable(tableType: TableType): Promise<{ key: string; date: Date; modified: Date }> {
     logger.debug(`Finding latest "${tableType}" table`)
@@ -135,6 +136,30 @@ export default class AnalyticsService {
     })
   }
 
+  /**
+   * Looks up a cached stitched table or loads and caches a fresh one
+   */
+  async getStitchedTable<T extends Table, Row extends [string, ...(number | string)[]]>(
+    tableType: TableType,
+    columnsToStitch: string[],
+  ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] }> {
+    const cacheKey = this.cache.getCacheKey(tableType, columnsToStitch)
+
+    let value = await this.cache.get<Row>(this, tableType, cacheKey)
+    if (value) {
+      return value
+    }
+
+    // No cached value found or cache is stale: Get/calculate fresh value
+    const { table, date, modified } = await this.findTable<T>(tableType)
+    const stitchedTable = this.stitchTable<T, Row>(table, columnsToStitch)
+
+    value = { date, modified, stitchedTable }
+    await this.cache.set(cacheKey, value)
+
+    return value
+  }
+
   async getBehaviourEntriesByLocation({
     filterColumn,
     filterValue,
@@ -148,8 +173,7 @@ export default class AnalyticsService {
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
     const sourceTable = AnalyticsService.behaviourEntriesSourceTableFor({ filterColumn })
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<CaseEntriesTable, StitchedRow>(
       sourceTable,
       columnsToStitch,
     )
@@ -207,8 +231,7 @@ export default class AnalyticsService {
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
     const sourceTable = AnalyticsService.behaviourEntriesSourceTableFor({ filterColumn })
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<CaseEntriesTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<CaseEntriesTable, StitchedRow>(
       sourceTable,
       columnsToStitch,
     )
@@ -274,8 +297,7 @@ export default class AnalyticsService {
       : [groupBy, 'incentive', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string, string?]
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       TableType.incentiveLevels,
       columnsToStitch,
     )
@@ -337,8 +359,7 @@ export default class AnalyticsService {
       : [groupBy, 'incentive', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string, string?]
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       TableType.incentiveLevels,
       columnsToStitch,
     )
@@ -422,8 +443,7 @@ export default class AnalyticsService {
       : ['behaviour_profile', 'characteristic', 'charac_group']
     type StitchedRow = [string, string, string, string?]
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       TableType.incentiveLevels,
       columnsToStitch,
     )
@@ -498,8 +518,7 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, number, number, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<TrendsTable, StitchedRow>(
       TableType.trends,
       columnsToStitch,
     )
@@ -568,8 +587,7 @@ export default class AnalyticsService {
     type StitchedRowFiltered = [string, string, number, number, string]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<TrendsTable, StitchedRow>(
       TableType.trends,
       columnsToStitch,
     )
@@ -644,8 +662,7 @@ export default class AnalyticsService {
     type StitchedRowFiltered = [string, string, number, number, string, string]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<TrendsTable, StitchedRow>(
       TableType.trends,
       columnsToStitch,
     )
@@ -726,8 +743,7 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       TableType.incentiveLevels,
       columnsToStitch,
     )
@@ -800,8 +816,7 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, number, number, number, number, string]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const { stitchedTable, date: lastUpdated } = await this.cache.getStitchedTable<TrendsTable, StitchedRow>(
-      this,
+    const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<TrendsTable, StitchedRow>(
       TableType.trends,
       columnsToStitch,
     )
@@ -878,98 +893,5 @@ export default class AnalyticsService {
       default:
         throw new Error('Unexpected filterColumn param')
     }
-  }
-}
-
-/**
- * In-memory cache of the stiched tables values.
- *
- * The source tables are stored in S3, these files can be over 100MB
- * and tranform them into a more useful format is also relatively "slow".
- *
- * It's wasteful to transfer these files from S3 and transform them from
- * JSON to a matrix format for each request.
- *
- * A typical value would be ~30MB so small enough to be kept in memory.
- * This has the advantage of clearing the cache if application is restarted.
- *
- * Values are cached based on source filename and list of columns.
- * This means that potentially two charts could use the same source table
- * but different columns and the corresponding stiched tables would not clash.
- *
- * NOTE: The cached stiched tables are not filtered. The AnalyticsService
- * would still filter them by prison or else. This filtering is relatively
- * fast so we don't store all the small artefacts for each of the prisons.
- */
-export class StitchedTablesCache {
-  /**
-   * A map-like object where the key is a unique string derived from
-   * the source table name and the columns (e.g. 'incentives_latest_narrow,prison,wing').
-   *
-   * The value contains the actual cached value, including
-   * the `stichedTable` matrix and the `date`/`modified` dates.
-   */
-  private static cache: Record<
-    string, // cacheKey [TableType, ...columnsToStitch].join(',')
-    {
-      date: Date
-      modified: Date
-      stitchedTable: [string, ...(number | string)[]][]
-    }
-  > = {}
-
-  /**
-   * Clears the cache. Particularly useful when running tests when caching
-   * may not be desirable.
-   */
-  static clear() {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const key of Object.keys(this.cache)) {
-      delete this.cache[key]
-    }
-  }
-
-  static async getStitchedTable<T extends Table, Row extends [string, ...(number | string)[]]>(
-    analyticsService: AnalyticsService,
-    tableType: TableType,
-    columnsToStitch: string[],
-  ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] }> {
-    const cacheKey = [tableType, ...columnsToStitch].join(',')
-
-    let value = await this.get<Row>(analyticsService, cacheKey)
-    if (value) {
-      return value
-    }
-
-    // No cached value found or cache is stale: Get/calculate fresh value
-    const { table, date, modified } = await analyticsService.findTable<T>(tableType)
-    const stitchedTable = analyticsService.stitchTable<T, Row>(table, columnsToStitch)
-
-    value = { date, modified, stitchedTable }
-    this.cache[cacheKey] = value
-
-    return value
-  }
-
-  private static async get<Row extends [string, ...(number | string)[]]>(
-    analyticsService: AnalyticsService,
-    cacheKey: string,
-  ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] } | null> {
-    // Check if there is a cached value
-    if (cacheKey in this.cache) {
-      // Check whether it matches modified in S3
-      const tableType = cacheKey.split(',')[0] as TableType
-      const { modified: modifiedInCache } = this.cache[cacheKey]
-      const { modified: modifiedInS3 } = await analyticsService.findLatestTable(tableType)
-
-      if (modifiedInCache.toString() === modifiedInS3.toString()) {
-        return this.cache[cacheKey] as { date: Date; modified: Date; stitchedTable: Row[] }
-      }
-
-      // Delete stale cached value
-      delete this.cache[cacheKey]
-    }
-
-    return null
   }
 }

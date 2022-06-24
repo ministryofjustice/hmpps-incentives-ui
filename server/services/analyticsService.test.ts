@@ -1,6 +1,6 @@
 import PrisonRegister from '../data/prisonRegister'
 import S3Client from '../data/s3Client'
-import AnalyticsService, { Filtering, StitchedTablesCache } from './analyticsService'
+import AnalyticsService, { Filtering } from './analyticsService'
 import {
   AnalyticsError,
   TableType,
@@ -14,6 +14,7 @@ import {
 } from './analyticsServiceTypes'
 import type { PrisonersOnLevelsByProtectedCharacteristic, TrendsReportRow, TrendsTable } from './analyticsServiceTypes'
 import { mapRowsAndSumTotals, mapRowsForMonthlyTrends } from './analyticsServiceUtils'
+import { MemoryStitchedTablesCache } from './stitchedTablesCache'
 import { MockTable, mockAppS3ClientResponse } from '../testData/s3Bucket'
 
 jest.mock('@aws-sdk/client-s3')
@@ -43,8 +44,8 @@ describe('AnalyticsService', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    StitchedTablesCache.clear()
-    analyticsService = new AnalyticsService(s3Client, () => '')
+    const cache = new MemoryStitchedTablesCache()
+    analyticsService = new AnalyticsService(s3Client, cache, () => '')
   })
 
   describe('findTable()', () => {

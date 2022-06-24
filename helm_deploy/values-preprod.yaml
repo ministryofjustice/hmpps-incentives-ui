@@ -23,6 +23,7 @@ generic-service:
     PHASE_NAME: "PRE-PRODUCTION"
     FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE: "true"
     FEATURE_SHOW_REGIONAL_NATIONAL: "false"
+    FEATURE_FS_CACHE: "true"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

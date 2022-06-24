@@ -314,7 +314,7 @@ describe('AnalyticsService', () => {
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [105, 155] },
-        { href: '', label: 'WRI', values: [105, 155] },
+        { href: '', label: 'Whitemoor (HMP)', values: [105, 155] },
       ])
     })
 
@@ -400,7 +400,7 @@ describe('AnalyticsService', () => {
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [50, 67, 10, 199] },
-        { href: '', label: 'WRI', values: [50, 67, 10, 199] },
+        { href: '', label: 'Whitemoor (HMP)', values: [50, 67, 10, 199] },
       ])
     })
 
@@ -492,7 +492,7 @@ describe('AnalyticsService', () => {
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [12, 90, 217] },
-        { href: '', label: 'WRI', values: [12, 90, 217] },
+        { href: '', label: 'Whitemoor (HMP)', values: [12, 90, 217] },
       ])
     })
 

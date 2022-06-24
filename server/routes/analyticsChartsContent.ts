@@ -3,7 +3,7 @@ type AnalyticsChartContent = {
   guidance?: string
   labelColumn?: string
   googleAnalyticsCategory: string
-  wideLabel?: boolean
+  labelColumnWidth?: 'wide' | 'extra-wide'
 }
 
 export const BehaviourEntriesChartsContent: Record<string, AnalyticsChartContent> = {
@@ -66,13 +66,13 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     title: 'Percentage and number of prisoners in the establishment by recorded disability',
     labelColumn: 'Disability',
     googleAnalyticsCategory: 'Population by disability',
-    wideLabel: true,
+    labelColumnWidth: 'wide',
   },
   'population-by-ethnicity': {
     title: 'Percentage and number of prisoners in the establishment by ethnicity',
     labelColumn: 'Ethnicity',
     googleAnalyticsCategory: 'Population by ethnicity',
-    wideLabel: true,
+    labelColumnWidth: 'wide',
   },
   'population-by-religion': {
     title: 'Percentage and number of prisoners in the establishment by religion',
@@ -95,14 +95,14 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     guidance: guidanceIncentiveLevelsByPc,
     labelColumn: 'Disability',
     googleAnalyticsCategory: 'Incentive level by disability',
-    wideLabel: true,
+    labelColumnWidth: 'wide',
   },
   'incentive-levels-by-ethnicity': {
     title: 'Percentage and number of prisoners on each incentive level by ethnicity',
     guidance: guidanceIncentiveLevelsByPc,
     labelColumn: 'Ethnicity',
     googleAnalyticsCategory: 'Incentive level by ethnicity',
-    wideLabel: true,
+    labelColumnWidth: 'wide',
   },
   'incentive-levels-by-religion': {
     title: 'Percentage and number of prisoners on each incentive level by religion',
@@ -152,14 +152,14 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     guidance: guidanceEntriesByPc,
     labelColumn: 'Disability',
     googleAnalyticsCategory: 'Comparison of behaviour entries by disability',
-    wideLabel: true,
+    labelColumnWidth: 'wide',
   },
   'entries-by-ethnicity': {
     title: 'Comparison of positive and negative behaviour entries by ethnicity – last 28 days',
     guidance: guidanceEntriesByPc,
     labelColumn: 'Ethnicity',
     googleAnalyticsCategory: 'Comparison of behaviour entries by ethnicity',
-    wideLabel: true,
+    labelColumnWidth: 'wide',
   },
   'entries-by-religion': {
     title: 'Comparison of positive and negative behaviour entries by religion – last 28 days',
@@ -210,14 +210,14 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Disability',
     googleAnalyticsCategory: 'Behaviour entries by disability',
-    wideLabel: true,
+    labelColumnWidth: 'wide',
   },
   'prisoners-with-entries-by-ethnicity': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by ethnicity – last 28 days',
     guidance: guidancePrisonersWithEntriesByPc,
     labelColumn: 'Ethnicity',
     googleAnalyticsCategory: 'Behaviour entries by ethnicity',
-    wideLabel: true,
+    labelColumnWidth: 'wide',
   },
   'prisoners-with-entries-by-religion': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by religion – last 28 days',

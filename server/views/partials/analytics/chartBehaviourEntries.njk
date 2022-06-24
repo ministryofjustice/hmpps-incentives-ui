@@ -25,7 +25,7 @@
   form,
   csrfToken,
   report,
-  wideLabel=false
+  labelColumnWidth=undefined
 ) %}
 
   {{ chartBaseStackedPercentageBars(
@@ -38,7 +38,7 @@
     form=form,
     csrfToken=csrfToken,
     report=report,
-    wideLabel=wideLabel,
+    labelColumnWidth=labelColumnWidth,
     valueColumn=valueColumn,
     rowTotalValue=rowTotalValue,
     rowValue=rowValue

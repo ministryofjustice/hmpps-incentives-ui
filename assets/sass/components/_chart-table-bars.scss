@@ -19,111 +19,69 @@
   }
 }
 
-.app-chart-table--bars-with-2-columns {
+@mixin chart-table-columns($bars-width, $column-count, $first-column-width: null) {
   th, td {
-    width: 18%;
-
-    // column containing chart bars
-    &:last-child {
-      width: 64%;
-    }
-  }
-
-  &.app-chart-table--bars-wide-label {
-    th, td {
-      width: 25%;
+    @if $first-column-width {
+      // normal column width when first column is wider
+      width: calc((100% - $bars-width - $first-column-width) / ($column-count - 1));
 
       // column containing row label (e.g. location or protected characteristic)
       &:first-child {
-        width: 25%;
+        width: $first-column-width;
       }
-
-      // column containing chart bars
-      &:last-child {
-        width: 50%;
-      }
+    } @else {
+      // normal column width
+      width: calc((100% - $bars-width) / $column-count);
     }
+
+    // column containing chart bars
+    &:last-child {
+      width: $bars-width;
+    }
+  }
+}
+
+.app-chart-table--bars-with-2-columns {
+  @include chart-table-columns(64%, 2);
+
+  &.app-chart-table--bars-wide-label, &.app-chart-table--bars-extra-wide-label {
+    @include chart-table-columns(50%, 2, 25%);
   }
 }
 
 .app-chart-table--bars-with-3-columns {
-  th, td {
-    width: 13%;
-
-    // column containing chart bars
-    &:last-child {
-      width: 61%;
-    }
-  }
+  @include chart-table-columns(61%, 3);
 
   &.app-chart-table--bars-wide-label {
-    th, td {
-      width: 17%;
+    @include chart-table-columns(44%, 3, 22%);
+  }
 
-      // column containing row label (e.g. location or protected characteristic)
-      &:first-child {
-        width: 22%;
-      }
-
-      // column containing chart bars
-      &:last-child {
-        width: 44%;
-      }
-    }
+  &.app-chart-table--bars-extra-wide-label {
+    @include chart-table-columns(39%, 3, 41%);
   }
 }
 
 .app-chart-table--bars-with-4-columns {
-  th, td {
-    width: 12%;
-
-    // column containing chart bars
-    &:last-child {
-      width: 52%;
-    }
-  }
+  @include chart-table-columns(52%, 4);
 
   &.app-chart-table--bars-wide-label {
-    th, td {
-      width: 13%;
+    @include chart-table-columns(40%, 4, 21%);
+  }
 
-      // column containing row label (e.g. location or protected characteristic)
-      &:first-child {
-        width: 21%;
-      }
-
-      // column containing chart bars
-      &:last-child {
-        width: 40%;
-      }
-    }
+  &.app-chart-table--bars-extra-wide-label {
+    @include chart-table-columns(42%, 4, 28%);
   }
 }
 
 .app-chart-table--bars-with-5-columns {
-  th, td {
-    width: 10%;
-
-    // column containing chart bars
-    &:last-child {
-      width: 50%;
-    }
-  }
+  @include chart-table-columns(50%, 5);
 
   &.app-chart-table--bars-wide-label {
-    th, td {
-      width: 10%;
+    @include chart-table-columns(39%, 5, 21%);
+  }
 
-      // column containing row label (e.g. location or protected characteristic)
-      &:first-child {
-        width: 21%;
-      }
-
-      // column containing chart bars
-      &:last-child {
-        width: 39%;
-      }
-    }
+  &.app-chart-table--bars-extra-wide-label {
+    @include chart-table-columns(39%, 5, 21%);
   }
 }
 

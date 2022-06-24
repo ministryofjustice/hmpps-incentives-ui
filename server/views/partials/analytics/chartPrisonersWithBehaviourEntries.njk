@@ -30,7 +30,8 @@
   activeCaseload,
   form,
   csrfToken,
-  report
+  report,
+  labelColumnWidth=undefined
 ) %}
 
   {{ chartBaseHeatmap(
@@ -43,6 +44,7 @@
     form=form,
     csrfToken=csrfToken,
     report=report,
+    labelColumnWidth=labelColumnWidth,
     valueColumn=valueColumn,
     rowTotalValue=rowTotalValue,
     rowValue=rowValue

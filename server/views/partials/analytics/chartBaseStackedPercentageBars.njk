@@ -22,7 +22,7 @@
   form,
   csrfToken,
   report,
-  wideLabel=false,
+  labelColumnWidth=undefined,
   valueColumn=valueColumn,
   rowTotalValue=rowTotalValue,
   rowValue=rowValue
@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <table class="app-chart-table app-chart-table--bars app-chart-table--bars-with-{{ report.columns.length + 1 }}-columns {% if wideLabel %}app-chart-table--bars-wide-label{% endif %}" id="table-{{ chartId }}">
+    <table class="app-chart-table app-chart-table--bars app-chart-table--bars-with-{{ report.columns.length + 1 }}-columns {% if labelColumnWidth %}app-chart-table--bars-{{ labelColumnWidth }}-label{% endif %}" id="table-{{ chartId }}">
       <caption class="govuk-visually-hidden">
         {{ title }}
       </caption>

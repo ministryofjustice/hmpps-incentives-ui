@@ -13,6 +13,21 @@
       text-align: right;
     }
   }
+
+  &.app-chart-table--heatmap-extra-wide-label {
+    @include govuk-media-query($from: desktop) {
+      width: 85%;
+    }
+
+    $first-column-width: 48%;
+    th, td {
+      width: calc((100% - $first-column-width) / 4);
+
+      &:first-child {
+        width: $first-column-width;
+      }
+    }
+  }
 }
 
 // heatmap cell

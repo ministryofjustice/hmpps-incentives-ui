@@ -8,6 +8,8 @@
 {% set chartPageTitle = "Behaviour entries" %}
 {% set pageTitle = applicationName + " – " + chartPageTitle %}
 
+{% set extraWideLabel = not filterQuery.filterColumn %}
+
 {% block content %}
   {{ super() }}
 
@@ -26,7 +28,7 @@
   </div>
 
   <div class="govuk-grid-row">
-    <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
+    <section class="{% if extraWideLabel %}govuk-grid-column-two-thirds{% else %}govuk-grid-column-one-half{% endif %} govuk-!-margin-bottom-9">
 
       {% set chartId = "entries-by-location" %}
       {{ chartBehaviourEntries(
@@ -38,11 +40,16 @@
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
-        report=behaviourEntries
+        report=behaviourEntries,
+        labelColumnWidth="extra-wide" if extraWideLabel else undefined
       ) }}
 
     </section>
-    <section class="govuk-grid-column-one-half govuk-!-margin-bottom-9">
+    {% if extraWideLabel %}
+      </div>
+      <div class="govuk-grid-row">
+    {% endif %}
+    <section class="{% if extraWideLabel %}govuk-grid-column-two-thirds{% else %}govuk-grid-column-one-half{% endif %} govuk-!-margin-bottom-9">
 
       {% set chartId = "prisoners-with-entries-by-location" %}
       {{ chartPrisonersWithBehaviourEntries(
@@ -54,7 +61,8 @@
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
-        report=prisonersWithEntries
+        report=prisonersWithEntries,
+        labelColumnWidth="extra-wide" if extraWideLabel else undefined
       ) }}
 
     </section>

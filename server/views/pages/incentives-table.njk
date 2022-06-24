@@ -12,7 +12,7 @@
 
   <p>
     <span class="govuk-!-margin-right-1">{{ entries.locationDescription }}</span>
-    <a href="/select-location" class="govuk-link">Select another location</a>
+    <a href="/select-location">Select another location</a>
   </p>
 
   <div class="govuk-grid-row govuk-!-margin-top-8 govuk-grid-row">
@@ -127,51 +127,51 @@
             html: '<img src="' + imageUrl + '" alt="' + prisonerFullName + '’s photo" width="90" />'
           },
           {
-            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + "/case-notes?fromDate=" + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="prisoner name">' + prisonerFullName + "<br>" + prisoner.prisonerNumber + "</a>",
+            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + "/case-notes?fromDate=" + threeMonthsAgo | dateParam + '" data-ga-category="Incentives information > Clicked on link" data-ga-action="prisoner name">' + prisonerFullName + "<br>" + prisoner.prisonerNumber + "</a>",
             attributes: {
               "data-sort-value": prisonerFullName
             }
           },
           {
-            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days on level">' + prisoner.daysOnLevel + "</a>",
+            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + '/incentive-level-details" data-ga-category="Incentives information > Clicked on link" data-ga-action="days on level">' + prisoner.daysOnLevel + "</a>",
             attributes: {
               "data-sort-value": prisoner.daysOnLevel
             },
             itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
           },
           {
-            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + '/incentive-level-details" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="days since last review">' + prisoner.daysSinceLastReview + "</a>",
+            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + '/incentive-level-details" data-ga-category="Incentives information > Clicked on link" data-ga-action="days since last review">' + prisoner.daysSinceLastReview + "</a>",
             attributes: {
               "data-sort-value": prisoner.daysSinceLastReview
             },
             itemToRemove: featureFlags.hideDaysColumnsInIncentivesTable
           },
           {
-            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + "/case-notes?type=POS&fromDate=" + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="positive behaviours">' + prisoner.positiveBehaviours + "</a>",
+            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + "/case-notes?type=POS&fromDate=" + threeMonthsAgo | dateParam + '" data-ga-category="Incentives information > Clicked on link" data-ga-action="positive behaviours">' + prisoner.positiveBehaviours + "</a>",
             attributes: {
               "data-sort-value": prisoner.positiveBehaviours
             }
           },
           {
-              html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + "/case-notes?type=POS&subType=IEP_ENC&fromDate=" + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive encouragements">' + prisoner.incentiveEncouragements + "</a>",
+              html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + "/case-notes?type=POS&subType=IEP_ENC&fromDate=" + threeMonthsAgo | dateParam + '" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive encouragements">' + prisoner.incentiveEncouragements + "</a>",
               attributes: {
                 "data-sort-value": prisoner.incentiveEncouragements
               }
           },
           {
-            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + "/case-notes?type=NEG&fromDate=" + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="negative behaviours">' + prisoner.negativeBehaviours + "</a>",
+            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + "/case-notes?type=NEG&fromDate=" + threeMonthsAgo | dateParam + '" data-ga-category="Incentives information > Clicked on link" data-ga-action="negative behaviours">' + prisoner.negativeBehaviours + "</a>",
             attributes: {
               "data-sort-value": prisoner.negativeBehaviours
             }
           },
           {
-            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + '/case-notes?type=NEG&subType=IEP_WARN&fromDate=' + threeMonthsAgo | dateParam + '" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive warnings">' + prisoner.incentiveWarnings + "</a>",
+            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + '/case-notes?type=NEG&subType=IEP_WARN&fromDate=' + threeMonthsAgo | dateParam + '" data-ga-category="Incentives information > Clicked on link" data-ga-action="incentive warnings">' + prisoner.incentiveWarnings + "</a>",
             attributes: {
               "data-sort-value": prisoner.incentiveWarnings
             }
           },
           {
-            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + '/adjudications?finding=PROVED" class="govuk-link" data-ga-category="Incentives information > Clicked on link" data-ga-action="proven adjudications">' + prisoner.provenAdjudications + "</a>",
+            html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + '/adjudications?finding=PROVED" data-ga-category="Incentives information > Clicked on link" data-ga-action="proven adjudications">' + prisoner.provenAdjudications + "</a>",
             attributes: {
               "data-sort-value": prisoner.provenAdjudications
             }

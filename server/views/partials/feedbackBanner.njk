@@ -1,7 +1,7 @@
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
 {% macro feedbackMessage() %}
-  This is a new service – <a class="govuk-link" target="_blank" href="{{ feedbackUrl }}"> help us to improve it</a> (opens in a new tab)
+  This is a new service – <a target="_blank" href="{{ feedbackUrl }}"> help us to improve it</a> (opens in a new tab)
 {% endmacro %}
 
 {% block feedbackBanner %}

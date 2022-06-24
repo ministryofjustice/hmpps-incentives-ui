@@ -3,7 +3,7 @@ type AnalyticsChartContent = {
   guidance?: string
   labelColumn?: string
   googleAnalyticsCategory: string
-  labelColumnWidth?: 'wide'
+  labelColumnWidth?: 'wide' | 'extra-wide'
 }
 
 export const BehaviourEntriesChartsContent: Record<string, AnalyticsChartContent> = {

@@ -7,6 +7,8 @@
 {% set chartPageTitle = "Incentive levels" %}
 {% set pageTitle = applicationName + " – " + chartPageTitle %}
 
+{% set extraWideLabel = not filterQuery.filterColumn %}
+
 {% block content %}
   {{ super() }}
 
@@ -25,7 +27,7 @@
   </div>
 
   <div class="govuk-grid-row">
-    <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
+    <section class="{% if extraWideLabel %}govuk-grid-column-full{% else %}govuk-grid-column-two-thirds{% endif %} govuk-!-margin-bottom-9">
 
       {% set chartId = "incentive-levels-by-location" %}
       {{ chartPrisonersOnLevels(
@@ -37,7 +39,8 @@
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
-        report=prisonersOnLevels
+        report=prisonersOnLevels,
+        labelColumnWidth="extra-wide" if extraWideLabel else undefined
       ) }}
 
     </section>

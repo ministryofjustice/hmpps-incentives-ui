@@ -44,7 +44,7 @@
 .app-chart-table--bars-with-2-columns {
   @include chart-table-columns(64%, 2);
 
-  &.app-chart-table--bars-wide-label {
+  &.app-chart-table--bars-wide-label, &.app-chart-table--bars-extra-wide-label {
     @include chart-table-columns(50%, 2, 25%);
   }
 }
@@ -55,6 +55,10 @@
   &.app-chart-table--bars-wide-label {
     @include chart-table-columns(44%, 3, 22%);
   }
+
+  &.app-chart-table--bars-extra-wide-label {
+    @include chart-table-columns(39%, 3, 41%);
+  }
 }
 
 .app-chart-table--bars-with-4-columns {
@@ -63,12 +67,20 @@
   &.app-chart-table--bars-wide-label {
     @include chart-table-columns(40%, 4, 21%);
   }
+
+  &.app-chart-table--bars-extra-wide-label {
+    @include chart-table-columns(42%, 4, 28%);
+  }
 }
 
 .app-chart-table--bars-with-5-columns {
   @include chart-table-columns(50%, 5);
 
   &.app-chart-table--bars-wide-label {
+    @include chart-table-columns(39%, 5, 21%);
+  }
+
+  &.app-chart-table--bars-extra-wide-label {
     @include chart-table-columns(39%, 5, 21%);
   }
 }

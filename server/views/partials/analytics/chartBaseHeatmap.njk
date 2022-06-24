@@ -34,6 +34,7 @@
   form,
   csrfToken,
   report,
+  labelColumnWidth=undefined,
   valueColumn=valueColumn,
   rowTotalValue=rowTotalValue,
   rowValue=rowValue
@@ -64,7 +65,7 @@
       </div>
     </div>
 
-    <table class="app-chart-table app-chart-table--heatmap" id="table-{{ chartId }}">
+    <table class="app-chart-table app-chart-table--heatmap {% if labelColumnWidth %}app-chart-table--heatmap-{{ labelColumnWidth }}-label{% endif %}" id="table-{{ chartId }}">
       <caption class="govuk-visually-hidden">
         {{ title }}
       </caption>

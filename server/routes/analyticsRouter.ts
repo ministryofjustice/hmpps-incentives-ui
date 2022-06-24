@@ -198,6 +198,7 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/behaviourEntries', {
       ...templateContext(req),
+      filterQuery,
       pgdRegionName,
       pgdRegionCode,
       behaviourEntries,
@@ -253,6 +254,7 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/incentiveLevels', {
       ...templateContext(req),
+      filterQuery,
       pgdRegionName,
       pgdRegionCode,
       prisonersOnLevels,
@@ -396,6 +398,7 @@ export default function routes(router: Router): Router {
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
+      filterQuery,
       pgdRegionName,
       pgdRegionCode,
       characteristicName,

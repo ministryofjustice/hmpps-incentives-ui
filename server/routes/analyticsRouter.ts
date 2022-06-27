@@ -27,7 +27,7 @@ import {
   MemoryStitchedTablesCache,
   FileStitchedTablesCache,
 } from '../services/stitchedTablesCache'
-import { AnalyticsLinks, AnalyticsView, InvalidPgdRegionError } from './analyticsView'
+import { AnalyticsLinks, AnalyticsView } from './analyticsView'
 
 export const protectedCharacteristicRoutes = {
   age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
@@ -149,17 +149,11 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
     const { pgdRegionCode } = req.params
-
-    let analyticsView: AnalyticsView
-    try {
-      analyticsView = new AnalyticsView(pgdRegionCode, res.locals.user.activeCaseload.id)
-    } catch (error) {
-      if (error instanceof InvalidPgdRegionError) {
-        res.redirect('/analytics/select-pgd-region')
-        return
-      }
-
-      throw error
+    const activeCaseLoad = res.locals.user.activeCaseload.id
+    const analyticsView = new AnalyticsView(pgdRegionCode, activeCaseLoad)
+    if (!analyticsView.isValidPgdRegion()) {
+      res.redirect('/analytics/select-pgd-region')
+      return
     }
 
     const s3Client = new S3Client(config.s3)
@@ -191,17 +185,11 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
     const { pgdRegionCode } = req.params
-
-    let analyticsView: AnalyticsView
-    try {
-      analyticsView = new AnalyticsView(pgdRegionCode, res.locals.user.activeCaseload.id)
-    } catch (error) {
-      if (error instanceof InvalidPgdRegionError) {
-        res.redirect('/analytics/select-pgd-region')
-        return
-      }
-
-      throw error
+    const activeCaseLoad = res.locals.user.activeCaseload.id
+    const analyticsView = new AnalyticsView(pgdRegionCode, activeCaseLoad)
+    if (!analyticsView.isValidPgdRegion()) {
+      res.redirect('/analytics/select-pgd-region')
+      return
     }
 
     const s3Client = new S3Client(config.s3)
@@ -268,16 +256,10 @@ export default function routes(router: Router): Router {
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const { pgdRegionCode } = req.params
-    let analyticsView: AnalyticsView
-    try {
-      analyticsView = new AnalyticsView(pgdRegionCode, res.locals.user.activeCaseload.id)
-    } catch (error) {
-      if (error instanceof InvalidPgdRegionError) {
-        res.redirect('/analytics/select-pgd-region')
-        return
-      }
-
-      throw error
+    const analyticsView = new AnalyticsView(pgdRegionCode, activeCaseLoad)
+    if (!analyticsView.isValidPgdRegion()) {
+      res.redirect('/analytics/select-pgd-region')
+      return
     }
 
     const characteristicName = (req.query.characteristic || 'age') as string

@@ -1,46 +1,32 @@
 // eslint-disable-next-line max-classes-per-file
-import { Filtering, PGD_REGION_COLUMN, Query, UrlForLocationFunction } from '../services/analyticsService'
-import PgdRegionService, { National } from '../services/pgdRegionService'
+import { Filtering, Query, UrlForLocationFunction } from '../services/analyticsService'
+import PgdRegionService, { National, PgdRegion } from '../services/pgdRegionService'
 
 type ViewType = 'behaviour-entries' | 'incentive-levels' | 'protected-characteristic'
 
-export class InvalidPgdRegionError extends Error {
-  constructor(message?: string) {
-    super(message)
-  }
-}
-
 export class AnalyticsView {
-  protected filtering: Query
+  protected viewLevel: 'national' | 'regional' | 'prison'
 
-  protected pgdRegionName: string
+  protected pgdRegion: PgdRegion = null
+
+  protected activeCaseLoad: string
 
   constructor(pgdRegionCode: string | null, activeCaseLoad: string) {
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
-        this.pgdRegionName = National
-        this.filtering = Filtering.national()
+        this.viewLevel = 'national'
       } else {
-        const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
-        if (!pgdRegion) {
-          throw new InvalidPgdRegionError(`PGD region with code '${pgdRegionCode}' found`)
-        }
-
-        this.pgdRegionName = pgdRegion.name
-        this.filtering = Filtering.byPgdRegion(pgdRegion.name)
+        this.viewLevel = 'regional'
+        this.pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
       }
     } else {
-      this.filtering = Filtering.byPrison(activeCaseLoad)
-      this.pgdRegionName = null
+      this.viewLevel = 'prison'
     }
+
+    this.activeCaseLoad = activeCaseLoad
   }
 
   getUrlFunction(view: ViewType): UrlForLocationFunction {
-    if (this.isRegional()) {
-      // No links from regional charts
-      return (_pgdRegion, _prisonId) => null
-    }
-
     if (this.isNational()) {
       // Link to PGD region page
       return (_, regionName) => {
@@ -49,23 +35,46 @@ export class AnalyticsView {
       }
     }
 
+    if (this.isRegional()) {
+      // No links from regional charts
+      return (_pgdRegion, _prisonId) => null
+    }
+
     return linkToIncentiveTable
   }
 
   getFiltering(): Query {
-    return this.filtering
+    const filtering = {
+      national: Filtering.national(),
+      regional: Filtering.byPgdRegion(this.getPgdRegionName()),
+      prison: Filtering.byPrison(this.activeCaseLoad),
+    }
+
+    return filtering[this.viewLevel]
+  }
+
+  isValidPgdRegion(): boolean {
+    if (this.isRegional()) {
+      return this.pgdRegion !== null
+    }
+
+    return true
   }
 
   getPgdRegionName(): string | null {
-    return this.pgdRegionName
+    if (this.isRegional() && this.pgdRegion) {
+      return this.pgdRegion.name
+    }
+
+    return null
   }
 
   isNational(): boolean {
-    return this.filtering.filterColumn === null
+    return this.viewLevel === 'national'
   }
 
   isRegional(): boolean {
-    return this.filtering.filterColumn === PGD_REGION_COLUMN
+    return this.viewLevel === 'regional'
   }
 }
 

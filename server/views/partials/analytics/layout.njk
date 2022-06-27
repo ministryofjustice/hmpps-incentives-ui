@@ -5,7 +5,11 @@
   {% if analyticsView and (analyticsView.isNational() or analyticsView.isRegional()) %}
     <div class="pgd-region">
       <h1 class="govuk-heading-xl">
-        {{ analyticsView.getPgdRegionName() }}
+        {% if analyticsView.isNational() %}
+          National
+        {% else %}
+          {{ analyticsView.getPgdRegionName() }}
+        {% endif %}
       </h1>
       <p>
         <a href="/analytics/select-pgd-region">Select another prison group</a>

@@ -34,7 +34,7 @@ import {
 } from './analyticsServiceUtils'
 import type { StitchedTablesCache } from './stitchedTablesCache'
 
-const PGD_REGION_COLUMN = 'pgd_region'
+export const PGD_REGION_COLUMN = 'pgd_region'
 const PRISON_COLUMN = 'prison'
 const WING_COLUMN = 'wing'
 
@@ -44,7 +44,7 @@ type WING_COLUMN = typeof WING_COLUMN
 
 type QUERY_FILTERING = null | PGD_REGION_COLUMN | PRISON_COLUMN
 
-type Query =
+export type Query =
   | { filterColumn: PRISON_COLUMN; filterValue: string; groupBy: WING_COLUMN }
   | { filterColumn: PGD_REGION_COLUMN; filterValue: string; groupBy: PRISON_COLUMN }
   | { filterColumn: null; filterValue: null; groupBy: PGD_REGION_COLUMN }

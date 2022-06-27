@@ -2,24 +2,15 @@
 {% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
 
 {% block content %}
-
-  {% if pgdRegionName %}
+  {% if analyticsView and (analyticsView.isNational() or analyticsView.isRegional()) %}
     <div class="pgd-region">
       <h1 class="govuk-heading-xl">
-        {{ pgdRegionName }}
+        {{ analyticsView.getPgdRegionName() }}
       </h1>
       <p>
         <a href="/analytics/select-pgd-region">Select another prison group</a>
       </p>
     </div>
-
-    {% set incentiveLevelsLink = "/analytics/" + pgdRegionCode + "/incentive-levels" %}
-    {% set behaviourEntriesLink = "/analytics/" + pgdRegionCode + "/behaviour-entries" %}
-    {% set protectedCharacteristicLink = "/analytics/" + pgdRegionCode + "/protected-characteristic?characteristic=age" %}
-  {% else %}
-    {% set incentiveLevelsLink = "/analytics/incentive-levels" %}
-    {% set behaviourEntriesLink = "/analytics/behaviour-entries" %}
-    {% set protectedCharacteristicLink = "/analytics/protected-characteristic?characteristic=age" %}
   {% endif %}
 
   {{ mojSubNavigation({
@@ -28,19 +19,19 @@
     items: [
       {
         text: "Incentive levels",
-        href: incentiveLevelsLink,
+        href: analyticsLinks.linkTo('incentive-levels'),
         active: chartPageId == "incentive-levels",
         attributes: { "data-qa": "incentive-levels" }
       },
       {
         text: "Behaviour entries",
-        href: behaviourEntriesLink,
+        href: analyticsLinks.linkTo('behaviour-entries'),
         active: chartPageId == "behaviour-entries",
         attributes: { "data-qa": "behaviour-entries" }
       },
       {
         text: "Protected characteristics",
-        href: protectedCharacteristicLink,
+        href: analyticsLinks.linkTo('protected-characteristic'),
         active: chartPageId == "protected-characteristics",
         attributes: { "data-qa": "protected-characteristics" }
       }

@@ -6,8 +6,7 @@ import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
-import AnalyticsService, { Filtering } from '../services/analyticsService'
-import type { UrlForLocationFunction } from '../services/analyticsService'
+import AnalyticsService from '../services/analyticsService'
 import {
   AgeYoungPeople,
   AnalyticsError,
@@ -28,6 +27,7 @@ import {
   MemoryStitchedTablesCache,
   FileStitchedTablesCache,
 } from '../services/stitchedTablesCache'
+import { AnalyticsLinks, AnalyticsView, InvalidPgdRegionError } from './analyticsView'
 
 export const protectedCharacteristicRoutes = {
   age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
@@ -61,13 +61,6 @@ function templateContext(req: Request): Record<string, unknown> {
     feedbackUrl: config.feedbackUrlForAnalytics || config.feedbackUrl,
     messages: req.flash(),
   }
-}
-
-/**
- * Makes a link from locations in analytics charts to incentives review table
- */
-function urlForLocation(prison: string, location: string): string {
-  return `/incentive-summary/${prison}-${location}`
 }
 
 /**
@@ -154,41 +147,26 @@ export default function routes(router: Router): Router {
   ]
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
-    let filterQuery
 
     const { pgdRegionCode } = req.params
-    let pgdRegionName
-    let urlFunction: UrlForLocationFunction
-    if (pgdRegionCode) {
-      if (pgdRegionCode === National) {
-        pgdRegionName = National
-        filterQuery = Filtering.national()
-        // Link to PGD region page
-        urlFunction = (_, regionName) => {
-          const pgdRegion = PgdRegionService.getPgdRegionByName(regionName)
-          return pgdRegion ? `/analytics/${pgdRegion.code}/behaviour-entries` : null
-        }
-      } else {
-        const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
-        if (!pgdRegion) {
-          res.redirect('/analytics/select-pgd-region')
-          return
-        }
-        pgdRegionName = pgdRegion.name
-        filterQuery = Filtering.byPgdRegion(pgdRegionName)
-        // No links from regional charts
-        urlFunction = (_pgdRegion, _prisonId) => null
+
+    let analyticsView: AnalyticsView
+    try {
+      analyticsView = new AnalyticsView(pgdRegionCode, res.locals.user.activeCaseload.id)
+    } catch (error) {
+      if (error instanceof InvalidPgdRegionError) {
+        res.redirect('/analytics/select-pgd-region')
+        return
       }
-    } else {
-      const activeCaseLoad = res.locals.user.activeCaseload.id
-      filterQuery = Filtering.byPrison(activeCaseLoad)
-      // Link to Incentives table from prison-level charts
-      urlFunction = urlForLocation
+
+      throw error
     }
 
     const s3Client = new S3Client(config.s3)
+    const urlFunction = analyticsView.getUrlFunction('behaviour-entries')
     const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
+    const filterQuery = analyticsView.getFiltering()
     const charts = [
       analyticsService.getBehaviourEntriesByLocation(filterQuery),
       analyticsService.getPrisonersWithEntriesByLocation(filterQuery),
@@ -196,11 +174,11 @@ export default function routes(router: Router): Router {
     ].map(transformAnalyticsError)
     const [behaviourEntries, prisonersWithEntries, trends] = await Promise.all(charts)
 
+    const analyticsLinks = new AnalyticsLinks(pgdRegionCode)
     res.render('pages/analytics/behaviourEntries', {
       ...templateContext(req),
-      filterQuery,
-      pgdRegionName,
-      pgdRegionCode,
+      analyticsView,
+      analyticsLinks,
       behaviourEntries,
       prisonersWithEntries,
       trends,
@@ -211,52 +189,37 @@ export default function routes(router: Router): Router {
   const incentiveLevelChartIds: ChartId[] = ['incentive-levels-by-location', 'trends-incentive-levels']
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
-    let filterQuery
 
     const { pgdRegionCode } = req.params
-    let pgdRegionName
-    let urlFunction: UrlForLocationFunction
-    if (pgdRegionCode) {
-      if (pgdRegionCode === National) {
-        pgdRegionName = National
-        filterQuery = Filtering.national()
-        // Link to PGD region page
-        urlFunction = (_, regionName) => {
-          const pgdRegion = PgdRegionService.getPgdRegionByName(regionName)
-          return pgdRegion ? `/analytics/${pgdRegion.code}/incentive-levels` : null
-        }
-      } else {
-        const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
-        if (!pgdRegion) {
-          res.redirect('/analytics/select-pgd-region')
-          return
-        }
-        pgdRegionName = pgdRegion.name
-        filterQuery = Filtering.byPgdRegion(pgdRegionName)
-        // No links from regional charts
-        urlFunction = (_pgdRegion, _prisonId) => null
+
+    let analyticsView: AnalyticsView
+    try {
+      analyticsView = new AnalyticsView(pgdRegionCode, res.locals.user.activeCaseload.id)
+    } catch (error) {
+      if (error instanceof InvalidPgdRegionError) {
+        res.redirect('/analytics/select-pgd-region')
+        return
       }
-    } else {
-      const activeCaseLoad = res.locals.user.activeCaseload.id
-      filterQuery = Filtering.byPrison(activeCaseLoad)
-      // Link to Incentives table from prison-level charts
-      urlFunction = urlForLocation
+
+      throw error
     }
 
     const s3Client = new S3Client(config.s3)
+    const urlFunction = analyticsView.getUrlFunction('incentive-levels')
     const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
+    const filterQuery = analyticsView.getFiltering()
     const charts = [
       analyticsService.getIncentiveLevelsByLocation(filterQuery),
       analyticsService.getIncentiveLevelTrends(filterQuery),
     ].map(transformAnalyticsError)
     const [prisonersOnLevels, trends] = await Promise.all(charts)
 
+    const analyticsLinks = new AnalyticsLinks(pgdRegionCode)
     res.render('pages/analytics/incentiveLevels', {
       ...templateContext(req),
-      filterQuery,
-      pgdRegionName,
-      pgdRegionCode,
+      analyticsView,
+      analyticsLinks,
       prisonersOnLevels,
       trends,
       IncentiveLevelsChartsContent,
@@ -302,26 +265,19 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Protected characteristics' })
 
-    let filterQuery
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const { pgdRegionCode } = req.params
-    let pgdRegionName
-    if (pgdRegionCode) {
-      if (pgdRegionCode === National) {
-        pgdRegionName = National
-        filterQuery = Filtering.national()
-      } else {
-        const pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
-        if (!pgdRegion) {
-          res.redirect('/analytics/select-pgd-region')
-          return
-        }
-        pgdRegionName = pgdRegion.name
-        filterQuery = Filtering.byPgdRegion(pgdRegionName)
+    let analyticsView: AnalyticsView
+    try {
+      analyticsView = new AnalyticsView(pgdRegionCode, res.locals.user.activeCaseload.id)
+    } catch (error) {
+      if (error instanceof InvalidPgdRegionError) {
+        res.redirect('/analytics/select-pgd-region')
+        return
       }
-    } else {
-      filterQuery = Filtering.byPrison(activeCaseLoad)
+
+      throw error
     }
 
     const characteristicName = (req.query.characteristic || 'age') as string
@@ -371,8 +327,10 @@ export default function routes(router: Router): Router {
     const { groupDropdownLabel } = protectedCharacteristicRoutes[characteristicName]
 
     const s3Client = new S3Client(config.s3)
-    const analyticsService = new AnalyticsService(s3Client, cache, urlForLocation)
+    const urlFunction = analyticsView.getUrlFunction('protected-characteristic')
+    const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
+    const filterQuery = analyticsView.getFiltering()
     const charts = [
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(filterQuery, protectedCharacteristic),
       analyticsService.getIncentiveLevelTrendsByCharacteristic(
@@ -396,11 +354,11 @@ export default function routes(router: Router): Router {
       prisonersWithEntriesByCharacteristic,
     ] = await Promise.all(charts)
 
+    const analyticsLinks = new AnalyticsLinks(pgdRegionCode)
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
-      filterQuery,
-      pgdRegionName,
-      pgdRegionCode,
+      analyticsView,
+      analyticsLinks,
       characteristicName,
       characteristicOptions,
       trendsIncentiveLevelsOptions,

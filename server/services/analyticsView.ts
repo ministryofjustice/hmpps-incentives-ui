@@ -50,13 +50,13 @@ export default class AnalyticsView {
     let url = '/analytics/'
 
     if (this.isNational()) {
-      url += 'National'
+      url += 'National/'
     }
     if (this.isRegional() && this.pgdRegion) {
-      url += this.pgdRegion.code
+      url += `${this.pgdRegion.code}/`
     }
 
-    return `${url}/${viewType}`
+    return `${url}${viewType}`
   }
 
   getUrlFunction(): UrlForLocationFunction {

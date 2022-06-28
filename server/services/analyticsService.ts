@@ -124,8 +124,9 @@ export default class AnalyticsService {
     return value
   }
 
-  async getBehaviourEntriesByLocation(view: AnalyticsView): Promise<Report<BehaviourEntriesByLocation>> {
-    const { filterColumn, filterValue, groupBy } = view.getFiltering()
+  async getBehaviourEntriesByLocation(): Promise<Report<BehaviourEntriesByLocation>> {
+    const { view } = this
+    const { filterColumn, filterValue, groupBy } = this.view.getFiltering()
 
     const columnsToStitch = filterColumn
       ? [filterColumn, groupBy, 'positives', 'negatives', 'prison_name']
@@ -134,7 +135,7 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const sourceTable = AnalyticsService.behaviourEntriesSourceTableFor(view)
+    const sourceTable = this.getBehaviourEntriesSourceTable()
     const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<CaseEntriesTable, StitchedRow>(
       sourceTable,
       columnsToStitch,
@@ -174,7 +175,7 @@ export default class AnalyticsService {
       2,
     )
 
-    const urlForLocation = this.view.getUrlFunction()
+    const urlForLocation = view.getUrlFunction()
     const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([label, ...values], index) => {
       const href = index === aggregateTable.length - 1 ? undefined : urlForLocation(filterValue, label)
       return { label, href, values }
@@ -183,7 +184,8 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
-  async getPrisonersWithEntriesByLocation(view: AnalyticsView): Promise<Report<PrisonersWithEntriesByLocation>> {
+  async getPrisonersWithEntriesByLocation(): Promise<Report<PrisonersWithEntriesByLocation>> {
+    const { view } = this
     const { filterColumn, filterValue, groupBy } = view.getFiltering()
 
     const columnsToStitch = view.isNational()
@@ -194,7 +196,7 @@ export default class AnalyticsService {
     type StitchedRowNational = [string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
 
-    const sourceTable = AnalyticsService.behaviourEntriesSourceTableFor(view)
+    const sourceTable = this.getBehaviourEntriesSourceTable()
     const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<CaseEntriesTable, StitchedRow>(
       sourceTable,
       columnsToStitch,
@@ -255,7 +257,8 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
-  async getIncentiveLevelsByLocation(view: AnalyticsView): Promise<Report<PrisonersOnLevelsByLocation>> {
+  async getIncentiveLevelsByLocation(): Promise<Report<PrisonersOnLevelsByLocation>> {
+    const { view } = this
     const { filterColumn, filterValue, groupBy } = view.getFiltering()
     const columnsToStitch = view.isNational()
       ? [groupBy, 'incentive', 'characteristic', 'charac_group']
@@ -311,7 +314,7 @@ export default class AnalyticsService {
     )
     columns = columns.map(removeSortingPrefix)
 
-    const urlForLocation = this.view.getUrlFunction()
+    const urlForLocation = view.getUrlFunction()
     const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([label, ...values], index) => {
       const href = index === aggregateTable.length - 1 ? undefined : urlForLocation(filterValue, label)
       return { label, href, values }
@@ -321,9 +324,9 @@ export default class AnalyticsService {
   }
 
   async getIncentiveLevelsByProtectedCharacteristic(
-    view: AnalyticsView,
     protectedCharacteristic: ProtectedCharacteristic,
   ): Promise<Report<PrisonersOnLevelsByProtectedCharacteristic>> {
+    const { view } = this
     const { filterColumn, filterValue, groupBy } = view.getFiltering()
     const columnsToStitch = view.isNational()
       ? [groupBy, 'incentive', 'characteristic', 'charac_group']
@@ -405,9 +408,9 @@ export default class AnalyticsService {
   }
 
   async getPrisonersWithEntriesByProtectedCharacteristic(
-    view: AnalyticsView,
     protectedCharacteristic: ProtectedCharacteristic,
   ): Promise<Report<PrisonersWithEntriesByProtectedCharacteristic>> {
+    const { view } = this
     const { filterColumn, filterValue } = view.getFiltering()
     const columnsToStitch = filterColumn
       ? [filterColumn, 'behaviour_profile', 'characteristic', 'charac_group']
@@ -483,7 +486,8 @@ export default class AnalyticsService {
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
-  async getBehaviourEntryTrends(view: AnalyticsView): Promise<TrendsReport> {
+  async getBehaviourEntryTrends(): Promise<TrendsReport> {
+    const { view } = this
     const { filterColumn, filterValue } = view.getFiltering()
     const columnsToStitch = view.isNational()
       ? ['year_month_str', 'snapshots', 'offenders', 'positives', 'negatives']
@@ -550,7 +554,8 @@ export default class AnalyticsService {
     }
   }
 
-  async getIncentiveLevelTrends(view: AnalyticsView): Promise<TrendsReport> {
+  async getIncentiveLevelTrends(): Promise<TrendsReport> {
+    const { view } = this
     const { filterColumn, filterValue } = view.getFiltering()
     const columnsToStitch = view.isNational()
       ? ['year_month_str', 'snapshots', 'offenders', 'incentive']
@@ -623,10 +628,10 @@ export default class AnalyticsService {
   }
 
   async getIncentiveLevelTrendsByCharacteristic(
-    view: AnalyticsView,
     protectedCharacteristic: ProtectedCharacteristic,
     characteristicGroup: string,
   ): Promise<TrendsReport> {
+    const { view } = this
     const { filterColumn, filterValue } = view.getFiltering()
     const columnsToStitch = view.isNational()
       ? ['year_month_str', 'snapshots', 'offenders', 'incentive', protectedCharacteristic]
@@ -705,9 +710,9 @@ export default class AnalyticsService {
   }
 
   async getBehaviourEntriesByProtectedCharacteristic(
-    view: AnalyticsView,
     protectedCharacteristic: ProtectedCharacteristic,
   ): Promise<Report<BehaviourEntriesByProtectedCharacteristic>> {
+    const { view } = this
     const { filterColumn, filterValue } = view.getFiltering()
     const columnsToStitch = view.isNational()
       ? ['characteristic', 'charac_group', 'positives', 'negatives']
@@ -778,10 +783,10 @@ export default class AnalyticsService {
   }
 
   async getBehaviourEntryTrendsByProtectedCharacteristic(
-    view: AnalyticsView,
     protectedCharacteristic: ProtectedCharacteristic,
     characteristicGroup: string,
   ): Promise<TrendsReport> {
+    const { view } = this
     const { filterColumn, filterValue } = view.getFiltering()
 
     const columnsToStitch = view.isNational()
@@ -857,7 +862,9 @@ export default class AnalyticsService {
     }
   }
 
-  private static behaviourEntriesSourceTableFor(view: AnalyticsView): TableType {
+  private getBehaviourEntriesSourceTable(): TableType {
+    const { view } = this
+
     if (view.isNational()) {
       return TableType.behaviourEntriesNational
     }

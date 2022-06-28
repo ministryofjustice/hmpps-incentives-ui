@@ -38,9 +38,9 @@ const prisonLevels = {
   BWI: ['Basic', 'Standard', 'Enhanced'],
 }
 
-const nationalView = new AnalyticsView('National', 'MDI')
-const regionalView = new AnalyticsView('LTHS', 'MDI')
-const moorlandPrisonLevelView = new AnalyticsView(null, 'MDI')
+const nationalView = new AnalyticsView('National', 'behaviour-entries', 'MDI')
+const regionalView = new AnalyticsView('LTHS', 'behaviour-entries', 'MDI')
+const moorlandPrisonLevelView = new AnalyticsView(null, 'behaviour-entries', 'MDI')
 
 describe('AnalyticsService', () => {
   let analyticsService: AnalyticsService
@@ -305,7 +305,7 @@ describe('AnalyticsService', () => {
       'lists locations in the correct order',
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
-          const prisonLevelView = new AnalyticsView(null, prison)
+          const prisonLevelView = new AnalyticsView(null, 'behaviour-entries', prison)
           const { rows } = await analyticsService.getBehaviourEntriesByLocation(prisonLevelView)
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
@@ -390,7 +390,7 @@ describe('AnalyticsService', () => {
       'lists locations in the correct order',
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
-          const prisonLevelView = new AnalyticsView(null, prison)
+          const prisonLevelView = new AnalyticsView(null, 'behaviour-entries', prison)
           const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(prisonLevelView)
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
@@ -474,7 +474,7 @@ describe('AnalyticsService', () => {
       'lists locations in the correct order',
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
-          const prisonLevelView = new AnalyticsView(null, prison)
+          const prisonLevelView = new AnalyticsView(null, 'behaviour-entries', prison)
           const { rows } = await analyticsService.getIncentiveLevelsByLocation(prisonLevelView)
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
@@ -484,7 +484,7 @@ describe('AnalyticsService', () => {
 
     describe.each(Object.entries(prisonLevels))('lists levels in the correct order', (prison, levels) => {
       it(`for ${prison}`, async () => {
-        const prisonLevelView = new AnalyticsView(null, prison)
+        const prisonLevelView = new AnalyticsView(null, 'behaviour-entries', prison)
         const { columns } = await analyticsService.getIncentiveLevelsByLocation(prisonLevelView)
         expect(columns).toEqual(levels)
       })
@@ -631,7 +631,7 @@ describe('AnalyticsService', () => {
       `[${characteristic}]: lists levels in the correct order`,
       (prison, levels) => {
         it(`for ${prison}`, async () => {
-          const prisonLevelView = new AnalyticsView(null, prison)
+          const prisonLevelView = new AnalyticsView(null, 'behaviour-entries', prison)
           const { columns } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
             prisonLevelView,
             characteristic,

@@ -150,14 +150,14 @@ export default function routes(router: Router): Router {
 
     const { pgdRegionCode } = req.params
     const activeCaseLoad = res.locals.user.activeCaseload.id
-    const analyticsView = new AnalyticsView(pgdRegionCode, activeCaseLoad)
+    const analyticsView = new AnalyticsView(pgdRegionCode, 'behaviour-entries', activeCaseLoad)
     if (!analyticsView.isValidPgdRegion()) {
       res.redirect('/analytics/select-pgd-region')
       return
     }
 
     const s3Client = new S3Client(config.s3)
-    const urlFunction = analyticsView.getUrlFunction('behaviour-entries')
+    const urlFunction = analyticsView.getUrlFunction()
     const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
     const charts = [
@@ -185,14 +185,14 @@ export default function routes(router: Router): Router {
 
     const { pgdRegionCode } = req.params
     const activeCaseLoad = res.locals.user.activeCaseload.id
-    const analyticsView = new AnalyticsView(pgdRegionCode, activeCaseLoad)
+    const analyticsView = new AnalyticsView(pgdRegionCode, 'incentive-levels', activeCaseLoad)
     if (!analyticsView.isValidPgdRegion()) {
       res.redirect('/analytics/select-pgd-region')
       return
     }
 
     const s3Client = new S3Client(config.s3)
-    const urlFunction = analyticsView.getUrlFunction('incentive-levels')
+    const urlFunction = analyticsView.getUrlFunction()
     const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
     const charts = [
@@ -254,7 +254,7 @@ export default function routes(router: Router): Router {
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const { pgdRegionCode } = req.params
-    const analyticsView = new AnalyticsView(pgdRegionCode, activeCaseLoad)
+    const analyticsView = new AnalyticsView(pgdRegionCode, 'protected-characteristic', activeCaseLoad)
     if (!analyticsView.isValidPgdRegion()) {
       res.redirect('/analytics/select-pgd-region')
       return
@@ -307,7 +307,7 @@ export default function routes(router: Router): Router {
     const { groupDropdownLabel } = protectedCharacteristicRoutes[characteristicName]
 
     const s3Client = new S3Client(config.s3)
-    const urlFunction = analyticsView.getUrlFunction('protected-characteristic')
+    const urlFunction = analyticsView.getUrlFunction()
     const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
     const charts = [

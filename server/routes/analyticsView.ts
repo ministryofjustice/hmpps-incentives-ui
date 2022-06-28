@@ -10,14 +10,28 @@ type Query = {
   groupBy: 'pgd_region' | 'prison' | 'wing'
 }
 
+/**
+ * Keeps logic for national/regional/by prison view
+ *
+ * Keeps state of current user analytics view including:
+ *  - View type: 'behaviour-entries', 'incentive-levels', etc...
+ *  - View level: National, regional or at prison level
+ *  - active case load
+ *
+ * Used by other parts of the application to determine things like:
+ * - is this national/regional level?
+ * - how links in charts should be constructed
+ */
 export class AnalyticsView {
   protected viewLevel: 'national' | 'regional' | 'prison'
+
+  protected viewType: ViewType
 
   protected pgdRegion: PgdRegion = null
 
   protected activeCaseLoad: string
 
-  constructor(pgdRegionCode: string | null, activeCaseLoad: string) {
+  constructor(pgdRegionCode: string | null, viewType: ViewType, activeCaseLoad: string) {
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
         this.viewLevel = 'national'
@@ -29,15 +43,16 @@ export class AnalyticsView {
       this.viewLevel = 'prison'
     }
 
+    this.viewType = viewType
     this.activeCaseLoad = activeCaseLoad
   }
 
-  getUrlFunction(view: ViewType): UrlForLocationFunction {
+  getUrlFunction(): UrlForLocationFunction {
     if (this.isNational()) {
       // Link to PGD region page
       return (_, regionName) => {
         const pgdRegion = PgdRegionService.getPgdRegionByName(regionName)
-        return pgdRegion ? `/analytics/${pgdRegion.code}/${view}` : null
+        return pgdRegion ? `/analytics/${pgdRegion.code}/${this.viewType}` : null
       }
     }
 
@@ -120,9 +135,9 @@ export class AnalyticsLinks {
     this.pgdRegionCode = pgdRegionCode
   }
 
-  linkTo(view: ViewType): string {
+  linkTo(viewType: ViewType): string {
     const pgdRegionName = this.pgdRegionCode ? `${this.pgdRegionCode}/` : ''
 
-    return `/analytics/${pgdRegionName}${view}`
+    return `/analytics/${pgdRegionName}${viewType}`
   }
 }

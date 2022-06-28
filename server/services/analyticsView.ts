@@ -1,5 +1,5 @@
-import type { UrlForLocationFunction } from '../services/analyticsService'
-import PgdRegionService, { National, PgdRegion } from '../services/pgdRegionService'
+import type { UrlForLocationFunction } from './analyticsService'
+import PgdRegionService, { National, PgdRegion } from './pgdRegionService'
 
 type ViewType = 'behaviour-entries' | 'incentive-levels' | 'protected-characteristic'
 

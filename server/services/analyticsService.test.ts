@@ -964,7 +964,6 @@ describe('AnalyticsService', () => {
       it('PGD region filtering returns correct prisons grouping and figures', async () => {
         analyticsService = new AnalyticsService(s3Client, cache, regionalView)
         const { rows } = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
-
           ProtectedCharacteristic.Ethnicity,
           characteristicGroup,
         )

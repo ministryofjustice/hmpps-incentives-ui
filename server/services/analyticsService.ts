@@ -1,7 +1,7 @@
 import logger from '../../logger'
 import PrisonRegister from '../data/prisonRegister'
 import type S3Client from '../data/s3Client'
-import type AnalyticsView from '../routes/analyticsView'
+import type AnalyticsView from './analyticsView'
 import type {
   BehaviourEntriesByLocation,
   CaseEntriesTable,

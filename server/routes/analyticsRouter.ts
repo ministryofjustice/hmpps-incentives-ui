@@ -27,7 +27,7 @@ import {
   MemoryStitchedTablesCache,
   FileStitchedTablesCache,
 } from '../services/stitchedTablesCache'
-import AnalyticsView from './analyticsView'
+import AnalyticsView from '../services/analyticsView'
 
 export const protectedCharacteristicRoutes = {
   age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },

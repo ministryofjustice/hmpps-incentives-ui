@@ -137,6 +137,7 @@ export default {
     showRegionalNational: flag('FEATURE_SHOW_REGIONAL_NATIONAL', false),
     useFileSystemCache: flag('FEATURE_FS_CACHE', false),
   },
+  analyticsDataStaleAferDays: Number(get('ANALYTICS_DATA_STALE_AFTER_DAYS', 0)),
   feedbackUrl: get('FEEDBACK_URL', ''),
   feedbackUrlForAnalytics: get('FEEDBACK_URL_ANALYTICS', ''),
   feedbackUrlForTable: get('FEEDBACK_URL_TABLE', ''),

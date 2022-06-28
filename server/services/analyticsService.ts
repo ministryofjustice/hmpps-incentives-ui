@@ -1,3 +1,6 @@
+import promClient from 'prom-client'
+
+import config from '../config'
 import logger from '../../logger'
 import PrisonRegister from '../data/prisonRegister'
 import type S3Client from '../data/s3Client'
@@ -111,6 +114,7 @@ export default class AnalyticsService {
 
     let value = await this.cache.get<Row>(this, tableType, cacheKey)
     if (value) {
+      checkDataStaleness(tableType, value.date)
       return value
     }
 
@@ -876,5 +880,28 @@ export default class AnalyticsService {
     }
 
     throw new Error('Unexpected filterColumn param')
+  }
+}
+
+const staleDataGauge = new promClient.Gauge({
+  name: 'incentives_stale_analytics_data',
+  help: '1 = source table is outdated',
+  labelNames: ['table_type'],
+})
+
+/**
+ * Sets a prometheus flag when a table is considered stale,
+ * i.e. more than `config.analyticsDataStaleAferDays` days old
+ */
+function checkDataStaleness(tableType: TableType, date: Date): void {
+  if (config.analyticsDataStaleAferDays > 0) {
+    const staleDate = new Date()
+    staleDate.setDate(staleDate.getDate() - config.analyticsDataStaleAferDays)
+    if (date < staleDate) {
+      logger.warn(`${tableType} data is stale`)
+      staleDataGauge.set({ table_type: tableType }, 1)
+    } else {
+      staleDataGauge.set({ table_type: tableType }, 0)
+    }
   }
 }

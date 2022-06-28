@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 import type { UrlForLocationFunction } from '../services/analyticsService'
 import PgdRegionService, { National, PgdRegion } from '../services/pgdRegionService'
 
@@ -22,7 +21,7 @@ type Query = {
  * - is this national/regional level?
  * - how links in charts should be constructed
  */
-export class AnalyticsView {
+export default class AnalyticsView {
   protected viewLevel: 'national' | 'regional' | 'prison'
 
   protected viewType: ViewType
@@ -45,6 +44,19 @@ export class AnalyticsView {
 
     this.viewType = viewType
     this.activeCaseLoad = activeCaseLoad
+  }
+
+  linkTo(viewType: ViewType): string {
+    let url = '/analytics/'
+
+    if (this.isNational()) {
+      url += 'National'
+    }
+    if (this.isRegional() && this.pgdRegion) {
+      url += this.pgdRegion.code
+    }
+
+    return `${url}/${viewType}`
   }
 
   getUrlFunction(): UrlForLocationFunction {
@@ -126,18 +138,4 @@ export class AnalyticsView {
  */
 function linkToIncentiveTable(prison: string, location: string): string {
   return `/incentive-summary/${prison}-${location}`
-}
-
-export class AnalyticsLinks {
-  protected pgdRegionCode: string | null
-
-  constructor(pgdRegionCode: string) {
-    this.pgdRegionCode = pgdRegionCode
-  }
-
-  linkTo(viewType: ViewType): string {
-    const pgdRegionName = this.pgdRegionCode ? `${this.pgdRegionCode}/` : ''
-
-    return `/analytics/${pgdRegionName}${viewType}`
-  }
 }

@@ -16,7 +16,7 @@ import type { PrisonersOnLevelsByProtectedCharacteristic, TrendsReportRow, Trend
 import { mapRowsAndSumTotals, mapRowsForMonthlyTrends } from './analyticsServiceUtils'
 import { MemoryStitchedTablesCache } from './stitchedTablesCache'
 import { MockTable, mockAppS3ClientResponse } from '../testData/s3Bucket'
-import { AnalyticsView } from '../routes/analyticsView'
+import AnalyticsView from '../routes/analyticsView'
 
 jest.mock('@aws-sdk/client-s3')
 jest.mock('../data/s3Client')

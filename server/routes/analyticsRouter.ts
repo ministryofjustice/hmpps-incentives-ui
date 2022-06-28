@@ -27,7 +27,7 @@ import {
   MemoryStitchedTablesCache,
   FileStitchedTablesCache,
 } from '../services/stitchedTablesCache'
-import { AnalyticsLinks, AnalyticsView } from './analyticsView'
+import AnalyticsView from './analyticsView'
 
 export const protectedCharacteristicRoutes = {
   age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
@@ -166,11 +166,9 @@ export default function routes(router: Router): Router {
     ].map(transformAnalyticsError)
     const [behaviourEntries, prisonersWithEntries, trends] = await Promise.all(charts)
 
-    const analyticsLinks = new AnalyticsLinks(pgdRegionCode)
     res.render('pages/analytics/behaviourEntries', {
       ...templateContext(req),
       analyticsView,
-      analyticsLinks,
       behaviourEntries,
       prisonersWithEntries,
       trends,
@@ -198,11 +196,9 @@ export default function routes(router: Router): Router {
     )
     const [prisonersOnLevels, trends] = await Promise.all(charts)
 
-    const analyticsLinks = new AnalyticsLinks(pgdRegionCode)
     res.render('pages/analytics/incentiveLevels', {
       ...templateContext(req),
       analyticsView,
-      analyticsLinks,
       prisonersOnLevels,
       trends,
       IncentiveLevelsChartsContent,
@@ -321,11 +317,9 @@ export default function routes(router: Router): Router {
       prisonersWithEntriesByCharacteristic,
     ] = await Promise.all(charts)
 
-    const analyticsLinks = new AnalyticsLinks(pgdRegionCode)
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
       analyticsView,
-      analyticsLinks,
       characteristicName,
       characteristicOptions,
       trendsIncentiveLevelsOptions,

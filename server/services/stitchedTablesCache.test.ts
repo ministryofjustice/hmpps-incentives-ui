@@ -1,5 +1,5 @@
 import S3Client from '../data/s3Client'
-import { AnalyticsView } from '../routes/analyticsView'
+import AnalyticsView from '../routes/analyticsView'
 import AnalyticsService from './analyticsService'
 import { AnalyticsError, TableType } from './analyticsServiceTypes'
 import { StitchedTablesCache, MemoryStitchedTablesCache, FileStitchedTablesCache } from './stitchedTablesCache'

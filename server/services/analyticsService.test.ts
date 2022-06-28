@@ -283,7 +283,7 @@ describe('AnalyticsService', () => {
 
       const prisonTotal = entries.shift()
       expect(prisonTotal.label).toEqual('All')
-      expect(prisonTotal.href).toBeUndefined()
+      expect(prisonTotal.href).toBeNull()
 
       let [sumPositive, sumNegative] = [0, 0]
       entries.forEach(({ values }) => {
@@ -319,7 +319,7 @@ describe('AnalyticsService', () => {
       const { rows } = await analyticsService.getBehaviourEntriesByLocation()
 
       expect(rows).toEqual([
-        { href: undefined, label: 'All', values: [105, 155] },
+        { href: null, label: 'All', values: [105, 155] },
         { href: null, label: 'Whitemoor (HMP)', values: [105, 155] },
       ])
     })
@@ -330,7 +330,7 @@ describe('AnalyticsService', () => {
       const { rows } = await analyticsService.getBehaviourEntriesByLocation()
 
       expect(rows).toEqual([
-        { href: undefined, label: 'All', values: [27574, 32237] },
+        { href: null, label: 'All', values: [27574, 32237] },
         { href: '/analytics/ASD/behaviour-entries', label: 'Avon and South Dorset', values: [624, 671] },
         {
           href: '/analytics/BCN/behaviour-entries',
@@ -378,7 +378,7 @@ describe('AnalyticsService', () => {
 
       const prisonTotal = prisoners.shift()
       expect(prisonTotal.label).toEqual('All')
-      expect(prisonTotal.href).toBeUndefined()
+      expect(prisonTotal.href).toBeNull()
 
       let [sumPositive, sumNegative, sumBoth, sumNeither] = [0, 0, 0, 0]
       prisoners.forEach(({ values }) => {
@@ -418,7 +418,7 @@ describe('AnalyticsService', () => {
       const { rows } = await analyticsService.getPrisonersWithEntriesByLocation()
 
       expect(rows).toEqual([
-        { href: undefined, label: 'All', values: [50, 67, 10, 199] },
+        { href: null, label: 'All', values: [50, 67, 10, 199] },
         { href: null, label: 'Whitemoor (HMP)', values: [50, 67, 10, 199] },
       ])
     })
@@ -429,7 +429,7 @@ describe('AnalyticsService', () => {
       const { rows } = await analyticsService.getPrisonersWithEntriesByLocation()
 
       expect(rows).toEqual([
-        { href: undefined, label: 'All', values: [13343, 12347, 3438, 60593] },
+        { href: null, label: 'All', values: [13343, 12347, 3438, 60593] },
         { href: '/analytics/ASD/behaviour-entries', label: 'Avon and South Dorset', values: [314, 257, 78, 1652] },
         {
           href: '/analytics/BCN/behaviour-entries',
@@ -485,7 +485,7 @@ describe('AnalyticsService', () => {
 
       const prisonTotal = prisonersOnLevels.shift()
       expect(prisonTotal.label).toEqual('All')
-      expect(prisonTotal.href).toBeUndefined()
+      expect(prisonTotal.href).toBeNull()
 
       const totals = [0, 0, 0, 0]
       prisonersOnLevels.forEach(({ values }) => {
@@ -531,7 +531,7 @@ describe('AnalyticsService', () => {
       const { rows } = await analyticsService.getIncentiveLevelsByLocation()
 
       expect(rows).toEqual([
-        { href: undefined, label: 'All', values: [12, 90, 217] },
+        { href: null, label: 'All', values: [12, 90, 217] },
         { href: null, label: 'Whitemoor (HMP)', values: [12, 90, 217] },
       ])
     })
@@ -542,7 +542,7 @@ describe('AnalyticsService', () => {
       const { rows } = await analyticsService.getIncentiveLevelsByLocation()
 
       expect(rows).toEqual([
-        { href: undefined, label: 'All', values: [83, 1350, 1684] },
+        { href: null, label: 'All', values: [83, 1350, 1684] },
         { href: '/analytics/LTHS/incentive-levels', label: 'Long-term and high security', values: [12, 90, 217] },
         { href: '/analytics/WLS/incentive-levels', label: 'Wales', values: [45, 739, 1085] },
         { href: '/analytics/YRKS/incentive-levels', label: 'Yorkshire', values: [26, 521, 382] },

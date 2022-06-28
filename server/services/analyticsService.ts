@@ -177,7 +177,7 @@ export default class AnalyticsService {
 
     const urlForLocation = view.getUrlFunction()
     const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([label, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : urlForLocation(filterValue, label)
+      const href = index === aggregateTable.length - 1 ? null : urlForLocation(filterValue, label)
       return { label, href, values }
     })
     rows.sort(compareLocations)
@@ -250,7 +250,7 @@ export default class AnalyticsService {
 
     const urlForLocation = view.getUrlFunction()
     const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([label, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : urlForLocation(filterValue, label)
+      const href = index === aggregateTable.length - 1 ? null : urlForLocation(filterValue, label)
       return { label, href, values }
     })
     rows.sort(compareLocations)
@@ -316,7 +316,7 @@ export default class AnalyticsService {
 
     const urlForLocation = view.getUrlFunction()
     const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([label, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : urlForLocation(filterValue, label)
+      const href = index === aggregateTable.length - 1 ? null : urlForLocation(filterValue, label)
       return { label, href, values }
     })
     rows.sort(compareLocations)

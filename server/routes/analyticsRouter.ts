@@ -157,8 +157,7 @@ export default function routes(router: Router): Router {
     }
 
     const s3Client = new S3Client(config.s3)
-    const urlFunction = analyticsView.getUrlFunction()
-    const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
+    const analyticsService = new AnalyticsService(s3Client, cache, analyticsView)
 
     const charts = [
       analyticsService.getBehaviourEntriesByLocation(analyticsView),
@@ -192,8 +191,7 @@ export default function routes(router: Router): Router {
     }
 
     const s3Client = new S3Client(config.s3)
-    const urlFunction = analyticsView.getUrlFunction()
-    const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
+    const analyticsService = new AnalyticsService(s3Client, cache, analyticsView)
 
     const charts = [
       analyticsService.getIncentiveLevelsByLocation(analyticsView),
@@ -307,8 +305,7 @@ export default function routes(router: Router): Router {
     const { groupDropdownLabel } = protectedCharacteristicRoutes[characteristicName]
 
     const s3Client = new S3Client(config.s3)
-    const urlFunction = analyticsView.getUrlFunction()
-    const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
+    const analyticsService = new AnalyticsService(s3Client, cache, analyticsView)
 
     const charts = [
       analyticsService.getIncentiveLevelsByProtectedCharacteristic(analyticsView, protectedCharacteristic),

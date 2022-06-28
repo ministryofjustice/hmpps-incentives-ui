@@ -21,6 +21,8 @@ import { AnalyticsView } from '../routes/analyticsView'
 jest.mock('@aws-sdk/client-s3')
 jest.mock('../data/s3Client')
 
+const cache = new MemoryStitchedTablesCache()
+
 const isYouthCustodyServiceOriginal = PrisonRegister.isYouthCustodyService
 
 const prisonLocations = {
@@ -38,7 +40,7 @@ const prisonLevels = {
   BWI: ['Basic', 'Standard', 'Enhanced'],
 }
 
-const nationalView = new AnalyticsView('National', 'behaviour-entries', 'MDI')
+let nationalView: AnalyticsView
 const regionalView = new AnalyticsView('LTHS', 'behaviour-entries', 'MDI')
 const moorlandPrisonLevelView = new AnalyticsView(null, 'behaviour-entries', 'MDI')
 
@@ -49,8 +51,8 @@ describe('AnalyticsService', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    const cache = new MemoryStitchedTablesCache()
-    analyticsService = new AnalyticsService(s3Client, cache, () => '')
+    cache.clear()
+    analyticsService = new AnalyticsService(s3Client, cache, moorlandPrisonLevelView)
   })
 
   describe('findTable()', () => {
@@ -314,39 +316,54 @@ describe('AnalyticsService', () => {
     )
 
     it('PGD region filtering returns correct prisons grouping and figures', async () => {
+      analyticsService = new AnalyticsService(s3Client, cache, regionalView)
       const { rows } = await analyticsService.getBehaviourEntriesByLocation(regionalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [105, 155] },
-        { href: '', label: 'Whitemoor (HMP)', values: [105, 155] },
+        { href: null, label: 'Whitemoor (HMP)', values: [105, 155] },
       ])
     })
 
     it('national filtering returns correct PGD regions grouping and figures', async () => {
+      nationalView = new AnalyticsView('National', 'behaviour-entries', 'MDI')
+      analyticsService = new AnalyticsService(s3Client, cache, nationalView)
       const { rows } = await analyticsService.getBehaviourEntriesByLocation(nationalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [27574, 32237] },
-        { href: '', label: 'Avon and South Dorset', values: [624, 671] },
-        { href: '', label: 'Bedfordshire, Cambridgeshire and Norfolk', values: [1332, 1492] },
-        { href: '', label: 'Contracted', values: [3014, 3867] },
-        { href: '', label: 'Cumbria and Lancashire', values: [648, 829] },
-        { href: '', label: 'Devon and North Dorset', values: [577, 1090] },
-        { href: '', label: 'East Midlands', values: [988, 1103] },
-        { href: '', label: 'Greater Manchester, Merseyside and Cheshire', values: [856, 1069] },
-        { href: '', label: 'Hertfordshire, Essex and Suffolk', values: [1745, 1367] },
-        { href: '', label: 'Immigration and foreign national prisons', values: [548, 337] },
-        { href: '', label: 'Kent, Surrey and Sussex', values: [1515, 1773] },
-        { href: '', label: 'London', values: [2605, 2898] },
-        { href: '', label: 'Long-term and high security', values: [2769, 3735] },
-        { href: '', label: 'North Midlands', values: [1607, 1445] },
-        { href: '', label: 'South Central', values: [801, 892] },
-        { href: '', label: 'Tees and Wear', values: [449, 943] },
-        { href: '', label: 'Wales', values: [709, 1071] },
-        { href: '', label: 'West Midlands', values: [1386, 2026] },
-        { href: '', label: 'Women', values: [1478, 1264] },
-        { href: '', label: 'Yorkshire', values: [2077, 2291] },
-        { href: '', label: 'Youth custody service', values: [1846, 2074] },
+        { href: '/analytics/ASD/behaviour-entries', label: 'Avon and South Dorset', values: [624, 671] },
+        {
+          href: '/analytics/BCN/behaviour-entries',
+          label: 'Bedfordshire, Cambridgeshire and Norfolk',
+          values: [1332, 1492],
+        },
+        { href: '/analytics/CNTR/behaviour-entries', label: 'Contracted', values: [3014, 3867] },
+        { href: '/analytics/CL/behaviour-entries', label: 'Cumbria and Lancashire', values: [648, 829] },
+        { href: '/analytics/DND/behaviour-entries', label: 'Devon and North Dorset', values: [577, 1090] },
+        { href: '/analytics/EM/behaviour-entries', label: 'East Midlands', values: [988, 1103] },
+        {
+          href: '/analytics/GMMC/behaviour-entries',
+          label: 'Greater Manchester, Merseyside and Cheshire',
+          values: [856, 1069],
+        },
+        { href: '/analytics/HES/behaviour-entries', label: 'Hertfordshire, Essex and Suffolk', values: [1745, 1367] },
+        {
+          href: '/analytics/IFNP/behaviour-entries',
+          label: 'Immigration and foreign national prisons',
+          values: [548, 337],
+        },
+        { href: '/analytics/KSS/behaviour-entries', label: 'Kent, Surrey and Sussex', values: [1515, 1773] },
+        { href: '/analytics/LNDN/behaviour-entries', label: 'London', values: [2605, 2898] },
+        { href: '/analytics/LTHS/behaviour-entries', label: 'Long-term and high security', values: [2769, 3735] },
+        { href: '/analytics/NM/behaviour-entries', label: 'North Midlands', values: [1607, 1445] },
+        { href: '/analytics/SC/behaviour-entries', label: 'South Central', values: [801, 892] },
+        { href: '/analytics/TW/behaviour-entries', label: 'Tees and Wear', values: [449, 943] },
+        { href: '/analytics/WLS/behaviour-entries', label: 'Wales', values: [709, 1071] },
+        { href: '/analytics/WM/behaviour-entries', label: 'West Midlands', values: [1386, 2026] },
+        { href: '/analytics/WMN/behaviour-entries', label: 'Women', values: [1478, 1264] },
+        { href: '/analytics/YRKS/behaviour-entries', label: 'Yorkshire', values: [2077, 2291] },
+        { href: '/analytics/YCS/behaviour-entries', label: 'Youth custody service', values: [1846, 2074] },
       ])
     })
   })
@@ -403,35 +420,57 @@ describe('AnalyticsService', () => {
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [50, 67, 10, 199] },
-        { href: '', label: 'Whitemoor (HMP)', values: [50, 67, 10, 199] },
+        { href: null, label: 'Whitemoor (HMP)', values: [50, 67, 10, 199] },
       ])
     })
 
     it('national filtering returns correct PGD regions grouping and figures', async () => {
+      nationalView = new AnalyticsView('National', 'behaviour-entries', 'MDI')
+      analyticsService = new AnalyticsService(s3Client, cache, nationalView)
       const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(nationalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [13343, 12347, 3438, 60593] },
-        { href: '', label: 'Avon and South Dorset', values: [314, 257, 78, 1652] },
-        { href: '', label: 'Bedfordshire, Cambridgeshire and Norfolk', values: [608, 500, 180, 2661] },
-        { href: '', label: 'Contracted', values: [1677, 1918, 274, 11715] },
-        { href: '', label: 'Cumbria and Lancashire', values: [418, 380, 60, 2566] },
-        { href: '', label: 'Devon and North Dorset', values: [287, 374, 101, 1612] },
-        { href: '', label: 'East Midlands', values: [527, 426, 115, 1885] },
-        { href: '', label: 'Greater Manchester, Merseyside and Cheshire', values: [492, 440, 94, 2491] },
-        { href: '', label: 'Hertfordshire, Essex and Suffolk', values: [911, 549, 167, 2359] },
-        { href: '', label: 'Immigration and foreign national prisons', values: [305, 163, 50, 764] },
-        { href: '', label: 'Kent, Surrey and Sussex', values: [713, 592, 214, 2420] },
-        { href: '', label: 'London', values: [1189, 1102, 316, 4367] },
-        { href: '', label: 'Long-term and high security', values: [1328, 1379, 398, 5656] },
-        { href: '', label: 'North Midlands', values: [820, 521, 174, 2332] },
-        { href: '', label: 'South Central', values: [443, 395, 93, 1872] },
-        { href: '', label: 'Tees and Wear', values: [277, 440, 49, 2166] },
-        { href: '', label: 'Wales', values: [455, 558, 64, 4500] },
-        { href: '', label: 'West Midlands', values: [680, 843, 201, 3909] },
-        { href: '', label: 'Women', values: [681, 369, 239, 1431] },
-        { href: '', label: 'Yorkshire', values: [1091, 1003, 243, 4112] },
-        { href: '', label: 'Youth custody service', values: [127, 138, 328, 123] },
+        { href: '/analytics/ASD/behaviour-entries', label: 'Avon and South Dorset', values: [314, 257, 78, 1652] },
+        {
+          href: '/analytics/BCN/behaviour-entries',
+          label: 'Bedfordshire, Cambridgeshire and Norfolk',
+          values: [608, 500, 180, 2661],
+        },
+        { href: '/analytics/CNTR/behaviour-entries', label: 'Contracted', values: [1677, 1918, 274, 11715] },
+        { href: '/analytics/CL/behaviour-entries', label: 'Cumbria and Lancashire', values: [418, 380, 60, 2566] },
+        { href: '/analytics/DND/behaviour-entries', label: 'Devon and North Dorset', values: [287, 374, 101, 1612] },
+        { href: '/analytics/EM/behaviour-entries', label: 'East Midlands', values: [527, 426, 115, 1885] },
+        {
+          href: '/analytics/GMMC/behaviour-entries',
+          label: 'Greater Manchester, Merseyside and Cheshire',
+          values: [492, 440, 94, 2491],
+        },
+        {
+          href: '/analytics/HES/behaviour-entries',
+          label: 'Hertfordshire, Essex and Suffolk',
+          values: [911, 549, 167, 2359],
+        },
+        {
+          href: '/analytics/IFNP/behaviour-entries',
+          label: 'Immigration and foreign national prisons',
+          values: [305, 163, 50, 764],
+        },
+        { href: '/analytics/KSS/behaviour-entries', label: 'Kent, Surrey and Sussex', values: [713, 592, 214, 2420] },
+        { href: '/analytics/LNDN/behaviour-entries', label: 'London', values: [1189, 1102, 316, 4367] },
+        {
+          href: '/analytics/LTHS/behaviour-entries',
+          label: 'Long-term and high security',
+          values: [1328, 1379, 398, 5656],
+        },
+        { href: '/analytics/NM/behaviour-entries', label: 'North Midlands', values: [820, 521, 174, 2332] },
+        { href: '/analytics/SC/behaviour-entries', label: 'South Central', values: [443, 395, 93, 1872] },
+        { href: '/analytics/TW/behaviour-entries', label: 'Tees and Wear', values: [277, 440, 49, 2166] },
+        { href: '/analytics/WLS/behaviour-entries', label: 'Wales', values: [455, 558, 64, 4500] },
+        { href: '/analytics/WM/behaviour-entries', label: 'West Midlands', values: [680, 843, 201, 3909] },
+        { href: '/analytics/WMN/behaviour-entries', label: 'Women', values: [681, 369, 239, 1431] },
+        { href: '/analytics/YRKS/behaviour-entries', label: 'Yorkshire', values: [1091, 1003, 243, 4112] },
+        { href: '/analytics/YCS/behaviour-entries', label: 'Youth custody service', values: [127, 138, 328, 123] },
       ])
     })
   })
@@ -491,22 +530,25 @@ describe('AnalyticsService', () => {
     })
 
     it('PGD region filtering returns correct prisons grouping and figures', async () => {
+      analyticsService = new AnalyticsService(s3Client, cache, regionalView)
       const { rows } = await analyticsService.getIncentiveLevelsByLocation(regionalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [12, 90, 217] },
-        { href: '', label: 'Whitemoor (HMP)', values: [12, 90, 217] },
+        { href: null, label: 'Whitemoor (HMP)', values: [12, 90, 217] },
       ])
     })
 
     it('national filtering returns correct PGD regions grouping and figures', async () => {
+      nationalView = new AnalyticsView('National', 'incentive-levels', 'MDI')
+      analyticsService = new AnalyticsService(s3Client, cache, nationalView)
       const { rows } = await analyticsService.getIncentiveLevelsByLocation(nationalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [83, 1350, 1684] },
-        { href: '', label: 'Long-term and high security', values: [12, 90, 217] },
-        { href: '', label: 'Wales', values: [45, 739, 1085] },
-        { href: '', label: 'Yorkshire', values: [26, 521, 382] },
+        { href: '/analytics/LTHS/incentive-levels', label: 'Long-term and high security', values: [12, 90, 217] },
+        { href: '/analytics/WLS/incentive-levels', label: 'Wales', values: [45, 739, 1085] },
+        { href: '/analytics/YRKS/incentive-levels', label: 'Yorkshire', values: [26, 521, 382] },
       ])
     })
   })

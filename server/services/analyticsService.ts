@@ -46,7 +46,7 @@ export default class AnalyticsService {
   constructor(
     private readonly client: S3Client,
     private readonly cache: StitchedTablesCache,
-    private readonly urlForLocation: UrlForLocationFunction,
+    private readonly view: AnalyticsView,
   ) {}
 
   async findLatestTable(tableType: TableType): Promise<{ key: string; date: Date; modified: Date }> {
@@ -174,8 +174,9 @@ export default class AnalyticsService {
       2,
     )
 
+    const urlForLocation = this.view.getUrlFunction()
     const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([label, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, label)
+      const href = index === aggregateTable.length - 1 ? undefined : urlForLocation(filterValue, label)
       return { label, href, values }
     })
     rows.sort(compareLocations)
@@ -245,8 +246,9 @@ export default class AnalyticsService {
       4,
     )
 
+    const urlForLocation = view.getUrlFunction()
     const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([label, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, label)
+      const href = index === aggregateTable.length - 1 ? undefined : urlForLocation(filterValue, label)
       return { label, href, values }
     })
     rows.sort(compareLocations)
@@ -309,8 +311,9 @@ export default class AnalyticsService {
     )
     columns = columns.map(removeSortingPrefix)
 
+    const urlForLocation = this.view.getUrlFunction()
     const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([label, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? undefined : this.urlForLocation(filterValue, label)
+      const href = index === aggregateTable.length - 1 ? undefined : urlForLocation(filterValue, label)
       return { label, href, values }
     })
     rows.sort(compareLocations)

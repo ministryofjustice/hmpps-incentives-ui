@@ -1,4 +1,5 @@
 import S3Client from '../data/s3Client'
+import { AnalyticsView } from '../routes/analyticsView'
 import AnalyticsService from './analyticsService'
 import { AnalyticsError, TableType } from './analyticsServiceTypes'
 import { StitchedTablesCache, MemoryStitchedTablesCache, FileStitchedTablesCache } from './stitchedTablesCache'
@@ -24,7 +25,8 @@ describe.each([
   describe(cacheDescription, () => {
     const s3Client = new S3Client({ region: 'eu-west-1', bucket: 'incentives' }) as jest.Mocked<S3Client>
     const cache: StitchedTablesCache = new CacheConstructor()
-    const analyticsService = new AnalyticsService(s3Client, cache, () => '')
+    const analyticsView = new AnalyticsView(null, 'behaviour-entries', 'MDI')
+    const analyticsService = new AnalyticsService(s3Client, cache, analyticsView)
     const modified = new Date('2022-03-14T12:00:00Z')
 
     beforeEach(() => {

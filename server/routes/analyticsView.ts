@@ -1,8 +1,14 @@
 // eslint-disable-next-line max-classes-per-file
-import { Filtering, Query, UrlForLocationFunction } from '../services/analyticsService'
+import type { UrlForLocationFunction } from '../services/analyticsService'
 import PgdRegionService, { National, PgdRegion } from '../services/pgdRegionService'
 
 type ViewType = 'behaviour-entries' | 'incentive-levels' | 'protected-characteristic'
+
+type Query = {
+  filterColumn: null | 'pgd_region' | 'prison'
+  filterValue: string
+  groupBy: 'pgd_region' | 'prison' | 'wing'
+}
 
 export class AnalyticsView {
   protected viewLevel: 'national' | 'regional' | 'prison'
@@ -44,13 +50,31 @@ export class AnalyticsView {
   }
 
   getFiltering(): Query {
-    const filtering = {
-      national: Filtering.national(),
-      regional: Filtering.byPgdRegion(this.getPgdRegionName()),
-      prison: Filtering.byPrison(this.activeCaseLoad),
+    if (this.isNational()) {
+      return {
+        filterColumn: null,
+        filterValue: null,
+        groupBy: 'pgd_region',
+      }
     }
 
-    return filtering[this.viewLevel]
+    if (this.isRegional()) {
+      return {
+        filterColumn: 'pgd_region',
+        filterValue: this.getPgdRegionName(),
+        groupBy: 'prison',
+      }
+    }
+
+    if (this.isPrisonLevel()) {
+      return {
+        filterColumn: 'prison',
+        filterValue: this.activeCaseLoad,
+        groupBy: 'wing',
+      }
+    }
+
+    throw new Error('Unexpected view level, should have been national, regional or prison level')
   }
 
   isValidPgdRegion(): boolean {
@@ -75,6 +99,10 @@ export class AnalyticsView {
 
   isRegional(): boolean {
     return this.viewLevel === 'regional'
+  }
+
+  isPrisonLevel(): boolean {
+    return this.viewLevel === 'prison'
   }
 }
 

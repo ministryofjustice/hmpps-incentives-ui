@@ -1,6 +1,6 @@
 import PrisonRegister from '../data/prisonRegister'
 import S3Client from '../data/s3Client'
-import AnalyticsService, { Filtering } from './analyticsService'
+import AnalyticsService from './analyticsService'
 import {
   AnalyticsError,
   TableType,
@@ -16,6 +16,7 @@ import type { PrisonersOnLevelsByProtectedCharacteristic, TrendsReportRow, Trend
 import { mapRowsAndSumTotals, mapRowsForMonthlyTrends } from './analyticsServiceUtils'
 import { MemoryStitchedTablesCache } from './stitchedTablesCache'
 import { MockTable, mockAppS3ClientResponse } from '../testData/s3Bucket'
+import { AnalyticsView } from '../routes/analyticsView'
 
 jest.mock('@aws-sdk/client-s3')
 jest.mock('../data/s3Client')
@@ -36,6 +37,10 @@ const prisonLevels = {
   MDI: ['Basic', 'Standard', 'Enhanced'],
   BWI: ['Basic', 'Standard', 'Enhanced'],
 }
+
+const nationalView = new AnalyticsView('National', 'MDI')
+const regionalView = new AnalyticsView('LTHS', 'MDI')
+const moorlandPrisonLevelView = new AnalyticsView(null, 'MDI')
 
 describe('AnalyticsService', () => {
   let analyticsService: AnalyticsService
@@ -271,7 +276,7 @@ describe('AnalyticsService', () => {
     })
 
     it('has a totals row', async () => {
-      const { rows: entries } = await analyticsService.getBehaviourEntriesByLocation(Filtering.byPrison('MDI'))
+      const { rows: entries } = await analyticsService.getBehaviourEntriesByLocation(moorlandPrisonLevelView)
       expect(entries).toHaveLength(prisonLocationsBehaviourEntries.MDI.length)
 
       const prisonTotal = entries.shift()
@@ -291,7 +296,7 @@ describe('AnalyticsService', () => {
     it('throws an error when the table is empty', async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
-      await expect(analyticsService.getBehaviourEntriesByLocation(Filtering.byPrison('MDI'))).rejects.toThrow(
+      await expect(analyticsService.getBehaviourEntriesByLocation(moorlandPrisonLevelView)).rejects.toThrow(
         AnalyticsError,
       )
     })
@@ -300,7 +305,8 @@ describe('AnalyticsService', () => {
       'lists locations in the correct order',
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
-          const { rows } = await analyticsService.getBehaviourEntriesByLocation(Filtering.byPrison(prison))
+          const prisonLevelView = new AnalyticsView(null, prison)
+          const { rows } = await analyticsService.getBehaviourEntriesByLocation(prisonLevelView)
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })
@@ -308,9 +314,7 @@ describe('AnalyticsService', () => {
     )
 
     it('PGD region filtering returns correct prisons grouping and figures', async () => {
-      const { rows } = await analyticsService.getBehaviourEntriesByLocation(
-        Filtering.byPgdRegion('Long-term and high security'),
-      )
+      const { rows } = await analyticsService.getBehaviourEntriesByLocation(regionalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [105, 155] },
@@ -319,7 +323,7 @@ describe('AnalyticsService', () => {
     })
 
     it('national filtering returns correct PGD regions grouping and figures', async () => {
-      const { rows } = await analyticsService.getBehaviourEntriesByLocation(Filtering.national())
+      const { rows } = await analyticsService.getBehaviourEntriesByLocation(nationalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [27574, 32237] },
@@ -353,7 +357,7 @@ describe('AnalyticsService', () => {
     })
 
     it('has a totals row', async () => {
-      const { rows: prisoners } = await analyticsService.getPrisonersWithEntriesByLocation(Filtering.byPrison('MDI'))
+      const { rows: prisoners } = await analyticsService.getPrisonersWithEntriesByLocation(moorlandPrisonLevelView)
       expect(prisoners).toHaveLength(prisonLocationsBehaviourEntries.MDI.length)
 
       const prisonTotal = prisoners.shift()
@@ -377,7 +381,7 @@ describe('AnalyticsService', () => {
     it('throws an error when the table is empty', async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
-      await expect(analyticsService.getPrisonersWithEntriesByLocation(Filtering.byPrison('MDI'))).rejects.toThrow(
+      await expect(analyticsService.getPrisonersWithEntriesByLocation(moorlandPrisonLevelView)).rejects.toThrow(
         AnalyticsError,
       )
     })
@@ -386,7 +390,8 @@ describe('AnalyticsService', () => {
       'lists locations in the correct order',
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
-          const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(Filtering.byPrison(prison))
+          const prisonLevelView = new AnalyticsView(null, prison)
+          const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(prisonLevelView)
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })
@@ -394,9 +399,7 @@ describe('AnalyticsService', () => {
     )
 
     it('PGD region filtering returns correct prisons grouping and figures', async () => {
-      const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(
-        Filtering.byPgdRegion('Long-term and high security'),
-      )
+      const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(regionalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [50, 67, 10, 199] },
@@ -405,7 +408,7 @@ describe('AnalyticsService', () => {
     })
 
     it('national filtering returns correct PGD regions grouping and figures', async () => {
-      const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(Filtering.national())
+      const { rows } = await analyticsService.getPrisonersWithEntriesByLocation(nationalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [13343, 12347, 3438, 60593] },
@@ -440,7 +443,7 @@ describe('AnalyticsService', () => {
 
     it('has a totals row', async () => {
       const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByLocation(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
       )
       expect(prisonersOnLevels).toHaveLength(prisonLocations.MDI.length)
 
@@ -462,7 +465,7 @@ describe('AnalyticsService', () => {
     it('throws an error when the table is empty', async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
-      await expect(analyticsService.getIncentiveLevelsByLocation(Filtering.byPrison('MDI'))).rejects.toThrow(
+      await expect(analyticsService.getIncentiveLevelsByLocation(moorlandPrisonLevelView)).rejects.toThrow(
         AnalyticsError,
       )
     })
@@ -471,7 +474,8 @@ describe('AnalyticsService', () => {
       'lists locations in the correct order',
       (prison, expectedLocations) => {
         it(`for ${prison}`, async () => {
-          const { rows } = await analyticsService.getIncentiveLevelsByLocation(Filtering.byPrison(prison))
+          const prisonLevelView = new AnalyticsView(null, prison)
+          const { rows } = await analyticsService.getIncentiveLevelsByLocation(prisonLevelView)
           const locations = rows.map(row => row.label)
           expect(locations).toEqual(expectedLocations)
         })
@@ -480,15 +484,14 @@ describe('AnalyticsService', () => {
 
     describe.each(Object.entries(prisonLevels))('lists levels in the correct order', (prison, levels) => {
       it(`for ${prison}`, async () => {
-        const { columns } = await analyticsService.getIncentiveLevelsByLocation(Filtering.byPrison(prison))
+        const prisonLevelView = new AnalyticsView(null, prison)
+        const { columns } = await analyticsService.getIncentiveLevelsByLocation(prisonLevelView)
         expect(columns).toEqual(levels)
       })
     })
 
     it('PGD region filtering returns correct prisons grouping and figures', async () => {
-      const { rows } = await analyticsService.getIncentiveLevelsByLocation(
-        Filtering.byPgdRegion('Long-term and high security'),
-      )
+      const { rows } = await analyticsService.getIncentiveLevelsByLocation(regionalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [12, 90, 217] },
@@ -497,7 +500,7 @@ describe('AnalyticsService', () => {
     })
 
     it('national filtering returns correct PGD regions grouping and figures', async () => {
-      const { rows } = await analyticsService.getIncentiveLevelsByLocation(Filtering.national())
+      const { rows } = await analyticsService.getIncentiveLevelsByLocation(nationalView)
 
       expect(rows).toEqual([
         { href: undefined, label: 'All', values: [83, 1350, 1684] },
@@ -524,7 +527,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristic}]: has a totals row`, async () => {
       const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         characteristic,
       )
       expect(prisonersOnLevels).toHaveLength(expectedCharacteristics.length)
@@ -547,13 +550,13 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
       await expect(
-        analyticsService.getIncentiveLevelsByProtectedCharacteristic(Filtering.byPrison('MDI'), characteristic),
+        analyticsService.getIncentiveLevelsByProtectedCharacteristic(moorlandPrisonLevelView, characteristic),
       ).rejects.toThrow(AnalyticsError)
     })
 
     it(`[${characteristic}]: lists groups in the correct order`, async () => {
       const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         characteristic,
       )
       const characteristics = rows.map(row => row.label)
@@ -563,7 +566,7 @@ describe('AnalyticsService', () => {
     if (characteristic === ProtectedCharacteristic.Age) {
       it(`[${characteristic}]: adds missing 15-17 group with all zeros in YCS prison`, async () => {
         const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-          Filtering.byPrison('MDI'),
+          moorlandPrisonLevelView,
           characteristic,
         )
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
@@ -580,7 +583,7 @@ describe('AnalyticsService', () => {
         PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
 
         const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-          Filtering.byPrison('MDI'),
+          moorlandPrisonLevelView,
           characteristic,
         )
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
@@ -589,7 +592,7 @@ describe('AnalyticsService', () => {
 
       it('PGD region filtering returns correct prisons grouping and figures', async () => {
         const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-          Filtering.byPgdRegion('Long-term and high security'),
+          regionalView,
           characteristic,
         )
 
@@ -607,7 +610,7 @@ describe('AnalyticsService', () => {
 
       it('national filtering returns correct PGD regions grouping and figures', async () => {
         const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-          Filtering.national(),
+          nationalView,
           characteristic,
         )
 
@@ -628,8 +631,9 @@ describe('AnalyticsService', () => {
       `[${characteristic}]: lists levels in the correct order`,
       (prison, levels) => {
         it(`for ${prison}`, async () => {
+          const prisonLevelView = new AnalyticsView(null, prison)
           const { columns } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-            Filtering.byPrison(prison),
+            prisonLevelView,
             characteristic,
           )
           expect(columns).toEqual(levels)
@@ -644,18 +648,18 @@ describe('AnalyticsService', () => {
     })
 
     it('returns 12 months', async () => {
-      const report = await analyticsService.getBehaviourEntryTrends(Filtering.byPrison('MDI'))
+      const report = await analyticsService.getBehaviourEntryTrends(moorlandPrisonLevelView)
       expect(report.rows).toHaveLength(12)
     })
 
     it('plots percentage values', async () => {
-      const report = await analyticsService.getBehaviourEntryTrends(Filtering.byPrison('MDI'))
+      const report = await analyticsService.getBehaviourEntryTrends(moorlandPrisonLevelView)
       expect(report.plotPercentage).toBeFalsy()
       expect(report).toHaveProperty('verticalAxisTitle')
     })
 
     it('shows population', async () => {
-      const report = await analyticsService.getBehaviourEntryTrends(Filtering.byPrison('MDI'))
+      const report = await analyticsService.getBehaviourEntryTrends(moorlandPrisonLevelView)
       expect(report.populationIsTotal).toBeFalsy()
       expect(report).toHaveProperty('monthlyTotalName')
       report.rows
@@ -667,13 +671,11 @@ describe('AnalyticsService', () => {
     it('throws an error when the table is empty', async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
-      await expect(analyticsService.getBehaviourEntryTrends(Filtering.byPrison('MDI'))).rejects.toThrow(AnalyticsError)
+      await expect(analyticsService.getBehaviourEntryTrends(moorlandPrisonLevelView)).rejects.toThrow(AnalyticsError)
     })
 
     it('PGD region filtering returns correct prisons grouping and figures', async () => {
-      const { rows } = await analyticsService.getBehaviourEntryTrends(
-        Filtering.byPgdRegion('Long-term and high security'),
-      )
+      const { rows } = await analyticsService.getBehaviourEntryTrends(regionalView)
 
       expect(rows).toEqual([
         { population: 372, total: 268, values: [99, 169], yearAndMonth: '2021-06' },
@@ -692,7 +694,7 @@ describe('AnalyticsService', () => {
     })
 
     it('national filtering returns correct PGD regions grouping and figures', async () => {
-      const { rows } = await analyticsService.getBehaviourEntryTrends(Filtering.national())
+      const { rows } = await analyticsService.getBehaviourEntryTrends(nationalView)
 
       expect(rows).toEqual([
         { population: 3077, total: 1862, values: [578, 1284], yearAndMonth: '2021-06' },
@@ -717,18 +719,18 @@ describe('AnalyticsService', () => {
     })
 
     it('returns 12 months', async () => {
-      const report = await analyticsService.getIncentiveLevelTrends(Filtering.byPrison('MDI'))
+      const report = await analyticsService.getIncentiveLevelTrends(moorlandPrisonLevelView)
       expect(report.rows).toHaveLength(12)
     })
 
     it('plots absolute values', async () => {
-      const report = await analyticsService.getIncentiveLevelTrends(Filtering.byPrison('MDI'))
+      const report = await analyticsService.getIncentiveLevelTrends(moorlandPrisonLevelView)
       expect(report.plotPercentage).toBeTruthy()
       expect(report).not.toHaveProperty('verticalAxisTitle')
     })
 
     it('does not show population', async () => {
-      const report = await analyticsService.getIncentiveLevelTrends(Filtering.byPrison('MDI'))
+      const report = await analyticsService.getIncentiveLevelTrends(moorlandPrisonLevelView)
       expect(report.populationIsTotal).toBeTruthy()
       expect(report).not.toHaveProperty('monthlyTotalName')
       report.rows
@@ -740,13 +742,11 @@ describe('AnalyticsService', () => {
     it('throws an error when the table is empty', async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
-      await expect(analyticsService.getIncentiveLevelTrends(Filtering.byPrison('MDI'))).rejects.toThrow(AnalyticsError)
+      await expect(analyticsService.getIncentiveLevelTrends(moorlandPrisonLevelView)).rejects.toThrow(AnalyticsError)
     })
 
     it('PGD region filtering returns correct prisons grouping and figures', async () => {
-      const { rows } = await analyticsService.getIncentiveLevelTrends(
-        Filtering.byPgdRegion('Long-term and high security'),
-      )
+      const { rows } = await analyticsService.getIncentiveLevelTrends(regionalView)
 
       expect(rows).toEqual([
         { population: 372, total: 372, values: [3, 133, 236], yearAndMonth: '2021-06' },
@@ -765,7 +765,7 @@ describe('AnalyticsService', () => {
     })
 
     it('national filtering returns correct PGD regions grouping and figures', async () => {
-      const { rows } = await analyticsService.getIncentiveLevelTrends(Filtering.national())
+      const { rows } = await analyticsService.getIncentiveLevelTrends(nationalView)
 
       expect(rows).toEqual([
         { population: 3077, total: 3077, values: [4, 1590, 1483], yearAndMonth: '2021-06' },
@@ -800,10 +800,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristic}]: has a totals row`, async () => {
       const { columns, rows: behaviourEntriesByPc } =
-        await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(
-          Filtering.byPrison('MDI'),
-          characteristic,
-        )
+        await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(moorlandPrisonLevelView, characteristic)
       expect(behaviourEntriesByPc).toHaveLength(expectedCharacteristics.length)
 
       const all = behaviourEntriesByPc.shift()
@@ -824,13 +821,13 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
       await expect(
-        analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(Filtering.byPrison('MDI'), characteristic),
+        analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(moorlandPrisonLevelView, characteristic),
       ).rejects.toThrow(AnalyticsError)
     })
 
     it(`[${characteristic}]: lists groups in the correct order`, async () => {
       const { rows } = await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         characteristic,
       )
       const characteristics = rows.map(row => row.label)
@@ -840,7 +837,7 @@ describe('AnalyticsService', () => {
     if (characteristic === ProtectedCharacteristic.Age) {
       it(`[${characteristic}]: adds missing 15-17 group with all zeros in YCS prison`, async () => {
         const { rows } = await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(
-          Filtering.byPrison('MDI'),
+          moorlandPrisonLevelView,
           characteristic,
         )
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
@@ -857,7 +854,7 @@ describe('AnalyticsService', () => {
         PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
 
         const { rows } = await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(
-          Filtering.byPrison('MDI'),
+          moorlandPrisonLevelView,
           characteristic,
         )
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
@@ -866,7 +863,7 @@ describe('AnalyticsService', () => {
 
       it('PGD region filtering returns correct prisons grouping and figures', async () => {
         const { rows } = await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(
-          Filtering.byPgdRegion('Long-term and high security'),
+          regionalView,
           characteristic,
         )
 
@@ -884,7 +881,7 @@ describe('AnalyticsService', () => {
 
       it('national filtering returns correct PGD regions grouping and figures', async () => {
         const { rows } = await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(
-          Filtering.national(),
+          nationalView,
           characteristic,
         )
 
@@ -903,7 +900,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristic}]: lists profiles in the correct order`, async () => {
       const { columns } = await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         characteristic,
       )
       expect(columns).toEqual(['Positive', 'Negative', 'Both', 'None'])
@@ -917,7 +914,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristicGroup}]: returns 12 months`, async () => {
       const report = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         ProtectedCharacteristic.Ethnicity,
         characteristicGroup,
       )
@@ -926,7 +923,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristicGroup}]: plots percentage values`, async () => {
       const report = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         ProtectedCharacteristic.Ethnicity,
         characteristicGroup,
       )
@@ -935,7 +932,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristicGroup}]: shows population`, async () => {
       const report = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         ProtectedCharacteristic.Ethnicity,
         characteristicGroup,
       )
@@ -948,7 +945,7 @@ describe('AnalyticsService', () => {
 
       await expect(
         analyticsService.getIncentiveLevelTrendsByCharacteristic(
-          Filtering.byPrison('MDI'),
+          moorlandPrisonLevelView,
           ProtectedCharacteristic.Ethnicity,
           characteristicGroup,
         ),
@@ -959,7 +956,7 @@ describe('AnalyticsService', () => {
     if (characteristicGroup === 'Asian or Asian British') {
       it('PGD region filtering returns correct prisons grouping and figures', async () => {
         const { rows } = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
-          Filtering.byPgdRegion('Long-term and high security'),
+          regionalView,
           ProtectedCharacteristic.Ethnicity,
           characteristicGroup,
         )
@@ -982,7 +979,7 @@ describe('AnalyticsService', () => {
 
       it('national filtering returns correct PGD regions grouping and figures', async () => {
         const { rows } = await analyticsService.getIncentiveLevelTrendsByCharacteristic(
-          Filtering.national(),
+          nationalView,
           ProtectedCharacteristic.Ethnicity,
           characteristicGroup,
         )
@@ -1021,7 +1018,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristic}]: has a totals row`, async () => {
       const { rows: entries } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         characteristic,
       )
       expect(entries).toHaveLength(expectedCharacteristics.length)
@@ -1043,13 +1040,13 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
       await expect(
-        analyticsService.getBehaviourEntriesByProtectedCharacteristic(Filtering.byPrison('MDI'), characteristic),
+        analyticsService.getBehaviourEntriesByProtectedCharacteristic(moorlandPrisonLevelView, characteristic),
       ).rejects.toThrow(AnalyticsError)
     })
 
     it(`[${characteristic}]: lists groups in the correct order`, async () => {
       const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         characteristic,
       )
       const characteristics = rows.map(row => row.label)
@@ -1059,7 +1056,7 @@ describe('AnalyticsService', () => {
     if (characteristic === ProtectedCharacteristic.Age) {
       it(`[${characteristic}]: adds missing 15-17 group with all zeros in YCS prison`, async () => {
         const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
-          Filtering.byPrison('MDI'),
+          moorlandPrisonLevelView,
           characteristic,
         )
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
@@ -1076,7 +1073,7 @@ describe('AnalyticsService', () => {
         PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
 
         const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
-          Filtering.byPrison('MDI'),
+          moorlandPrisonLevelView,
           characteristic,
         )
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
@@ -1085,7 +1082,7 @@ describe('AnalyticsService', () => {
 
       it('PGD region filtering returns correct prisons grouping and figures', async () => {
         const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
-          Filtering.byPgdRegion('Long-term and high security'),
+          regionalView,
           characteristic,
         )
 
@@ -1103,7 +1100,7 @@ describe('AnalyticsService', () => {
 
       it('national filtering returns correct PGD regions grouping and figures', async () => {
         const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(
-          Filtering.national(),
+          nationalView,
           characteristic,
         )
 
@@ -1128,7 +1125,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristicGroup}]: returns 12 months`, async () => {
       const report = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         ProtectedCharacteristic.Ethnicity,
         characteristicGroup,
       )
@@ -1137,7 +1134,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristicGroup}]: plots percentage values`, async () => {
       const report = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         ProtectedCharacteristic.Ethnicity,
         characteristicGroup,
       )
@@ -1147,7 +1144,7 @@ describe('AnalyticsService', () => {
 
     it(`[${characteristicGroup}]: shows population`, async () => {
       const report = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        Filtering.byPrison('MDI'),
+        moorlandPrisonLevelView,
         ProtectedCharacteristic.Ethnicity,
         characteristicGroup,
       )
@@ -1161,7 +1158,7 @@ describe('AnalyticsService', () => {
 
       await expect(
         analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-          Filtering.byPrison('MDI'),
+          moorlandPrisonLevelView,
           ProtectedCharacteristic.Ethnicity,
           characteristicGroup,
         ),
@@ -1172,7 +1169,7 @@ describe('AnalyticsService', () => {
     if (characteristicGroup === 'Asian or Asian British') {
       it('PGD region filtering returns correct prisons grouping and figures', async () => {
         const { rows } = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-          Filtering.byPgdRegion('Long-term and high security'),
+          regionalView,
           ProtectedCharacteristic.Ethnicity,
           characteristicGroup,
         )
@@ -1195,7 +1192,7 @@ describe('AnalyticsService', () => {
 
       it('national filtering returns correct PGD regions grouping and figures', async () => {
         const { rows } = await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-          Filtering.national(),
+          nationalView,
           ProtectedCharacteristic.Ethnicity,
           characteristicGroup,
         )

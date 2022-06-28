@@ -160,11 +160,10 @@ export default function routes(router: Router): Router {
     const urlFunction = analyticsView.getUrlFunction('behaviour-entries')
     const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
-    const filterQuery = analyticsView.getFiltering()
     const charts = [
-      analyticsService.getBehaviourEntriesByLocation(filterQuery),
-      analyticsService.getPrisonersWithEntriesByLocation(filterQuery),
-      analyticsService.getBehaviourEntryTrends(filterQuery),
+      analyticsService.getBehaviourEntriesByLocation(analyticsView),
+      analyticsService.getPrisonersWithEntriesByLocation(analyticsView),
+      analyticsService.getBehaviourEntryTrends(analyticsView),
     ].map(transformAnalyticsError)
     const [behaviourEntries, prisonersWithEntries, trends] = await Promise.all(charts)
 
@@ -196,10 +195,9 @@ export default function routes(router: Router): Router {
     const urlFunction = analyticsView.getUrlFunction('incentive-levels')
     const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
-    const filterQuery = analyticsView.getFiltering()
     const charts = [
-      analyticsService.getIncentiveLevelsByLocation(filterQuery),
-      analyticsService.getIncentiveLevelTrends(filterQuery),
+      analyticsService.getIncentiveLevelsByLocation(analyticsView),
+      analyticsService.getIncentiveLevelTrends(analyticsView),
     ].map(transformAnalyticsError)
     const [prisonersOnLevels, trends] = await Promise.all(charts)
 
@@ -312,21 +310,20 @@ export default function routes(router: Router): Router {
     const urlFunction = analyticsView.getUrlFunction('protected-characteristic')
     const analyticsService = new AnalyticsService(s3Client, cache, urlFunction)
 
-    const filterQuery = analyticsView.getFiltering()
     const charts = [
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(filterQuery, protectedCharacteristic),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(analyticsView, protectedCharacteristic),
       analyticsService.getIncentiveLevelTrendsByCharacteristic(
-        filterQuery,
+        analyticsView,
         protectedCharacteristic,
         trendsIncentiveLevelsGroup,
       ),
-      analyticsService.getBehaviourEntriesByProtectedCharacteristic(filterQuery, protectedCharacteristic),
+      analyticsService.getBehaviourEntriesByProtectedCharacteristic(analyticsView, protectedCharacteristic),
       analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(
-        filterQuery,
+        analyticsView,
         protectedCharacteristic,
         trendsEntriesGroup,
       ),
-      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(filterQuery, protectedCharacteristic),
+      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(analyticsView, protectedCharacteristic),
     ].map(transformAnalyticsError)
     const [
       incentiveLevelsByCharacteristic,

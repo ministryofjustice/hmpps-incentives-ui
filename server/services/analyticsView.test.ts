@@ -12,13 +12,23 @@ const prison = new AnalyticsView(null, 'behaviour-entries', 'MDI')
 
 describe('AnalyticsView', () => {
   describe('isValidPgdRegion()', () => {
-    it('returns true when PGD region code is recognised', () => {
-      expect(prison.isValidPgdRegion()).toEqual(true)
+    it('for national level returns true', () => {
+      expect(national.isValidPgdRegion()).toEqual(true)
     })
 
-    it('returns false when PGD region code is not recognised', () => {
-      const analyticsView = new AnalyticsView('INVALID', 'behaviour-entries', 'MDI')
-      expect(analyticsView.isValidPgdRegion()).toEqual(false)
+    describe('for regional level', () => {
+      it('returns true when PGD region code is recognised', () => {
+        expect(regional.isValidPgdRegion()).toEqual(true)
+      })
+
+      it('returns false when PGD region code is not recognised', () => {
+        const analyticsView = new AnalyticsView('INVALID_REGION_CODE', 'behaviour-entries', 'MDI')
+        expect(analyticsView.isValidPgdRegion()).toEqual(false)
+      })
+    })
+
+    it('for prison level returns true', () => {
+      expect(prison.isValidPgdRegion()).toEqual(true)
     })
   })
 

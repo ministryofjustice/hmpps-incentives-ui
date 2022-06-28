@@ -42,7 +42,7 @@
 {% block header %}
   {% include "./header.njk" %}
 
-  {% if pgdRegionName %}
+  {% if analyticsView and (analyticsView.isNational() or analyticsView.isRegional()) %}
     {% include "./spacer.njk" %}
   {% else %}
     {% include "./locationBar.njk" %}

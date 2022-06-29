@@ -48,4 +48,12 @@ describe('Home page', () => {
       })
     })
   })
+
+  it('has a tile linking to About page', () => {
+    return request(app)
+      .get('/')
+      .expect(res => {
+        expect(res.text).toContain('Information on how we collect, group and analyse data')
+      })
+  })
 })

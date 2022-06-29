@@ -57,6 +57,16 @@
 
       </li>
     {% endif %}
+
+    <li class="govuk-grid-column-one-third card-group__item">
+      {{ card({
+        href: "/about",
+        clickable: "true",
+        heading: "About",
+        description: "Information on how we collect, group and analyse data for the Manage incentive charts.",
+        id: "about-data"
+      }) }}
+    </li>
   </ul>
 
 {% endblock %}

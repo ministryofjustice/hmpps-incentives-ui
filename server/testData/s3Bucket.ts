@@ -9,7 +9,7 @@ import type S3Client from '../data/s3Client'
 import { TableType } from '../services/analyticsServiceTypes'
 
 const fileDates = {
-  [TableType.behaviourEntries]: new Date('2022-06-21T12:00:00Z'),
+  [TableType.behaviourEntriesPrison]: new Date('2022-06-21T12:00:00Z'),
   [TableType.behaviourEntriesRegional]: new Date('2022-06-21T12:00:00Z'),
   [TableType.behaviourEntriesNational]: new Date('2022-06-21T12:00:00Z'),
   [TableType.incentiveLevels]: new Date('2022-06-21T12:00:00Z'),

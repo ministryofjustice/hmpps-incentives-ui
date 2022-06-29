@@ -36,7 +36,7 @@ let rowFilter: (rowIndex: string, table: Table) => boolean
 let filterByPrison = true
 
 switch (chosenTableType) {
-  case 'behaviourEntries':
+  case 'behaviourEntriesPrison':
     columnsToKeep = ['prison', 'prison_name', 'wing', 'positives', 'negatives']
     rowFilter = () => true
     break

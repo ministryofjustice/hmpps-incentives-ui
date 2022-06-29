@@ -64,7 +64,7 @@ describe('AnalyticsService', () => {
       s3Client.listObjects.mockResolvedValue([{ key: 'behaviour_entries/2022-03-13.json', modified }])
       s3Client.getObject.mockResolvedValue('{"column":{"1":1,"2":2}}')
 
-      await expect(analyticsService.findTable(TableType.behaviourEntries)).resolves.toEqual({
+      await expect(analyticsService.findTable(TableType.behaviourEntriesPrison)).resolves.toEqual({
         table: { column: { '1': 1, '2': 2 } },
         date: new Date(2022, 2, 13),
         modified,
@@ -86,7 +86,7 @@ describe('AnalyticsService', () => {
       ])
       s3Client.getObject.mockResolvedValue('{"column":{"1":1,"2":2}}')
 
-      await expect(analyticsService.findTable(TableType.behaviourEntries)).resolves.toEqual({
+      await expect(analyticsService.findTable(TableType.behaviourEntriesPrison)).resolves.toEqual({
         table: { column: { '1': 1, '2': 2 } },
         date: new Date(2022, 2, 13),
         modified,
@@ -97,7 +97,7 @@ describe('AnalyticsService', () => {
     it('throws an error when it cannot find a table', async () => {
       s3Client.listObjects.mockResolvedValue([])
 
-      await expect(analyticsService.findTable(TableType.behaviourEntries)).rejects.toThrow(AnalyticsError)
+      await expect(analyticsService.findTable(TableType.behaviourEntriesPrison)).rejects.toThrow(AnalyticsError)
     })
 
     it('throws an error when object contents cannot be parsed', async () => {
@@ -105,7 +105,7 @@ describe('AnalyticsService', () => {
       s3Client.listObjects.mockResolvedValue([{ key: 'behaviour_entries/2022-03-13.json', modified }])
       s3Client.getObject.mockResolvedValue('{"column":')
 
-      await expect(analyticsService.findTable(TableType.behaviourEntries)).rejects.toThrow(AnalyticsError)
+      await expect(analyticsService.findTable(TableType.behaviourEntriesPrison)).rejects.toThrow(AnalyticsError)
     })
   })
 

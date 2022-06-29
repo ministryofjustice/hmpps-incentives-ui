@@ -876,7 +876,7 @@ export default class AnalyticsService {
       return TableType.behaviourEntriesRegional
     }
     if (view.isPrisonLevel()) {
-      return TableType.behaviourEntries
+      return TableType.behaviourEntriesPrison
     }
 
     throw new Error('Unexpected filterColumn param')

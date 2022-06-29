@@ -1,0 +1,24 @@
+{{- if index .Values "generic-service" "env" "ANALYTICS_DATA_STALE_AFTER_DAYS" -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: stale-analytics-data
+  labels:
+    helm.sh/chart: stale-analytics-data
+    app.kubernetes.io/name: stale-analytics-data
+    app.kubernetes.io/version: "1"
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    prometheus: cloud-platform
+    role: alert-rules
+spec:
+  groups:
+    - name: stale-analytics-data
+      rules:
+        - alert: stale-analytics-data
+          expr: sum(incentives_stale_analytics_data{namespace="{{ .Release.Namespace }}"}) by (table_type) > 0
+          annotations:
+            message: Analytics source data for table {{ "{{ $labels.table_type }}" }} is more than {{ index .Values "generic-service" "env" "ANALYTICS_DATA_STALE_AFTER_DAYS" }} days old
+          labels:
+            severity: {{ index .Values "generic-prometheus-alerts" "alertSeverity" }}
+{{- end }}

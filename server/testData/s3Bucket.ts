@@ -12,6 +12,7 @@ const fileDates = {
   [TableType.behaviourEntriesPrison]: new Date('2022-06-21T12:00:00Z'),
   [TableType.behaviourEntriesRegional]: new Date('2022-06-21T12:00:00Z'),
   [TableType.behaviourEntriesNational]: new Date('2022-06-21T12:00:00Z'),
+  [TableType.behaviourEntriesNationalAll]: new Date('2022-06-21T12:00:00Z'),
   [TableType.incentiveLevels]: new Date('2022-06-21T12:00:00Z'),
   [TableType.trends]: new Date('2022-06-21T21:10:00Z'),
 }

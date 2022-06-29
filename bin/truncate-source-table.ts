@@ -49,6 +49,11 @@ switch (chosenTableType) {
     rowFilter = () => true
     filterByPrison = false
     break
+  case 'behaviourEntriesNationalAll':
+    columnsToKeep = ['positives', 'negatives']
+    rowFilter = () => true
+    filterByPrison = false
+    break
   case 'incentiveLevels':
     columnsToKeep = [
       'pgd_region',

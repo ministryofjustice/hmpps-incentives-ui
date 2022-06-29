@@ -50,7 +50,17 @@ describe.each([
   ],
   [
     'with several unexpected incentive levels',
-    ['Basic', 'Standard', 'Enhanced', 'Enhanced 2', 'Unexpected 1', 'Unexpected 2', 'Unexpected 3'],
+    [
+      'Basic',
+      'Standard',
+      'Enhanced',
+      'Enhanced 2',
+      'Unexpected 1',
+      'Unexpected 2',
+      'Unexpected 3',
+      'Unexpected 4',
+      'Unexpected 5',
+    ],
     [
       'app-chart-colour--light-blue',
       'app-chart-colour--dark-blue',
@@ -58,7 +68,9 @@ describe.each([
       'app-chart-colour--yellow',
       'app-chart-colour--pink',
       'app-chart-colour--mid-grey',
-      'app-chart-colour--pink',
+      'app-chart-colour--orange',
+      'app-chart-colour--light-green',
+      'app-chart-colour--red', // colour palette has ended
     ],
   ],
   [

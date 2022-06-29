@@ -15,9 +15,21 @@
 }
 
 .app-chart-colour--pink {
-  background: govuk-colour("pink"); // not expected to be used: presence in chart indicates unforeseen column set
+  background: govuk-colour("pink"); // rarely expected to be used
 }
 
 .app-chart-colour--mid-grey {
   background: govuk-colour("mid-grey");
+}
+
+.app-chart-colour--orange {
+  background: govuk-colour("orange"); // not expected to be used: presence in chart indicates unforeseen column set
+}
+
+.app-chart-colour--light-green {
+  background: govuk-colour("light-green"); // not expected to be used: presence in chart indicates unforeseen column set
+}
+
+.app-chart-colour--red {
+  background: govuk-colour("red"); // not expected to be used: colour palette has ended
 }

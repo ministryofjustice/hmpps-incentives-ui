@@ -252,6 +252,12 @@ export default class AnalyticsService {
       4,
     )
 
+    // Remove 'All' row calculated from current level's source table
+    aggregateTable.pop()
+    // Replace with 'All' row calculated from level above's source table
+    const allRow = await this.getBehaviourEntriesHeatmapAllRow()
+    aggregateTable.push(allRow)
+
     const urlForLocation = view.getUrlFunction()
     const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([label, ...values], index) => {
       const href = index === aggregateTable.length - 1 ? null : urlForLocation(filterValue, label)
@@ -259,6 +265,63 @@ export default class AnalyticsService {
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
+  }
+
+  private async getBehaviourEntriesHeatmapAllRow(): Promise<[string, number, number, number, number]> {
+    const { view } = this
+    const { filterColumn, filterValue } = view.getFiltering()
+
+    const columnsToStitch = view.isNational() ? ['positives', 'negatives'] : [filterColumn, 'positives', 'negatives']
+
+    type StitchedRowFiltered = [string, number, number]
+    type StitchedRowNational = [number, number]
+    type StitchedRow = StitchedRowFiltered | StitchedRowNational
+
+    const sourceTable = this.getBehaviourEntriesSourceTable(true)
+    const { stitchedTable } = await this.getStitchedTable<CaseEntriesTable, StitchedRow>(sourceTable, columnsToStitch)
+
+    let filteredTables = stitchedTable
+    if (!view.isNational()) {
+      filteredTables = filteredTables.filter(row => {
+        const [filteredColumn] = row as StitchedRowFiltered
+
+        return filteredColumn === filterValue
+      })
+    }
+
+    if (filteredTables.length === 0) {
+      throw new AnalyticsError(
+        AnalyticsErrorType.EmptyTable,
+        `Filtered data for getBehaviourEntriesHeatmapAllRow ('${sourceTable}') has no rows`,
+      )
+    }
+
+    // In this context doesn't matter, we sum everything up
+    const groupLabel = 'All'
+    type AggregateRow = [string, number, number, number, number]
+    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+      filteredTables,
+      row => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_filteredColumn, positives, negatives] = view.isNational()
+          ? ['', ...(row as StitchedRowNational)]
+          : (row as StitchedRowFiltered)
+
+        if (positives > 0 && negatives > 0) {
+          return [groupLabel, 0, 0, 1, 0]
+        }
+        if (positives > 0) {
+          return [groupLabel, 1, 0, 0, 0]
+        }
+        if (negatives > 0) {
+          return [groupLabel, 0, 1, 0, 0]
+        }
+        return [groupLabel, 0, 0, 0, 1]
+      },
+      4,
+    )
+
+    return aggregateTable.pop()
   }
 
   async getIncentiveLevelsByLocation(): Promise<Report<PrisonersOnLevelsByLocation>> {

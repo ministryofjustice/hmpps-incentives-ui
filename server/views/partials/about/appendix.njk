@@ -1,0 +1,379 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+<h2 class="govuk-heading-l" id="appendix">
+  Appendix
+</h2>
+
+<h3 class="govuk-heading-m" id="appendix-behaviour-entries">
+  Behaviour entries
+</h3>
+{{ govukTable({
+  caption: "",
+  captionClasses: "govuk-visually-hidden",
+  classes: "app-table--2-even-columns",
+  firstCellIsHeader: true,
+  head: [
+    {text: "Included"},
+    {text: "Not included"}
+  ],
+  rows: [
+    [
+      {text: "POS, NEG"},
+      {text: "ACHIEVEMENTS, ACP, ALERT, CAB, CHAP, CNOTE, COMMS, CUSP, CVM, EARNED_HDC, GEN, IEP ENTRY, INTERVENTION, KA, LAB_ALLOC, MCHECK, MOVED_CELL, NCS, OBSERVE, OMU, OPD, PADVIS, POM, PRISON, REPORT, REPORTS, REQUIREMENT, RESTA, RESTJ, RESTP, ROTL, SC, SENTENCE, SEQ, SUPERVISION, TRANSFER, TRNG"}
+    ]
+  ]
+}) }}
+<p>
+  No differentiation of case_note_sub_type is made due to data quality issues.
+</p>
+
+<h3 class="govuk-heading-m" id="appendix-incentive-levels">
+  Incentive levels
+</h3>
+{{ govukTable({
+  caption: "",
+  captionClasses: "govuk-visually-hidden",
+  classes: "app-table--2-even-columns",
+  firstCellIsHeader: true,
+  head: [
+    {text: "Incentive level"},
+    {text: "NOMIS code (IEP)"}
+  ],
+  rows: [
+    [
+      {text: "Entry"},
+      {text: "ENT"}
+    ],
+    [
+      {text: "Standard"},
+      {text: "STD"}
+    ],
+    [
+      {text: "Enhanced"},
+      {text: "ENH"}
+    ],
+    [
+      {text: "Enhanced 2"},
+      {text: "EN2"}
+    ],
+    [
+      {text: "Enhanced 3"},
+      {text: "EN3"}
+    ],
+    [
+      {text: "New incentive level"},
+      {text: "Any new codes added to NOMIS not listed above"}
+    ]
+  ]
+}) }}
+
+<h3 class="govuk-heading-m" id="appendix-protected-characteristic">
+  Protected characteristics
+</h3>
+{{ govukTable({
+  caption: "",
+  captionClasses: "govuk-visually-hidden",
+  classes: "app-table--3-even-columns",
+  firstCellIsHeader: true,
+  head: [
+    {text: "Religion"},
+    {text: "Sub groups"},
+    {text: "NOMIS code"}
+  ],
+  rows: [
+    [
+      {text: "Buddhist"},
+      {text: "Buddhist"},
+      {text: "BUDD"}
+    ],
+    [
+      {text: "Christian"},
+      {text: "Adventist, Apostolic, Baptist, Calvinist, Celestial Church of God, Christadelphian, Christian, Christian Scientist, Church In Wales, Church of England (Anglican), Church of Ireland, Church of Norway, Church of Scotland, Congregational, Coptic, Church of Sweden, Dutch Reform Church, Eastern Orthodox, Episcopalian, Ethiopian Orthodox, Evangelical, Gospel, Greek Orthodox, Jehovah’s Witness, Lutheran, Methodist, Mormon, Non Conformist, Oriental Orthodox, Orthodox (Greek/Russian), Pentecostal, Presbyterian, Protestant, Quaker, Roman Catholic, Russian Orthodox, Salvation Army, Satanism, Seventh Day Adventist, Unification, Unitarian, United Reformed, Welsh Independent"},
+      {text: "ADV,  APO,   BAPT,  CALV,  CCOG, CE,   CHRST, CHSC,  CINW,  COFE, COFI, COFN,  COFS,  CONG,  COPT, CSW,  EODX,  EORTH, EPIS,  ETHO, EVAN, GOSP,  GROX,  JEHV,  LUTH, METH, MORM,  NONC, OORTH, ORTH, PENT, PRES,  PROT,  QUAK,  RC, RUSS, SALV,  SATN,  SDAY,  UNIF, UNIT, UR, WELS"}
+    ],
+    [
+      {text: "Hindu"},
+      {text: "Hindu"},
+      {text: "HIND"}
+    ],
+    [
+      {text: "Jewish"},
+      {text: "Jewish"},
+      {text: "JEW"}
+    ],
+    [
+      {text: "Muslim"},
+      {text: "Black Muslim, Muslim, Shia Muslim, Sunni Muslim"},
+      {text: "BLAC, MOS, SHIA, SUNI"}
+    ],
+    [
+      {text: "No religion"},
+      {text: "Agnostic, Atheist, Humanist, No Religion"},
+      {text: "AGNO, ATHE, HUM, NIL"}
+    ],
+    [
+      {text: "Other"},
+      {text: "Ba’hai, Druid, Hare Krishna, Jain, Non Permitted Religions, Other, Pagan, Parsi, Rastafarian, Scientologist, Shintoist, Spiritualist, Taoist, Zoroastrian"},
+      {text: "BAHA, DRU,  HARE, JAIN, NONP, OTH,  PAG,  PARS, RAST, SCIE, SHIN, SPIR, TAO,  ZORO"}
+    ],
+    [
+      {text: "Sikh"},
+      {text: "Sikh"},
+      {text: "SIKH"}
+    ]
+  ]
+}) }}
+{{ govukTable({
+  caption: "",
+  captionClasses: "govuk-visually-hidden",
+  classes: "app-table--2-even-columns",
+  firstCellIsHeader: true,
+  head: [
+    {text: "Sexual orientation"},
+    {text: "NOMIS code (profile_type = SEXO)"}
+  ],
+  rows: [
+    [
+      {text: "Bisexual"},
+      {text: "BIS"}
+    ],
+    [
+      {text: "Heterosexual"},
+      {text: "HET"}
+    ],
+    [
+      {text: "Homosexual"},
+      {text: "HOM"}
+    ],
+    [
+      {text: "Other"},
+      {text: "OTH"}
+    ],
+    [
+      {text: "Unknown"},
+      {text: "ND"}
+    ]
+  ]
+}) }}
+{{ govukTable({
+  caption: "",
+  captionClasses: "govuk-visually-hidden",
+  classes: "app-table--2-even-columns",
+  firstCellIsHeader: true,
+  head: [
+    {text: "Disability"},
+    {text: "NOMIS code (profile_type = DISABILITY)"}
+  ],
+  rows: [
+    [
+      {text: "Recorded disability"},
+      {text: "YES"}
+    ],
+    [
+      {text: "No recorded disability"},
+      {text: "NO"}
+    ],
+    [
+      {text: "Unknown"},
+      {text: "Null"}
+    ]
+  ]
+}) }}
+
+<h3 class="govuk-heading-m" id="appendix-regional-groups">
+  Regional benchmark groups
+</h3>
+{{ govukTable({
+  caption: "",
+  captionClasses: "govuk-visually-hidden",
+  classes: "app-table--2-even-columns",
+  firstCellIsHeader: true,
+  head: [
+    {text: "PGD region"},
+    {text: "Prison"}
+  ],
+  rows: [
+    [
+      {text: "Avon and South Dorset"},
+      {html: "Bristol
+        Leyhill
+        Portland
+        Verne" | nl2br}
+    ],
+    [
+      {text: "Bedfordshire, Cambridgeshire and Norfolk"},
+      {html: "Bure
+        Littlehey
+        Norwich
+        Wayland" | nl2br}
+    ],
+    [
+      {text: "Cumbria and Lancashire Group"},
+      {html: "Haverigg
+        Kirkham
+        Lancaster Farms
+        Preston
+        Wymott" | nl2br}
+    ],
+    [
+      {text: "Devon and North Dorset"},
+      {html: "Channings Wood
+        Dartmoor
+        Exeter
+        Guys Marsh" | nl2br}
+    ],
+    [
+      {text: "East Midlands"},
+      {html: "Leicester
+        Lincoln
+        North Sea Camp
+        Onley
+        Whatton" | nl2br}
+    ],
+    [
+      {text: "Greater Manchester, Merseyside and Cheshire"},
+      {html: "Buckley Hall
+        Hindley
+        Liverpool
+        Risley
+        Thorn Cross" | nl2br}
+    ],
+    [
+      {text: "Hertfordshire, Essex and Suffolk"},
+      {html: "Chelmsford
+        Highpoint
+        Hollesley Bay
+        Mount
+        Warren Hill" | nl2br}
+    ],
+    [
+      {text: "HMPPS Wales"},
+      {html: "Cardiff
+        Parc
+        Prescoed
+        Swansea
+        Usk" | nl2br}
+    ],
+    [
+      {text: "Immigration and foreign national prisons"},
+      {html: "Huntercombe
+        Maidstone
+        Morton Hall" | nl2br}
+    ],
+    [
+      {text: "Kent, Surrey and Sussex"},
+      {html: "Coldingley
+        Elmley
+        Ford
+        Lewes
+        Rochester
+        Standford Hill" | nl2br}
+    ],
+    [
+      {text: "London"},
+      {html: "Brixton
+        High Down
+        Isis
+        Pentonville
+        Wandsworth
+        Wormwood Scrubs" | nl2br}
+    ],
+    [
+      {text: "Long-term and high security"},
+      {html: "Aylesbury
+        Belmarsh
+        Frankland
+        Full Sutton
+        Garth
+        Gartree
+        Isle of Wight
+        Long Lartin
+        Manchester
+        Swaleside
+        Wakefield
+        Whitemoor
+        Woodhill" | nl2br}
+    ],
+    [
+      {text: "North Midlands"},
+      {html: "Nottingham
+        Ranby
+        Stocken
+        Sudbury" | nl2br}
+    ],
+    [
+      {text: "Contracted"},
+      {html: "Altcourse
+        Ashfield
+        Bronzefield
+        Doncaster
+        Dovegate
+        Five Wells
+        Forest Bank
+        Lowdham Grange
+        Northumberland
+        Oakwood
+        Peterborough Male
+        Peterborough Female
+        Rye Hill
+        Thameside" | nl2br}
+    ],
+    [
+      {text: "South Central"},
+      {html: "Bullingdon
+        Erlestoke
+        Grendon
+        Spring Hill
+        Winchester" | nl2br}
+    ],
+    [
+      {text: "Tees and Wear"},
+      {html: "Deerbolt
+        Durham
+        Holme House
+        Kirklevington Grange" | nl2br}
+    ],
+    [
+      {text: "West Midlands"},
+      {html: "Birmingham
+        Brinsford
+        Featherstone
+        Hewell
+        Stafford
+        Stoke Heath
+        Swinfen Hall" | nl2br}
+    ],
+    [
+      {text: "Women"},
+      {html: "Askham Grange
+        Downview
+        Drake Hall
+        East Sutton Park
+        Eastwood Park
+        Foston Hall
+        Low Newton
+        New Hall
+        Send
+        Styal" | nl2br}
+    ],
+    [
+      {text: "Yorkshire"},
+      {html: "Hatfield
+        Hull
+        Humber
+        Leeds
+        Lindholme
+        Moorland
+        Wealstun" | nl2br}
+    ],
+    [
+      {text: "Youth custody service"},
+      {html: "Cookham Wood
+        Feltham A
+        Feltham B
+        Parc A
+        Werrington
+        Wetherby" | nl2br}
+    ]
+  ]
+}) }}

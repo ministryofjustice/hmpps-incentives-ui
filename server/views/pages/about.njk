@@ -6,6 +6,38 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">About</h1>
+
+      <nav>
+        <h2 class="govuk-heading-m">Table of contents</h2>
+        <ul class="govuk-list">
+          <li>
+            <a href="#about">
+              About the Manage incentive charts
+            </a>
+          </li>
+          <li>
+            <a href="#charts">
+              Chart-specific information
+            </a>
+          </li>
+          <li>
+            <a href="#data">
+              The data we use and how we use it
+            </a>
+          </li>
+          <li>
+            <a href="#appendix">
+              Appendix
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      {% include "../partials/about/about.njk" %}
+      {% include "../partials/about/charts.njk" %}
+      {% include "../partials/about/data.njk" %}
+      {% include "../partials/about/appendix.njk" %}
+
     </div>
   </div>
 {% endblock %}

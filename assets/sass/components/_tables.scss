@@ -1,0 +1,19 @@
+.app-table--striped {
+  tbody {
+    tr:nth-child(even) {
+      background-color: govuk-colour("light-grey");
+    }
+  }
+}
+
+.app-table--2-even-columns {
+  th, td {
+    width: 50%;
+  }
+}
+
+.app-table--3-even-columns {
+  th, td {
+    width: 33%;
+  }
+}

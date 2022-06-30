@@ -10,6 +10,7 @@ export const palette = [
   'app-chart-colour--yellow',
   'app-chart-colour--pink',
   'app-chart-colour--mid-grey',
+  // colours below are not expected to be used: presence in chart indicates unforeseen values
   'app-chart-colour--orange',
   'app-chart-colour--light-green',
 ] as const
@@ -33,6 +34,9 @@ export function makeChartPalette(columns: string[]): Colour[] {
     }
     if (column === 'Enhanced 2' || column === 'Both') {
       return takeColour('app-chart-colour--yellow')
+    }
+    if (column === 'Enhanced 3') {
+      return takeColour('app-chart-colour--pink')
     }
     if (column === 'None') {
       return takeColour('app-chart-colour--mid-grey')

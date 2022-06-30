@@ -9,12 +9,13 @@ describe.each([
   ],
   [
     'with extended incentive levels',
-    ['Basic', 'Standard', 'Enhanced', 'Enhanced 2'],
+    ['Basic', 'Standard', 'Enhanced', 'Enhanced 2', 'Enhanced 3'],
     [
       'app-chart-colour--light-blue',
       'app-chart-colour--dark-blue',
       'app-chart-colour--turquoise',
       'app-chart-colour--yellow',
+      'app-chart-colour--pink',
     ],
   ],
   [
@@ -39,13 +40,14 @@ describe.each([
   ],
   [
     'with an unexpected incentive level',
-    ['Basic', 'Standard', 'Enhanced', 'Enhanced 2', 'Unexpected'],
+    ['Basic', 'Standard', 'Enhanced', 'Enhanced 2', 'Enhanced 3', 'Unexpected'],
     [
       'app-chart-colour--light-blue',
       'app-chart-colour--dark-blue',
       'app-chart-colour--turquoise',
       'app-chart-colour--yellow',
       'app-chart-colour--pink',
+      'app-chart-colour--mid-grey', // first colour that is not normally expected
     ],
   ],
   [
@@ -55,6 +57,7 @@ describe.each([
       'Standard',
       'Enhanced',
       'Enhanced 2',
+      'Enhanced 3',
       'Unexpected 1',
       'Unexpected 2',
       'Unexpected 3',
@@ -67,9 +70,10 @@ describe.each([
       'app-chart-colour--turquoise',
       'app-chart-colour--yellow',
       'app-chart-colour--pink',
-      'app-chart-colour--mid-grey',
+      'app-chart-colour--mid-grey', // first colour that is not normally expected
       'app-chart-colour--orange',
       'app-chart-colour--light-green',
+      'app-chart-colour--red', // colour palette has ended
       'app-chart-colour--red', // colour palette has ended
     ],
   ],

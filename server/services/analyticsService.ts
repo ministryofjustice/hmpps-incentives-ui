@@ -221,7 +221,7 @@ export default class AnalyticsService {
     if (filteredTables.length === 0) {
       throw new AnalyticsError(
         AnalyticsErrorType.EmptyTable,
-        'Filtered PrisonersWithEntriesByLocation report has no rows',
+        `Filtered PrisonersWithEntriesByLocation ('${sourceTable}') report has no rows`,
       )
     }
 

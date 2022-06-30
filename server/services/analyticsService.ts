@@ -866,17 +866,17 @@ export default class AnalyticsService {
     }
   }
 
-  private getBehaviourEntriesSourceTable(): TableType {
+  private getBehaviourEntriesSourceTable(forAllRow = false): TableType {
     const { view } = this
 
     if (view.isNational()) {
-      return TableType.behaviourEntriesNational
+      return forAllRow ? TableType.behaviourEntriesNationalAll : TableType.behaviourEntriesNational
     }
     if (view.isRegional()) {
-      return TableType.behaviourEntriesRegional
+      return forAllRow ? TableType.behaviourEntriesNational : TableType.behaviourEntriesRegional
     }
     if (view.isPrisonLevel()) {
-      return TableType.behaviourEntriesPrison
+      return forAllRow ? TableType.behaviourEntriesRegional : TableType.behaviourEntriesPrison
     }
 
     throw new Error('Unexpected filterColumn param')

@@ -11,6 +11,7 @@ export enum TableType {
   behaviourEntriesPrison = 'behaviour_entries_28d',
   behaviourEntriesRegional = 'behaviours_28d_prison',
   behaviourEntriesNational = 'behaviours_28d_pgdregion',
+  behaviourEntriesNationalAll = 'behaviours_28d_national',
   incentiveLevels = 'incentives_latest_narrow',
   trends = 'incentives_trends',
 }

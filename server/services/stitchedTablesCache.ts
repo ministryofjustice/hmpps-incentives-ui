@@ -12,7 +12,7 @@ import type AnalyticsService from './analyticsService'
 type CachedValue = {
   date: Date
   modified: Date
-  stitchedTable: [string, ...(number | string)[]][]
+  stitchedTable: [...(number | string)[]][]
 }
 
 /**
@@ -44,7 +44,7 @@ export abstract class StitchedTablesCache {
   /**
    * Gets a cached value (when fresh) or returns null if none exists or is stale
    */
-  abstract get<Row extends [string, ...(number | string)[]]>(
+  abstract get<Row extends [...(number | string)[]]>(
     analyticsService: AnalyticsService,
     tableType: TableType,
     cacheKey: string,
@@ -84,7 +84,7 @@ export class MemoryStitchedTablesCache extends StitchedTablesCache {
     }
   }
 
-  async get<Row extends [string, ...(number | string)[]]>(
+  async get<Row extends [...(number | string)[]]>(
     analyticsService: AnalyticsService,
     tableType: TableType,
     cacheKey: string,
@@ -170,7 +170,7 @@ export class FileStitchedTablesCache extends StitchedTablesCache {
     return null
   }
 
-  async get<Row extends [string, ...(number | string)[]]>(
+  async get<Row extends [...(number | string)[]]>(
     analyticsService: AnalyticsService,
     tableType: TableType,
     cacheKey: string,

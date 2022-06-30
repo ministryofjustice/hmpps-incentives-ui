@@ -96,7 +96,7 @@ export default class AnalyticsService {
   /**
    * Stitches together the source table into arrays representing the rows
    */
-  stitchTable<T extends Table, Row extends [string, ...(number | string)[]]>(table: T, columns: (keyof T)[]): Row[] {
+  stitchTable<T extends Table, Row extends [...(number | string)[]]>(table: T, columns: (keyof T)[]): Row[] {
     const [keyColumn] = columns
     return Object.keys(table[keyColumn]).map(rowIndex => {
       return columns.map(column => table[column][rowIndex]) as Row
@@ -106,7 +106,7 @@ export default class AnalyticsService {
   /**
    * Looks up a cached stitched table or loads and caches a fresh one
    */
-  async getStitchedTable<T extends Table, Row extends [string, ...(number | string)[]]>(
+  async getStitchedTable<T extends Table, Row extends [...(number | string)[]]>(
     tableType: TableType,
     columnsToStitch: string[],
   ): Promise<{ date: Date; modified: Date; stitchedTable: Row[] }> {

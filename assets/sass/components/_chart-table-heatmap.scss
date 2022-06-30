@@ -35,3 +35,15 @@
   display: inline-block;
   width: 100%;
 }
+
+
+a.app-chart-table--heatmap__footnotes-link {
+  color: $govuk-text-colour;
+}
+
+ul.app-chart-table--heatmap__footnotes {
+  li {
+    list-style-type: '*';
+    padding-left: 1ch;
+  }
+}

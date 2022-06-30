@@ -3,10 +3,7 @@ import { TrendsReportRow } from './analyticsServiceTypes'
 /**
  * Maps each row in a stitched table and sums up totals
  */
-export function mapRowsAndSumTotals<
-  RowIn extends [string, ...(number | string)[]],
-  RowOut extends [string, ...number[]],
->(
+export function mapRowsAndSumTotals<RowIn extends [...(number | string)[]], RowOut extends [string, ...number[]]>(
   stitchedTable: RowIn[],
   rowMapper: (row: RowIn) => RowOut,
   summedColumnCount: number, // the number of number columns at the end of RowOut

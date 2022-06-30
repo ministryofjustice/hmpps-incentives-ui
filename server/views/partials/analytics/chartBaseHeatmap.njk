@@ -94,6 +94,9 @@
                 {% else %}
                   {{ row.label }}
                 {% endif %}
+                {% if rowIndex == 0 %}
+                  <a href="#footnotes" aria-label="footnotes" class="govuk-link--no-underline app-chart-table--heatmap__footnotes-link">*</a>
+                {% endif %}
               </strong>
               <br />
               {{ rowTotalValue(total=total, rowIndex=rowIndex) }}
@@ -120,6 +123,13 @@
         {% endfor %}
       </tbody>
     </table>
+
+    <ul class="app-chart-table--heatmap__footnotes govuk-list govuk-list--bullet" id="footnotes">
+      <li>
+        The number of prisoners in the first value of the ‘All’ column might be less than a tally of the subsequent All values in location rows.
+        This is because entries are counted slightly differently — see <a href="/about#calculating-all-row-for-entries">Calculations of ‘All’ in behaviour entry type charts</a>.
+      </li>
+    </ul>
 
   {% endcall %}
 

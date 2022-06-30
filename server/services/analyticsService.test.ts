@@ -64,7 +64,7 @@ describe('AnalyticsService', () => {
       s3Client.listObjects.mockResolvedValue([{ key: 'behaviour_entries/2022-03-13.json', modified }])
       s3Client.getObject.mockResolvedValue('{"column":{"1":1,"2":2}}')
 
-      await expect(analyticsService.findTable(TableType.behaviourEntries)).resolves.toEqual({
+      await expect(analyticsService.findTable(TableType.behaviourEntriesPrison)).resolves.toEqual({
         table: { column: { '1': 1, '2': 2 } },
         date: new Date(2022, 2, 13),
         modified,
@@ -86,7 +86,7 @@ describe('AnalyticsService', () => {
       ])
       s3Client.getObject.mockResolvedValue('{"column":{"1":1,"2":2}}')
 
-      await expect(analyticsService.findTable(TableType.behaviourEntries)).resolves.toEqual({
+      await expect(analyticsService.findTable(TableType.behaviourEntriesPrison)).resolves.toEqual({
         table: { column: { '1': 1, '2': 2 } },
         date: new Date(2022, 2, 13),
         modified,
@@ -97,7 +97,7 @@ describe('AnalyticsService', () => {
     it('throws an error when it cannot find a table', async () => {
       s3Client.listObjects.mockResolvedValue([])
 
-      await expect(analyticsService.findTable(TableType.behaviourEntries)).rejects.toThrow(AnalyticsError)
+      await expect(analyticsService.findTable(TableType.behaviourEntriesPrison)).rejects.toThrow(AnalyticsError)
     })
 
     it('throws an error when object contents cannot be parsed', async () => {
@@ -105,7 +105,7 @@ describe('AnalyticsService', () => {
       s3Client.listObjects.mockResolvedValue([{ key: 'behaviour_entries/2022-03-13.json', modified }])
       s3Client.getObject.mockResolvedValue('{"column":')
 
-      await expect(analyticsService.findTable(TableType.behaviourEntries)).rejects.toThrow(AnalyticsError)
+      await expect(analyticsService.findTable(TableType.behaviourEntriesPrison)).rejects.toThrow(AnalyticsError)
     })
   })
 
@@ -375,26 +375,12 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client)
     })
 
-    it('has a totals row', async () => {
-      const { rows: prisoners } = await analyticsService.getPrisonersWithEntriesByLocation()
-      expect(prisoners).toHaveLength(prisonLocationsBehaviourEntries.MDI.length)
+    it(`has correct 'All' row`, async () => {
+      const { rows } = await analyticsService.getPrisonersWithEntriesByLocation()
+      expect(rows).toHaveLength(prisonLocationsBehaviourEntries.MDI.length)
 
-      const prisonTotal = prisoners.shift()
-      expect(prisonTotal.label).toEqual('All')
-      expect(prisonTotal.href).toBeNull()
-
-      let [sumPositive, sumNegative, sumBoth, sumNeither] = [0, 0, 0, 0]
-      prisoners.forEach(({ values }) => {
-        const [prisonersWithPositive, prisonersWithNegative, prisonersWithBoth, prisonersWithNeither] = values
-        sumPositive += prisonersWithPositive
-        sumNegative += prisonersWithNegative
-        sumBoth += prisonersWithBoth
-        sumNeither += prisonersWithNeither
-      })
-      expect(prisonTotal.values[0]).toEqual(sumPositive)
-      expect(prisonTotal.values[1]).toEqual(sumNegative)
-      expect(prisonTotal.values[2]).toEqual(sumBoth)
-      expect(prisonTotal.values[3]).toEqual(sumNeither)
+      const allRow = rows.shift()
+      expect(allRow).toEqual({ href: null, label: 'All', values: [109, 169, 25, 715] })
     })
 
     it('throws an error when the table is empty', async () => {
@@ -421,7 +407,7 @@ describe('AnalyticsService', () => {
       const { rows } = await analyticsService.getPrisonersWithEntriesByLocation()
 
       expect(rows).toEqual([
-        { href: null, label: 'All', values: [50, 67, 10, 199] },
+        { href: null, label: 'All', values: [1328, 1379, 398, 5656] },
         { href: null, label: 'Whitemoor (HMP)', values: [50, 67, 10, 199] },
       ])
     })
@@ -432,7 +418,7 @@ describe('AnalyticsService', () => {
       const { rows } = await analyticsService.getPrisonersWithEntriesByLocation()
 
       expect(rows).toEqual([
-        { href: null, label: 'All', values: [13343, 12347, 3438, 60593] },
+        { href: null, label: 'All', values: [13316, 12270, 3454, 57490] },
         { href: '/analytics/ASD/behaviour-entries', label: 'Avon and South Dorset', values: [314, 257, 78, 1652] },
         {
           href: '/analytics/BCN/behaviour-entries',
@@ -1235,13 +1221,13 @@ describe('AnalyticsService', () => {
       jest.setSystemTime(new Date('2022-06-25T12:15:00Z')) // 4 days after test source table date
 
       // load a table twice because only cached tables get checked for staleness
-      await analyticsService.getPrisonersWithEntriesByLocation()
-      await analyticsService.getPrisonersWithEntriesByLocation()
+      await analyticsService.getIncentiveLevelsByLocation()
+      await analyticsService.getIncentiveLevelsByLocation()
 
       // expect a stale behaviour entries table
       const { value, labels } = await getStaleAnalyticsMetrics()
       expect(value).toEqual<number>(1)
-      expect(labels).toEqual({ table_type: TableType.behaviourEntries })
+      expect(labels).toEqual({ table_type: TableType.incentiveLevels })
     })
 
     it('set to 0 when a source table is fresh', async () => {

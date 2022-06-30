@@ -44,7 +44,7 @@ context('Analytics section > Behaviour entries page', () => {
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('1,164')
+        expect(location).to.contain('1,018')
       })
 
     getTextFromTable(page.getChartTable('trends-entries')).then(rows => {
@@ -243,7 +243,7 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
     analyticsPage.behaviourEntriesNavItem.click()
   })
 
-  it('users see National analytics', () => {
+  it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
 
     page
@@ -261,7 +261,7 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('89,721')
+        expect(location).to.contain('86,530')
       })
 
     getTextFromTable(page.getChartTable('trends-entries')).then(rows => {
@@ -304,7 +304,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
     analyticsPage.behaviourEntriesNavItem.click()
   })
 
-  it('users see National analytics', () => {
+  it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
 
     page
@@ -322,7 +322,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('326')
+        expect(location).to.contain('8,761')
       })
 
     getTextFromTable(page.getChartTable('trends-entries')).then(rows => {

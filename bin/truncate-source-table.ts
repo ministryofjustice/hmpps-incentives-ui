@@ -36,7 +36,7 @@ let rowFilter: (rowIndex: string, table: Table) => boolean
 let filterByPrison = true
 
 switch (chosenTableType) {
-  case 'behaviourEntries':
+  case 'behaviourEntriesPrison':
     columnsToKeep = ['prison', 'prison_name', 'wing', 'positives', 'negatives']
     rowFilter = () => true
     break
@@ -46,6 +46,11 @@ switch (chosenTableType) {
     break
   case 'behaviourEntriesNational':
     columnsToKeep = ['pgd_region', 'positives', 'negatives']
+    rowFilter = () => true
+    filterByPrison = false
+    break
+  case 'behaviourEntriesNationalAll':
+    columnsToKeep = ['positives', 'negatives']
     rowFilter = () => true
     filterByPrison = false
     break

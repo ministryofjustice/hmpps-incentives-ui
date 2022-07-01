@@ -9,6 +9,7 @@ context('About page', () => {
     cy.task('stubAuthUser')
     cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubPrisonApiLocations')
+    cy.task('stubCreateZendeskTicket')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)

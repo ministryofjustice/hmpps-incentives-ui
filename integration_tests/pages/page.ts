@@ -18,4 +18,20 @@ export default abstract class Page {
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
+
+  get messages(): PageElement<HTMLDivElement> {
+    return cy.get('.moj-banner')
+  }
+
+  get errorSummary(): PageElement<HTMLDivElement> {
+    return cy.get('.govuk-error-summary')
+  }
+
+  get errorSummaryTitle(): PageElement<HTMLHeadingElement> {
+    return this.errorSummary.find('.govuk-error-summary__title')
+  }
+
+  get errorSummaryItems(): PageElement<HTMLLIElement> {
+    return this.errorSummary.find('.govuk-error-summary__list li')
+  }
 }

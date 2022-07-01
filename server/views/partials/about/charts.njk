@@ -1,0 +1,164 @@
+<h2 class="govuk-heading-l" id="charts">
+  Chart-specific information
+</h2>
+
+<h3 class="govuk-heading-m">
+  Incentive levels in the establishment – last 12 months
+</h3>
+<p>
+  This visual shows a monthly trend of the balance of incentive levels for the prison across the last 12 months.
+  It considers the population and incentive levels averaged throughout the month.
+</p>
+<p>
+  This average is calculated by adding all the incentives by level for each day of the month in the Ministry of Justice Analytical Platform (MoJAP) NOMIS, and then divided by the number of successful NOMIS snapshots extracted into MoJAP NOMIS.
+</p>
+<p>
+  This is because occasionally an extract will fail.
+  In the last 12 months there were 3 months that had 1 failed snapshot and the rest had none.
+  This provides a very accurate average for each month.
+  Even with a few snapshot failures every month, it is still a very accurate estimate of the average.
+</p>
+<p>
+  The average monthly prison population is given in the table for additional context when looking at the absolute number of prisoners.
+  It is calculated in the same way as the average prison population by incentive level, but without the incentive level breakdown.
+  But this should not be relevant when looking at the bar graph, as it is looking at the proportion of all prisoners in any given month.
+</p>
+<p>
+  This chart only considers complete months, so the current month does not appear.
+</p>
+<p>
+  <a href="/analytics/incentive-levels">
+    View incentive levels in the establishment – last 12 months chart
+  </a>
+</p>
+
+<h3 class="govuk-heading-m">
+  Comparison of positive and negative behaviour entries by residential location – last 28 days
+</h3>
+<p>
+  This visual shows the total count and proportions of casenote entries related to behaviour over the last 28-day period.
+  This means casenotes entered into NOMIS as positive or negative entries.
+</p>
+<p>
+  This chart is intended to be a reflection of wing-level activity in the 28-day period.
+  So the visuals are a count of all casenotes given to a prisoner when they were on a specific wing, even if the prisoner has since been moved.
+  As a result, a prisoner can have casenotes on multiple wings in the 28-day period.
+</p>
+<p>
+  <a href="/analytics/behaviour-entries">
+    View comparison of positive and negative behaviour entries by residential location – last 28 days chart
+  </a>
+</p>
+
+<h3 class="govuk-heading-m">
+  Percentage and number of prisoners on each behaviour entry type by residential location – last 28 days
+</h3>
+<p>
+  This visual shows how many prisoners, who have stayed on a given wing over a 28-day period, have received:
+</p>
+<ul class="govuk-list govuk-list--bullet">
+  <li>
+    1 or more only positive casenote – Positive
+  </li>
+  <li>
+    1 or more only negative casenote – Negative
+  </li>
+  <li>
+    1 or more positive and 1 or more negative casenote – Both
+  </li>
+  <li>
+    No casenotes (positive or negative) – None
+  </li>
+</ul>
+<p>
+  As all prisoners fit into one of these 4 categories.
+  If a prisoner has moved wing within the 28-day period they will be counted in each wing they have stayed (regardless of how long they spent there).
+  Therefore the total number of prisoners in this visual will be equal to or - most likely - larger than the number of prisoners that are in any prison or wing at any one time.
+</p>
+<p>
+  New entrants into a wing will automatically be allocated to the None type until they receive a casenote.
+  If there is a large number of movements between wings in a short space of time within the 28-day period it is likely to be shown in the None column.
+</p>
+<p>
+  The colours of the boxes in the visual correspond to the percentage, not the count, of prisoners in the wing that are in each category (or the entire prison in the first row).
+</p>
+<p>
+  <a href="/analytics/behaviour-entries">
+    View percentage and number of prisoners on each behaviour entry type by residential location – last 28 day chart
+  </a>
+</p>
+
+<h3 class="govuk-heading-m" id="calculating-all-row-for-entries">
+  Calculations of ‘All’ in behaviour entry charts – establishment, group and national
+</h3>
+<p>
+  If a prisoner has moved wing within the 28-day period, any behaviour entries are counted in each wing they have stayed (regardless of how long they spent there).
+  So the number of  All entries in all but the first row will be equal to or - most likely - larger than the number of prisoners in this location at any one time.
+</p>
+<p>
+  But the number of prisoners in the first ‘All’ row might be slightly less than the total tally of all subsequent location rows, because this data only looks at the types of case notes a prisoner has received whilst in the prison for the 28-day period regardless of the wing they have been on.
+</p>
+<p>
+  For example:
+  <br />
+  There are 3 wings (A, B and C)
+</p>
+<ul class="govuk-list govuk-list--bullet">
+  <li>
+    Prisoner A moved across all 3 wings in the last 28 days
+  </li>
+  <li>
+    They receive a positive casenote in wing A, a negative in wing B, and none in wing C
+  </li>
+  <li>
+    If we were to sum up, they would count as 1 Positive, 1 Negative and 1 None in the All columns of the relevant
+    wings
+  </li>
+  <li>
+    The All column calculation looks solely at the prison level where this prisoner counts as 1 for Both as they received a positive and a negative casenote in the prison within the 28-day period
+  </li>
+</ul>
+
+<h3 class="govuk-heading-m">
+  Comparison of positive and negative behaviour entries in the establishment – last 12 months
+</h3>
+<p>
+  This visual shows the monthly count of positive and negative casenotes over a 12 month period in the chosen prison.
+</p>
+<p>
+  The average monthly prison population is shown in the table for additional context when looking at the total number of prisoners.
+  This is calculated by adding the number of prisoners for each day of the month in MoJAP NOMIS, and then dividing them by the number of successful NOMIS snapshots into MoJAP NOMIS.
+</p>
+<p>
+  This is important to take into consideration when looking at the chart, as it is looking at the total number of casenotes issued.
+  For example, a drop in overall casenotes issued could be explained by a shrinking prison population as opposed to any behavioural or policy change.
+</p>
+<p>
+  This visual only considers complete months, so the current month does not appear.
+</p>
+<p>
+  <a href="/analytics/behaviour-entries">
+    View comparison of positive and negative behaviour entries in the establishment – last 12 months chart
+  </a>
+</p>
+
+<h3 class="govuk-heading-m">
+  Protected characteristics charts
+</h3>
+<p>
+  The charts for protected characteristics and the calculations applied are equivalent to the corresponding charts for behaviour entries and incentive levels.
+  The exception is that the information is displayed at prison level instead of wing because the numbers would be so small they would provide misleading insights.
+</p>
+<p>
+  The categories used within these charts have been grouped from more detailed levels of protected characteristics in NOMIS.
+  The detailed groupings can be seen in the appendix.
+</p>
+<p>
+  <a href="/analytics/protected-characteristic">
+    View protected characteristics charts
+  </a>
+  <br />
+  <a href="#appendix-protected-characteristic">
+    See appendix for category table
+  </a>
+</p>

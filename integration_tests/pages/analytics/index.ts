@@ -18,22 +18,6 @@ export default abstract class AnalyticsPage extends Page {
     return this.subNavigation.find('[data-qa=protected-characteristics]')
   }
 
-  get messages(): PageElement<HTMLDivElement> {
-    return cy.get('.moj-banner')
-  }
-
-  get errorSummary(): PageElement<HTMLDivElement> {
-    return cy.get('.govuk-error-summary')
-  }
-
-  get errorSummaryTitle(): PageElement<HTMLHeadingElement> {
-    return this.errorSummary.find('.govuk-error-summary__title')
-  }
-
-  get errorSummaryItems(): PageElement<HTMLLIElement> {
-    return this.errorSummary.find('.govuk-error-summary__list li')
-  }
-
   get chartGuidanceBoxes(): PageElement<HTMLDetailsElement> {
     return cy.get('.govuk-details[data-qa=guidance]')
   }
@@ -50,7 +34,7 @@ export default abstract class AnalyticsPage extends Page {
     return this.chartFeedbackBoxes.filter(`#chart-feedback-${chartId}`).find('.govuk-details__summary')
   }
 
-  getChartFeedbackForm(chartId: ChartId): PageElement<HTMLDetailsElement> {
+  getChartFeedbackForm(chartId: ChartId): PageElement<HTMLFormElement> {
     return cy.get(`#form-${chartId}`)
   }
 

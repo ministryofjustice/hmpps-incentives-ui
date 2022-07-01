@@ -10,4 +10,6 @@ export default class HomePage extends Page {
   viewAnalyticsLink = (): PageElement => cy.get('[data-test="incentive-analytics"] a')
 
   selectPgdRegionLink = (): PageElement => cy.get('[data-test="select-pgd-region"] a')
+
+  aboutPageLink = (): PageElement => cy.get('[data-test="about-data"] a')
 }

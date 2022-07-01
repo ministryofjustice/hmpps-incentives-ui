@@ -1,0 +1,57 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% macro _commentTextarea(form, id) %}
+  {{ govukTextarea({
+    id: form.formId + "-" + id + "Comments",
+    name: id + "Comments",
+    value: form.getField(id + "Comments").value,
+    label: {
+      text: "Comments (optional)"
+    },
+    rows: 3
+  }) }}
+{% endmacro %}
+
+<form id="form-{{ form.formId }}" method="post" action="/about" novalidate>
+  {% set informationUsefulField = form.getField("informationUseful") %}
+  {{ govukRadios({
+      idPrefix: form.formId + "-informationUseful",
+      name: "informationUseful",
+      fieldset: {
+        legend: {
+          text: "Please leave your feedback",
+          classes: "govuk-visually-hidden"
+        }
+      },
+      items: [
+        {
+          value: "yes",
+          text: "Yes",
+          checked: informationUsefulField.value === "yes",
+          conditional: {
+            html: _commentTextarea(form, "yes")
+          }
+        },
+        {
+          value: "no",
+          text: "No",
+          checked: informationUsefulField.value === "no",
+          conditional: {
+            html: _commentTextarea(form, "no")
+          }
+        }
+      ],
+      errorMessage: { text: informationUsefulField.error } if informationUsefulField.error else undefined
+    }) }}
+
+  <input type="hidden" name="formId" value="{{ form.formId }}" />
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+  {{ govukButton({
+    text: "Submit",
+    preventDoubleClick: true
+  }) }}
+
+</form>

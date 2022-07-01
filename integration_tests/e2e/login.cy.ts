@@ -49,12 +49,12 @@ context('SignIn', () => {
     Page.verifyOnPage(HomePage)
 
     cy.get('.govuk-footer__inline-list .govuk-footer__link:visible').then(footerLinks => {
-      expect(footerLinks.length).equal(2)
+      expect(footerLinks.length).equal(3)
 
-      const getHelpLink = footerLinks.first()
+      const aboutLink = footerLinks.first()
       const TsAndCsLink = footerLinks.last()
 
-      expect(getHelpLink).to.contain('Get help')
+      expect(aboutLink).to.contain('About')
       expect(TsAndCsLink).to.contain('Terms and conditions')
     })
   })

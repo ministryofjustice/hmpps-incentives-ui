@@ -1,0 +1,128 @@
+<h2 class="govuk-heading-l" id="data">
+  The data we use and how we use it
+</h2>
+
+<h3 class="govuk-heading-m">
+  Behaviour entries
+</h3>
+<p>
+  Entries related to behaviour are extracted from the casenotes entered into NOMIS by selecting only casenotes with the type Positive or Negative.
+  Subtypes are not considered.
+</p>
+<p>
+  Only casenotes that are marked as POS or NEG from the case_note_type column within nomis_sens.offender_case_notes are included within the definition of Positive or Negative casenotes.
+</p>
+<p>
+  It is worth noting that the date the casenote was entered into NOMIS may differ from when the incident in the casenote happened.
+</p>
+<p>
+  Behaviour entries are associated with a prisoner’s wing at the time of recording in NOMIS.
+  This might not always reflect the wing they were in at the time the casenote happened.
+</p>
+<p>
+  A prisoner’s location is not contained within the casenotes table and therefore any analysis by wing is extracted from the prison population.
+</p>
+<p>
+  <a href="#appendix-behaviour-entries">
+    See appendix for category table
+  </a>
+</p>
+
+<h3 class="govuk-heading-m">
+  Incentive levels
+</h3>
+<p>
+  Entry level has been removed from all analysis.
+  Due to data quality issues on NOMIS there are a handful of prisoners on Entry incorrectly still in the prison population.
+</p>
+<p>
+  Additional incentive levels above enhanced can be added by Governors.
+  These new incentive levels will automatically be captured and displayed as ‘New incentive’ on the charts.
+</p>
+<p>
+  <a href="#appendix-incentive-levels">
+    See appendix for category table
+  </a>
+</p>
+
+<h3 class="govuk-heading-m">
+  Protected characteristics
+</h3>
+<p>
+  Sexual orientation and disability data have a lot of missing entries, with approximately 12 percent of missing data for sexual orientation and 40 percent for disability.
+  We code all missing data for these two characteristics as ‘Unknown’.
+</p>
+<p>
+  For sexual orientation, there are ‘Undisclosed’ records.
+  Because we don’t know if this is recorded based on the actual meaning - that is, refused to say and not asked respectively – these are grouped as ‘Unknown’.
+</p>
+<p>
+  The ethnicity Chinese is recorded under two categories in NOMIS – A4 Asian/Asian British: Chinese and O1 Chinese.
+  In the data presented in this digital service, these 2 categories are grouped into Asian or Asian British.
+</p>
+<p>
+  <a href="#appendix-protected-characteristic">
+    See appendix for category table
+  </a>
+</p>
+
+<h3 class="govuk-heading-m">
+  Wings
+</h3>
+<p>
+  Wing location is extracted from a prisoner’s full cell location in the general prison population table.
+</p>
+<p>
+  Any analysis at wing level checks the relevant date and pulls the location assigned to the prisoner at that time.
+  This leads to a small number of non-standard locations such as hospital (HOSP), cell swap (CSWAP), reception (RECP) for example that might not reflect the prisoner’s true wing location at that time.
+</p>
+
+<h3 class="govuk-heading-m">
+  Regional benchmark groups
+</h3>
+<p>
+  The PGD region grouping is an administrative grouping, on which prisons are under a Prison Group Director.
+  The groupings are extracted from a workbook maintained and developed by HMPPS.
+</p>
+<p>
+  <a href="#appendix-regional-groups">
+    See appendix for category table
+  </a>
+</p>
+
+<h3 class="govuk-heading-m">
+  Source data
+</h3>
+<p>
+  The data used to populate the charts in the service comes from the Ministry of Justice Analytical Platform (MoJAP) which extracts information from Prison NOMIS daily and mirrors the NOMIS database to within 24 hours.
+  It is important to remember that all data in NOMIS is only as accurate or timely as the NOMIS application users who enter the data.
+</p>
+<p>
+  The tables used to extract information from this service are:
+</p>
+<ul class="govuk-list govuk-list--number">
+  <li>
+    nomis_dn_pp.prisons – used to extract active prisons
+  </li>
+  <li>
+    Prison lookup list.xlsx – from ‘HMPPS Performance Team’ to get PGD Region for each prison.
+  </li>
+  <li>
+    nomis_sens.offender_case_notes – used to extract behaviour entries
+  </li>
+  <li>
+    nomis_ao.core – used to extract core information about prisoners (date, prison, full location for wing, age, gender)
+  </li>
+  <li>
+    nomis_ao.identifiers – used to extract prisoner IDs
+  </li>
+  <li>
+    nomis_ao.regimes – used to extract the prisoners incentive level
+  </li>
+  <li>
+    nomis_ao.profiles – used to extract prisoner characteristics (ethnicity, religion)
+  </li>
+  <li>
+    nomis_sens.offender_profile_details – used to extract more sensitive, protected prisoner characteristics (sexual orientation and disability)
+  </li>
+</ul>

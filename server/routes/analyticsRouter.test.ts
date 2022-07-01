@@ -313,7 +313,7 @@ describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHead
     return request(app)
       .get(url)
       .expect(res => {
-        expect(res.text).toContain('A note on our data')
+        expect(res.text).toContain('Information on how we collect, group and analyse data')
       })
   })
 

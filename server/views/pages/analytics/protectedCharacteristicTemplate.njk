@@ -37,16 +37,16 @@
 
       {% set chartId = "population-by-" + characteristicName %}
       {{ chartPopulation(
-        title=ProtectedCharacteristicsChartsContent[chartId].title,
-        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
-        labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
+        title=analyticsView.protectedCharacteristicsChartsContent[chartId].title,
+        guidance=analyticsView.protectedCharacteristicsChartsContent[chartId].guidance,
+        labelColumn=analyticsView.protectedCharacteristicsChartsContent[chartId].labelColumn,
         chartId=chartId,
-        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.protectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
         report=incentiveLevelsByCharacteristic,
-        labelColumnWidth=ProtectedCharacteristicsChartsContent[chartId].labelColumnWidth
+        labelColumnWidth=analyticsView.protectedCharacteristicsChartsContent[chartId].labelColumnWidth
       ) }}
 
     </section>
@@ -57,16 +57,16 @@
 
       {% set chartId = "incentive-levels-by-" + characteristicName %}
       {{ chartPrisonersOnLevels(
-        title=ProtectedCharacteristicsChartsContent[chartId].title,
-        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
-        labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
+        title=analyticsView.protectedCharacteristicsChartsContent[chartId].title,
+        guidance=analyticsView.protectedCharacteristicsChartsContent[chartId].guidance,
+        labelColumn=analyticsView.protectedCharacteristicsChartsContent[chartId].labelColumn,
         chartId=chartId,
-        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.protectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
         report=incentiveLevelsByCharacteristic,
-        labelColumnWidth=ProtectedCharacteristicsChartsContent[chartId].labelColumnWidth
+        labelColumnWidth=analyticsView.protectedCharacteristicsChartsContent[chartId].labelColumnWidth
       ) }}
 
     </section>
@@ -124,10 +124,10 @@
       {% endset %}
 
       {{ chartTrends(
-        title=ProtectedCharacteristicsChartsContent[chartId].title,
-        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+        title=analyticsView.protectedCharacteristicsChartsContent[chartId].title,
+        guidance=analyticsView.protectedCharacteristicsChartsContent[chartId].guidance,
         chartId=chartId,
-        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.protectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
@@ -144,16 +144,16 @@
 
       {% set chartId = "entries-by-" + characteristicName %}
       {{ chartBehaviourEntries(
-        title=ProtectedCharacteristicsChartsContent[chartId].title,
-        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
-        labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
+        title=analyticsView.protectedCharacteristicsChartsContent[chartId].title,
+        guidance=analyticsView.protectedCharacteristicsChartsContent[chartId].guidance,
+        labelColumn=analyticsView.protectedCharacteristicsChartsContent[chartId].labelColumn,
         chartId=chartId,
-        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.protectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
         report=behaviourEntriesByCharacteristic,
-        labelColumnWidth=ProtectedCharacteristicsChartsContent[chartId].labelColumnWidth
+        labelColumnWidth=analyticsView.protectedCharacteristicsChartsContent[chartId].labelColumnWidth
       ) }}
 
     </section>
@@ -180,10 +180,10 @@
       {% endset %}
 
       {{ chartTrends(
-        title=ProtectedCharacteristicsChartsContent[chartId].title,
-        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
+        title=analyticsView.protectedCharacteristicsChartsContent[chartId].title,
+        guidance=analyticsView.protectedCharacteristicsChartsContent[chartId].guidance,
         chartId=chartId,
-        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.protectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
@@ -199,16 +199,16 @@
 
       {% set chartId = "prisoners-with-entries-by-" + characteristicName %}
       {{ chartPrisonersOnLevels(
-        title=ProtectedCharacteristicsChartsContent[chartId].title,
-        guidance=ProtectedCharacteristicsChartsContent[chartId].guidance,
-        labelColumn=ProtectedCharacteristicsChartsContent[chartId].labelColumn,
+        title=analyticsView.protectedCharacteristicsChartsContent[chartId].title,
+        guidance=analyticsView.protectedCharacteristicsChartsContent[chartId].guidance,
+        labelColumn=analyticsView.protectedCharacteristicsChartsContent[chartId].labelColumn,
         chartId=chartId,
-        googleAnalyticsCategory=ProtectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.protectedCharacteristicsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
         report=prisonersWithEntriesByCharacteristic,
-        labelColumnWidth=ProtectedCharacteristicsChartsContent[chartId].labelColumnWidth
+        labelColumnWidth=analyticsView.protectedCharacteristicsChartsContent[chartId].labelColumnWidth
       ) }}
 
     </section>

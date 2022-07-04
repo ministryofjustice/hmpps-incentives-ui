@@ -17,11 +17,11 @@
 
       {% set chartId = "entries-by-location" %}
       {{ chartBehaviourEntries(
-        title=BehaviourEntriesChartsContent[chartId].title,
-        guidance=BehaviourEntriesChartsContent[chartId].guidance,
-        labelColumn=BehaviourEntriesChartsContent[chartId].labelColumn,
+        title=analyticsView.behaviourEntriesChartsContent[chartId].title,
+        guidance=analyticsView.behaviourEntriesChartsContent[chartId].guidance,
+        labelColumn=analyticsView.behaviourEntriesChartsContent[chartId].labelColumn,
         chartId=chartId,
-        googleAnalyticsCategory=BehaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.behaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
@@ -38,11 +38,11 @@
 
       {% set chartId = "prisoners-with-entries-by-location" %}
       {{ chartPrisonersWithBehaviourEntries(
-        title=BehaviourEntriesChartsContent[chartId].title,
-        guidance=BehaviourEntriesChartsContent[chartId].guidance,
-        labelColumn=BehaviourEntriesChartsContent[chartId].labelColumn,
+        title=analyticsView.behaviourEntriesChartsContent[chartId].title,
+        guidance=analyticsView.behaviourEntriesChartsContent[chartId].guidance,
+        labelColumn=analyticsView.behaviourEntriesChartsContent[chartId].labelColumn,
         chartId=chartId,
-        googleAnalyticsCategory=BehaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.behaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
@@ -58,10 +58,10 @@
 
       {% set chartId = "trends-entries" %}
       {{ chartTrends(
-        title=BehaviourEntriesChartsContent[chartId].title,
-        guidance=BehaviourEntriesChartsContent[chartId].guidance,
+        title=analyticsView.behaviourEntriesChartsContent[chartId].title,
+        guidance=analyticsView.behaviourEntriesChartsContent[chartId].guidance,
         chartId=chartId,
-        googleAnalyticsCategory=BehaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.behaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,

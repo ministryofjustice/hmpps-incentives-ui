@@ -13,11 +13,6 @@ import {
   knownGroupsFor,
   ProtectedCharacteristic,
 } from '../services/analyticsServiceTypes'
-import {
-  BehaviourEntriesChartsContent,
-  IncentiveLevelsChartsContent,
-  ProtectedCharacteristicsChartsContent,
-} from './analyticsChartsContent'
 import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
@@ -172,7 +167,6 @@ export default function routes(router: Router): Router {
       behaviourEntries,
       prisonersWithEntries,
       trends,
-      BehaviourEntriesChartsContent,
     })
   })
 
@@ -201,7 +195,6 @@ export default function routes(router: Router): Router {
       analyticsView,
       prisonersOnLevels,
       trends,
-      IncentiveLevelsChartsContent,
     })
   })
 
@@ -332,7 +325,6 @@ export default function routes(router: Router): Router {
       behaviourEntriesByCharacteristic,
       behaviourEntryTrendsByCharacteristic,
       prisonersWithEntriesByCharacteristic,
-      ProtectedCharacteristicsChartsContent,
     })
   })
 

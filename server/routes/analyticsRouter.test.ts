@@ -151,7 +151,7 @@ const analyticsPages: AnalyticsPage[] = [
   {
     name: 'National Behaviour entries',
     url: '/analytics/National/behaviour-entries',
-    expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
+    expectedHeading: 'Comparison of positive and negative behaviour entries by prison group – last 28 days',
     chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
     linksFromCharts: [
       '/analytics/LTHS/behaviour-entries',
@@ -162,7 +162,7 @@ const analyticsPages: AnalyticsPage[] = [
   {
     name: 'PGD region Behaviour entries',
     url: '/analytics/LTHS/behaviour-entries',
-    expectedHeading: 'Comparison of positive and negative behaviour entries by residential location – last 28 days',
+    expectedHeading: 'Comparison of positive and negative behaviour entries by establishment – last 28 days',
     chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
@@ -185,7 +185,7 @@ const analyticsPages: AnalyticsPage[] = [
   {
     name: 'National Incentive levels',
     url: '/analytics/National/incentive-levels',
-    expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
+    expectedHeading: 'Percentage and number of prisoners on each incentive level by prison group',
     chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
     linksFromCharts: [
       '/analytics/LTHS/incentive-levels',
@@ -196,7 +196,7 @@ const analyticsPages: AnalyticsPage[] = [
   {
     name: 'PGD region Incentive levels',
     url: '/analytics/LTHS/incentive-levels',
-    expectedHeading: 'Percentage and number of prisoners on each incentive level by residential location',
+    expectedHeading: 'Percentage and number of prisoners on each incentive level by establishment',
     chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
@@ -219,7 +219,7 @@ const analyticsPages: AnalyticsPage[] = [
   {
     name: 'National Protected characteristics',
     url: '/analytics/National/protected-characteristic?characteristic=disability',
-    expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
+    expectedHeading: 'Percentage and number of prisoners by recorded disability',
     chartIds: [
       'population-by-disability',
       'incentive-levels-by-disability',
@@ -232,7 +232,7 @@ const analyticsPages: AnalyticsPage[] = [
   {
     name: 'PGD region Protected characteristics',
     url: '/analytics/LTHS/protected-characteristic?characteristic=disability',
-    expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
+    expectedHeading: 'Percentage and number of prisoners by recorded disability',
     chartIds: [
       'population-by-disability',
       'incentive-levels-by-disability',

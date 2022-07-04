@@ -1,4 +1,4 @@
-type AnalyticsChartContent = {
+export type AnalyticsChartContent = {
   title: string
   guidance?: string
   labelColumn?: string
@@ -229,6 +229,460 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     title:
       'Percentage and number of prisoners receiving each behaviour entry type by sexual orientation – last 28 days',
     guidance: guidancePrisonersWithEntriesByPc,
+    labelColumn: 'Sexual orientation',
+    googleAnalyticsCategory: 'Behaviour entries by sexual orientation',
+  },
+}
+
+export const RegionalIncentiveLevelsChartsContent: Record<string, AnalyticsChartContent> = {
+  'incentive-levels-by-location': {
+    title: 'Percentage and number of prisoners on each incentive level by establishment',
+    guidance:
+      'Use this chart to see incentive level splits for individual establishments. What does it tell you about how the incentives policy is applied? Are there any opportunities to share practice?',
+    labelColumn: 'Location',
+    googleAnalyticsCategory: 'Incentive level by establishment',
+  },
+  'trends-incentive-levels': {
+    title: 'Incentive levels in the prison group – last 12 months',
+    guidance:
+      'This chart tells you the split of incentive levels across the whole prison group - it can be used as a guide to start asking questions. Be aware that patterns for individual establishments could be masked - these can be viewed separately.',
+    googleAnalyticsCategory: 'Incentive level trends',
+  },
+}
+
+export const RegionalBehaviourEntriesChartsContent: Record<string, AnalyticsChartContent> = {
+  'entries-by-location': {
+    title: 'Comparison of positive and negative behaviour entries by establishment – last 28 days',
+    guidance:
+      'This chart lets you see the balance of positive to negative entries in each establishment. Do these proportions meet your expectations for the incentives policies?',
+    labelColumn: 'Location',
+    googleAnalyticsCategory: 'Behaviour entries by establishment',
+  },
+  'prisoners-with-entries-by-location': {
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by establishment – last 28 days',
+    guidance:
+      'Individual prisoner behaviours can give a fuller picture of the establishment. Are you happy with how many prisoners have no behaviour entries, and what all these numbers suggest about the incentives policy application?',
+    labelColumn: 'Location',
+    googleAnalyticsCategory: 'Prisoners with behaviour entries by establishment',
+  },
+  'trends-entries': {
+    title: 'Comparison of positive and negative behaviour entries in the prison group – last 12 months',
+    guidance:
+      'This chart tells you the split of behaviour entries across the whole prison group for general information. Be aware that ratios for individual establishments could be masked - these can be viewed separately.',
+    googleAnalyticsCategory: 'Behaviour entry trends',
+  },
+}
+
+const regionalGuidanceIncentiveLevelsByPc =
+  'Use this chart to see incentive levels of this protected characteristic across the whole prison group. The numbers may be large enough to show imbalances, although these could differ in individual establishments. You might want to explore further at prison level.'
+const regionalGuidanceTrendsIncentiveLevelsByPc =
+  'This chart shows prison group incentive levels for each group in this protected characteristic over 12 months. It can be used as a guide to prompt discussions. Be aware that patterns for individual establishments could be masked - these can be viewed separately.'
+const regionalGuidanceEntriesByPc =
+  'This chart lets you see the balance of positive to negative entries broken down by this protected characteristic across the prison group. These ratios could differ in individual establishments. You might want to explore further at prison level.'
+const regionalGuidanceTrendsEntriesByPc =
+  'This chart tells you the level split of behaviour entries for each group in this protected characteristic over 12 months. Be aware that this is at prison group level, so imbalances in individual establishments could be masked - these can be viewed separately.'
+const regionalGuidancePrisonersWithEntriesByPc =
+  'This chart shows the number of prisoners receiving different types of behaviour entries in this protected characteristic across the prison group. Be aware any imbalances shown could differ in individual establishments. You might want to explore further at prison level.'
+export const RegionalProtectedCharacteristicsChartsContent: Record<string, AnalyticsChartContent> = {
+  'population-by-age': {
+    title: 'Percentage and number of prisoners by age',
+    labelColumn: 'Age',
+    googleAnalyticsCategory: 'Population by age',
+  },
+  'population-by-disability': {
+    title: 'Percentage and number of prisoners by recorded disability',
+    labelColumn: 'Disability',
+    googleAnalyticsCategory: 'Population by disability',
+    labelColumnWidth: 'wide',
+  },
+  'population-by-ethnicity': {
+    title: 'Percentage and number of prisoners by ethnicity',
+    labelColumn: 'Ethnicity',
+    googleAnalyticsCategory: 'Population by ethnicity',
+    labelColumnWidth: 'wide',
+  },
+  'population-by-religion': {
+    title: 'Percentage and number of prisoners by religion',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Population by religion',
+  },
+  'population-by-sexual-orientation': {
+    title: 'Percentage and number of prisoners by sexual orientation',
+    labelColumn: 'Sexual orientation',
+    googleAnalyticsCategory: 'Population by sexual orientation',
+  },
+  'incentive-levels-by-age': {
+    title: 'Percentage and number of prisoners on each incentive level by age',
+    guidance: regionalGuidanceIncentiveLevelsByPc,
+    labelColumn: 'Age',
+    googleAnalyticsCategory: 'Incentive level by age',
+  },
+  'incentive-levels-by-disability': {
+    title: 'Percentage and number of prisoners on each incentive level by recorded disability',
+    guidance: regionalGuidanceIncentiveLevelsByPc,
+    labelColumn: 'Disability',
+    googleAnalyticsCategory: 'Incentive level by disability',
+    labelColumnWidth: 'wide',
+  },
+  'incentive-levels-by-ethnicity': {
+    title: 'Percentage and number of prisoners on each incentive level by ethnicity',
+    guidance: regionalGuidanceIncentiveLevelsByPc,
+    labelColumn: 'Ethnicity',
+    googleAnalyticsCategory: 'Incentive level by ethnicity',
+    labelColumnWidth: 'wide',
+  },
+  'incentive-levels-by-religion': {
+    title: 'Percentage and number of prisoners on each incentive level by religion',
+    guidance: regionalGuidanceIncentiveLevelsByPc,
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Incentive level by religion',
+  },
+  'incentive-levels-by-sexual-orientation': {
+    title: 'Percentage and number of prisoners on each incentive level by sexual orientation',
+    guidance: regionalGuidanceIncentiveLevelsByPc,
+    labelColumn: 'Sexual orientation',
+    googleAnalyticsCategory: 'Incentive level by sexual orientation',
+  },
+  'trends-incentive-levels-by-age': {
+    title: 'Incentive levels by age – last 12 months',
+    guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by age trends',
+  },
+  'trends-incentive-levels-by-disability': {
+    title: 'Incentive levels by recorded disability – last 12 months',
+    guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by recorded disability trends',
+  },
+  'trends-incentive-levels-by-ethnicity': {
+    title: 'Incentive levels by ethnicity – last 12 months',
+    guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by ethnicity trends',
+  },
+  'trends-incentive-levels-by-religion': {
+    title: 'Incentive levels by religion – last 12 months',
+    guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by religion trends',
+  },
+  'trends-incentive-levels-by-sexual-orientation': {
+    title: 'Incentive levels by sexual orientation – last 12 months',
+    guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by sexual orientation trends',
+  },
+  'entries-by-age': {
+    title: 'Comparison of positive and negative behaviour entries by age – last 28 days',
+    guidance: regionalGuidanceEntriesByPc,
+    labelColumn: 'Age',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by age',
+  },
+  'entries-by-disability': {
+    title: 'Comparison of positive and negative behaviour entries by recorded disability – last 28 days',
+    guidance: regionalGuidanceEntriesByPc,
+    labelColumn: 'Disability',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by disability',
+    labelColumnWidth: 'wide',
+  },
+  'entries-by-ethnicity': {
+    title: 'Comparison of positive and negative behaviour entries by ethnicity – last 28 days',
+    guidance: regionalGuidanceEntriesByPc,
+    labelColumn: 'Ethnicity',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by ethnicity',
+    labelColumnWidth: 'wide',
+  },
+  'entries-by-religion': {
+    title: 'Comparison of positive and negative behaviour entries by religion – last 28 days',
+    guidance: regionalGuidanceEntriesByPc,
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by religion',
+  },
+  'entries-by-sexual-orientation': {
+    title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 28 days',
+    guidance: regionalGuidanceEntriesByPc,
+    labelColumn: 'Sexual orientation',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by sexual orientation',
+  },
+  'trends-entries-by-age': {
+    title: 'Comparison of positive and negative behaviour entries by age – last 12 months',
+    guidance: regionalGuidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by age trends',
+  },
+  'trends-entries-by-disability': {
+    title: 'Comparison of positive and negative behaviour entries by recorded disability – last 12 months',
+    guidance: regionalGuidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by recorded disability trends',
+  },
+  'trends-entries-by-ethnicity': {
+    title: 'Comparison of positive and negative behaviour entries by ethnicity – last 12 months',
+    guidance: regionalGuidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by ethnicity trends',
+  },
+  'trends-entries-by-religion': {
+    title: 'Comparison of positive and negative behaviour entries by religion – last 12 months',
+    guidance: regionalGuidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by religion trends',
+  },
+  'trends-entries-by-sexual-orientation': {
+    title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 12 months',
+    guidance: regionalGuidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by sexual orientation trends',
+  },
+  'prisoners-with-entries-by-age': {
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by age – last 28 days',
+    guidance: regionalGuidancePrisonersWithEntriesByPc,
+    labelColumn: 'Age',
+    googleAnalyticsCategory: 'Behaviour entries by age',
+  },
+  'prisoners-with-entries-by-disability': {
+    title:
+      'Percentage and number of prisoners receiving each behaviour entry type by recorded disability – last 28 days',
+    guidance: regionalGuidancePrisonersWithEntriesByPc,
+    labelColumn: 'Disability',
+    googleAnalyticsCategory: 'Behaviour entries by disability',
+    labelColumnWidth: 'wide',
+  },
+  'prisoners-with-entries-by-ethnicity': {
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by ethnicity – last 28 days',
+    guidance: regionalGuidancePrisonersWithEntriesByPc,
+    labelColumn: 'Ethnicity',
+    googleAnalyticsCategory: 'Behaviour entries by ethnicity',
+    labelColumnWidth: 'wide',
+  },
+  'prisoners-with-entries-by-religion': {
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by religion – last 28 days',
+    guidance: regionalGuidancePrisonersWithEntriesByPc,
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Behaviour entries by religion',
+  },
+  'prisoners-with-entries-by-sexual-orientation': {
+    title:
+      'Percentage and number of prisoners receiving each behaviour entry type by sexual orientation – last 28 days',
+    guidance: regionalGuidancePrisonersWithEntriesByPc,
+    labelColumn: 'Sexual orientation',
+    googleAnalyticsCategory: 'Behaviour entries by sexual orientation',
+  },
+}
+
+export const NationalIncentiveLevelsChartsContent: Record<string, AnalyticsChartContent> = {
+  'incentive-levels-by-location': {
+    title: 'Percentage and number of prisoners on each incentive level by prison group',
+    guidance:
+      'Use this chart to see incentive level splits nationally and for each prison group. This will give you information for general patterns across the prison service, but it could highlight where you might want to explore further.',
+    labelColumn: 'Location',
+    googleAnalyticsCategory: 'Incentive level by prison group',
+  },
+  'trends-incentive-levels': {
+    title: 'National incentive levels – last 12 months',
+    guidance:
+      'This chart tells you the split of incentive levels nationally across the whole prison service in the last 12 months. It can be used as a guide to start asking questions, and to inform where you might want to look deeper.',
+    googleAnalyticsCategory: 'Incentive level trends',
+  },
+}
+
+export const NationalBehaviourEntriesChartsContent: Record<string, AnalyticsChartContent> = {
+  'entries-by-location': {
+    title: 'Comparison of positive and negative behaviour entries by prison group – last 28 days',
+    guidance:
+      'This chart lets you see the balance of positive to negative entries nationally and at prison group level, for general information.',
+    labelColumn: 'Location',
+    googleAnalyticsCategory: 'Behaviour entries by prison group',
+  },
+  'prisoners-with-entries-by-location': {
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by prison group – last 28 days',
+    guidance:
+      'This chart shows you the breakdown of prisoners receiving each behaviour entry type, nationally and at prison group level. Do these numbers suggest anything about how incentive policies are generally being applied?',
+    labelColumn: 'Location',
+    googleAnalyticsCategory: 'Prisoners with behaviour entries by prison group',
+  },
+  'trends-entries': {
+    title: 'Comparison of positive and negative behaviour entries at national level – last 12 months',
+    guidance:
+      'This chart shows you the split of behaviour entries nationally, for general information. Be aware that ratios for individual establishments and prison groups could be quite different.',
+    googleAnalyticsCategory: 'Behaviour entry trends',
+  },
+}
+
+const nationalGuidanceIncentiveLevelsByPc =
+  'This chart shows incentive level splits of this protected characteristic at a national level. The numbers may be large enough to show imbalances, although these could differ in prison groups and individual establishments.'
+const nationalGuidanceTrendsIncentiveLevelsByPc =
+  'This chart shows incentive levels for each group in this protected characteristic over 12 months. Be aware that national patterns could mask individual establishment and prison group data.'
+const nationalGuidanceEntriesByPc =
+  'This chart lets you see the balance of positive to negative entries broken down by this protected characteristic at a national level. These ratios could differ in individual establishments and groups.'
+const nationalGuidanceTrendsEntriesByPc =
+  'This chart tells you the split of behaviour entries for each group in this protected characteristic over 12 months. Be aware that national patterns could mask individual establishment and prison group data.'
+const nationalGuidancePrisonersWithEntriesByPc =
+  'This chart shows the number of prisoners receiving different types of behaviour entries in this protected characteristic at a national level. Be aware any national imbalances shown could differ in individual establishments and prison groups.'
+export const NationalProtectedCharacteristicsChartsContent: Record<string, AnalyticsChartContent> = {
+  'population-by-age': {
+    title: 'Percentage and number of prisoners by age',
+    labelColumn: 'Age',
+    googleAnalyticsCategory: 'Population by age',
+  },
+  'population-by-disability': {
+    title: 'Percentage and number of prisoners by recorded disability',
+    labelColumn: 'Disability',
+    googleAnalyticsCategory: 'Population by disability',
+    labelColumnWidth: 'wide',
+  },
+  'population-by-ethnicity': {
+    title: 'Percentage and number of prisoners by ethnicity',
+    labelColumn: 'Ethnicity',
+    googleAnalyticsCategory: 'Population by ethnicity',
+    labelColumnWidth: 'wide',
+  },
+  'population-by-religion': {
+    title: 'Percentage and number of prisoners by religion',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Population by religion',
+  },
+  'population-by-sexual-orientation': {
+    title: 'Percentage and number of prisoners by sexual orientation',
+    labelColumn: 'Sexual orientation',
+    googleAnalyticsCategory: 'Population by sexual orientation',
+  },
+  'incentive-levels-by-age': {
+    title: 'Percentage and number of prisoners on each incentive level by age',
+    guidance: nationalGuidanceIncentiveLevelsByPc,
+    labelColumn: 'Age',
+    googleAnalyticsCategory: 'Incentive level by age',
+  },
+  'incentive-levels-by-disability': {
+    title: 'Percentage and number of prisoners on each incentive level by recorded disability',
+    guidance: nationalGuidanceIncentiveLevelsByPc,
+    labelColumn: 'Disability',
+    googleAnalyticsCategory: 'Incentive level by disability',
+    labelColumnWidth: 'wide',
+  },
+  'incentive-levels-by-ethnicity': {
+    title: 'Percentage and number of prisoners on each incentive level by ethnicity',
+    guidance: nationalGuidanceIncentiveLevelsByPc,
+    labelColumn: 'Ethnicity',
+    googleAnalyticsCategory: 'Incentive level by ethnicity',
+    labelColumnWidth: 'wide',
+  },
+  'incentive-levels-by-religion': {
+    title: 'Percentage and number of prisoners on each incentive level by religion',
+    guidance: nationalGuidanceIncentiveLevelsByPc,
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Incentive level by religion',
+  },
+  'incentive-levels-by-sexual-orientation': {
+    title: 'Percentage and number of prisoners on each incentive level by sexual orientation',
+    guidance: nationalGuidanceIncentiveLevelsByPc,
+    labelColumn: 'Sexual orientation',
+    googleAnalyticsCategory: 'Incentive level by sexual orientation',
+  },
+  'trends-incentive-levels-by-age': {
+    title: 'Incentive levels by age – last 12 months',
+    guidance: nationalGuidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by age trends',
+  },
+  'trends-incentive-levels-by-disability': {
+    title: 'Incentive levels by recorded disability – last 12 months',
+    guidance: nationalGuidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by recorded disability trends',
+  },
+  'trends-incentive-levels-by-ethnicity': {
+    title: 'Incentive levels by ethnicity – last 12 months',
+    guidance: nationalGuidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by ethnicity trends',
+  },
+  'trends-incentive-levels-by-religion': {
+    title: 'Incentive levels by religion – last 12 months',
+    guidance: nationalGuidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by religion trends',
+  },
+  'trends-incentive-levels-by-sexual-orientation': {
+    title: 'Incentive levels by sexual orientation – last 12 months',
+    guidance: nationalGuidanceTrendsIncentiveLevelsByPc,
+    googleAnalyticsCategory: 'Incentive level by sexual orientation trends',
+  },
+  'entries-by-age': {
+    title: 'Comparison of positive and negative behaviour entries by age – last 28 days',
+    guidance: nationalGuidanceEntriesByPc,
+    labelColumn: 'Age',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by age',
+  },
+  'entries-by-disability': {
+    title: 'Comparison of positive and negative behaviour entries by recorded disability – last 28 days',
+    guidance: nationalGuidanceEntriesByPc,
+    labelColumn: 'Disability',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by disability',
+    labelColumnWidth: 'wide',
+  },
+  'entries-by-ethnicity': {
+    title: 'Comparison of positive and negative behaviour entries by ethnicity – last 28 days',
+    guidance: nationalGuidanceEntriesByPc,
+    labelColumn: 'Ethnicity',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by ethnicity',
+    labelColumnWidth: 'wide',
+  },
+  'entries-by-religion': {
+    title: 'Comparison of positive and negative behaviour entries by religion – last 28 days',
+    guidance: nationalGuidanceEntriesByPc,
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by religion',
+  },
+  'entries-by-sexual-orientation': {
+    title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 28 days',
+    guidance: nationalGuidanceEntriesByPc,
+    labelColumn: 'Sexual orientation',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by sexual orientation',
+  },
+  'trends-entries-by-age': {
+    title: 'Comparison of positive and negative behaviour entries by age – last 12 months',
+    guidance: nationalGuidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by age trends',
+  },
+  'trends-entries-by-disability': {
+    title: 'Comparison of positive and negative behaviour entries by recorded disability – last 12 months',
+    guidance: nationalGuidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by recorded disability trends',
+  },
+  'trends-entries-by-ethnicity': {
+    title: 'Comparison of positive and negative behaviour entries by ethnicity – last 12 months',
+    guidance: nationalGuidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by ethnicity trends',
+  },
+  'trends-entries-by-religion': {
+    title: 'Comparison of positive and negative behaviour entries by religion – last 12 months',
+    guidance: nationalGuidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by religion trends',
+  },
+  'trends-entries-by-sexual-orientation': {
+    title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 12 months',
+    guidance: nationalGuidanceTrendsEntriesByPc,
+    googleAnalyticsCategory: 'Behaviour entries by sexual orientation trends',
+  },
+  'prisoners-with-entries-by-age': {
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by age – last 28 days',
+    guidance: nationalGuidancePrisonersWithEntriesByPc,
+    labelColumn: 'Age',
+    googleAnalyticsCategory: 'Behaviour entries by age',
+  },
+  'prisoners-with-entries-by-disability': {
+    title:
+      'Percentage and number of prisoners receiving each behaviour entry type by recorded disability – last 28 days',
+    guidance: nationalGuidancePrisonersWithEntriesByPc,
+    labelColumn: 'Disability',
+    googleAnalyticsCategory: 'Behaviour entries by disability',
+    labelColumnWidth: 'wide',
+  },
+  'prisoners-with-entries-by-ethnicity': {
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by ethnicity – last 28 days',
+    guidance: nationalGuidancePrisonersWithEntriesByPc,
+    labelColumn: 'Ethnicity',
+    googleAnalyticsCategory: 'Behaviour entries by ethnicity',
+    labelColumnWidth: 'wide',
+  },
+  'prisoners-with-entries-by-religion': {
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by religion – last 28 days',
+    guidance: nationalGuidancePrisonersWithEntriesByPc,
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Behaviour entries by religion',
+  },
+  'prisoners-with-entries-by-sexual-orientation': {
+    title:
+      'Percentage and number of prisoners receiving each behaviour entry type by sexual orientation – last 28 days',
+    guidance: nationalGuidancePrisonersWithEntriesByPc,
     labelColumn: 'Sexual orientation',
     googleAnalyticsCategory: 'Behaviour entries by sexual orientation',
   },

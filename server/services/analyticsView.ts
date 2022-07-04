@@ -1,5 +1,17 @@
 import type { UrlForLocationFunction } from './analyticsService'
 import PgdRegionService, { National, PgdRegion } from './pgdRegionService'
+import type { AnalyticsChartContent } from '../routes/analyticsChartsContent'
+import {
+  BehaviourEntriesChartsContent,
+  IncentiveLevelsChartsContent,
+  NationalBehaviourEntriesChartsContent,
+  NationalIncentiveLevelsChartsContent,
+  NationalProtectedCharacteristicsChartsContent,
+  ProtectedCharacteristicsChartsContent,
+  RegionalBehaviourEntriesChartsContent,
+  RegionalIncentiveLevelsChartsContent,
+  RegionalProtectedCharacteristicsChartsContent,
+} from '../routes/analyticsChartsContent'
 
 type ViewType = 'behaviour-entries' | 'incentive-levels' | 'protected-characteristic'
 
@@ -30,16 +42,31 @@ export default class AnalyticsView {
 
   protected activeCaseLoad: string
 
+  protected incentiveLevelsChartsContent: Record<string, AnalyticsChartContent>
+
+  protected behaviourEntriesChartsContent: Record<string, AnalyticsChartContent>
+
+  protected protectedCharacteristicsChartsContent: Record<string, AnalyticsChartContent>
+
   constructor(pgdRegionCode: string | null, viewType: ViewType, activeCaseLoad: string) {
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
         this.viewLevel = 'national'
+        this.incentiveLevelsChartsContent = NationalIncentiveLevelsChartsContent
+        this.behaviourEntriesChartsContent = NationalBehaviourEntriesChartsContent
+        this.protectedCharacteristicsChartsContent = NationalProtectedCharacteristicsChartsContent
       } else {
         this.viewLevel = 'regional'
         this.pgdRegion = PgdRegionService.getPgdRegionByCode(pgdRegionCode)
+        this.incentiveLevelsChartsContent = RegionalIncentiveLevelsChartsContent
+        this.behaviourEntriesChartsContent = RegionalBehaviourEntriesChartsContent
+        this.protectedCharacteristicsChartsContent = RegionalProtectedCharacteristicsChartsContent
       }
     } else {
       this.viewLevel = 'prison'
+      this.incentiveLevelsChartsContent = IncentiveLevelsChartsContent
+      this.behaviourEntriesChartsContent = BehaviourEntriesChartsContent
+      this.protectedCharacteristicsChartsContent = ProtectedCharacteristicsChartsContent
     }
 
     this.viewType = viewType

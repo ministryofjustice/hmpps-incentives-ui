@@ -283,9 +283,7 @@ context('Pgd Region selection > National > Analytics section > Protected charact
     cy.get('#form-select-characteristic button').click()
 
     cy.get('.govuk-heading-xl').contains('National')
-    cy.get('h2.govuk-heading-m')
-      .first()
-      .contains('Percentage and number of prisoners in the establishment by sexual orientation')
+    cy.get('h2.govuk-heading-m').first().contains('Percentage and number of prisoners by sexual orientation')
   })
 
   it('PC groups dropdowns are working for that pgdRegion', () => {

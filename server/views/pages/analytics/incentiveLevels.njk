@@ -16,11 +16,11 @@
 
       {% set chartId = "incentive-levels-by-location" %}
       {{ chartPrisonersOnLevels(
-        title=IncentiveLevelsChartsContent[chartId].title,
-        guidance=IncentiveLevelsChartsContent[chartId].guidance,
-        labelColumn=IncentiveLevelsChartsContent[chartId].labelColumn,
+        title=analyticsView.incentiveLevelsChartsContent[chartId].title,
+        guidance=analyticsView.incentiveLevelsChartsContent[chartId].guidance,
+        labelColumn=analyticsView.incentiveLevelsChartsContent[chartId].labelColumn,
         chartId=chartId,
-        googleAnalyticsCategory=IncentiveLevelsChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.incentiveLevelsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
@@ -36,10 +36,10 @@
 
       {% set chartId = "trends-incentive-levels" %}
       {{ chartTrends(
-        title=IncentiveLevelsChartsContent[chartId].title,
-        guidance=IncentiveLevelsChartsContent[chartId].guidance,
+        title=analyticsView.incentiveLevelsChartsContent[chartId].title,
+        guidance=analyticsView.incentiveLevelsChartsContent[chartId].guidance,
         chartId=chartId,
-        googleAnalyticsCategory=IncentiveLevelsChartsContent[chartId].googleAnalyticsCategory,
+        googleAnalyticsCategory=analyticsView.incentiveLevelsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,

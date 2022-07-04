@@ -1,11 +1,17 @@
-import type { RequestHandler, Router, NextFunction, Request, Response } from 'express'
+import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
 import { BadRequest, MethodNotAllowed } from 'http-errors'
 
 import config from '../config'
 import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
+import S3Client from '../data/s3Client'
+import AnalyticsService from '../services/analyticsService'
+import { type CaseEntriesTable, TableType } from '../services/analyticsServiceTypes'
+import AnalyticsView from '../services/analyticsView'
+import { National } from '../services/pgdRegionService'
 import AboutPageFeedbackForm from './forms/aboutPageFeedbackForm'
+import { cache } from './analyticsRouter'
 
 export default function routes(router: Router): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
@@ -114,15 +120,46 @@ ${noComments}`
 
       next()
     }),
-    (req: Request, res: Response) => {
+    asyncMiddleware(async (req: Request, res: Response) => {
       res.locals.breadcrumbs.addItems({ text: 'About' })
 
+      const activeCaseLoad = res.locals.user.activeCaseload.id
+      const prisonRegions = await getPrisonRegions(activeCaseLoad)
+      const prisonRegionTableRows = Object.entries(prisonRegions).map(([region, prisons]) => {
+        return [{ text: region }, { html: prisons.join('<br />') }]
+      })
+
       res.render('pages/about.njk', {
+        prisonRegionTableRows,
         messages: req.flash(),
         form: res.locals.forms['about-page-feedback'],
       })
-    },
+    }),
   )
 
   return router
+}
+
+async function getPrisonRegions(activeCaseLoad: string): Promise<Record<string, string[]>> {
+  const analyticsView = new AnalyticsView(National, 'behaviour-entries', activeCaseLoad)
+  const s3Client = new S3Client(config.s3)
+  const analyticsService = new AnalyticsService(s3Client, cache, analyticsView)
+  const sourceTable = await analyticsService.getStitchedTable<CaseEntriesTable, [string, string]>(
+    TableType.behaviourEntriesRegional,
+    ['pgd_region', 'prison_name'],
+  )
+  const prisonRegions: Record<string, Set<string>> = {}
+  sourceTable.stitchedTable.forEach(([region, prison]) => {
+    if (!(region in prisonRegions)) {
+      prisonRegions[region] = new Set()
+    }
+    prisonRegions[region].add(prison)
+  })
+  const sortedPrisonRegions: Record<string, string[]> = {}
+  Object.keys(prisonRegions)
+    .sort()
+    .forEach(region => {
+      sortedPrisonRegions[region] = Array.from(prisonRegions[region]).sort()
+    })
+  return sortedPrisonRegions
 }

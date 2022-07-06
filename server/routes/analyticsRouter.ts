@@ -92,34 +92,32 @@ export default function routes(router: Router): Router {
     res.redirect('/analytics/incentive-levels')
   })
 
-  if (config.featureFlags.showRegionalNational) {
-    get('/select-pgd-region', async (req, res) => {
-      const options = [{ value: National, text: National }].concat(
-        PgdRegionService.getAllPgdRegions().map((pgdRegion: PgdRegion) => ({
-          value: pgdRegion.code,
-          text: pgdRegion.name,
-        })),
-      )
+  get('/select-pgd-region', async (req, res) => {
+    const options = [{ value: National, text: National }].concat(
+      PgdRegionService.getAllPgdRegions().map((pgdRegion: PgdRegion) => ({
+        value: pgdRegion.code,
+        text: pgdRegion.name,
+      })),
+    )
 
-      res.render('pages/analytics/changePgdRegion.njk', {
-        title: 'Select a view',
-        options,
-        backUrl: '/',
-      })
+    res.render('pages/analytics/changePgdRegion.njk', {
+      title: 'Select a view',
+      options,
+      backUrl: '/',
     })
+  })
 
-    post('/select-pgd-region', async (req, res) => {
-      const { pgdRegionCode } = req.body
+  post('/select-pgd-region', async (req, res) => {
+    const { pgdRegionCode } = req.body
 
-      if (!pgdRegionCode) {
-        logger.error(req.originalUrl, 'pgdRegionCode is missing')
-        res.redirect('/analytics/select-pgd-region')
-        return
-      }
+    if (!pgdRegionCode) {
+      logger.error(req.originalUrl, 'pgdRegionCode is missing')
+      res.redirect('/analytics/select-pgd-region')
+      return
+    }
 
-      res.redirect(`/analytics/${pgdRegionCode}/incentive-levels`)
-    })
-  }
+    res.redirect(`/analytics/${pgdRegionCode}/incentive-levels`)
+  })
 
   const routeWithFeedback = (path: string, chartIds: ReadonlyArray<ChartId>, handler: RequestHandler) =>
     router.all(

@@ -44,7 +44,6 @@ generic-service:
     PHASE_NAME: ""
     FEATURE_ADD_TEST_ERROR_ENDPOINT: ""
     FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE: ""
-    FEATURE_SHOW_REGIONAL_NATIONAL: ""
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

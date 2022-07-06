@@ -28,35 +28,28 @@
 
     </li>
     <li class="govuk-grid-column-one-third card-group__item">
-      {% if featureFlags.showRegionalNational %}
-        {% set cardDescription = "Data visualisations for incentive levels and behaviour entries at establishment level, including protected characteristics." %}
-      {% else %}
-        {% set cardDescription = "See data visualisations for incentive levels and behaviour entries, including protected characteristics." %}
-      {% endif %}
 
       {{ card({
         href: "/analytics/incentive-levels",
         clickable: "true",
         heading: "Incentive levels and behaviour entry charts",
-        description: cardDescription,
+        description: "Data visualisations for incentive levels and behaviour entries at establishment level, including protected characteristics.",
         id: "incentive-analytics"
       }) }}
 
     </li>
 
-    {% if featureFlags.showRegionalNational %}
-      <li class="govuk-grid-column-one-third card-group__item">
+    <li class="govuk-grid-column-one-third card-group__item">
 
-        {{ card({
-          href: "/analytics/select-pgd-region",
-          clickable: "true",
-          heading: "Prison group and national charts",
-          description: "Data visualisations for incentive levels, behaviour entries and protected characteristics at prison group and national level.",
-          id: "select-pgd-region"
-        }) }}
+      {{ card({
+        href: "/analytics/select-pgd-region",
+        clickable: "true",
+        heading: "Prison group and national charts",
+        description: "Data visualisations for incentive levels, behaviour entries and protected characteristics at prison group and national level.",
+        id: "select-pgd-region"
+      }) }}
 
-      </li>
-    {% endif %}
+    </li>
 
     <li class="govuk-grid-column-one-third card-group__item">
       {{ card({

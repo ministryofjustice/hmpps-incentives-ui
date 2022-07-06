@@ -134,7 +134,6 @@ export default {
     addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),
     // Whether to hide the 'Days since last review'/'Days on level' columns
     hideDaysColumnsInIncentivesTable: flag('FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE', false),
-    showRegionalNational: flag('FEATURE_SHOW_REGIONAL_NATIONAL', false),
     useFileSystemCache: flag('FEATURE_FS_CACHE', false),
   },
   analyticsDataStaleAferDays: Number(get('ANALYTICS_DATA_STALE_AFTER_DAYS', 0)),

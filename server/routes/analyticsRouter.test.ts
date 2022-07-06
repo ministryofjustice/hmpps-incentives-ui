@@ -36,8 +36,6 @@ beforeAll(() => {
   config.apis.zendesk.username = 'anonymous@justice.gov.uk'
   config.apis.zendesk.token = '123456789012345678901234567890'
 
-  config.featureFlags.showRegionalNational = true
-
   mockedZendeskClientClass = ZendeskClient as jest.Mock<ZendeskClient>
 })
 

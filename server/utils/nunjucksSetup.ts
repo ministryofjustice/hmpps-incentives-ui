@@ -6,6 +6,7 @@ import * as pathModule from 'path'
 import config from '../config'
 import { calculateTrendsRange, makeChartPalette } from './analytics'
 import format from './format'
+import { initialiseName } from './utils'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -49,14 +50,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
     },
   )
 
-  njkEnv.addFilter('initialiseName', (fullName: string) => {
-    // this check is for the authError page
-    if (!fullName) {
-      return null
-    }
-    const array = fullName.split(' ')
-    return `${array[0][0]}. ${array.reverse()[0]}`
-  })
+  njkEnv.addFilter('initialiseName', initialiseName)
 
   njkEnv.addFilter('dateParam', (date: Date) => {
     if (!date) {

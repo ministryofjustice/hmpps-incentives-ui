@@ -1,103 +1,163 @@
-# hmpps-template-typescript
-Template github repo used for new Typescript based projects.
+# HMPPS Incentives UI
 
-# Instructions
+This application is a front-end application used by staff in HMPPS prisons to view offenders’ incentive level information.
 
-If this is a HMPPS project then the project will be created as part of bootstrapping - 
-see https://github.com/ministryofjustice/dps-project-bootstrap.
+It is backed by [hmpps-incentives-api](https://github.com/ministryofjustice/hmpps-incentives-api)
+which currently is a facade to incentive level information in NOMIS but will become the single source of truth in future.
 
-This bootstrap is community managed by the mojdt `#typescript` slack channel. 
-Please raise any questions or queries there. Contributions welcome!
+## Running locally
 
-Our security policy is located [here](https://github.com/ministryofjustice/hmpps-template-typescript/security/policy). 
+The UI application needs a suite of services to work:
 
-More information about the template project including features can be found [here](https://dsdmoj.atlassian.net/wiki/spaces/NDSS/pages/3488677932/Typescript+template+project).
+* redis – to store user session data
+* AWS S3 (or minio) – to load analytics data
+* hmpps-auth – to authenticate users
+* nomis-user-roles-api – to authenticate users
+* prison-api – to retrieve offender information
+* incentives-api – to retrieve incentive level information
 
-## Creating a CloudPlatform namespace
+### Requirements
 
-When deploying to a new namespace, you may wish to use this template typescript project namespace as the basis for your new namespace:
+This application is built for node 16 and docker will be needed to run it locally.
+[nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm)
+can be used to install appropriate node versions.
 
-<https://github.com/ministryofjustice/cloud-platform-environments/tree/main/namespaces/live-1.cloud-platform.service.justice.gov.uk/hmpps-template-typescript>
+Additional tools are required to manage deployment: kubectl and helm.
 
-This template namespace includes an AWS elasticache setup - which is required by this template project.
+### Using services in `dev` environment
 
-Copy this folder, update all the existing namespace references, and submit a PR to the CloudPlatform team. Further instructions from the CloudPlatform team can be found here: <https://user-guide.cloud-platform.service.justice.gov.uk/#cloud-platform-user-guide>
+This is probably the easiest way to run and develop on your machine: by hooking into services that already exist
+in the `dev` environment.
+A user account is needed in hmpps-auth with the appropriate roles.
 
-## Renaming from HMPPS Template Typescript - github Actions
+Copy the `.env.sample` file to `.env` following the instructions in the file.
 
-Once the new repository is deployed. Navigate to the repository in github, and select the `Actions` tab.
-Click the link to `Enable Actions on this repository`.
+Run the application in development mode, in separate shell sessions:
 
-Find the Action workflow named: `rename-project-create-pr` and click `Run workflow`.  This workflow will
-execute the `rename-project.bash` and create Pull Request for you to review.  Review the PR and merge.
+```shell
+docker compose -f docker-compose-dev.yml up
+npm run start:dev
+```
 
-Note: ideally this workflow would run automatically however due to a recent change github Actions are not
-enabled by default on newly created repos. There is no way to enable Actions other then to click the button in the UI.
-If this situation changes we will update this project so that the workflow is triggered during the bootstrap project.
-Further reading: <https://github.community/t/workflow-isnt-enabled-in-repos-generated-from-template/136421>
+This will automatically restart it if server code or front-end assets are modified.
 
-## Manually branding from template app
-Run the `rename-project.bash` and create a PR.
+### Using only local services
 
-The rename-project.bash script takes a single argument - the name of the project and calculates from it the project description
-It then performs a search and replace and directory renames so the project is ready to be used.
+**TODO:** the environment/settings are not properly set up for this application to work without using external services!
 
-## Ensuring slack notifications are raised correctly
+### Updating dependencies
 
-To ensure notifications are routed to the correct slack channels, update the `alerts-slack-channel` and `releases-slack-channel` parameters in `.circle/config.yml` to an appropriate channel.
+It’s prudent to periodically update npm dependencies; continuous integration will occasionally warn when it’s needed.
+Renovate (similar to dependabot) is set up to try to upgrade
+npm packages, base docker images, helm charts and CircleCI orbs
+by raising pull requests.
 
-## Running the app
-The easiest way to run the app is to use docker compose to create the service and all dependencies. 
+This will attempt update npm packages manually and perform unit tests:
 
-`docker-compose pull`
+```shell
+npx npm-check-updates --upgrade --doctor
+```
 
-`docker-compose up`
+## Testing
 
-### Dependencies
-The app requires: 
-* hmpps-auth - for authentication
-* redis - session store and token caching
+Continuous integration on CircleCI will always perform the full suite of tests on pull requests and branches pushed to github,
+but they can be run locally too.
 
-### Running the app for development
+### Unit tests
 
-To start the main services excluding the example typescript template app: 
+Run unit tests using:
 
-`docker-compose up --scale=app=0`
+```shell
+npm test
+```
 
-Install dependencies using `npm install`, ensuring you are using >= `Node v14.x`
+…optionally passing a file path pattern to only run a subset:
 
-And then, to build the assets and start the app with nodemon:
+```shell
+npm test -- authorisationMiddleware
+```
 
-`npm run start:dev`
+### Integration tests
 
-### Run linter
+Run the full set of headless integration tests, in separate shell sessions:
 
-`npm run lint`
+```shell
+docker compose -f docker-compose-test.yml up
+npm run start-feature
+npm run int-test
+```
 
-### Run tests
+Integration tests can also be run in development mode with a UI
+so that assets are rebuilt when modified and tests will re-run:
 
-`npm run test`
+```shell
+docker compose -f docker-compose-test.yml up
+npm run start-feature:dev
+npm run int-test-ui
+```
 
-### Running integration tests
+### Code style tests
 
-For local running, start a test db, redis, and wiremock instance by:
+Prettier should automatically correct many stylistic errors when changes are committed,
+but the linter can also be run manually:
 
-`docker-compose -f docker-compose-test.yml up`
+```shell
+npm run lint
+```
 
-Then run the server in test mode by:
+Additionally, SonarCloud comments on pull requests with an assessment of code quality.
 
-`npm run start-feature` (or `npm run start-feature:dev` to run with nodemon)
+### Security tests
 
-And then either, run tests in headless mode with:
+Continuous integration will regularly perform security checks using nm security audit, trivy and veracode.
 
-`npm run int-test`
- 
-Or run tests with the cypress UI:
+The npm audit can be run manually:
 
-`npm run int-test-ui`
+```shell
+npx audit-ci --config audit-ci.json
+```
 
+## Hosting
 
-### Dependency Checks
+This application is hosted on [Cloud Platform](https://user-guide.cloud-platform.service.justice.gov.uk/)
+in three environments:
+`dev` (continuously deployed and experimental; for general testing),
+`preprod` (largely matches the live service; for pre-release testing)
+and `prod` (the live service).
 
-The template project has implemented some scheduled checks to ensure that key dependencies are kept up to date.
-If these are not desired in the cloned project, remove references to `check_outdated` job from `.circleci/config.yml`
+The environments are distinct namespaces defined using a combination of kubernetes resources and terraform templates:
+
+* [`dev`](https://github.com/ministryofjustice/cloud-platform-environments/tree/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-incentives-dev)
+* [`preprod`](https://github.com/ministryofjustice/cloud-platform-environments/tree/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-incentives-preprod)
+* [`prod`](https://github.com/ministryofjustice/cloud-platform-environments/tree/main/namespaces/live.cloud-platform.service.justice.gov.uk/hmpps-incentives-prod)
+
+A shared HMPPS helm chart forms the basis of releases,
+setting up a deployment, service, ingress and associated policies and monitoring rules.
+
+See `/helm_deploy/`.
+
+### Deployment
+
+When the main branch is updated (e.g. when a pull request is merged),
+a new version of the application is released to `dev` automatically by CircleCI.
+This release can be promoted to `preprod` and `prod` using the CircleCI interface.
+
+See `/helm_deploy/README.md` for manual deployment steps.
+
+### Monitoring
+
+There is a suite of tools used for monitoring deployed applications:
+
+* [Kibana](https://kibana.cloud-platform.service.justice.gov.uk/_plugin/kibana/app/kibana) – logging
+* [Azure Application Insights](https://portal.azure.com/) – application profiling and introspection
+* [Prometheus](https://prometheus.cloud-platform.service.justice.gov.uk/) – application and request metrics
+* [Alertmanager](https://alertmanager.live.cloud-platform.service.justice.gov.uk/) – alerts based on metrics
+* [Sentry.io](https://sentry.io/organizations/ministryofjustice/issues/) – monitoring of errors and exceptions
+* [SonarCloud](https://sonarcloud.io/project/overview?id=ministryofjustice_hmpps-incentives-ui) – code quality monitoring
+
+## References
+
+The code in this repository uses the MIT licence.
+
+* [MoJ security guidance](https://security-guidance.service.justice.gov.uk/)
+* [MoJ technical guidance](https://technical-guidance.service.justice.gov.uk/)

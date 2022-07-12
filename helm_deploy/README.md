@@ -1,69 +1,65 @@
 # Deployment Notes
 
+Deployment is usually handled through CircleCI, but sometimes it’s useful to access the cluster directly
+(e.g. to diagnose problems).
+
 ## Prerequisites
 
-- Ensure you have helm v3 client installed.
+Ensure you have kubectl v1.21 (or compatible) and helm v3 clients installed.
 
-```sh
-$ helm version
-version.BuildInfo{Version:"v3.0.1", GitCommit:"7c22ef9ce89e0ebeb7125ba2ebf7d421f3e82ffa", GitTreeState:"clean", GoVersion:"go1.13.4"}
+You will need to be a member of the `@ministryofjustice/hmpps-incentives` team on github and
+have authenticated kubectl with [Cloud Platform](https://user-guide.cloud-platform.service.justice.gov.uk/).
+
+## Environments & namespaces
+
+| Environment | Kubernetes namespace     |
+|-------------|--------------------------|
+| dev         | hmpps-incentives-dev     |
+| preprod     | hmpps-incentives-preprod |
+| prod        | hmpps-incentives-prod    |
+
+
+## Useful commands (run from this directory)
+
+List all current releases (not just this chart):
+
+```shell
+helm --namespace ${NAMESPACE} list
 ```
 
-- Ensure a TLS cert for your intended hostname is configured and ready, see section below.
+List history of this chart’s releases:
 
-### Useful helm (v3) commands:
-
-__Test chart template rendering:__
-
-This will out the fully rendered kubernetes resources in raw yaml.
-
-```sh
-helm template [path to chart] --values=values-dev.yaml
+```shell
+helm --namespace ${NAMESPACE} history hmpps-incentives-ui
 ```
 
-__List releases:__
+Roll this chart back to a previous release (where `${REVISION_NUMBER}` is taken from the history list):
 
-```sh
-helm --namespace [namespace] list
+```shell
+helm --namespace ${NAMESPACE} rollback hmpps-incentives-ui ${REVISION_NUMBER} --wait
 ```
 
-__List current and previously installed application versions:__
+Lint the chart templates:
 
-```sh
-helm --namespace [namespace] history [release name]
+```shell
+helm --namespace ${NAMESPACE} lint \
+  ./hmpps-incentives-ui --values values-${ENVIRONMENT}.yaml \
+  --strict --with-subcharts --debug
 ```
 
-__Rollback to previous version:__
+Render complete chart for debugging:
 
-```sh
-helm --namespace [namespace] rollback [release name] [revision number] --wait
+```shell
+helm template ./hmpps-incentives-ui --values values-${ENVIRONMENT}.yaml
 ```
 
-Note: replace _revision number_ with one from listed in the `history` command)
+Manually deploy the complete helm chart:
 
-__Example deploy command:__
-
-The following example is `--dry-run` mode - which will allow for testing. CircleCI normally runs this command with actual secret values (from AWS secret manager), and also updated the chart's application version to match the release version:
-
-```sh
-helm upgrade [release name] [path to chart]. \
+```shell
+helm upgrade hmpps-incentives-ui ./hmpps-incentives-ui \
   --install --wait --force --reset-values --timeout 5m --history-max 10 \
-  --dry-run \
-  --namespace [namespace] \
-  --values values-dev.yaml \
-  --values example-secrets.yaml
+  --dry-run \  # remove to actually deploy
+  --namespace ${NAMESPACE} \
+  --values values-${ENVIRONMENT}.yaml \
+  --set generic-service.image.tag=${APP_VERSION}  # this is normally set by CI as [date]-[build number]-[git commit], e.g. 2022-07-11.5276.677f0a8
 ```
-
-### Ingress TLS certificate
-
-Ensure a certificate definition exists in the cloud-platform-environments repo under the relevant namespaces folder:
-
-e.g.
-
-```sh
-cloud-platform-environments/namespaces/live-1.cloud-platform.service.justice.gov.uk/[INSERT NAMESPACE NAME]/05-certificate.yaml
-```
-
-Ensure the certificate is created and ready for use.
-
-The name of the kubernetes secret where the certificate is stored is used as a value to the helm chart - this is used to configured the ingress.

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-access
+  labels:
+    {{- include "incentives.labels" . | nindent 4 }}
+    app.kubernetes.io/name: s3-access
+spec:
+  selector:
+    matchLabels:
+      app: s3-access
+      release: {{ .Release.Name }}
+  replicas: 1
+  revisionHistoryLimit: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        {{- include "incentives.labels" . | nindent 8 }}
+        app: s3-access
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: {{ index .Values "generic-service" "serviceAccountName" }}
+      containers:
+        - image: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/prisoner-money/money-to-prisoners:default
+          imagePullPolicy: Always
+          name: s3-access
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+      enableServiceLinks: false
+      restartPolicy: Never

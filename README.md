@@ -43,7 +43,18 @@ This will automatically restart it if server code or front-end assets are modifi
 
 ### Using only local services
 
-**TODO:** the environment/settings are not properly set up for this application to work without using external services!
+Run the application and full suite of services it depends on:
+
+```shell
+docker compose up
+```
+
+Run the application in development mode and full suite of services it depends on:
+
+```shell
+docker compose up --scale app=0
+npm run start:dev
+```
 
 ### Updating dependencies
 

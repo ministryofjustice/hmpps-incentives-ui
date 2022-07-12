@@ -4,11 +4,8 @@ kind: PrometheusRule
 metadata:
   name: stale-analytics-data
   labels:
-    helm.sh/chart: stale-analytics-data
+    {{- include "incentives.labels" . | nindent 4 }}
     app.kubernetes.io/name: stale-analytics-data
-    app.kubernetes.io/version: "1"
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
     prometheus: cloud-platform
     role: alert-rules
 spec:

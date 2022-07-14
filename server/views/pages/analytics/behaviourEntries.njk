@@ -56,6 +56,16 @@
   <div class="govuk-grid-row">
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
+      {% set populationLabel %}
+        {% if analyticsView.isPrisonLevel() %}
+          Prison population
+        {% elif analyticsView.isRegional() %}
+          Total group population
+        {% else %}
+          National population
+        {% endif %}
+      {% endset%}
+
       {% set chartId = "trends-entries" %}
       {{ chartTrends(
         title=analyticsView.behaviourEntriesChartsContent[chartId].title,
@@ -65,7 +75,8 @@
         activeCaseload=user.activeCaseload.id,
         form=forms[chartId],
         csrfToken=csrfToken,
-        report=trends
+        report=trends,
+        populationLabel=populationLabel
       ) }}
 
     </section>

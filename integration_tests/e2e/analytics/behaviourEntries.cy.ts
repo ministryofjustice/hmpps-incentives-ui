@@ -53,7 +53,6 @@ context('Analytics section > Behaviour entries page', () => {
       // remove header column
       positivesRow.shift()
       negativesRow.shift()
-      populationRow.shift()
 
       expect(positivesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly positive entries
@@ -65,7 +64,7 @@ context('Analytics section > Behaviour entries page', () => {
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
-        ['917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922', '909'],
+        ['Prison population', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922', '909'],
       )
     })
   })
@@ -270,7 +269,6 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
       // remove header column
       positivesRow.shift()
       negativesRow.shift()
-      populationRow.shift()
 
       expect(positivesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly positive entries
@@ -282,7 +280,21 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
-        ['3,077', '3,070', '3,059', '3,047', '3,036', '3,057', '3,060', '3,066', '3,054', '3,059', '3,064', '3,069'],
+        [
+          'National population',
+          '3,077',
+          '3,070',
+          '3,059',
+          '3,047',
+          '3,036',
+          '3,057',
+          '3,060',
+          '3,066',
+          '3,054',
+          '3,059',
+          '3,064',
+          '3,069',
+        ],
       )
     })
   })
@@ -331,7 +343,6 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       // remove header column
       positivesRow.shift()
       negativesRow.shift()
-      populationRow.shift()
 
       expect(positivesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly positive entries
@@ -343,7 +354,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
-        ['372', '342', '322', '315', '312', '317', '315', '314', '318', '323', '321', '319'],
+        ['Total group population', '372', '342', '322', '315', '312', '317', '315', '314', '318', '323', '321', '319'],
       )
     })
   })

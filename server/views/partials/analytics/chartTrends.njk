@@ -10,7 +10,8 @@
   csrfToken,
   report,
   showTotalPopulation=true,
-  afterHeaderHtml=''
+  afterHeaderHtml='',
+  populationLabel
 ) %}
 
   {% call chartBase(
@@ -40,7 +41,7 @@
           <span class="app-chart-legend__swatch app-chart-legend__swatch--trends">&nbsp;</span>
           <span class="app-chart-legend__label">
             {% if report.populationIsTotal %}
-              Prison population
+              {{ populationLabel }}
             {% else %}
               {{ report.monthlyTotalName }}
             {% endif %}
@@ -167,7 +168,7 @@
                 {% if report.populationTotalName %}
                   {{ report.populationTotalName }}
                 {% else %}
-                  Prison population
+                  {{ populationLabel }}
                 {% endif %}
               </th>
               {% for row in report.rows %}

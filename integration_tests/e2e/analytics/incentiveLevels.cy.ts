@@ -69,16 +69,6 @@ context('Analytics section > Incentive levels page', () => {
           label: 'MDI',
         }),
       )
-    page
-      .getChartGuidance('incentive-levels-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level by wing',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
 
     page
       .getChartGuidance('trends-incentive-levels')
@@ -87,16 +77,6 @@ context('Analytics section > Incentive levels page', () => {
         gaSpy.shouldHaveSentEvent('incentives_event', {
           category: 'How you can use this chart > Incentive level trends',
           action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartGuidance('trends-incentive-levels')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level trends',
-          action: 'closed',
           label: 'MDI',
         }),
       )
@@ -118,16 +98,6 @@ context('Analytics section > Incentive levels page', () => {
           label: 'MDI',
         }),
       )
-    page
-      .getChartFeedback('incentive-levels-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level by wing',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
 
     page
       .getChartFeedback('trends-incentive-levels')
@@ -136,16 +106,6 @@ context('Analytics section > Incentive levels page', () => {
         gaSpy.shouldHaveSentEvent('incentives_event', {
           category: 'Is this chart useful > Incentive level trends',
           action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartFeedback('trends-incentive-levels')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level trends',
-          action: 'closed',
           label: 'MDI',
         }),
       )

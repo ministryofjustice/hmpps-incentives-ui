@@ -85,16 +85,6 @@ context('Analytics section > Behaviour entries page', () => {
           label: 'MDI',
         }),
       )
-    page
-      .getChartGuidance('entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entries by wing',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
 
     page
       .getChartGuidance('prisoners-with-entries-by-location')
@@ -106,16 +96,6 @@ context('Analytics section > Behaviour entries page', () => {
           label: 'MDI',
         }),
       )
-    page
-      .getChartGuidance('prisoners-with-entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Prisoners with behaviour entries by wing',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
 
     page
       .getChartGuidance('trends-entries')
@@ -124,16 +104,6 @@ context('Analytics section > Behaviour entries page', () => {
         gaSpy.shouldHaveSentEvent('incentives_event', {
           category: 'How you can use this chart > Behaviour entry trends',
           action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartGuidance('trends-entries')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entry trends',
-          action: 'closed',
           label: 'MDI',
         }),
       )
@@ -155,16 +125,6 @@ context('Analytics section > Behaviour entries page', () => {
           label: 'MDI',
         }),
       )
-    page
-      .getChartFeedback('entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entries by wing',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
 
     page
       .getChartFeedback('prisoners-with-entries-by-location')
@@ -176,16 +136,6 @@ context('Analytics section > Behaviour entries page', () => {
           label: 'MDI',
         }),
       )
-    page
-      .getChartFeedback('prisoners-with-entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Prisoners with behaviour entries by wing',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
 
     page
       .getChartFeedback('trends-entries')
@@ -194,16 +144,6 @@ context('Analytics section > Behaviour entries page', () => {
         gaSpy.shouldHaveSentEvent('incentives_event', {
           category: 'Is this chart useful > Behaviour entry trends',
           action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartFeedback('trends-entries')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entry trends',
-          action: 'closed',
           label: 'MDI',
         }),
       )

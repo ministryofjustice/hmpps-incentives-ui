@@ -186,16 +186,6 @@ context('Analytics section > Protected characteristics page', () => {
             label: 'MDI',
           }),
         )
-      page
-        .getChartGuidance(chartId)
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('incentives_event', {
-            category: expectedCategory,
-            action: 'closed',
-            label: 'MDI',
-          }),
-        )
     }
   })
 
@@ -223,16 +213,6 @@ context('Analytics section > Protected characteristics page', () => {
           gaSpy.shouldHaveSentEvent('incentives_event', {
             category: expectedCategory,
             action: 'opened',
-            label: 'MDI',
-          }),
-        )
-      page
-        .getChartFeedback(chartId)
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('incentives_event', {
-            category: expectedCategory,
-            action: 'closed',
             label: 'MDI',
           }),
         )

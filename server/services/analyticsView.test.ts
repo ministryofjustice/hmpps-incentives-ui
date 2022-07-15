@@ -114,6 +114,23 @@ describe('AnalyticsView', () => {
     })
   })
 
+  describe('getLevelForTitle()', () => {
+    it(`for National, it return 'National'`, () => {
+      const analyticsView = new AnalyticsView('National', 'behaviour-entries', 'MDI')
+      expect(analyticsView.getLevelForTitle()).toEqual('National')
+    })
+
+    it('for Regional, it returns the PGD region name', () => {
+      const analyticsView = new AnalyticsView('LTHS', 'behaviour-entries', 'MDI')
+      expect(analyticsView.getLevelForTitle()).toEqual('Long-term and high security')
+    })
+
+    it(`for a prison, it returns 'Prison'`, () => {
+      const analyticsView = new AnalyticsView(null, 'behaviour-entries', 'MDI')
+      expect(analyticsView.getLevelForTitle()).toEqual('Prison')
+    })
+  })
+
   describe('linkTo()', () => {
     it('for National', () => {
       // eslint-disable-next-line no-restricted-syntax

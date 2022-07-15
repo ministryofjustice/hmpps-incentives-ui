@@ -41,6 +41,10 @@ context('Analytics section > Protected characteristics page', () => {
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Protected characteristics – Prison')
+  })
+
   it('has feedback banner', () => {
     cy.get('.app-feedback-banner').contains('help us to improve it')
     cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/analytics-feedback')
@@ -258,6 +262,10 @@ context('Pgd Region selection > National > Analytics section > Protected charact
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Protected characteristics – National')
+  })
+
   it('selector allows user to change protected characteristic for that pgdRegion', () => {
     cy.get('#characteristic').select('Sexual orientation')
     cy.get('#form-select-characteristic button').click()
@@ -386,6 +394,10 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
     analyticsPage.protectedCharacteristicsNavItem.click()
+  })
+
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Protected characteristics – Long-term and high security')
   })
 
   it('users see analytics', () => {

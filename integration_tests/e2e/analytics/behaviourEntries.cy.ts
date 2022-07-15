@@ -21,6 +21,10 @@ context('Analytics section > Behaviour entries page', () => {
     analyticsPage.behaviourEntriesNavItem.click()
   })
 
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Behaviour entries – Prison')
+  })
+
   it('has feedback banner', () => {
     cy.get('.app-feedback-banner').contains('help us to improve it')
     cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/analytics-feedback')
@@ -182,6 +186,10 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
     analyticsPage.behaviourEntriesNavItem.click()
   })
 
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Behaviour entries – National')
+  })
+
   it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
 
@@ -254,6 +262,10 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
     analyticsPage.behaviourEntriesNavItem.click()
+  })
+
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Behaviour entries – Long-term and high security')
   })
 
   it('users see analytics', () => {

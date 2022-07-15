@@ -5,7 +5,7 @@
 
 {% set chartPageId = "incentive-levels" %}
 {% set chartPageTitle = "Incentive levels" %}
-{% set pageTitle = applicationName + " – " + chartPageTitle %}
+{% set pageTitle = applicationName + " – " + chartPageTitle + " – " + analyticsView.getLevelForTitle() %}
 
 {% set extraWideLabel = analyticsView.isNational() %}
 

@@ -19,6 +19,10 @@ context('Analytics section > Incentive levels page', () => {
     Page.verifyOnPage(AnalyticsIncentiveLevels)
   })
 
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Incentive levels – Prison')
+  })
+
   it('has feedback banner', () => {
     cy.get('.app-feedback-banner').contains('help us to improve it')
     cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/analytics-feedback')
@@ -135,6 +139,10 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
     Page.verifyOnPage(AnalyticsIncentiveLevels)
   })
 
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Incentive levels – National')
+  })
+
   it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
 
@@ -192,6 +200,10 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
     locationSelectionPage.changePgdRegionSelect().select('LTHS')
     locationSelectionPage.continueButton().click()
     Page.verifyOnPage(AnalyticsIncentiveLevels)
+  })
+
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Incentive levels – Long-term and high security')
   })
 
   it('users see analytics', () => {

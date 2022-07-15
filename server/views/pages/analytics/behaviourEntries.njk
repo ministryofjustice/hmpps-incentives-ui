@@ -6,7 +6,7 @@
 
 {% set chartPageId = "behaviour-entries" %}
 {% set chartPageTitle = "Behaviour entries" %}
-{% set pageTitle = applicationName + " – " + chartPageTitle %}
+{% set pageTitle = applicationName + " – " + chartPageTitle + " – " + analyticsView.getLevelForTitle() %}
 
 {% set extraWideLabel = analyticsView.isNational() %}
 

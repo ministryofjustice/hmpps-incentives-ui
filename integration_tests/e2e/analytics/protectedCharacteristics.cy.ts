@@ -42,7 +42,7 @@ context('Analytics section > Protected characteristics page', () => {
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Protected characteristics – Prison')
+    cy.title().should('eq', 'Manage incentives – Protected characteristics (Age) – Prison')
   })
 
   it('has feedback banner', () => {
@@ -53,6 +53,8 @@ context('Analytics section > Protected characteristics page', () => {
   it('selector allows user to change protected characteristic', () => {
     cy.get('#characteristic').select('Sexual orientation')
     cy.get('#form-select-characteristic button').click()
+
+    cy.title().should('eq', 'Manage incentives – Protected characteristics (Sexual orientation) – Prison')
 
     cy.get('h2.govuk-heading-m')
       .first()
@@ -263,12 +265,14 @@ context('Pgd Region selection > National > Analytics section > Protected charact
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Protected characteristics – National')
+    cy.title().should('eq', 'Manage incentives – Protected characteristics (Age) – National')
   })
 
   it('selector allows user to change protected characteristic for that pgdRegion', () => {
     cy.get('#characteristic').select('Sexual orientation')
     cy.get('#form-select-characteristic button').click()
+
+    cy.title().should('eq', 'Manage incentives – Protected characteristics (Sexual orientation) – National')
 
     cy.get('.govuk-heading-xl').contains('National')
     cy.get('h2.govuk-heading-m').first().contains('Percentage and number of prisoners by sexual orientation')
@@ -397,7 +401,7 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Protected characteristics – Long-term and high security')
+    cy.title().should('eq', 'Manage incentives – Protected characteristics (Age) – Long-term and high security')
   })
 
   it('users see analytics', () => {

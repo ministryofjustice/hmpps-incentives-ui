@@ -7,7 +7,7 @@
 
 {% set chartPageId = "protected-characteristics" %}
 {% set chartPageTitle = "Protected characteristics" %}
-{% set pageTitle = applicationName + " – " + chartPageTitle + " – " + analyticsView.getLevelForTitle() %}
+{% set pageTitle = applicationName + " – " + chartPageTitle + " (" + protectedCharacteristic.label + ") " + " – " + analyticsView.getLevelForTitle() %}
 
 {% block chartContent %}
 
@@ -117,7 +117,7 @@
         {{ pcGroupDropdown(
             chartId,
             hiddenInputs,
-            groupDropdownLabel,
+            protectedCharacteristic.groupDropdownLabel,
             fieldName="trendsIncentiveLevelsGroup",
             options=trendsIncentiveLevelsOptions
         ) }}
@@ -173,7 +173,7 @@
         {{ pcGroupDropdown(
             chartId,
             hiddenInputs,
-            groupDropdownLabel,
+            protectedCharacteristic.groupDropdownLabel,
             fieldName="trendsEntriesGroup",
             options=trendsEntriesOptions
         ) }}

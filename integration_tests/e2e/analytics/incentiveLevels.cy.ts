@@ -68,7 +68,7 @@ context('Analytics section > Incentive levels page', () => {
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level by wing',
+          category: 'How you can use this chart > Incentive level by wing (Prison)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -79,7 +79,7 @@ context('Analytics section > Incentive levels page', () => {
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level trends',
+          category: 'How you can use this chart > Incentive level trends (Prison)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -97,7 +97,7 @@ context('Analytics section > Incentive levels page', () => {
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level by wing',
+          category: 'Is this chart useful > Incentive level by wing (Prison)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -108,7 +108,7 @@ context('Analytics section > Incentive levels page', () => {
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level trends',
+          category: 'Is this chart useful > Incentive level trends (Prison)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -185,6 +185,64 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
       )
     })
   })
+
+  it('guidance box for analytics is tracked', () => {
+    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+    const gaSpy = new GoogleAnalyticsSpy()
+    gaSpy.install()
+
+    page
+      .getChartGuidance('incentive-levels-by-location')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by prison group (National)',
+          action: 'opened',
+          label: 'MDI',
+        }),
+      )
+
+    page
+      .getChartGuidance('trends-incentive-levels')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level trends (National)',
+          action: 'opened',
+          label: 'MDI',
+        }),
+      )
+  })
+
+  it('chart feedback box for analytics is tracked', () => {
+    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+    const gaSpy = new GoogleAnalyticsSpy()
+    gaSpy.install()
+
+    page
+      .getChartFeedback('incentive-levels-by-location')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by prison group (National)',
+          action: 'opened',
+          label: 'MDI',
+        }),
+      )
+
+    page
+      .getChartFeedback('trends-incentive-levels')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level trends (National)',
+          action: 'opened',
+          label: 'MDI',
+        }),
+      )
+  })
 })
 
 context('Pgd Region selection > LTHS > Analytics section > Incentive levels page', () => {
@@ -233,5 +291,63 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
         ['Total group population', '372', '342', '322', '315', '312', '317', '315', '314', '318', '323', '321', '319'],
       )
     })
+  })
+
+  it('guidance box for analytics is tracked', () => {
+    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+    const gaSpy = new GoogleAnalyticsSpy()
+    gaSpy.install()
+
+    page
+      .getChartGuidance('incentive-levels-by-location')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level by establishment (PGD Region)',
+          action: 'opened',
+          label: 'MDI',
+        }),
+      )
+
+    page
+      .getChartGuidance('trends-incentive-levels')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'How you can use this chart > Incentive level trends (PGD Region)',
+          action: 'opened',
+          label: 'MDI',
+        }),
+      )
+  })
+
+  it('chart feedback box for analytics is tracked', () => {
+    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+
+    const gaSpy = new GoogleAnalyticsSpy()
+    gaSpy.install()
+
+    page
+      .getChartFeedback('incentive-levels-by-location')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level by establishment (PGD Region)',
+          action: 'opened',
+          label: 'MDI',
+        }),
+      )
+
+    page
+      .getChartFeedback('trends-incentive-levels')
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: 'Is this chart useful > Incentive level trends (PGD Region)',
+          action: 'opened',
+          label: 'MDI',
+        }),
+      )
   })
 })

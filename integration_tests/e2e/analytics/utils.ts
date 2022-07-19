@@ -1,6 +1,7 @@
 import type { ChartId } from '../../../server/routes/analyticsChartTypes'
 import Page, { type PageElement } from '../../pages/page'
 import type AnalyticsPage from '../../pages/analytics'
+import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 
 export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(
   pageClass: new () => PageClass,
@@ -71,4 +72,28 @@ export function getTextFromTable(chainable: PageElement<HTMLTableRowElement>): C
       .toArray()
     return cy.wrap(rowsAndValues.map(({ rowValues }) => rowValues))
   })
+}
+
+export function testGuidanceBoxes<PageClass extends AnalyticsPage>(
+  pageClass: new () => PageClass,
+  charts: Partial<Record<ChartId, string>>,
+) {
+  const page = Page.verifyOnPage(pageClass)
+
+  const gaSpy = new GoogleAnalyticsSpy()
+  gaSpy.install()
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [chartId, gaCategory] of Object.entries(charts)) {
+    page
+      .getChartGuidance(chartId as ChartId)
+      .click()
+      .then(() =>
+        gaSpy.shouldHaveSentEvent('incentives_event', {
+          category: `How you can use this chart > ${gaCategory}`,
+          action: 'opened',
+          label: 'MDI',
+        }),
+      )
+  }
 }

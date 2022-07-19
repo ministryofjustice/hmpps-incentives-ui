@@ -1,9 +1,15 @@
-import { getTextFromTable, testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
+import {
+  getTextFromTable,
+  testGuidanceBoxes,
+  testInvalidFeedbackSubmission,
+  testValidFeedbackSubmission,
+} from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 import PgdRegionSelection from '../../pages/analytics/pgdRegionSelection'
+import { ChartId } from '../../../server/routes/analyticsChartTypes'
 
 context('Analytics section > Incentive levels page', () => {
   beforeEach(() => {
@@ -58,32 +64,12 @@ context('Analytics section > Incentive levels page', () => {
   })
 
   it('guidance box for analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    const charts: Partial<Record<ChartId, string>> = {
+      'incentive-levels-by-location': 'Incentive level by wing (Prison)',
+      'trends-incentive-levels': 'Incentive level trends (Prison)',
+    }
 
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    page
-      .getChartGuidance('incentive-levels-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level by wing (Prison)',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-
-    page
-      .getChartGuidance('trends-incentive-levels')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level trends (Prison)',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
+    testGuidanceBoxes(AnalyticsIncentiveLevels, charts)
   })
 
   it('chart feedback box for analytics is tracked', () => {
@@ -187,32 +173,12 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
   })
 
   it('guidance box for analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    const charts: Partial<Record<ChartId, string>> = {
+      'incentive-levels-by-location': 'Incentive level by prison group (National)',
+      'trends-incentive-levels': 'Incentive level trends (National)',
+    }
 
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    page
-      .getChartGuidance('incentive-levels-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level by prison group (National)',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-
-    page
-      .getChartGuidance('trends-incentive-levels')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level trends (National)',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
+    testGuidanceBoxes(AnalyticsIncentiveLevels, charts)
   })
 
   it('chart feedback box for analytics is tracked', () => {
@@ -294,32 +260,12 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
   })
 
   it('guidance box for analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    const charts: Partial<Record<ChartId, string>> = {
+      'incentive-levels-by-location': 'Incentive level by establishment (Group)',
+      'trends-incentive-levels': 'Incentive level trends (Group)',
+    }
 
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    page
-      .getChartGuidance('incentive-levels-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level by establishment (Group)',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-
-    page
-      .getChartGuidance('trends-incentive-levels')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level trends (Group)',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
+    testGuidanceBoxes(AnalyticsIncentiveLevels, charts)
   })
 
   it('chart feedback box for analytics is tracked', () => {

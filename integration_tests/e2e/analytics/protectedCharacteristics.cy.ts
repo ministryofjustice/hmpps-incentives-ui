@@ -1,4 +1,9 @@
-import { getTextFromTable, testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
+import {
+  getTextFromTable,
+  testGuidanceBoxes,
+  testInvalidFeedbackSubmission,
+  testValidFeedbackSubmission,
+} from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
@@ -167,32 +172,14 @@ context('Analytics section > Protected characteristics page', () => {
   })
 
   it('guidance box for analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
-
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    const guidanceBoxes: [ChartId, string][] = [
-      ['incentive-levels-by-age', 'How you can use this chart > Incentive level by age (Prison)'],
-      ['trends-incentive-levels-by-age', 'How you can use this chart > Incentive level by age trends (Prison)'],
-      ['entries-by-age', 'How you can use this chart > Comparison of behaviour entries by age (Prison)'],
-      ['trends-entries-by-age', 'How you can use this chart > Behaviour entries by age trends (Prison)'],
-      ['prisoners-with-entries-by-age', 'How you can use this chart > Behaviour entries by age (Prison)'],
-    ]
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [chartId, expectedCategory] of guidanceBoxes) {
-      page
-        .getChartGuidance(chartId)
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('incentives_event', {
-            category: expectedCategory,
-            action: 'opened',
-            label: 'MDI',
-          }),
-        )
+    const charts: Partial<Record<ChartId, string>> = {
+      'incentive-levels-by-age': 'Incentive level by age (Prison)',
+      'trends-incentive-levels-by-age': 'Incentive level by age trends (Prison)',
+      'entries-by-age': 'Comparison of behaviour entries by age (Prison)',
+      'trends-entries-by-age': 'Behaviour entries by age trends (Prison)',
+      'prisoners-with-entries-by-age': 'Behaviour entries by age (Prison)',
     }
+    testGuidanceBoxes(AnalyticsProtectedCharacteristics, charts)
   })
 
   it('chart feedback box for analytics is tracked', () => {
@@ -384,32 +371,14 @@ context('Pgd Region selection > National > Analytics section > Protected charact
   })
 
   it('guidance box for analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
-
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    const guidanceBoxes: [ChartId, string][] = [
-      ['incentive-levels-by-age', 'How you can use this chart > Incentive level by age (National)'],
-      ['trends-incentive-levels-by-age', 'How you can use this chart > Incentive level by age trends (National)'],
-      ['entries-by-age', 'How you can use this chart > Comparison of behaviour entries by age (National)'],
-      ['trends-entries-by-age', 'How you can use this chart > Behaviour entries by age trends (National)'],
-      ['prisoners-with-entries-by-age', 'How you can use this chart > Behaviour entries by age (National)'],
-    ]
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [chartId, expectedCategory] of guidanceBoxes) {
-      page
-        .getChartGuidance(chartId)
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('incentives_event', {
-            category: expectedCategory,
-            action: 'opened',
-            label: 'MDI',
-          }),
-        )
+    const charts: Partial<Record<ChartId, string>> = {
+      'incentive-levels-by-age': 'Incentive level by age (National)',
+      'trends-incentive-levels-by-age': 'Incentive level by age trends (National)',
+      'entries-by-age': 'Comparison of behaviour entries by age (National)',
+      'trends-entries-by-age': 'Behaviour entries by age trends (National)',
+      'prisoners-with-entries-by-age': 'Behaviour entries by age (National)',
     }
+    testGuidanceBoxes(AnalyticsProtectedCharacteristics, charts)
   })
 
   it('chart feedback box for analytics is tracked', () => {
@@ -551,33 +520,16 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
 
     assertTestData(testData, page)
   })
+
   it('guidance box for analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
-
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    const guidanceBoxes: [ChartId, string][] = [
-      ['incentive-levels-by-age', 'How you can use this chart > Incentive level by age (Group)'],
-      ['trends-incentive-levels-by-age', 'How you can use this chart > Incentive level by age trends (Group)'],
-      ['entries-by-age', 'How you can use this chart > Comparison of behaviour entries by age (Group)'],
-      ['trends-entries-by-age', 'How you can use this chart > Behaviour entries by age trends (Group)'],
-      ['prisoners-with-entries-by-age', 'How you can use this chart > Behaviour entries by age (Group)'],
-    ]
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [chartId, expectedCategory] of guidanceBoxes) {
-      page
-        .getChartGuidance(chartId)
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('incentives_event', {
-            category: expectedCategory,
-            action: 'opened',
-            label: 'MDI',
-          }),
-        )
+    const charts: Partial<Record<ChartId, string>> = {
+      'incentive-levels-by-age': 'Incentive level by age (Group)',
+      'trends-incentive-levels-by-age': 'Incentive level by age trends (Group)',
+      'entries-by-age': 'Comparison of behaviour entries by age (Group)',
+      'trends-entries-by-age': 'Behaviour entries by age trends (Group)',
+      'prisoners-with-entries-by-age': 'Behaviour entries by age (Group)',
     }
+    testGuidanceBoxes(AnalyticsProtectedCharacteristics, charts)
   })
 
   it('chart feedback box for analytics is tracked', () => {

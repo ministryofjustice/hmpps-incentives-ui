@@ -1,10 +1,15 @@
-import { getTextFromTable, testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
+import {
+  getTextFromTable,
+  testDetailsOpenedGaEvents,
+  testInvalidFeedbackSubmission,
+  testValidFeedbackSubmission,
+} from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsBehaviourEntries from '../../pages/analytics/behaviourEntries'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
-import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 import PgdRegionSelection from '../../pages/analytics/pgdRegionSelection'
+import { ChartId } from '../../../server/routes/analyticsChartTypes'
 
 context('Analytics section > Behaviour entries page', () => {
   beforeEach(() => {
@@ -19,6 +24,10 @@ context('Analytics section > Behaviour entries page', () => {
     homePage.viewAnalyticsLink().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
     analyticsPage.behaviourEntriesNavItem.click()
+  })
+
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Behaviour entries – Prison')
   })
 
   it('has feedback banner', () => {
@@ -70,143 +79,24 @@ context('Analytics section > Behaviour entries page', () => {
   })
 
   it('guidance box for analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+    const charts: Partial<Record<ChartId, string>> = {
+      'entries-by-location': 'How you can use this chart > Behaviour entries by wing (Prison)',
+      'prisoners-with-entries-by-location':
+        'How you can use this chart > Prisoners with behaviour entries by wing (Prison)',
+      'trends-entries': 'How you can use this chart > Behaviour entry trends (Prison)',
+    }
 
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    page
-      .getChartGuidance('entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entries by wing',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartGuidance('entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entries by wing',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
-
-    page
-      .getChartGuidance('prisoners-with-entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Prisoners with behaviour entries by wing',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartGuidance('prisoners-with-entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Prisoners with behaviour entries by wing',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
-
-    page
-      .getChartGuidance('trends-entries')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entry trends',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartGuidance('trends-entries')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entry trends',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
+    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartGuidance', charts)
   })
 
   it('chart feedback box for analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
+    const charts: Partial<Record<ChartId, string>> = {
+      'entries-by-location': 'Is this chart useful > Behaviour entries by wing (Prison)',
+      'prisoners-with-entries-by-location': 'Is this chart useful > Prisoners with behaviour entries by wing (Prison)',
+      'trends-entries': 'Is this chart useful > Behaviour entry trends (Prison)',
+    }
 
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    page
-      .getChartFeedback('entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entries by wing',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartFeedback('entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entries by wing',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
-
-    page
-      .getChartFeedback('prisoners-with-entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Prisoners with behaviour entries by wing',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartFeedback('prisoners-with-entries-by-location')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Prisoners with behaviour entries by wing',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
-
-    page
-      .getChartFeedback('trends-entries')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entry trends',
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-    page
-      .getChartFeedback('trends-entries')
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entry trends',
-          action: 'closed',
-          label: 'MDI',
-        }),
-      )
+    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartFeedback', charts)
   })
 
   it('users can submit feedback on charts', () => {
@@ -240,6 +130,10 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
     analyticsPage.behaviourEntriesNavItem.click()
+  })
+
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Behaviour entries – National')
   })
 
   it('users see analytics', () => {
@@ -298,6 +192,28 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
       )
     })
   })
+
+  it('guidance box for analytics is tracked', () => {
+    const charts: Partial<Record<ChartId, string>> = {
+      'entries-by-location': 'How you can use this chart > Behaviour entries by prison group (National)',
+      'prisoners-with-entries-by-location':
+        'How you can use this chart > Prisoners with behaviour entries by prison group (National)',
+      'trends-entries': 'How you can use this chart > Behaviour entry trends (National)',
+    }
+
+    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartGuidance', charts)
+  })
+
+  it('chart feedback box for analytics is tracked', () => {
+    const charts: Partial<Record<ChartId, string>> = {
+      'entries-by-location': 'Is this chart useful > Behaviour entries by prison group (National)',
+      'prisoners-with-entries-by-location':
+        'Is this chart useful > Prisoners with behaviour entries by prison group (National)',
+      'trends-entries': 'Is this chart useful > Behaviour entry trends (National)',
+    }
+
+    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartFeedback', charts)
+  })
 })
 
 context('Pgd Region selection > LTHS > Analytics section > Behaviour entries page', () => {
@@ -314,6 +230,10 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
     analyticsPage.behaviourEntriesNavItem.click()
+  })
+
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Behaviour entries – Long-term and high security')
   })
 
   it('users see analytics', () => {
@@ -357,5 +277,27 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
         ['Total group population', '372', '342', '322', '315', '312', '317', '315', '314', '318', '323', '321', '319'],
       )
     })
+  })
+
+  it('guidance box for analytics is tracked', () => {
+    const charts: Partial<Record<ChartId, string>> = {
+      'entries-by-location': 'How you can use this chart > Behaviour entries by establishment (Group)',
+      'prisoners-with-entries-by-location':
+        'How you can use this chart > Prisoners with behaviour entries by establishment (Group)',
+      'trends-entries': 'How you can use this chart > Behaviour entry trends (Group)',
+    }
+
+    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartGuidance', charts)
+  })
+
+  it('chart feedback box for analytics is tracked', () => {
+    const charts: Partial<Record<ChartId, string>> = {
+      'entries-by-location': 'Is this chart useful > Behaviour entries by establishment (Group)',
+      'prisoners-with-entries-by-location':
+        'Is this chart useful > Prisoners with behaviour entries by establishment (Group)',
+      'trends-entries': 'Is this chart useful > Behaviour entry trends (Group)',
+    }
+
+    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartFeedback', charts)
   })
 })

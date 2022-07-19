@@ -158,6 +158,18 @@ export default class AnalyticsView {
   isPrisonLevel(): boolean {
     return this.viewLevel === 'prison'
   }
+
+  getLevelForTitle(): string {
+    if (this.isPrisonLevel()) {
+      return 'Prison'
+    }
+
+    if (this.isRegional()) {
+      return this.getPgdRegionName()
+    }
+
+    return 'National'
+  }
 }
 
 /**

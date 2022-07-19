@@ -25,26 +25,26 @@ import {
 import AnalyticsView from '../services/analyticsView'
 
 export const protectedCharacteristicRoutes = {
-  age: { label: 'Age', groupDropdownLabel: 'Select an age', characteristic: ProtectedCharacteristic.Age },
+  age: { label: 'Age', groupDropdownLabel: 'Select an age', id: ProtectedCharacteristic.Age },
   ethnicity: {
     label: 'Ethnicity',
     groupDropdownLabel: 'Select an ethnicity',
-    characteristic: ProtectedCharacteristic.Ethnicity,
+    id: ProtectedCharacteristic.Ethnicity,
   },
   disability: {
     label: 'Recorded disability',
     groupDropdownLabel: 'Select a recorded disability',
-    characteristic: ProtectedCharacteristic.Disability,
+    id: ProtectedCharacteristic.Disability,
   },
   religion: {
     label: 'Religion',
     groupDropdownLabel: 'Select a religion',
-    characteristic: ProtectedCharacteristic.Religion,
+    id: ProtectedCharacteristic.Religion,
   },
   'sexual-orientation': {
     label: 'Sexual orientation',
     groupDropdownLabel: 'Select a sexual orientation',
-    characteristic: ProtectedCharacteristic.SexualOrientation,
+    id: ProtectedCharacteristic.SexualOrientation,
   },
 } as const
 
@@ -258,12 +258,13 @@ export default function routes(router: Router): Router {
       }
     })
 
-    const protectedCharacteristic = protectedCharacteristicRoutes[characteristicName].characteristic
+    const protectedCharacteristic = protectedCharacteristicRoutes[characteristicName]
 
     const groupsForCharacteristic =
-      protectedCharacteristic === ProtectedCharacteristic.Age && !PrisonRegister.isYouthCustodyService(activeCaseLoad)
-        ? knownGroupsFor(protectedCharacteristic).filter(ageGroup => ageGroup !== AgeYoungPeople)
-        : knownGroupsFor(protectedCharacteristic)
+      protectedCharacteristic.id === ProtectedCharacteristic.Age &&
+      !PrisonRegister.isYouthCustodyService(activeCaseLoad)
+        ? knownGroupsFor(protectedCharacteristic.id).filter(ageGroup => ageGroup !== AgeYoungPeople)
+        : knownGroupsFor(protectedCharacteristic.id)
 
     const trendsIncentiveLevelsGroup = (req.query.trendsIncentiveLevelsGroup || groupsForCharacteristic[0]) as string
     const trendsEntriesGroup = (req.query.trendsEntriesGroup || groupsForCharacteristic[0]) as string
@@ -288,17 +289,16 @@ export default function routes(router: Router): Router {
         selected: name === trendsEntriesGroup,
       }
     })
-    const { groupDropdownLabel } = protectedCharacteristicRoutes[characteristicName]
 
     const s3Client = new S3Client(config.s3)
     const analyticsService = new AnalyticsService(s3Client, cache, analyticsView)
 
     const charts = [
-      analyticsService.getIncentiveLevelsByProtectedCharacteristic(protectedCharacteristic),
-      analyticsService.getIncentiveLevelTrendsByCharacteristic(protectedCharacteristic, trendsIncentiveLevelsGroup),
-      analyticsService.getBehaviourEntriesByProtectedCharacteristic(protectedCharacteristic),
-      analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(protectedCharacteristic, trendsEntriesGroup),
-      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(protectedCharacteristic),
+      analyticsService.getIncentiveLevelsByProtectedCharacteristic(protectedCharacteristic.id),
+      analyticsService.getIncentiveLevelTrendsByCharacteristic(protectedCharacteristic.id, trendsIncentiveLevelsGroup),
+      analyticsService.getBehaviourEntriesByProtectedCharacteristic(protectedCharacteristic.id),
+      analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(protectedCharacteristic.id, trendsEntriesGroup),
+      analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(protectedCharacteristic.id),
     ].map(transformAnalyticsError)
     const [
       incentiveLevelsByCharacteristic,
@@ -311,13 +311,13 @@ export default function routes(router: Router): Router {
     res.render('pages/analytics/protectedCharacteristicTemplate', {
       ...templateContext(req),
       analyticsView,
+      protectedCharacteristic,
       characteristicName,
       characteristicOptions,
       trendsIncentiveLevelsOptions,
       trendsEntriesOptions,
       trendsIncentiveLevelsGroup,
       trendsEntriesGroup,
-      groupDropdownLabel,
       incentiveLevelsByCharacteristic,
       incentiveLevelsTrendsByCharacteristic,
       behaviourEntriesByCharacteristic,

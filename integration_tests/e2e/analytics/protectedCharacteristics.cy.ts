@@ -1,9 +1,13 @@
-import { getTextFromTable, testInvalidFeedbackSubmission, testValidFeedbackSubmission } from './utils'
+import {
+  getTextFromTable,
+  testDetailsOpenedGaEvents,
+  testInvalidFeedbackSubmission,
+  testValidFeedbackSubmission,
+} from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 import AnalyticsProtectedCharacteristics from '../../pages/analytics/protectedCharacteristics'
-import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 import { ChartId } from '../../../server/routes/analyticsChartTypes'
 import PgdRegionSelection from '../../pages/analytics/pgdRegionSelection'
 
@@ -41,6 +45,10 @@ context('Analytics section > Protected characteristics page', () => {
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Protected characteristics (Age) – Prison')
+  })
+
   it('has feedback banner', () => {
     cy.get('.app-feedback-banner').contains('help us to improve it')
     cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/analytics-feedback')
@@ -49,6 +57,8 @@ context('Analytics section > Protected characteristics page', () => {
   it('selector allows user to change protected characteristic', () => {
     cy.get('#characteristic').select('Sexual orientation')
     cy.get('#form-select-characteristic button').click()
+
+    cy.title().should('eq', 'Manage incentives – Protected characteristics (Sexual orientation) – Prison')
 
     cy.get('h2.govuk-heading-m')
       .first()
@@ -161,82 +171,27 @@ context('Analytics section > Protected characteristics page', () => {
   })
 
   it('guidance box for analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
-
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    const guidanceBoxes: [ChartId, string][] = [
-      ['incentive-levels-by-age', 'How you can use this chart > Incentive level by age'],
-      ['trends-incentive-levels-by-age', 'How you can use this chart > Incentive level by age trends'],
-      ['entries-by-age', 'How you can use this chart > Comparison of behaviour entries by age'],
-      ['trends-entries-by-age', 'How you can use this chart > Behaviour entries by age trends'],
-      ['prisoners-with-entries-by-age', 'How you can use this chart > Behaviour entries by age'],
-    ]
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [chartId, expectedCategory] of guidanceBoxes) {
-      page
-        .getChartGuidance(chartId)
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('incentives_event', {
-            category: expectedCategory,
-            action: 'opened',
-            label: 'MDI',
-          }),
-        )
-      page
-        .getChartGuidance(chartId)
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('incentives_event', {
-            category: expectedCategory,
-            action: 'closed',
-            label: 'MDI',
-          }),
-        )
+    const charts: Partial<Record<ChartId, string>> = {
+      'incentive-levels-by-age': 'How you can use this chart > Incentive level by age (Prison)',
+      'trends-incentive-levels-by-age': 'How you can use this chart > Incentive level by age trends (Prison)',
+      'entries-by-age': 'How you can use this chart > Comparison of behaviour entries by age (Prison)',
+      'trends-entries-by-age': 'How you can use this chart > Behaviour entries by age trends (Prison)',
+      'prisoners-with-entries-by-age': 'How you can use this chart > Behaviour entries by age (Prison)',
     }
+    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartGuidance', charts)
   })
 
   it('chart feedback box for analytics is tracked', () => {
-    const page = Page.verifyOnPage(AnalyticsProtectedCharacteristics)
-
-    const gaSpy = new GoogleAnalyticsSpy()
-    gaSpy.install()
-
-    const feedbackBoxes: [ChartId, string][] = [
-      ['population-by-age', 'Is this chart useful > Population by age'],
-      ['incentive-levels-by-age', 'Is this chart useful > Incentive level by age'],
-      ['trends-incentive-levels-by-age', 'Is this chart useful > Incentive level by age trends'],
-      ['entries-by-age', 'Is this chart useful > Comparison of behaviour entries by age'],
-      ['trends-entries-by-age', 'Is this chart useful > Behaviour entries by age trends'],
-      ['prisoners-with-entries-by-age', 'Is this chart useful > Behaviour entries by age'],
-    ]
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [chartId, expectedCategory] of feedbackBoxes) {
-      page
-        .getChartFeedback(chartId)
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('incentives_event', {
-            category: expectedCategory,
-            action: 'opened',
-            label: 'MDI',
-          }),
-        )
-      page
-        .getChartFeedback(chartId)
-        .click()
-        .then(() =>
-          gaSpy.shouldHaveSentEvent('incentives_event', {
-            category: expectedCategory,
-            action: 'closed',
-            label: 'MDI',
-          }),
-        )
+    const charts: Partial<Record<ChartId, string>> = {
+      'population-by-age': 'Is this chart useful > Population by age (Prison)',
+      'incentive-levels-by-age': 'Is this chart useful > Incentive level by age (Prison)',
+      'trends-incentive-levels-by-age': 'Is this chart useful > Incentive level by age trends (Prison)',
+      'entries-by-age': 'Is this chart useful > Comparison of behaviour entries by age (Prison)',
+      'trends-entries-by-age': 'Is this chart useful > Behaviour entries by age trends (Prison)',
+      'prisoners-with-entries-by-age': 'Is this chart useful > Behaviour entries by age (Prison)',
     }
+
+    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartFeedback', charts)
   })
 
   it('users can submit feedback on charts', () => {
@@ -278,9 +233,15 @@ context('Pgd Region selection > National > Analytics section > Protected charact
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Protected characteristics (Age) – National')
+  })
+
   it('selector allows user to change protected characteristic for that pgdRegion', () => {
     cy.get('#characteristic').select('Sexual orientation')
     cy.get('#form-select-characteristic button').click()
+
+    cy.title().should('eq', 'Manage incentives – Protected characteristics (Sexual orientation) – National')
 
     cy.get('.govuk-heading-xl').contains('National')
     cy.get('h2.govuk-heading-m').first().contains('Percentage and number of prisoners by sexual orientation')
@@ -390,6 +351,30 @@ context('Pgd Region selection > National > Analytics section > Protected charact
 
     assertTestData(testData, page)
   })
+
+  it('guidance box for analytics is tracked', () => {
+    const charts: Partial<Record<ChartId, string>> = {
+      'incentive-levels-by-age': 'How you can use this chart > Incentive level by age (National)',
+      'trends-incentive-levels-by-age': 'How you can use this chart > Incentive level by age trends (National)',
+      'entries-by-age': 'How you can use this chart > Comparison of behaviour entries by age (National)',
+      'trends-entries-by-age': 'How you can use this chart > Behaviour entries by age trends (National)',
+      'prisoners-with-entries-by-age': 'How you can use this chart > Behaviour entries by age (National)',
+    }
+    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartGuidance', charts)
+  })
+
+  it('chart feedback box for analytics is tracked', () => {
+    const charts: Partial<Record<ChartId, string>> = {
+      'population-by-age': 'Is this chart useful > Population by age (National)',
+      'incentive-levels-by-age': 'Is this chart useful > Incentive level by age (National)',
+      'trends-incentive-levels-by-age': 'Is this chart useful > Incentive level by age trends (National)',
+      'entries-by-age': 'Is this chart useful > Comparison of behaviour entries by age (National)',
+      'trends-entries-by-age': 'Is this chart useful > Behaviour entries by age trends (National)',
+      'prisoners-with-entries-by-age': 'Is this chart useful > Behaviour entries by age (National)',
+    }
+
+    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartFeedback', charts)
+  })
 })
 
 context('Pgd Region selection > LTHS > Analytics section > Protected characteristics page', () => {
@@ -406,6 +391,10 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
     analyticsPage.protectedCharacteristicsNavItem.click()
+  })
+
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Protected characteristics (Age) – Long-term and high security')
   })
 
   it('users see analytics', () => {
@@ -495,5 +484,29 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
     ]
 
     assertTestData(testData, page)
+  })
+
+  it('guidance box for analytics is tracked', () => {
+    const charts: Partial<Record<ChartId, string>> = {
+      'incentive-levels-by-age': 'How you can use this chart > Incentive level by age (Group)',
+      'trends-incentive-levels-by-age': 'How you can use this chart > Incentive level by age trends (Group)',
+      'entries-by-age': 'How you can use this chart > Comparison of behaviour entries by age (Group)',
+      'trends-entries-by-age': 'How you can use this chart > Behaviour entries by age trends (Group)',
+      'prisoners-with-entries-by-age': 'How you can use this chart > Behaviour entries by age (Group)',
+    }
+    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartGuidance', charts)
+  })
+
+  it('chart feedback box for analytics is tracked', () => {
+    const charts: Partial<Record<ChartId, string>> = {
+      'population-by-age': 'Is this chart useful > Population by age (Group)',
+      'incentive-levels-by-age': 'Is this chart useful > Incentive level by age (Group)',
+      'trends-incentive-levels-by-age': 'Is this chart useful > Incentive level by age trends (Group)',
+      'entries-by-age': 'Is this chart useful > Comparison of behaviour entries by age (Group)',
+      'trends-entries-by-age': 'Is this chart useful > Behaviour entries by age trends (Group)',
+      'prisoners-with-entries-by-age': 'Is this chart useful > Behaviour entries by age (Group)',
+    }
+
+    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartFeedback', charts)
   })
 })

@@ -304,7 +304,7 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level by establishment (PGD Region)',
+          category: 'How you can use this chart > Incentive level by establishment (Group)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -315,7 +315,7 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Incentive level trends (PGD Region)',
+          category: 'How you can use this chart > Incentive level trends (Group)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -333,7 +333,7 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level by establishment (PGD Region)',
+          category: 'Is this chart useful > Incentive level by establishment (Group)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -344,7 +344,7 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Incentive level trends (PGD Region)',
+          category: 'Is this chart useful > Incentive level trends (Group)',
           action: 'opened',
           label: 'MDI',
         }),

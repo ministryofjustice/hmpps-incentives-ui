@@ -402,7 +402,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entries by establishment (PGD Region)',
+          category: 'How you can use this chart > Behaviour entries by establishment (Group)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -413,7 +413,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Prisoners with behaviour entries by establishment (PGD Region)',
+          category: 'How you can use this chart > Prisoners with behaviour entries by establishment (Group)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -424,7 +424,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'How you can use this chart > Behaviour entry trends (PGD Region)',
+          category: 'How you can use this chart > Behaviour entry trends (Group)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -442,7 +442,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entries by establishment (PGD Region)',
+          category: 'Is this chart useful > Behaviour entries by establishment (Group)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -453,7 +453,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Prisoners with behaviour entries by establishment (PGD Region)',
+          category: 'Is this chart useful > Prisoners with behaviour entries by establishment (Group)',
           action: 'opened',
           label: 'MDI',
         }),
@@ -464,7 +464,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: 'Is this chart useful > Behaviour entry trends (PGD Region)',
+          category: 'Is this chart useful > Behaviour entry trends (Group)',
           action: 'opened',
           label: 'MDI',
         }),

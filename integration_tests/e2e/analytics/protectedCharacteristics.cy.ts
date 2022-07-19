@@ -558,11 +558,11 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
     gaSpy.install()
 
     const guidanceBoxes: [ChartId, string][] = [
-      ['incentive-levels-by-age', 'How you can use this chart > Incentive level by age (PGD Region)'],
-      ['trends-incentive-levels-by-age', 'How you can use this chart > Incentive level by age trends (PGD Region)'],
-      ['entries-by-age', 'How you can use this chart > Comparison of behaviour entries by age (PGD Region)'],
-      ['trends-entries-by-age', 'How you can use this chart > Behaviour entries by age trends (PGD Region)'],
-      ['prisoners-with-entries-by-age', 'How you can use this chart > Behaviour entries by age (PGD Region)'],
+      ['incentive-levels-by-age', 'How you can use this chart > Incentive level by age (Group)'],
+      ['trends-incentive-levels-by-age', 'How you can use this chart > Incentive level by age trends (Group)'],
+      ['entries-by-age', 'How you can use this chart > Comparison of behaviour entries by age (Group)'],
+      ['trends-entries-by-age', 'How you can use this chart > Behaviour entries by age trends (Group)'],
+      ['prisoners-with-entries-by-age', 'How you can use this chart > Behaviour entries by age (Group)'],
     ]
 
     // eslint-disable-next-line no-restricted-syntax
@@ -587,12 +587,12 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
     gaSpy.install()
 
     const feedbackBoxes: [ChartId, string][] = [
-      ['population-by-age', 'Is this chart useful > Population by age (PGD Region)'],
-      ['incentive-levels-by-age', 'Is this chart useful > Incentive level by age (PGD Region)'],
-      ['trends-incentive-levels-by-age', 'Is this chart useful > Incentive level by age trends (PGD Region)'],
-      ['entries-by-age', 'Is this chart useful > Comparison of behaviour entries by age (PGD Region)'],
-      ['trends-entries-by-age', 'Is this chart useful > Behaviour entries by age trends (PGD Region)'],
-      ['prisoners-with-entries-by-age', 'Is this chart useful > Behaviour entries by age (PGD Region)'],
+      ['population-by-age', 'Is this chart useful > Population by age (Group)'],
+      ['incentive-levels-by-age', 'Is this chart useful > Incentive level by age (Group)'],
+      ['trends-incentive-levels-by-age', 'Is this chart useful > Incentive level by age trends (Group)'],
+      ['entries-by-age', 'Is this chart useful > Comparison of behaviour entries by age (Group)'],
+      ['trends-entries-by-age', 'Is this chart useful > Behaviour entries by age trends (Group)'],
+      ['prisoners-with-entries-by-age', 'Is this chart useful > Behaviour entries by age (Group)'],
     ]
 
     // eslint-disable-next-line no-restricted-syntax

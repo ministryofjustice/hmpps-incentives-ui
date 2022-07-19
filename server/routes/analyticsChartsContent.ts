@@ -240,13 +240,13 @@ export const RegionalIncentiveLevelsChartsContent: Record<string, AnalyticsChart
     guidance:
       'Use this chart to see incentive level splits for individual establishments. What does it tell you about how the incentives policy is applied? Are there any opportunities to share practice?',
     labelColumn: 'Location',
-    googleAnalyticsCategory: 'Incentive level by establishment (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by establishment (Group)',
   },
   'trends-incentive-levels': {
     title: 'Incentive levels in the prison group – last 12 months',
     guidance:
       'This chart tells you the split of incentive levels across the whole prison group - it can be used as a guide to start asking questions. Be aware that patterns for individual establishments could be masked - these can be viewed separately.',
-    googleAnalyticsCategory: 'Incentive level trends (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level trends (Group)',
   },
 }
 
@@ -256,20 +256,20 @@ export const RegionalBehaviourEntriesChartsContent: Record<string, AnalyticsChar
     guidance:
       'This chart lets you see the balance of positive to negative entries in each establishment. Do these proportions meet your expectations for the incentives policies?',
     labelColumn: 'Location',
-    googleAnalyticsCategory: 'Behaviour entries by establishment (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by establishment (Group)',
   },
   'prisoners-with-entries-by-location': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by establishment – last 28 days',
     guidance:
       'Individual prisoner behaviours can give a fuller picture of the establishment. Are you happy with how many prisoners have no behaviour entries, and what all these numbers suggest about the incentives policy application?',
     labelColumn: 'Location',
-    googleAnalyticsCategory: 'Prisoners with behaviour entries by establishment (PGD Region)',
+    googleAnalyticsCategory: 'Prisoners with behaviour entries by establishment (Group)',
   },
   'trends-entries': {
     title: 'Comparison of positive and negative behaviour entries in the prison group – last 12 months',
     guidance:
       'This chart tells you the split of behaviour entries across the whole prison group for general information. Be aware that ratios for individual establishments could be masked - these can be viewed separately.',
-    googleAnalyticsCategory: 'Behaviour entry trends (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entry trends (Group)',
   },
 }
 
@@ -287,177 +287,177 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
   'population-by-age': {
     title: 'Percentage and number of prisoners by age',
     labelColumn: 'Age',
-    googleAnalyticsCategory: 'Population by age (PGD Region)',
+    googleAnalyticsCategory: 'Population by age (Group)',
   },
   'population-by-disability': {
     title: 'Percentage and number of prisoners by recorded disability',
     labelColumn: 'Disability',
-    googleAnalyticsCategory: 'Population by disability (PGD Region)',
+    googleAnalyticsCategory: 'Population by disability (Group)',
     labelColumnWidth: 'wide',
   },
   'population-by-ethnicity': {
     title: 'Percentage and number of prisoners by ethnicity',
     labelColumn: 'Ethnicity',
-    googleAnalyticsCategory: 'Population by ethnicity (PGD Region)',
+    googleAnalyticsCategory: 'Population by ethnicity (Group)',
     labelColumnWidth: 'wide',
   },
   'population-by-religion': {
     title: 'Percentage and number of prisoners by religion',
     labelColumn: 'Religion',
-    googleAnalyticsCategory: 'Population by religion (PGD Region)',
+    googleAnalyticsCategory: 'Population by religion (Group)',
   },
   'population-by-sexual-orientation': {
     title: 'Percentage and number of prisoners by sexual orientation',
     labelColumn: 'Sexual orientation',
-    googleAnalyticsCategory: 'Population by sexual orientation (PGD Region)',
+    googleAnalyticsCategory: 'Population by sexual orientation (Group)',
   },
   'incentive-levels-by-age': {
     title: 'Percentage and number of prisoners on each incentive level by age',
     guidance: regionalGuidanceIncentiveLevelsByPc,
     labelColumn: 'Age',
-    googleAnalyticsCategory: 'Incentive level by age (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by age (Group)',
   },
   'incentive-levels-by-disability': {
     title: 'Percentage and number of prisoners on each incentive level by recorded disability',
     guidance: regionalGuidanceIncentiveLevelsByPc,
     labelColumn: 'Disability',
-    googleAnalyticsCategory: 'Incentive level by disability (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by disability (Group)',
     labelColumnWidth: 'wide',
   },
   'incentive-levels-by-ethnicity': {
     title: 'Percentage and number of prisoners on each incentive level by ethnicity',
     guidance: regionalGuidanceIncentiveLevelsByPc,
     labelColumn: 'Ethnicity',
-    googleAnalyticsCategory: 'Incentive level by ethnicity (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by ethnicity (Group)',
     labelColumnWidth: 'wide',
   },
   'incentive-levels-by-religion': {
     title: 'Percentage and number of prisoners on each incentive level by religion',
     guidance: regionalGuidanceIncentiveLevelsByPc,
     labelColumn: 'Religion',
-    googleAnalyticsCategory: 'Incentive level by religion (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by religion (Group)',
   },
   'incentive-levels-by-sexual-orientation': {
     title: 'Percentage and number of prisoners on each incentive level by sexual orientation',
     guidance: regionalGuidanceIncentiveLevelsByPc,
     labelColumn: 'Sexual orientation',
-    googleAnalyticsCategory: 'Incentive level by sexual orientation (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by sexual orientation (Group)',
   },
   'trends-incentive-levels-by-age': {
     title: 'Incentive levels by age – last 12 months',
     guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
-    googleAnalyticsCategory: 'Incentive level by age trends (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by age trends (Group)',
   },
   'trends-incentive-levels-by-disability': {
     title: 'Incentive levels by recorded disability – last 12 months',
     guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
-    googleAnalyticsCategory: 'Incentive level by recorded disability trends (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by recorded disability trends (Group)',
   },
   'trends-incentive-levels-by-ethnicity': {
     title: 'Incentive levels by ethnicity – last 12 months',
     guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
-    googleAnalyticsCategory: 'Incentive level by ethnicity trends (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by ethnicity trends (Group)',
   },
   'trends-incentive-levels-by-religion': {
     title: 'Incentive levels by religion – last 12 months',
     guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
-    googleAnalyticsCategory: 'Incentive level by religion trends (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by religion trends (Group)',
   },
   'trends-incentive-levels-by-sexual-orientation': {
     title: 'Incentive levels by sexual orientation – last 12 months',
     guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
-    googleAnalyticsCategory: 'Incentive level by sexual orientation trends (PGD Region)',
+    googleAnalyticsCategory: 'Incentive level by sexual orientation trends (Group)',
   },
   'entries-by-age': {
     title: 'Comparison of positive and negative behaviour entries by age – last 28 days',
     guidance: regionalGuidanceEntriesByPc,
     labelColumn: 'Age',
-    googleAnalyticsCategory: 'Comparison of behaviour entries by age (PGD Region)',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by age (Group)',
   },
   'entries-by-disability': {
     title: 'Comparison of positive and negative behaviour entries by recorded disability – last 28 days',
     guidance: regionalGuidanceEntriesByPc,
     labelColumn: 'Disability',
-    googleAnalyticsCategory: 'Comparison of behaviour entries by disability (PGD Region)',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by disability (Group)',
     labelColumnWidth: 'wide',
   },
   'entries-by-ethnicity': {
     title: 'Comparison of positive and negative behaviour entries by ethnicity – last 28 days',
     guidance: regionalGuidanceEntriesByPc,
     labelColumn: 'Ethnicity',
-    googleAnalyticsCategory: 'Comparison of behaviour entries by ethnicity (PGD Region)',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by ethnicity (Group)',
     labelColumnWidth: 'wide',
   },
   'entries-by-religion': {
     title: 'Comparison of positive and negative behaviour entries by religion – last 28 days',
     guidance: regionalGuidanceEntriesByPc,
     labelColumn: 'Religion',
-    googleAnalyticsCategory: 'Comparison of behaviour entries by religion (PGD Region)',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by religion (Group)',
   },
   'entries-by-sexual-orientation': {
     title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 28 days',
     guidance: regionalGuidanceEntriesByPc,
     labelColumn: 'Sexual orientation',
-    googleAnalyticsCategory: 'Comparison of behaviour entries by sexual orientation (PGD Region)',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by sexual orientation (Group)',
   },
   'trends-entries-by-age': {
     title: 'Comparison of positive and negative behaviour entries by age – last 12 months',
     guidance: regionalGuidanceTrendsEntriesByPc,
-    googleAnalyticsCategory: 'Behaviour entries by age trends (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by age trends (Group)',
   },
   'trends-entries-by-disability': {
     title: 'Comparison of positive and negative behaviour entries by recorded disability – last 12 months',
     guidance: regionalGuidanceTrendsEntriesByPc,
-    googleAnalyticsCategory: 'Behaviour entries by recorded disability trends (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by recorded disability trends (Group)',
   },
   'trends-entries-by-ethnicity': {
     title: 'Comparison of positive and negative behaviour entries by ethnicity – last 12 months',
     guidance: regionalGuidanceTrendsEntriesByPc,
-    googleAnalyticsCategory: 'Behaviour entries by ethnicity trends (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by ethnicity trends (Group)',
   },
   'trends-entries-by-religion': {
     title: 'Comparison of positive and negative behaviour entries by religion – last 12 months',
     guidance: regionalGuidanceTrendsEntriesByPc,
-    googleAnalyticsCategory: 'Behaviour entries by religion trends (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by religion trends (Group)',
   },
   'trends-entries-by-sexual-orientation': {
     title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 12 months',
     guidance: regionalGuidanceTrendsEntriesByPc,
-    googleAnalyticsCategory: 'Behaviour entries by sexual orientation trends (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by sexual orientation trends (Group)',
   },
   'prisoners-with-entries-by-age': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by age – last 28 days',
     guidance: regionalGuidancePrisonersWithEntriesByPc,
     labelColumn: 'Age',
-    googleAnalyticsCategory: 'Behaviour entries by age (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by age (Group)',
   },
   'prisoners-with-entries-by-disability': {
     title:
       'Percentage and number of prisoners receiving each behaviour entry type by recorded disability – last 28 days',
     guidance: regionalGuidancePrisonersWithEntriesByPc,
     labelColumn: 'Disability',
-    googleAnalyticsCategory: 'Behaviour entries by disability (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by disability (Group)',
     labelColumnWidth: 'wide',
   },
   'prisoners-with-entries-by-ethnicity': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by ethnicity – last 28 days',
     guidance: regionalGuidancePrisonersWithEntriesByPc,
     labelColumn: 'Ethnicity',
-    googleAnalyticsCategory: 'Behaviour entries by ethnicity (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by ethnicity (Group)',
     labelColumnWidth: 'wide',
   },
   'prisoners-with-entries-by-religion': {
     title: 'Percentage and number of prisoners receiving each behaviour entry type by religion – last 28 days',
     guidance: regionalGuidancePrisonersWithEntriesByPc,
     labelColumn: 'Religion',
-    googleAnalyticsCategory: 'Behaviour entries by religion (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by religion (Group)',
   },
   'prisoners-with-entries-by-sexual-orientation': {
     title:
       'Percentage and number of prisoners receiving each behaviour entry type by sexual orientation – last 28 days',
     guidance: regionalGuidancePrisonersWithEntriesByPc,
     labelColumn: 'Sexual orientation',
-    googleAnalyticsCategory: 'Behaviour entries by sexual orientation (PGD Region)',
+    googleAnalyticsCategory: 'Behaviour entries by sexual orientation (Group)',
   },
 }
 

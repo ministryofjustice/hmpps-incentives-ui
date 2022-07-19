@@ -74,8 +74,9 @@ export function getTextFromTable(chainable: PageElement<HTMLTableRowElement>): C
   })
 }
 
-export function testGuidanceBoxes<PageClass extends AnalyticsPage>(
+export function testDetailsOpenedGaEvents<PageClass extends AnalyticsPage>(
   pageClass: new () => PageClass,
+  detailsGetterMethod: 'getChartGuidance' | 'getChartFeedback',
   charts: Partial<Record<ChartId, string>>,
 ) {
   const page = Page.verifyOnPage(pageClass)
@@ -85,12 +86,12 @@ export function testGuidanceBoxes<PageClass extends AnalyticsPage>(
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [chartId, gaCategory] of Object.entries(charts)) {
-    page
-      .getChartGuidance(chartId as ChartId)
+    page[detailsGetterMethod]
+      .call(page, chartId)
       .click()
       .then(() =>
         gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: `How you can use this chart > ${gaCategory}`,
+          category: gaCategory,
           action: 'opened',
           label: 'MDI',
         }),

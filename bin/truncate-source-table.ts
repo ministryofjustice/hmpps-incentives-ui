@@ -37,7 +37,7 @@ let filterByPrison = true
 
 switch (chosenTableType) {
   case 'behaviourEntriesPrison':
-    columnsToKeep = ['prison', 'prison_name', 'wing', 'positives', 'negatives']
+    columnsToKeep = ['prison', 'prison_name', 'location_code', 'location_desc', 'positives', 'negatives']
     rowFilter = () => true
     break
   case 'behaviourEntriesRegional':
@@ -59,7 +59,8 @@ switch (chosenTableType) {
       'pgd_region',
       'prison',
       'prison_name',
-      'wing',
+      'location_code',
+      'location_desc',
       'incentive',
       'behaviour_profile',
       'characteristic',

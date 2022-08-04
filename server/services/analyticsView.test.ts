@@ -67,7 +67,7 @@ describe('AnalyticsView', () => {
       expect(prison.getFiltering()).toEqual({
         filterColumn: 'prison',
         filterValue: 'MDI',
-        groupBy: 'wing',
+        groupBy: 'location_code',
       })
     })
   })

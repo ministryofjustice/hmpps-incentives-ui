@@ -67,7 +67,7 @@ export abstract class StitchedTablesCache {
 export class MemoryStitchedTablesCache extends StitchedTablesCache {
   /**
    * A map-like object where the key is a unique string derived from
-   * the source table name and the columns (e.g. 'incentives_latest_narrow,prison,wing').
+   * the source table name and the columns (e.g. 'incentives_latest_narrow,prison,location_code').
    *
    * The value contains the actual cached value, including
    * the `stichedTable` matrix and the `date`/`modified` dates.

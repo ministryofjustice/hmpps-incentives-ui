@@ -130,6 +130,9 @@ export default {
     // Google Analytics 4 (GA4) measurement ID. Starts with `G-`.
     ga4MeasurementId: get('GOOGLE_ANALYTICS_GA4_MEASUREMENT_ID', ''),
   },
+  hotjar: {
+    siteId: get('HOTJAR_SITE_ID', ''),
+  },
   featureFlags: {
     addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),
     // Whether to hide the 'Days since last review'/'Days on level' columns

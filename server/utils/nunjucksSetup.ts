@@ -20,6 +20,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   app.locals.feedbackUrl = config.feedbackUrl
   app.locals.googleAnalyticsUaId = config.googleAnalytics.uaTrackingId
   app.locals.googleAnalyticsGa4Id = config.googleAnalytics.ga4MeasurementId
+  app.locals.hotjarSiteId = config.hotjar.siteId
   app.locals.featureFlags = config.featureFlags
   app.locals.phaseName = config.phaseName
   app.locals.phaseNameColour = config.phaseName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''

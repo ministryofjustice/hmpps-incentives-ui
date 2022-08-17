@@ -2,9 +2,7 @@
   min-height: 600px
 }
 
-.govuk-footer {
-  // Hide untruthful Open Government Licence message in footer
-  .govuk-footer__licence-logo, .govuk-footer__licence-description {
-    display: none;
-  }
+// hide Open Government Licence logo: the content is "official sensitive"
+.govuk-footer .govuk-footer__licence-logo {
+  display: none;
 }

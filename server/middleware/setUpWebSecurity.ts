@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import express, { Router, Request, Response } from 'express'
+import express, { Router, Request, Response, NextFunction } from 'express'
 import helmet from 'helmet'
 
 import config from '../config'
@@ -10,7 +10,7 @@ export default function setUpWebSecurity(): Router {
   // Secure code best practice - see:
   // 1. https://expressjs.com/en/advanced/best-practice-security.html,
   // 2. https://www.npmjs.com/package/helmet
-  router.use((req, res, next) => {
+  router.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.cspNonce = crypto.randomBytes(16).toString('hex')
     next()
   })

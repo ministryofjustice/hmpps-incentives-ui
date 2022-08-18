@@ -150,7 +150,7 @@ describe('AnalyticsService', () => {
       valB: Record<string, number>
     }
     type StitchedRow = [string, number, number]
-    type MappedRow = [string, number]
+    type MappedRow = { label: string; values: [number] }
 
     const sampleInputTable: Table = {
       ignoredColumn: { '1': 'a', '2': 'b', '3': 'c', '4': 'd' },
@@ -174,14 +174,16 @@ describe('AnalyticsService', () => {
       const stitchedTable = analyticsService.stitchTable<Table, StitchedRow>(sampleInputTable, columnsToPluck)
       const output = mapRowsAndSumTotals<StitchedRow, MappedRow>(
         stitchedTable,
-        ([category, valA, valB]) => [category, valA + valB],
+        ([category, valA, valB]) => {
+          return { label: category, values: [valA + valB] }
+        },
         1,
       )
       expect(output).toEqual<MappedRow[]>([
-        ['A', 6],
-        ['B', 20],
-        ['C', 10],
-        ['All', 36],
+        { label: 'A', values: [6] },
+        { label: 'B', values: [20] },
+        { label: 'C', values: [10] },
+        { label: 'All', values: [36] },
       ])
     })
   })

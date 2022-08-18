@@ -3,33 +3,30 @@ import { TrendsReportRow } from './analyticsServiceTypes'
 /**
  * Maps each row in a stitched table and sums up totals
  */
-export function mapRowsAndSumTotals<RowIn extends [...(number | string)[]], RowOut extends [string, ...number[]]>(
+export function mapRowsAndSumTotals<RowIn, RowOut extends { label: string; values: number[] }>(
   stitchedTable: RowIn[],
   rowMapper: (row: RowIn) => RowOut,
-  summedColumnCount: number, // the number of number columns at the end of RowOut
+  valueCount: number, // the length of RowOut.values
 ): RowOut[] {
   const groups: Record<string, RowOut> = {}
-  const grandTotals: number[] = Array(summedColumnCount).fill(0)
+  const grandTotals: number[] = Array(valueCount).fill(0)
   stitchedTable.forEach(rowIn => {
     const rowOut = rowMapper(rowIn)
-    const [groupId, ...rest] = rowOut
-    const rowValues = rest as number[]
+    const { label: groupId, values } = rowOut
     if (typeof groups[groupId] === 'undefined') {
       groups[groupId] = rowOut
     } else {
-      const group = groups[groupId]
-      rowValues.forEach((value, index) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        group[index + 1] += value
+      const group: RowOut = groups[groupId]
+      values.forEach((value, index) => {
+        group.values[index] += value
       })
     }
-    rowValues.forEach((value, index) => {
+    values.forEach((value, index) => {
       grandTotals[index] += value
     })
   })
   const rows = Object.values(groups)
-  rows.push(['All', ...grandTotals] as RowOut)
+  rows.push({ label: 'All', values: grandTotals } as RowOut)
   return rows
 }
 

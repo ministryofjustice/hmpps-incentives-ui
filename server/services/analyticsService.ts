@@ -157,8 +157,7 @@ export default class AnalyticsService {
     }
 
     const columns = ['Positive', 'Negative']
-    type AggregateRow = [string, number, number]
-    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const rowsWithoutHref = mapRowsAndSumTotals<StitchedRow, BehaviourEntriesByLocation>(
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -169,14 +168,14 @@ export default class AnalyticsService {
         // Show prison names, not IDs, in regional charts
         const label = view.isRegional() ? prisonName : groupedColumn
 
-        return [label, positives, negatives]
+        return { label, values: [positives, negatives] }
       },
       2,
     )
 
     const urlForLocation = view.getUrlFunction()
-    const rows: BehaviourEntriesByLocation[] = aggregateTable.map(([label, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? null : urlForLocation(filterValue, label)
+    const rows: BehaviourEntriesByLocation[] = rowsWithoutHref.map(({ label, values }, index) => {
+      const href = index === rowsWithoutHref.length - 1 ? null : urlForLocation(filterValue, label)
       return { label, href, values }
     })
     rows.sort(compareLocations)
@@ -222,8 +221,7 @@ export default class AnalyticsService {
     }
 
     const columns = ['Positive', 'Negative', 'Both', 'None']
-    type AggregateRow = [string, number, number, number, number]
-    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const rowsWithoutHref = mapRowsAndSumTotals<StitchedRow, PrisonersWithEntriesByLocation>(
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -235,35 +233,35 @@ export default class AnalyticsService {
         const label = view.isRegional() ? prisonName : groupedColumn
 
         if (positives > 0 && negatives > 0) {
-          return [label, 0, 0, 1, 0]
+          return { label, values: [0, 0, 1, 0] }
         }
         if (positives > 0) {
-          return [label, 1, 0, 0, 0]
+          return { label, values: [1, 0, 0, 0] }
         }
         if (negatives > 0) {
-          return [label, 0, 1, 0, 0]
+          return { label, values: [0, 1, 0, 0] }
         }
-        return [label, 0, 0, 0, 1]
+        return { label, values: [0, 0, 0, 1] }
       },
       4,
     )
 
     // Remove 'All' row calculated from current level's source table
-    aggregateTable.pop()
+    rowsWithoutHref.pop()
     // Replace with 'All' row calculated from level above's source table
     const allRow = await this.getBehaviourEntriesHeatmapAllRow()
-    aggregateTable.push(allRow)
+    rowsWithoutHref.push(allRow)
 
     const urlForLocation = view.getUrlFunction()
-    const rows: PrisonersWithEntriesByLocation[] = aggregateTable.map(([label, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? null : urlForLocation(filterValue, label)
+    const rows: PrisonersWithEntriesByLocation[] = rowsWithoutHref.map(({ label, values }, index) => {
+      const href = index === rowsWithoutHref.length - 1 ? null : urlForLocation(filterValue, label)
       return { label, href, values }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
 
-  private async getBehaviourEntriesHeatmapAllRow(): Promise<[string, number, number, number, number]> {
+  private async getBehaviourEntriesHeatmapAllRow(): Promise<PrisonersWithEntriesByLocation> {
     const { view } = this
     const { filterColumn, filterValue } = view.getFiltering()
 
@@ -293,9 +291,8 @@ export default class AnalyticsService {
     }
 
     // In this context doesn't matter, we sum everything up
-    const groupLabel = 'All'
-    type AggregateRow = [string, number, number, number, number]
-    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const label = 'All'
+    const rowsWithoutHref = mapRowsAndSumTotals<StitchedRow, PrisonersWithEntriesByLocation>(
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -304,20 +301,20 @@ export default class AnalyticsService {
           : (row as StitchedRowFiltered)
 
         if (positives > 0 && negatives > 0) {
-          return [groupLabel, 0, 0, 1, 0]
+          return { label, values: [0, 0, 1, 0] }
         }
         if (positives > 0) {
-          return [groupLabel, 1, 0, 0, 0]
+          return { label, values: [1, 0, 0, 0] }
         }
         if (negatives > 0) {
-          return [groupLabel, 0, 1, 0, 0]
+          return { label, values: [0, 1, 0, 0] }
         }
-        return [groupLabel, 0, 0, 0, 1]
+        return { label, values: [0, 0, 0, 1] }
       },
       4,
     )
 
-    return aggregateTable.pop()
+    return rowsWithoutHref.pop()
   }
 
   async getIncentiveLevelsByLocation(): Promise<Report<PrisonersOnLevelsByLocation>> {
@@ -359,8 +356,7 @@ export default class AnalyticsService {
     let columns = Array.from(columnSet)
     columns.sort() // NB: levels sort naturally because they include a prefix
 
-    type AggregateRow = [string, ...number[]]
-    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const rowsWithoutHref = mapRowsAndSumTotals<StitchedRow, PrisonersOnLevelsByLocation>(
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars, prettier/prettier
@@ -373,15 +369,15 @@ export default class AnalyticsService {
 
         // Show prison names, not IDs, in regional charts
         const label = view.isRegional() ? prisonName : groupedColumn
-        return [label, ...levels]
+        return { label, values: levels }
       },
       columns.length,
     )
     columns = columns.map(removeSortingPrefix)
 
     const urlForLocation = view.getUrlFunction()
-    const rows: PrisonersOnLevelsByLocation[] = aggregateTable.map(([label, ...values], index) => {
-      const href = index === aggregateTable.length - 1 ? null : urlForLocation(filterValue, label)
+    const rows: PrisonersOnLevelsByLocation[] = rowsWithoutHref.map(({ label, values }, index) => {
+      const href = index === rowsWithoutHref.length - 1 ? null : urlForLocation(filterValue, label)
       return { label, href, values }
     })
     rows.sort(compareLocations)
@@ -435,8 +431,7 @@ export default class AnalyticsService {
     let columns = Array.from(columnSet)
     columns.sort() // NB: levels sort naturally because they include a prefix
 
-    type AggregateRow = [string, ...number[]]
-    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const rows = mapRowsAndSumTotals<StitchedRow, PrisonersOnLevelsByProtectedCharacteristic>(
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars, prettier/prettier
@@ -446,15 +441,12 @@ export default class AnalyticsService {
         const levels = Array(columns.length).fill(0)
         const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
         levels[levelIndex] = 1
-        return [characteristicGroup.trim(), ...levels]
+        return { label: characteristicGroup.trim(), values: levels }
       },
       columns.length,
     )
     columns = columns.map(removeSortingPrefix)
 
-    const rows: PrisonersOnLevelsByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
-      return { label: characteristic, values }
-    })
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (
@@ -511,8 +503,7 @@ export default class AnalyticsService {
     }
 
     const columns = ['Positive', 'Negative', 'Both', 'None']
-    type AggregateRow = [string, ...number[]]
-    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const rows = mapRowsAndSumTotals<StitchedRow, PrisonersWithEntriesByProtectedCharacteristic>(
       filteredTables,
       row => {
         // eslint-disable-next-line prefer-const, @typescript-eslint/no-unused-vars
@@ -526,14 +517,11 @@ export default class AnalyticsService {
           someBehaviourProfile => someBehaviourProfile === behaviourProfile,
         )
         behaviourProfiles[behaviourProfileIndex] = 1
-        return [characteristicGroup.trim(), ...behaviourProfiles]
+        return { label: characteristicGroup.trim(), values: behaviourProfiles }
       },
       columns.length,
     )
 
-    const rows: PrisonersWithEntriesByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
-      return { label: characteristic, values }
-    })
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (
@@ -813,8 +801,7 @@ export default class AnalyticsService {
     }
 
     const columns = ['Positive', 'Negative']
-    type AggregateRow = [string, number, number]
-    const aggregateTable = mapRowsAndSumTotals<StitchedRow, AggregateRow>(
+    const rows = mapRowsAndSumTotals<StitchedRow, BehaviourEntriesByProtectedCharacteristic>(
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -822,14 +809,11 @@ export default class AnalyticsService {
           ? ['', ...(row as StitchedRowNational)]
           : (row as StitchedRowFiltered)
 
-        return [characteristicGroup.trim(), positives, negatives]
+        return { label: characteristicGroup.trim(), values: [positives, negatives] }
       },
       2,
     )
 
-    const rows: BehaviourEntriesByProtectedCharacteristic[] = aggregateTable.map(([characteristic, ...values]) => {
-      return { label: characteristic, values }
-    })
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (

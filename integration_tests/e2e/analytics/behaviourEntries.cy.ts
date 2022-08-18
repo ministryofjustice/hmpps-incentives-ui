@@ -44,7 +44,7 @@ context('Analytics section > Behaviour entries page', () => {
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('563')
+        expect(location).to.contain('509')
       })
 
     page
@@ -53,7 +53,7 @@ context('Analytics section > Behaviour entries page', () => {
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('1,018')
+        expect(location).to.contain('1,039')
       })
 
     getTextFromTable(page.getChartTable('trends-entries')).then(rows => {
@@ -65,15 +65,15 @@ context('Analytics section > Behaviour entries page', () => {
 
       expect(positivesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly positive entries
-        ['194', '173', '191', '205', '155', '209', '160', '254', '176', '170', '131', '205'],
+        ['191', '205', '155', '209', '160', '254', '176', '170', '131', '205', '204', '225'],
       )
       expect(negativesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly negative entries
-        ['248', '243', '267', '310', '295', '322', '307', '277', '333', '353', '318', '374'],
+        ['267', '310', '295', '322', '307', '277', '333', '353', '318', '374', '394', '363'],
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
-        ['Prison population', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922', '909'],
+        ['Prison population', '937', '928', '921', '926', '930', '935', '920', '915', '922', '909', '962', '937'],
       )
     })
   })
@@ -145,7 +145,7 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('59,811')
+        expect(location).to.contain('60,269')
       })
 
     page
@@ -154,7 +154,7 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('86,530')
+        expect(location).to.contain('87,307')
       })
 
     getTextFromTable(page.getChartTable('trends-entries')).then(rows => {
@@ -166,18 +166,16 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
 
       expect(positivesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly positive entries
-        ['578', '860', '971', '937', '786', '840', '715', '915', '641', '850', '938', '983'],
+        ['971', '937', '786', '840', '715', '915', '641', '850', '938', '983', '1,008', '930'],
       )
       expect(negativesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly negative entries
-        ['1,284', '1,528', '1,402', '1,390', '1,367', '1,568', '1,537', '1,387', '1,212', '1,444', '1,395', '1,387'],
+        ['1,402', '1,390', '1,367', '1,568', '1,537', '1,387', '1,212', '1,444', '1,396', '1,389', '1,339', '1,369'],
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
         [
           'National population',
-          '3,077',
-          '3,070',
           '3,059',
           '3,047',
           '3,036',
@@ -186,8 +184,10 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
           '3,066',
           '3,054',
           '3,059',
-          '3,064',
+          '3,063',
           '3,069',
+          '3,215',
+          '3,100',
         ],
       )
     })
@@ -245,7 +245,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('260')
+        expect(location).to.contain('306')
       })
 
     page
@@ -254,7 +254,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('8,761')
+        expect(location).to.contain('8,818')
       })
 
     getTextFromTable(page.getChartTable('trends-entries')).then(rows => {
@@ -266,15 +266,15 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
 
       expect(positivesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly positive entries
-        ['99', '114', '106', '100', '70', '74', '64', '61', '63', '120', '96', '94'],
+        ['106', '100', '70', '74', '64', '61', '63', '120', '96', '94', '140', '126'],
       )
       expect(negativesRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly negative entries
-        ['169', '169', '170', '176', '168', '190', '200', '291', '200', '186', '171', '206'],
+        ['170', '176', '168', '190', '200', '291', '200', '186', '171', '206', '198', '153'],
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
-        ['Total group population', '372', '342', '322', '315', '312', '317', '315', '314', '318', '323', '321', '319'],
+        ['Total group population', '322', '315', '312', '317', '315', '314', '318', '323', '321', '319', '330', '320'],
       )
     })
   })

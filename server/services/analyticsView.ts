@@ -1,5 +1,4 @@
-import type { UrlForLocationFunction } from './analyticsService'
-import PgdRegionService, { National, PgdRegion } from './pgdRegionService'
+import PgdRegionService, { National, type PgdRegion } from './pgdRegionService'
 import type { AnalyticsChartContent } from '../routes/analyticsChartsContent'
 import {
   BehaviourEntriesChartsContent,
@@ -15,11 +14,31 @@ import {
 
 type ViewType = 'behaviour-entries' | 'incentive-levels' | 'protected-characteristic'
 
-type Query = {
-  filterColumn: null | 'pgd_region' | 'prison'
-  filterValue: string
-  groupBy: 'pgd_region' | 'prison' | 'wing'
-}
+type Query =
+  | {
+      filterColumn: null
+      filterValue: null
+      groupBy: 'pgd_region'
+    }
+  | {
+      filterColumn: 'pgd_region'
+      filterValue: string
+      groupBy: 'prison'
+    }
+  | {
+      filterColumn: 'prison'
+      filterValue: string
+      groupBy: 'location_code'
+    }
+
+/**
+ * Function returning the URL to a specific location (be it wing, prison or PGD Region)
+ *
+ * filterValue could be null (for national), a PGD region name or prison ID
+ * groupValue could be a PGD region name, a prison ID or a residential location ID
+ * for national, regional and prison views respectively
+ */
+type UrlForLocationFunction = (filterValue: string | null, groupValue: string) => string | null
 
 /**
  * Keeps logic for national/regional/by prison view
@@ -100,7 +119,7 @@ export default class AnalyticsView {
       return (_pgdRegion, _prisonId) => null
     }
 
-    return linkToIncentiveTable
+    return (prison: string, location: string) => `/incentive-summary/${prison}-${location}`
   }
 
   getFiltering(): Query {
@@ -124,7 +143,7 @@ export default class AnalyticsView {
       return {
         filterColumn: 'prison',
         filterValue: this.activeCaseLoad,
-        groupBy: 'wing',
+        groupBy: 'location_code',
       }
     }
 
@@ -170,11 +189,4 @@ export default class AnalyticsView {
 
     return 'National'
   }
-}
-
-/**
- * Makes a link from locations in analytics charts to incentives review table
- */
-function linkToIncentiveTable(prison: string, location: string): string {
-  return `/incentive-summary/${prison}-${location}`
 }

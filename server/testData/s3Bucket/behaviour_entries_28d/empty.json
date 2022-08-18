@@ -1,6 +1,7 @@
 {
   "prison": {},
-  "wing": {},
+  "location_code": {},
+  "location_desc": {},
   "positives": {},
   "negatives": {}
 }

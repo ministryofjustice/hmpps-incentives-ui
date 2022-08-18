@@ -38,13 +38,6 @@ import {
 } from './analyticsServiceUtils'
 import type { StitchedTablesCache } from './stitchedTablesCache'
 
-// Function returning the URL to a specific location (be it wing, prison or PGD Region)
-//
-// filterValue could be null (for national), a PGD region name or prison ID
-// groupValue could be a PGD region name, a prison ID or a residential location ID
-// for national, regional and prison views respectively
-export type UrlForLocationFunction = (filterValue: string | null, groupValue: string) => string | null
-
 export default class AnalyticsService {
   constructor(
     private readonly client: S3Client,
@@ -135,6 +128,8 @@ export default class AnalyticsService {
     const columnsToStitch = filterColumn
       ? [filterColumn, groupBy, 'positives', 'negatives', 'prison_name']
       : [groupBy, 'positives', 'negatives']
+    // TODO: if view.isPrisonLevel() then will need to _also_ group by `location_desc`
+
     type StitchedRowFiltered = [string, string, number, number, string]
     type StitchedRowNational = [string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowNational
@@ -195,6 +190,7 @@ export default class AnalyticsService {
     const columnsToStitch = view.isNational()
       ? [groupBy, 'positives', 'negatives']
       : [filterColumn, groupBy, 'positives', 'negatives', 'prison_name']
+    // TODO: if view.isPrisonLevel() then will need to _also_ group by `location_desc`
 
     type StitchedRowFiltered = [string, string, number, number, string]
     type StitchedRowNational = [string, number, number]
@@ -330,6 +326,8 @@ export default class AnalyticsService {
     const columnsToStitch = view.isNational()
       ? [groupBy, 'incentive', 'characteristic', 'charac_group']
       : [filterColumn, groupBy, 'incentive', 'characteristic', 'charac_group', 'prison_name']
+    // TODO: if view.isPrisonLevel() then will need to _also_ group by `location_desc`
+
     type StitchedRow = [string, string, string, string, string?, string?]
 
     const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<IncentiveLevelsTable, StitchedRow>(

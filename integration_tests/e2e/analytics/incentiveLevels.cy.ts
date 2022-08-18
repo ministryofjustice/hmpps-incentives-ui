@@ -42,7 +42,7 @@ context('Analytics section > Incentive levels page', () => {
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('929')
+        expect(location).to.contain('945')
       })
 
     getTextFromTable(page.getChartTable('trends-incentive-levels')).then(rows => {
@@ -53,11 +53,11 @@ context('Analytics section > Incentive levels page', () => {
 
       expect(standardRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly average population on standard level
-        ['568', '572', '567', '554', '552', '555', '568', '561', '534', '533', '543', '531'],
+        ['567', '554', '552', '555', '568', '561', '534', '533', '543', '531', '545', '525'],
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
-        ['Prison population', '917', '932', '937', '928', '921', '926', '930', '935', '920', '915', '922', '909'],
+        ['Prison population', '937', '928', '921', '926', '930', '935', '920', '915', '922', '909', '962', '937'],
       )
     })
   })
@@ -117,7 +117,7 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('3,117')
+        expect(location).to.contain('3,094')
       })
 
     getTextFromTable(page.getChartTable('trends-incentive-levels')).then(rows => {
@@ -128,14 +128,12 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
 
       expect(standardRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly average population on standard level
-        ['1,590', '1,544', '1,470', '1,405', '1,388', '1,403', '1,421', '1,427', '1,383', '1,353', '1,360', '1,359'],
+        ['1,470', '1,405', '1,388', '1,403', '1,421', '1,427', '1,383', '1,353', '1,360', '1,359', '1,391', '1,331'],
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
         [
           'National population',
-          '3,077',
-          '3,070',
           '3,059',
           '3,047',
           '3,036',
@@ -144,8 +142,10 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
           '3,066',
           '3,054',
           '3,059',
-          '3,064',
+          '3,063',
           '3,069',
+          '3,215',
+          '3,100',
         ],
       )
     })
@@ -198,7 +198,7 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
       .then(totalsRow => {
         const location = totalsRow.find('td:first-child').text()
         expect(location).to.contain('All')
-        expect(location).to.contain('319')
+        expect(location).to.contain('320')
       })
 
     getTextFromTable(page.getChartTable('trends-incentive-levels')).then(rows => {
@@ -209,11 +209,11 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
 
       expect(standardRow.map(text => text.split(/\s/)[0])).to.deep.equal(
         // monthly average population on standard level
-        ['133', '116', '100', '92', '95', '96', '98', '103', '104', '112', '106', '101'],
+        ['100', '92', '95', '96', '98', '103', '104', '112', '106', '101', '98', '92'],
       )
       expect(populationRow).to.deep.equal(
         // monthly average population
-        ['Total group population', '372', '342', '322', '315', '312', '317', '315', '314', '318', '323', '321', '319'],
+        ['Total group population', '322', '315', '312', '317', '315', '314', '318', '323', '321', '319', '330', '320'],
       )
     })
   })

@@ -23,7 +23,8 @@ export interface CaseEntriesTable extends Table {
   pgd_region: Record<string, string>
   prison: Record<string, string>
   prison_name: Record<string, string>
-  wing: Record<string, string>
+  location_code: Record<string, string>
+  location_desc: Record<string, string>
   positives: Record<string, number>
   negatives: Record<string, number>
   // Unused columns; not currently stored in test data:
@@ -39,7 +40,8 @@ export interface IncentiveLevelsTable extends Table {
   pgd_region: Record<string, string>
   prison: Record<string, string>
   prison_name: Record<string, string>
-  wing: Record<string, string>
+  location_code: Record<string, string>
+  location_desc: Record<string, string>
   incentive: Record<string, string>
   behaviour_profile: Record<string, string>
   characteristic: Record<string, string>

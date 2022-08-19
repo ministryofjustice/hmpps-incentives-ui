@@ -2,7 +2,7 @@ const notNumber = (n: unknown) => typeof n !== 'number' || Number.isNaN(n)
 
 export default {
   date(date: Date) {
-    return date.toLocaleDateString('en-GB', {
+    const formatted = date.toLocaleDateString('en-GB', {
       hour: '2-digit',
       hour12: false,
       minute: '2-digit',
@@ -11,6 +11,7 @@ export default {
       year: 'numeric',
       timeZone: 'Europe/London',
     })
+    return formatted.replace(' at ', ', ')
   },
 
   shortDate(date: Date) {

@@ -119,7 +119,14 @@ export default class AnalyticsView {
       return (_pgdRegion, _prisonId) => null
     }
 
-    return (prison: string, location: string) => `/incentive-summary/${prison}-${location}`
+    return (prison: string, location: string) => {
+      if (!location || ['all', 'non-wing', 'unknown'].includes(location.toLowerCase())) {
+        // Special locations should never be linked
+        return null
+      }
+      // Link to incentives reviews table
+      return `/incentive-summary/${prison}-${location}`
+    }
   }
 
   getFiltering(): Query {

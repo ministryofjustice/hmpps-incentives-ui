@@ -29,9 +29,7 @@ const cache = new MemoryStitchedTablesCache()
 const isYouthCustodyServiceOriginal = PrisonRegister.isYouthCustodyService
 
 const prisonLocations = {
-  /*
-  TODO: will be:
-    MDI: [
+  MDI: [
     'All',
     'Houseblock 1',
     'Houseblock 2',
@@ -44,14 +42,9 @@ const prisonLocations = {
     'Segregation Unit',
   ],
   BWI: ['All', 'Alwen', 'Bala', 'Casu', 'Ceiriog'],
-  */
-  MDI: ['All', '1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
-  BWI: ['All', 'A', 'B', 'C', 'CASU'],
 }
 // Behaviour entries source tables don't filter out `Non-wing` location
 const prisonLocationsBehaviourEntries = {
-  /*
-  TODO: will be:
   MDI: [
     'All',
     'Houseblock 1',
@@ -66,9 +59,6 @@ const prisonLocationsBehaviourEntries = {
     'Segregation Unit',
   ],
   BWI: ['All', 'Alwen', 'Bala', 'Casu', 'Ceiriog'],
-  */
-  MDI: ['All', '1', '2', '3', '4', '5', '6', '7', '8', 'Non-wing', 'SEG'],
-  BWI: ['All', 'A', 'B', 'C', 'CASU'],
 }
 
 const prisonLevels = {
@@ -333,11 +323,11 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.values[1]).toEqual(sumNegative)
     })
 
-    it('rows (other than totals) include location description', async () => {
+    it('rows (other than totals) include location codes', async () => {
       const { rows } = await analyticsService.getBehaviourEntriesByLocation()
       const [totalsRow, ...locationRows] = rows
-      expect(locationRows.every(row => !!row.locationDescription)).toBeTruthy()
-      expect(totalsRow.locationDescription).toBeUndefined()
+      expect(locationRows.every(row => !!row.locationCode)).toBeTruthy()
+      expect(totalsRow.locationCode).toBeUndefined()
     })
 
     it('throws an error when the table is empty', async () => {
@@ -425,11 +415,11 @@ describe('AnalyticsService', () => {
       expect(allRow).toEqual({ href: null, label: 'All', values: [122, 145, 26, 746] })
     })
 
-    it('rows (other than totals) include location description', async () => {
+    it('rows (other than totals) include location codes', async () => {
       const { rows } = await analyticsService.getPrisonersWithEntriesByLocation()
       const [totalsRow, ...locationRows] = rows
-      expect(locationRows.every(row => !!row.locationDescription)).toBeTruthy()
-      expect(totalsRow.locationDescription).toBeUndefined()
+      expect(locationRows.every(row => !!row.locationCode)).toBeTruthy()
+      expect(totalsRow.locationCode).toBeUndefined()
     })
 
     it('throws an error when the table is empty', async () => {
@@ -536,11 +526,11 @@ describe('AnalyticsService', () => {
       }
     })
 
-    it('rows (other than totals) include location description', async () => {
+    it('rows (other than totals) include location codes', async () => {
       const { rows } = await analyticsService.getIncentiveLevelsByLocation()
       const [totalsRow, ...locationRows] = rows
-      expect(locationRows.every(row => !!row.locationDescription)).toBeTruthy()
-      expect(totalsRow.locationDescription).toBeUndefined()
+      expect(locationRows.every(row => !!row.locationCode)).toBeTruthy()
+      expect(totalsRow.locationCode).toBeUndefined()
     })
 
     it('throws an error when the table is empty', async () => {

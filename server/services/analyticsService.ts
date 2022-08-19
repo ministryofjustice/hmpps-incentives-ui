@@ -132,7 +132,7 @@ export default class AnalyticsService {
 
     let columnsToStitch: string[]
     if (view.isPrisonLevel()) {
-      columnsToStitch = [filterColumn, groupBy, 'positives', 'negatives', 'prison_name', 'location_desc']
+      columnsToStitch = [filterColumn, groupBy, 'positives', 'negatives', 'prison_name', 'location_code']
     } else if (view.isRegional()) {
       columnsToStitch = [filterColumn, groupBy, 'positives', 'negatives', 'prison_name']
     } else {
@@ -169,10 +169,9 @@ export default class AnalyticsService {
         let filteredColumn: string
         let groupedColumn: string
         let prisonName: string
-        let locationDescription: string | undefined
+        let locationCode: string | undefined
         if (view.isPrisonLevel()) {
-          ;[filteredColumn, groupedColumn, positives, negatives, prisonName, locationDescription] =
-            row as StitchedPrisonRow
+          ;[filteredColumn, groupedColumn, positives, negatives, prisonName, locationCode] = row as StitchedPrisonRow
           label = groupedColumn
         } else if (view.isRegional()) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -184,15 +183,15 @@ export default class AnalyticsService {
           label = groupedColumn
         }
 
-        return { label, values: [positives, negatives], locationDescription }
+        return { label, values: [positives, negatives], locationCode }
       },
       2,
     )
 
     const urlForLocation = view.getUrlFunction()
-    const rows: BehaviourEntriesByLocation[] = rowsWithoutHref.map(({ label, values, locationDescription }, index) => {
-      const href = index === rowsWithoutHref.length - 1 ? null : urlForLocation(filterValue, label)
-      return { label, href, values, locationDescription }
+    const rows: BehaviourEntriesByLocation[] = rowsWithoutHref.map(({ label, values, locationCode }, index) => {
+      const href = index === rowsWithoutHref.length - 1 ? null : urlForLocation(filterValue, locationCode ?? label)
+      return { label, href, values, locationCode }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
@@ -209,7 +208,7 @@ export default class AnalyticsService {
 
     let columnsToStitch: string[]
     if (view.isPrisonLevel()) {
-      columnsToStitch = [filterColumn, groupBy, 'positives', 'negatives', 'prison_name', 'location_desc']
+      columnsToStitch = [filterColumn, groupBy, 'positives', 'negatives', 'prison_name', 'location_code']
     } else if (view.isRegional()) {
       columnsToStitch = [filterColumn, groupBy, 'positives', 'negatives', 'prison_name']
     } else {
@@ -249,10 +248,9 @@ export default class AnalyticsService {
         let filteredColumn: string
         let groupedColumn: string
         let prisonName: string
-        let locationDescription: string | undefined
+        let locationCode: string | undefined
         if (view.isPrisonLevel()) {
-          ;[filteredColumn, groupedColumn, positives, negatives, prisonName, locationDescription] =
-            row as StitchedPrisonRow
+          ;[filteredColumn, groupedColumn, positives, negatives, prisonName, locationCode] = row as StitchedPrisonRow
           label = groupedColumn
         } else if (view.isRegional()) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -265,15 +263,15 @@ export default class AnalyticsService {
         }
 
         if (positives > 0 && negatives > 0) {
-          return { label, values: [0, 0, 1, 0], locationDescription }
+          return { label, values: [0, 0, 1, 0], locationCode }
         }
         if (positives > 0) {
-          return { label, values: [1, 0, 0, 0], locationDescription }
+          return { label, values: [1, 0, 0, 0], locationCode }
         }
         if (negatives > 0) {
-          return { label, values: [0, 1, 0, 0], locationDescription }
+          return { label, values: [0, 1, 0, 0], locationCode }
         }
-        return { label, values: [0, 0, 0, 1], locationDescription }
+        return { label, values: [0, 0, 0, 1], locationCode }
       },
       4,
     )
@@ -285,12 +283,10 @@ export default class AnalyticsService {
     rowsWithoutHref.push(allRow)
 
     const urlForLocation = view.getUrlFunction()
-    const rows: PrisonersWithEntriesByLocation[] = rowsWithoutHref.map(
-      ({ label, values, locationDescription }, index) => {
-        const href = index === rowsWithoutHref.length - 1 ? null : urlForLocation(filterValue, label)
-        return { label, href, values, locationDescription }
-      },
-    )
+    const rows: PrisonersWithEntriesByLocation[] = rowsWithoutHref.map(({ label, values, locationCode }, index) => {
+      const href = index === rowsWithoutHref.length - 1 ? null : urlForLocation(filterValue, locationCode ?? label)
+      return { label, href, values, locationCode }
+    })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS positive and negative case notes' }
   }
@@ -369,7 +365,7 @@ export default class AnalyticsService {
         'characteristic',
         'charac_group',
         'prison_name',
-        'location_desc',
+        'location_code',
       ]
     } else if (view.isRegional()) {
       columnsToStitch = [filterColumn, groupBy, 'incentive', 'characteristic', 'charac_group', 'prison_name']
@@ -409,18 +405,9 @@ export default class AnalyticsService {
     const rowsWithoutHref = mapRowsAndSumTotals<StitchedRow, PrisonersOnLevelsByLocation>(
       filteredTables,
       row => {
-        const [
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          _filteredColumn,
-          groupedColumn,
-          incentive,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          _characteristic,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          _characGroup,
-          prisonName,
-          locationDescription,
-        ] = view.isNational() ? ['', ...row] : row
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_filteredColumn, groupedColumn, incentive, _characteristic, _characGroup, prisonName, locationCode] =
+          view.isNational() ? ['', ...row] : row
 
         const levels = Array(columns.length).fill(0)
         const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
@@ -428,16 +415,16 @@ export default class AnalyticsService {
 
         // Show prison names, not IDs, in regional charts
         const label = view.isRegional() ? prisonName : groupedColumn
-        return { label, values: levels, locationDescription }
+        return { label, values: levels, locationCode }
       },
       columns.length,
     )
     columns = columns.map(removeSortingPrefix)
 
     const urlForLocation = view.getUrlFunction()
-    const rows: PrisonersOnLevelsByLocation[] = rowsWithoutHref.map(({ label, values, locationDescription }, index) => {
-      const href = index === rowsWithoutHref.length - 1 ? null : urlForLocation(filterValue, label)
-      return { label, href, values, locationDescription }
+    const rows: PrisonersOnLevelsByLocation[] = rowsWithoutHref.map(({ label, values, locationCode }, index) => {
+      const href = index === rowsWithoutHref.length - 1 ? null : urlForLocation(filterValue, locationCode ?? label)
+      return { label, href, values, locationCode }
     })
     rows.sort(compareLocations)
     return { columns, rows, lastUpdated, dataSource: 'NOMIS' }

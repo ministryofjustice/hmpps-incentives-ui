@@ -28,7 +28,7 @@ type Query =
   | {
       filterColumn: 'prison'
       filterValue: string
-      groupBy: 'location_code'
+      groupBy: 'location_desc'
     }
 
 /**
@@ -143,7 +143,7 @@ export default class AnalyticsView {
       return {
         filterColumn: 'prison',
         filterValue: this.activeCaseLoad,
-        groupBy: 'location_code',
+        groupBy: 'location_desc',
       }
     }
 

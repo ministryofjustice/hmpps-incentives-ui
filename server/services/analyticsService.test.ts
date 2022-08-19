@@ -55,8 +55,8 @@ const prisonLocationsBehaviourEntries = {
     'Houseblock 6',
     'Houseblock 7',
     'Houseblock 8',
-    'Non-wing', // TODO: sort to be last
     'Segregation Unit',
+    'Non-wing',
   ],
   BWI: ['All', 'Alwen', 'Bala', 'Casu', 'Ceiriog'],
 }

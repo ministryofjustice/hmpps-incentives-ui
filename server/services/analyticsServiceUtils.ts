@@ -128,6 +128,12 @@ export function compareLocations({ label: location1 }: BaseReportRow, { label: l
   if (location2 === 'Unknown') {
     return -1
   }
+  if (location1 === 'Non-wing') {
+    return 1
+  }
+  if (location2 === 'Non-wing') {
+    return -1
+  }
   if (location1.length === 1 && location2.length !== 1) {
     return -1
   }

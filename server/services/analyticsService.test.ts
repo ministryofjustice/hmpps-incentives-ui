@@ -333,6 +333,13 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.values[1]).toEqual(sumNegative)
     })
 
+    it('rows (other than totals) include location description', async () => {
+      const { rows } = await analyticsService.getBehaviourEntriesByLocation()
+      const [totalsRow, ...locationRows] = rows
+      expect(locationRows.every(row => !!row.locationDescription)).toBeTruthy()
+      expect(totalsRow.locationDescription).toBeUndefined()
+    })
+
     it('throws an error when the table is empty', async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
@@ -416,6 +423,13 @@ describe('AnalyticsService', () => {
 
       const allRow = rows.shift()
       expect(allRow).toEqual({ href: null, label: 'All', values: [122, 145, 26, 746] })
+    })
+
+    it('rows (other than totals) include location description', async () => {
+      const { rows } = await analyticsService.getPrisonersWithEntriesByLocation()
+      const [totalsRow, ...locationRows] = rows
+      expect(locationRows.every(row => !!row.locationDescription)).toBeTruthy()
+      expect(totalsRow.locationDescription).toBeUndefined()
     })
 
     it('throws an error when the table is empty', async () => {
@@ -520,6 +534,13 @@ describe('AnalyticsService', () => {
       for (let i = 0; i < columns.length; i += 1) {
         expect(prisonTotal.values[i]).toEqual(totals[i])
       }
+    })
+
+    it('rows (other than totals) include location description', async () => {
+      const { rows } = await analyticsService.getIncentiveLevelsByLocation()
+      const [totalsRow, ...locationRows] = rows
+      expect(locationRows.every(row => !!row.locationDescription)).toBeTruthy()
+      expect(totalsRow.locationDescription).toBeUndefined()
     })
 
     it('throws an error when the table is empty', async () => {

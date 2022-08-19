@@ -131,9 +131,9 @@ export default class AnalyticsService {
     type StitchedRow = StitchedPrisonRow | StitchedRegionRow | StitchedNationalRow
 
     let columnsToStitch: string[]
-    if (view.isPrisonLevel()) {
+    if (view.isPrisonLevel) {
       columnsToStitch = [filterColumn, groupBy, 'positives', 'negatives', 'prison_name', 'location_code']
-    } else if (view.isRegional()) {
+    } else if (view.isRegional) {
       columnsToStitch = [filterColumn, groupBy, 'positives', 'negatives', 'prison_name']
     } else {
       columnsToStitch = [groupBy, 'positives', 'negatives']
@@ -151,7 +151,7 @@ export default class AnalyticsService {
       return (
         groupedColumn &&
         // filter only selected PGD region/prison
-        (view.isNational() || filteredColumn === filterValue)
+        (view.isNational || filteredColumn === filterValue)
       )
     })
 
@@ -170,10 +170,10 @@ export default class AnalyticsService {
         let groupedColumn: string
         let prisonName: string
         let locationCode: string | undefined
-        if (view.isPrisonLevel()) {
+        if (view.isPrisonLevel) {
           ;[filteredColumn, groupedColumn, positives, negatives, prisonName, locationCode] = row as StitchedPrisonRow
           label = groupedColumn
-        } else if (view.isRegional()) {
+        } else if (view.isRegional) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           ;[filteredColumn, groupedColumn, positives, negatives, prisonName] = row as StitchedRegionRow
           // Show prison names, not IDs, in regional charts
@@ -207,9 +207,9 @@ export default class AnalyticsService {
     type StitchedRow = StitchedPrisonRow | StitchedRegionRow | StitchedNationalRow
 
     let columnsToStitch: string[]
-    if (view.isPrisonLevel()) {
+    if (view.isPrisonLevel) {
       columnsToStitch = [filterColumn, groupBy, 'positives', 'negatives', 'prison_name', 'location_code']
-    } else if (view.isRegional()) {
+    } else if (view.isRegional) {
       columnsToStitch = [filterColumn, groupBy, 'positives', 'negatives', 'prison_name']
     } else {
       columnsToStitch = [groupBy, 'positives', 'negatives']
@@ -227,7 +227,7 @@ export default class AnalyticsService {
       return (
         groupedColumn &&
         // filter only selected PGD region/prison
-        (view.isNational() || filteredColumn === filterValue)
+        (view.isNational || filteredColumn === filterValue)
       )
     })
 
@@ -249,10 +249,10 @@ export default class AnalyticsService {
         let groupedColumn: string
         let prisonName: string
         let locationCode: string | undefined
-        if (view.isPrisonLevel()) {
+        if (view.isPrisonLevel) {
           ;[filteredColumn, groupedColumn, positives, negatives, prisonName, locationCode] = row as StitchedPrisonRow
           label = groupedColumn
-        } else if (view.isRegional()) {
+        } else if (view.isRegional) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           ;[filteredColumn, groupedColumn, positives, negatives, prisonName] = row as StitchedRegionRow
           // Show prison names, not IDs, in regional charts
@@ -299,13 +299,13 @@ export default class AnalyticsService {
     type StitchedRowUnfiltered = [number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowUnfiltered
 
-    const columnsToStitch = view.isNational() ? ['positives', 'negatives'] : [filterColumn, 'positives', 'negatives']
+    const columnsToStitch = view.isNational ? ['positives', 'negatives'] : [filterColumn, 'positives', 'negatives']
 
     const sourceTable = this.getBehaviourEntriesSourceTable(true)
     const { stitchedTable } = await this.getStitchedTable<CaseEntriesTable, StitchedRow>(sourceTable, columnsToStitch)
 
     let filteredTables = stitchedTable
-    if (!view.isNational()) {
+    if (!view.isNational) {
       filteredTables = filteredTables.filter(row => {
         const [filteredColumn] = row as StitchedRowFiltered
 
@@ -326,7 +326,7 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_filteredColumn, positives, negatives] = view.isNational()
+        const [_filteredColumn, positives, negatives] = view.isNational
           ? ['', ...(row as StitchedRowUnfiltered)]
           : (row as StitchedRowFiltered)
 
@@ -357,7 +357,7 @@ export default class AnalyticsService {
     type StitchedRow = StitchedPrisonRow | StitchedRegionRow | StitchedNationalRow
 
     let columnsToStitch: string[]
-    if (view.isPrisonLevel()) {
+    if (view.isPrisonLevel) {
       columnsToStitch = [
         filterColumn,
         groupBy,
@@ -367,7 +367,7 @@ export default class AnalyticsService {
         'prison_name',
         'location_code',
       ]
-    } else if (view.isRegional()) {
+    } else if (view.isRegional) {
       columnsToStitch = [filterColumn, groupBy, 'incentive', 'characteristic', 'charac_group', 'prison_name']
     } else {
       columnsToStitch = [groupBy, 'incentive', 'characteristic', 'charac_group']
@@ -381,11 +381,11 @@ export default class AnalyticsService {
     const columnSet: Set<string> = new Set()
     const filteredTables = stitchedTable.filter(row => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [filteredColumn, _groupedColumn, incentive, characteristic] = view.isNational() ? ['', ...row] : row
+      const [filteredColumn, _groupedColumn, incentive, characteristic] = view.isNational ? ['', ...row] : row
 
       const include =
         // if not national filter only selected PGD region or prison
-        (view.isNational() || filteredColumn === filterValue) &&
+        (view.isNational || filteredColumn === filterValue) &&
         // arbitrarily filter by a characteristic (using one is required)
         characteristic === 'age_group_10yr' &&
         // it's possible for incentive level to be null
@@ -407,14 +407,14 @@ export default class AnalyticsService {
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_filteredColumn, groupedColumn, incentive, _characteristic, _characGroup, prisonName, locationCode] =
-          view.isNational() ? ['', ...row] : row
+          view.isNational ? ['', ...row] : row
 
         const levels = Array(columns.length).fill(0)
         const levelIndex = columns.findIndex(someIncentive => someIncentive === incentive)
         levels[levelIndex] = 1
 
         // Show prison names, not IDs, in regional charts
-        const label = view.isRegional() ? prisonName : groupedColumn
+        const label = view.isRegional ? prisonName : groupedColumn
         return { label, values: levels, locationCode }
       },
       columns.length,
@@ -440,7 +440,7 @@ export default class AnalyticsService {
     type StitchedRowUnfiltered = [string, string, string, string]
     type StitchedRow = StitchedRowFiltered | StitchedRowUnfiltered
 
-    const columnsToStitch = view.isNational()
+    const columnsToStitch = view.isNational
       ? [groupBy, 'incentive', 'characteristic', 'charac_group']
       : [filterColumn, groupBy, 'incentive', 'characteristic', 'charac_group']
 
@@ -452,14 +452,14 @@ export default class AnalyticsService {
     const columnSet: Set<string> = new Set()
     const filteredTables = stitchedTable.filter(row => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [filteredColumn, _groupedColumn, incentive, characteristic, characteristicGroup] = view.isNational()
+      const [filteredColumn, _groupedColumn, incentive, characteristic, characteristicGroup] = view.isNational
         ? ['', ...row]
         : row
 
       // TODO: null characteristicGroup is excluded; convert to 'Unknown'?
       const include =
         // if not national filter only selected PGD region or prison
-        (view.isNational() || filteredColumn === filterValue) &&
+        (view.isNational || filteredColumn === filterValue) &&
         // filter by selected characteristic
         characteristic === protectedCharacteristic &&
         // it's possible for characteristic to be null
@@ -485,7 +485,7 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_filteredColumn, _groupedColumn, incentive, _characteristic, characteristicGroup] = view.isNational()
+        const [_filteredColumn, _groupedColumn, incentive, _characteristic, characteristicGroup] = view.isNational
           ? ['', ...row]
           : row
 
@@ -501,7 +501,7 @@ export default class AnalyticsService {
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (
-      view.isPrisonLevel() &&
+      view.isPrisonLevel &&
       protectedCharacteristic === ProtectedCharacteristic.Age &&
       !PrisonRegister.isYouthCustodyService(filterValue)
     ) {
@@ -536,14 +536,14 @@ export default class AnalyticsService {
 
     const filteredTables = stitchedTable.filter(row => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [filteredColumn, _behaviourProfile, characteristic, characteristicGroup] = view.isNational()
+      const [filteredColumn, _behaviourProfile, characteristic, characteristicGroup] = view.isNational
         ? ['', ...row]
         : row
 
       // TODO: null characteristicGroup is excluded; convert to 'Unknown'?
       return (
         // if not national filter only selected PGD region or prison
-        (view.isNational() || filteredColumn === filterValue) &&
+        (view.isNational || filteredColumn === filterValue) &&
         // filter by selected characteristic
         characteristic === protectedCharacteristic &&
         // it's possible for characteristic to be null
@@ -562,7 +562,7 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line prefer-const, @typescript-eslint/no-unused-vars
-        let [_filteredColumn, behaviourProfile, _characteristic, characteristicGroup] = view.isNational()
+        let [_filteredColumn, behaviourProfile, _characteristic, characteristicGroup] = view.isNational
           ? ['', ...row]
           : row
 
@@ -580,7 +580,7 @@ export default class AnalyticsService {
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (
-      view.isPrisonLevel() &&
+      view.isPrisonLevel &&
       protectedCharacteristic === ProtectedCharacteristic.Age &&
       !PrisonRegister.isYouthCustodyService(filterValue)
     ) {
@@ -602,7 +602,7 @@ export default class AnalyticsService {
     type StitchedRowUnfiltered = [string, number, number, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowUnfiltered
 
-    const columnsToStitch = view.isNational()
+    const columnsToStitch = view.isNational
       ? ['year_month_str', 'snapshots', 'offenders', 'positives', 'negatives']
       : [filterColumn, 'year_month_str', 'snapshots', 'offenders', 'positives', 'negatives']
 
@@ -613,7 +613,7 @@ export default class AnalyticsService {
 
     let filteredTables = stitchedTable
     // filter only selected PGD region/prison
-    if (!view.isNational()) {
+    if (!view.isNational) {
       filteredTables = filteredTables.filter(([filteredColumn]) => filteredColumn === filterValue)
     }
     if (filteredTables.length === 0) {
@@ -628,7 +628,7 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_filteredColumn, yearAndMonth, snapshots, offenders, positives, negatives] = view.isNational()
+        const [_filteredColumn, yearAndMonth, snapshots, offenders, positives, negatives] = view.isNational
           ? ['', ...(row as StitchedRowUnfiltered)]
           : (row as StitchedRowFiltered)
 
@@ -672,7 +672,7 @@ export default class AnalyticsService {
     type StitchedRowUnfiltered = [string, number, number, string]
     type StitchedRow = StitchedRowFiltered | StitchedRowUnfiltered
 
-    const columnsToStitch = view.isNational()
+    const columnsToStitch = view.isNational
       ? ['year_month_str', 'snapshots', 'offenders', 'incentive']
       : [filterColumn, 'year_month_str', 'snapshots', 'offenders', 'incentive']
 
@@ -684,13 +684,13 @@ export default class AnalyticsService {
     const columnSet: Set<string> = new Set()
     const filteredTables = stitchedTable.filter(row => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [filteredColumn, _yearAndMonth, _snapshots, _offenders, incentive] = view.isNational()
+      const [filteredColumn, _yearAndMonth, _snapshots, _offenders, incentive] = view.isNational
         ? ['', ...(row as StitchedRowUnfiltered)]
         : (row as StitchedRowFiltered)
 
       const include =
         // if not national filter only selected PGD region or prison
-        (view.isNational() || filteredColumn === filterValue) &&
+        (view.isNational || filteredColumn === filterValue) &&
         // it's possible for incentive level to be null
         incentive
       if (include) {
@@ -709,7 +709,7 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_filteredColumn, yearAndMonth, snapshots, offenders, incentive] = view.isNational()
+        const [_filteredColumn, yearAndMonth, snapshots, offenders, incentive] = view.isNational
           ? ['', ...(row as StitchedRowUnfiltered)]
           : (row as StitchedRowFiltered)
 
@@ -750,7 +750,7 @@ export default class AnalyticsService {
     type StitchedRowUnfiltered = [string, number, number, string, string]
     type StitchedRow = StitchedRowFiltered | StitchedRowUnfiltered
 
-    const columnsToStitch = view.isNational()
+    const columnsToStitch = view.isNational
       ? ['year_month_str', 'snapshots', 'offenders', 'incentive', protectedCharacteristic]
       : [filterColumn, 'year_month_str', 'snapshots', 'offenders', 'incentive', protectedCharacteristic]
 
@@ -763,7 +763,7 @@ export default class AnalyticsService {
     const filteredTables = stitchedTable.filter(row => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [filteredColumn, _yearAndMonth, _snapshots, _offenders, incentive, someCharacteristicGroup] =
-        view.isNational() ? ['', ...(row as StitchedRowUnfiltered)] : (row as StitchedRowFiltered)
+        view.isNational ? ['', ...(row as StitchedRowUnfiltered)] : (row as StitchedRowFiltered)
 
       const include =
         // it's possible for incentive level to be null
@@ -771,7 +771,7 @@ export default class AnalyticsService {
         // it's possible for characteristic group to be null
         someCharacteristicGroup &&
         // if not national filter only selected PGD region or prison
-        (view.isNational() || filteredColumn === filterValue) &&
+        (view.isNational || filteredColumn === filterValue) &&
         someCharacteristicGroup.trim() === characteristicGroup
       if (include) {
         columnSet.add(incentive)
@@ -792,7 +792,7 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_filteredColumn, yearAndMonth, snapshots, offenders, incentive, _someCharacteristic] = view.isNational()
+        const [_filteredColumn, yearAndMonth, snapshots, offenders, incentive, _someCharacteristic] = view.isNational
           ? ['', ...(row as StitchedRowUnfiltered)]
           : (row as StitchedRowFiltered)
 
@@ -833,7 +833,7 @@ export default class AnalyticsService {
     type StitchedRowUnfiltered = [string, string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowUnfiltered
 
-    const columnsToStitch = view.isNational()
+    const columnsToStitch = view.isNational
       ? ['characteristic', 'charac_group', 'positives', 'negatives']
       : [filterColumn, 'characteristic', 'charac_group', 'positives', 'negatives']
 
@@ -843,13 +843,13 @@ export default class AnalyticsService {
     )
 
     const filteredTables = stitchedTable.filter(row => {
-      const [filteredColumn, characteristic, characteristicGroup] = view.isNational()
+      const [filteredColumn, characteristic, characteristicGroup] = view.isNational
         ? ['', ...(row as StitchedRowUnfiltered)]
         : (row as StitchedRowFiltered)
 
       return (
         // if not national filter only selected PGD region or prison
-        (view.isNational() || filteredColumn === filterValue) &&
+        (view.isNational || filteredColumn === filterValue) &&
         // filter by selected characteristic
         characteristic === protectedCharacteristic &&
         // it's possible for characteristic to be null
@@ -868,7 +868,7 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_filteredColumn, _characteristic, characteristicGroup, positives, negatives] = view.isNational()
+        const [_filteredColumn, _characteristic, characteristicGroup, positives, negatives] = view.isNational
           ? ['', ...(row as StitchedRowUnfiltered)]
           : (row as StitchedRowFiltered)
 
@@ -880,7 +880,7 @@ export default class AnalyticsService {
     const missingCharacteristics = new Set(knownGroupsFor(protectedCharacteristic))
     // Don't show empty young people ('15-17') group in non-YCS prisons
     if (
-      view.isPrisonLevel() &&
+      view.isPrisonLevel &&
       protectedCharacteristic === ProtectedCharacteristic.Age &&
       !PrisonRegister.isYouthCustodyService(filterValue)
     ) {
@@ -905,7 +905,7 @@ export default class AnalyticsService {
     type StitchedRowUnfiltered = [string, number, number, number, number, string]
     type StitchedRow = StitchedRowFiltered | StitchedRowUnfiltered
 
-    const columnsToStitch = view.isNational()
+    const columnsToStitch = view.isNational
       ? ['year_month_str', 'snapshots', 'offenders', 'positives', 'negatives', protectedCharacteristic]
       : [filterColumn, 'year_month_str', 'snapshots', 'offenders', 'positives', 'negatives', protectedCharacteristic]
 
@@ -917,13 +917,13 @@ export default class AnalyticsService {
     const filteredTables = stitchedTable.filter(row => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [filteredColumn, _yearAndMonth, _snapshots, _offenders, _positives, _negatives, someCharacteristicGroup] =
-        view.isNational() ? ['', ...(row as StitchedRowUnfiltered)] : (row as StitchedRowFiltered)
+        view.isNational ? ['', ...(row as StitchedRowUnfiltered)] : (row as StitchedRowFiltered)
 
       return (
         // it's possible for characteristic group to be null
         someCharacteristicGroup &&
         // if not national filter only selected PGD region or prison
-        (view.isNational() || filteredColumn === filterValue) &&
+        (view.isNational || filteredColumn === filterValue) &&
         someCharacteristicGroup.trim() === characteristicGroup
       )
     })
@@ -940,7 +940,7 @@ export default class AnalyticsService {
       row => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_filteredColumn, yearAndMonth, snapshots, offenders, positives, negatives, _someCharacteristic] =
-          view.isNational() ? ['', ...(row as StitchedRowUnfiltered)] : (row as StitchedRowFiltered)
+          view.isNational ? ['', ...(row as StitchedRowUnfiltered)] : (row as StitchedRowFiltered)
 
         return [
           {
@@ -978,13 +978,13 @@ export default class AnalyticsService {
   private getBehaviourEntriesSourceTable(forAllRow = false): TableType {
     const { view } = this
 
-    if (view.isNational()) {
+    if (view.isNational) {
       return forAllRow ? TableType.behaviourEntriesNationalAll : TableType.behaviourEntriesNational
     }
-    if (view.isRegional()) {
+    if (view.isRegional) {
       return forAllRow ? TableType.behaviourEntriesNational : TableType.behaviourEntriesRegional
     }
-    if (view.isPrisonLevel()) {
+    if (view.isPrisonLevel) {
       return forAllRow ? TableType.behaviourEntriesRegional : TableType.behaviourEntriesPrison
     }
 

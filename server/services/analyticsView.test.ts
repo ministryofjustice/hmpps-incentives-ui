@@ -11,38 +11,38 @@ const regional = new AnalyticsView('LTHS', 'behaviour-entries', 'MDI')
 const prison = new AnalyticsView(null, 'behaviour-entries', 'MDI')
 
 describe('AnalyticsView', () => {
-  describe('isValidPgdRegion()', () => {
+  describe('isValidPgdRegion', () => {
     it('for national level returns true', () => {
-      expect(national.isValidPgdRegion()).toEqual(true)
+      expect(national.isValidPgdRegion).toEqual(true)
     })
 
     describe('for regional level', () => {
       it('returns true when PGD region code is recognised', () => {
-        expect(regional.isValidPgdRegion()).toEqual(true)
+        expect(regional.isValidPgdRegion).toEqual(true)
       })
 
       it('returns false when PGD region code is not recognised', () => {
         const analyticsView = new AnalyticsView('INVALID_REGION_CODE', 'behaviour-entries', 'MDI')
-        expect(analyticsView.isValidPgdRegion()).toEqual(false)
+        expect(analyticsView.isValidPgdRegion).toEqual(false)
       })
     })
 
     it('for prison level returns true', () => {
-      expect(prison.isValidPgdRegion()).toEqual(true)
+      expect(prison.isValidPgdRegion).toEqual(true)
     })
   })
 
-  describe('getPgdRegionName()', () => {
+  describe('pgdRegionName', () => {
     it(`for regional, it returns the PGD region name`, () => {
-      expect(regional.getPgdRegionName()).toEqual('Long-term and high security')
+      expect(regional.pgdRegionName).toEqual('Long-term and high security')
     })
 
     it(`for national, returns null`, () => {
-      expect(national.getPgdRegionName()).toBeNull()
+      expect(national.pgdRegionName).toBeNull()
     })
 
     it(`for a prison, returns null`, () => {
-      expect(prison.getPgdRegionName()).toBeNull()
+      expect(prison.pgdRegionName).toBeNull()
     })
   })
 
@@ -72,62 +72,62 @@ describe('AnalyticsView', () => {
     })
   })
 
-  describe('isNational()', () => {
+  describe('isNational', () => {
     it(`for national, returns true`, () => {
-      expect(national.isNational()).toEqual(true)
+      expect(national.isNational).toEqual(true)
     })
 
     it(`for regional, returns false`, () => {
-      expect(regional.isNational()).toEqual(false)
+      expect(regional.isNational).toEqual(false)
     })
 
     it(`for a prison, returns false`, () => {
-      expect(prison.isNational()).toEqual(false)
+      expect(prison.isNational).toEqual(false)
     })
   })
 
-  describe('isRegional()', () => {
+  describe('isRegional', () => {
     it(`for national, returns false`, () => {
-      expect(national.isRegional()).toEqual(false)
+      expect(national.isRegional).toEqual(false)
     })
 
     it(`for regional, returns true`, () => {
-      expect(regional.isRegional()).toEqual(true)
+      expect(regional.isRegional).toEqual(true)
     })
 
     it(`for a prison, returns false`, () => {
-      expect(prison.isRegional()).toEqual(false)
+      expect(prison.isRegional).toEqual(false)
     })
   })
 
-  describe('isPrisonLevel()', () => {
+  describe('isPrisonLevel', () => {
     it(`for national, returns false`, () => {
-      expect(national.isPrisonLevel()).toEqual(false)
+      expect(national.isPrisonLevel).toEqual(false)
     })
 
     it(`for regional, returns false`, () => {
-      expect(regional.isPrisonLevel()).toEqual(false)
+      expect(regional.isPrisonLevel).toEqual(false)
     })
 
     it(`for a prison, returns true`, () => {
-      expect(prison.isPrisonLevel()).toEqual(true)
+      expect(prison.isPrisonLevel).toEqual(true)
     })
   })
 
-  describe('getLevelForTitle()', () => {
+  describe('levelForTitle', () => {
     it(`for National, it return 'National'`, () => {
       const analyticsView = new AnalyticsView('National', 'behaviour-entries', 'MDI')
-      expect(analyticsView.getLevelForTitle()).toEqual('National')
+      expect(analyticsView.levelForTitle).toEqual('National')
     })
 
     it('for Regional, it returns the PGD region name', () => {
       const analyticsView = new AnalyticsView('LTHS', 'behaviour-entries', 'MDI')
-      expect(analyticsView.getLevelForTitle()).toEqual('Long-term and high security')
+      expect(analyticsView.levelForTitle).toEqual('Long-term and high security')
     })
 
     it(`for a prison, it returns 'Prison'`, () => {
       const analyticsView = new AnalyticsView(null, 'behaviour-entries', 'MDI')
-      expect(analyticsView.getLevelForTitle()).toEqual('Prison')
+      expect(analyticsView.levelForTitle).toEqual('Prison')
     })
   })
 

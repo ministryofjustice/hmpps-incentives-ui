@@ -144,7 +144,7 @@ export default function routes(router: Router): Router {
     const { pgdRegionCode } = req.params
     const activeCaseLoad = res.locals.user.activeCaseload.id
     const analyticsView = new AnalyticsView(pgdRegionCode, 'behaviour-entries', activeCaseLoad)
-    if (!analyticsView.isValidPgdRegion()) {
+    if (!analyticsView.isValidPgdRegion) {
       res.redirect('/analytics/select-pgd-region')
       return
     }
@@ -175,7 +175,7 @@ export default function routes(router: Router): Router {
     const { pgdRegionCode } = req.params
     const activeCaseLoad = res.locals.user.activeCaseload.id
     const analyticsView = new AnalyticsView(pgdRegionCode, 'incentive-levels', activeCaseLoad)
-    if (!analyticsView.isValidPgdRegion()) {
+    if (!analyticsView.isValidPgdRegion) {
       res.redirect('/analytics/select-pgd-region')
       return
     }
@@ -239,7 +239,7 @@ export default function routes(router: Router): Router {
 
     const { pgdRegionCode } = req.params
     const analyticsView = new AnalyticsView(pgdRegionCode, 'protected-characteristic', activeCaseLoad)
-    if (!analyticsView.isValidPgdRegion()) {
+    if (!analyticsView.isValidPgdRegion) {
       res.redirect('/analytics/select-pgd-region')
       return
     }

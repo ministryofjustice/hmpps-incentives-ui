@@ -6,9 +6,9 @@
 
 {% set chartPageId = "behaviour-entries" %}
 {% set chartPageTitle = "Behaviour entries" %}
-{% set pageTitle = applicationName + " – " + chartPageTitle + " – " + analyticsView.getLevelForTitle() %}
+{% set pageTitle = applicationName + " – " + chartPageTitle + " – " + analyticsView.levelForTitle %}
 
-{% set extraWideLabel = analyticsView.isNational() %}
+{% set extraWideLabel = analyticsView.isNational %}
 
 {% block chartContent %}
 
@@ -57,9 +57,9 @@
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
       {% set populationLabel %}
-        {% if analyticsView.isPrisonLevel() %}
+        {% if analyticsView.isPrisonLevel %}
           Prison population
-        {% elif analyticsView.isRegional() %}
+        {% elif analyticsView.isRegional %}
           Total group population
         {% else %}
           National population

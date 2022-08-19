@@ -95,10 +95,10 @@ export default class AnalyticsView {
   linkTo(viewType: ViewType): string {
     let url = '/analytics/'
 
-    if (this.isNational()) {
+    if (this.isNational) {
       url += 'National/'
     }
-    if (this.isRegional() && this.pgdRegion) {
+    if (this.isRegional && this.pgdRegion) {
       url += `${this.pgdRegion.code}/`
     }
 
@@ -106,7 +106,7 @@ export default class AnalyticsView {
   }
 
   getUrlFunction(): UrlForLocationFunction {
-    if (this.isNational()) {
+    if (this.isNational) {
       // Link to PGD region page
       return (_, regionName) => {
         const pgdRegion = PgdRegionService.getPgdRegionByName(regionName)
@@ -114,7 +114,7 @@ export default class AnalyticsView {
       }
     }
 
-    if (this.isRegional()) {
+    if (this.isRegional) {
       // No links from regional charts
       return (_pgdRegion, _prisonId) => null
     }
@@ -123,7 +123,7 @@ export default class AnalyticsView {
   }
 
   getFiltering(): Query {
-    if (this.isNational()) {
+    if (this.isNational) {
       return {
         filterColumn: null,
         filterValue: null,
@@ -131,15 +131,15 @@ export default class AnalyticsView {
       }
     }
 
-    if (this.isRegional()) {
+    if (this.isRegional) {
       return {
         filterColumn: 'pgd_region',
-        filterValue: this.getPgdRegionName(),
+        filterValue: this.pgdRegionName,
         groupBy: 'prison',
       }
     }
 
-    if (this.isPrisonLevel()) {
+    if (this.isPrisonLevel) {
       return {
         filterColumn: 'prison',
         filterValue: this.activeCaseLoad,
@@ -150,41 +150,41 @@ export default class AnalyticsView {
     throw new Error('Unexpected view level, should have been national, regional or prison level')
   }
 
-  isValidPgdRegion(): boolean {
-    if (this.isRegional()) {
+  get isValidPgdRegion(): boolean {
+    if (this.isRegional) {
       return this.pgdRegion !== null
     }
 
     return true
   }
 
-  getPgdRegionName(): string | null {
-    if (this.isRegional() && this.pgdRegion) {
+  get pgdRegionName(): string | null {
+    if (this.isRegional && this.pgdRegion) {
       return this.pgdRegion.name
     }
 
     return null
   }
 
-  isNational(): boolean {
+  get isNational(): boolean {
     return this.viewLevel === 'national'
   }
 
-  isRegional(): boolean {
+  get isRegional(): boolean {
     return this.viewLevel === 'regional'
   }
 
-  isPrisonLevel(): boolean {
+  get isPrisonLevel(): boolean {
     return this.viewLevel === 'prison'
   }
 
-  getLevelForTitle(): string {
-    if (this.isPrisonLevel()) {
+  get levelForTitle(): string {
+    if (this.isPrisonLevel) {
       return 'Prison'
     }
 
-    if (this.isRegional()) {
-      return this.getPgdRegionName()
+    if (this.isRegional) {
+      return this.pgdRegionName
     }
 
     return 'National'

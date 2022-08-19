@@ -521,13 +521,13 @@ export default class AnalyticsService {
     const { view } = this
     const { filterColumn, filterValue } = view.getFiltering()
 
-    type StitchedRowFiltered = [string, string, string, string]
-    type StitchedRowUnfiltered = [string, string, string]
+    type StitchedRowFiltered = [string, string, string, number, number]
+    type StitchedRowUnfiltered = [string, string, number, number]
     type StitchedRow = StitchedRowFiltered | StitchedRowUnfiltered
 
-    const columnsToStitch = filterColumn
-      ? [filterColumn, 'behaviour_profile', 'characteristic', 'charac_group']
-      : ['behaviour_profile', 'characteristic', 'charac_group']
+    const columnsToStitch = view.isNational
+      ? ['characteristic', 'charac_group', 'positives', 'negatives']
+      : [filterColumn, 'characteristic', 'charac_group', 'positives', 'negatives']
 
     const { stitchedTable, date: lastUpdated } = await this.getStitchedTable<IncentiveLevelsTable, StitchedRow>(
       TableType.incentiveLevels,
@@ -535,10 +535,7 @@ export default class AnalyticsService {
     )
 
     const filteredTables = stitchedTable.filter(row => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [filteredColumn, _behaviourProfile, characteristic, characteristicGroup] = view.isNational
-        ? ['', ...row]
-        : row
+      const [filteredColumn, characteristic, characteristicGroup] = view.isNational ? ['', ...row] : row
 
       // TODO: null characteristicGroup is excluded; convert to 'Unknown'?
       return (
@@ -562,17 +559,22 @@ export default class AnalyticsService {
       filteredTables,
       row => {
         // eslint-disable-next-line prefer-const, @typescript-eslint/no-unused-vars
-        let [_filteredColumn, behaviourProfile, _characteristic, characteristicGroup] = view.isNational
-          ? ['', ...row]
-          : row
+        let [_filteredColumn, _characteristic, characteristicGroup, positives, negatives] = view.isNational
+          ? ['', ...(row as StitchedRowUnfiltered)]
+          : (row as StitchedRowFiltered)
 
-        behaviourProfile = removeSortingPrefix(behaviourProfile)
-        const behaviourProfiles = Array(columns.length).fill(0)
-        const behaviourProfileIndex = columns.findIndex(
-          someBehaviourProfile => someBehaviourProfile === behaviourProfile,
-        )
-        behaviourProfiles[behaviourProfileIndex] = 1
-        return { label: characteristicGroup.trim(), values: behaviourProfiles }
+        const label = characteristicGroup.trim()
+
+        if (positives > 0 && negatives > 0) {
+          return { label, values: [0, 0, 1, 0] }
+        }
+        if (positives > 0) {
+          return { label, values: [1, 0, 0, 0] }
+        }
+        if (negatives > 0) {
+          return { label, values: [0, 1, 0, 0] }
+        }
+        return { label, values: [0, 0, 0, 1] }
       },
       columns.length,
     )

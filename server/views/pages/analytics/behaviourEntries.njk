@@ -26,7 +26,7 @@
         form=forms[chartId],
         csrfToken=csrfToken,
         report=behaviourEntries,
-        labelColumnWidth="extra-wide" if extraWideLabel else undefined
+        labelColumnWidth="extra-wide" if extraWideLabel else "wide"
       ) }}
 
     </section>
@@ -47,7 +47,7 @@
         form=forms[chartId],
         csrfToken=csrfToken,
         report=prisonersWithEntries,
-        labelColumnWidth="extra-wide" if extraWideLabel else undefined
+        labelColumnWidth="extra-wide" if extraWideLabel else "wide"
       ) }}
 
     </section>

@@ -90,6 +90,8 @@ export type Report<Row extends Record<string, unknown>> = {
 export type BehaviourEntriesByLocation = {
   /** location */
   label: string
+  /** location code */
+  locationCode?: string
   /** link */
   href?: string
   /** number of positive entries, number of negative entries */
@@ -102,6 +104,8 @@ export type BehaviourEntriesByLocation = {
 export type PrisonersWithEntriesByLocation = {
   /** location */
   label: string
+  /** location code */
+  locationCode?: string
   /** link */
   href?: string
   /** number of prisoners with: positive entries, negative entries, both types of entries, neither type of entry */
@@ -114,6 +118,8 @@ export type PrisonersWithEntriesByLocation = {
 export type PrisonersOnLevelsByLocation = {
   /** location */
   label: string
+  /** location code */
+  locationCode?: string
   /** link */
   href?: string
   /** number of prisoners on each level */

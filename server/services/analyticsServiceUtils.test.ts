@@ -11,16 +11,21 @@ import type { TrendsReportRow } from './analyticsServiceTypes'
 describe('comparators and filters', () => {
   describe.each([
     { a: { label: 'All' }, b: { label: '1' }, expected: -1 },
+    { a: { label: 'Non-wing' }, b: { label: '1' }, expected: 1 },
+    { a: { label: 'Non-wing' }, b: { label: 'All' }, expected: 1 },
     { a: { label: 'Unknown' }, b: { label: '1' }, expected: 1 },
     { a: { label: 'Unknown' }, b: { label: 'All' }, expected: 1 },
     { a: { label: 'A' }, b: { label: 'All' }, expected: 1 },
     { a: { label: '1' }, b: { label: 'A' }, expected: -1 },
+    { a: { label: '1' }, b: { label: 'Non-wing' }, expected: -1 },
     { a: { label: '1' }, b: { label: 'Unknown' }, expected: -1 },
     { a: { label: 'A' }, b: { label: '1' }, expected: 1 },
     { a: { label: 'A' }, b: { label: 'B' }, expected: -1 },
     { a: { label: 'SEG' }, b: { label: 'X' }, expected: 1 },
     { a: { label: 'RECP' }, b: { label: 'SEG' }, expected: -1 },
+    { a: { label: 'RECP' }, b: { label: 'Non-wing' }, expected: -1 },
     { a: { label: 'RECP' }, b: { label: 'Unknown' }, expected: -1 },
+    { a: { label: 'Unknown' }, b: { label: 'Non-wing' }, expected: 1 },
   ])('compareLocations()', ({ a, b, expected }) => {
     let compares = '='
     if (expected > 0) {

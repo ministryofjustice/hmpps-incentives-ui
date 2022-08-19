@@ -2,13 +2,13 @@
 {% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
 
 {% block content %}
-  {% if analyticsView and (analyticsView.isNational() or analyticsView.isRegional()) %}
+  {% if analyticsView and (analyticsView.isNational or analyticsView.isRegional) %}
     <div class="pgd-region">
       <h1 class="govuk-heading-xl">
-        {% if analyticsView.isNational() %}
+        {% if analyticsView.isNational %}
           National
         {% else %}
-          {{ analyticsView.getPgdRegionName() }}
+          {{ analyticsView.pgdRegionName }}
         {% endif %}
       </h1>
       <p>

@@ -5,9 +5,9 @@
 
 {% set chartPageId = "incentive-levels" %}
 {% set chartPageTitle = "Incentive levels" %}
-{% set pageTitle = applicationName + " – " + chartPageTitle + " – " + analyticsView.getLevelForTitle() %}
+{% set pageTitle = applicationName + " – " + chartPageTitle + " – " + analyticsView.levelForTitle %}
 
-{% set extraWideLabel = analyticsView.isNational() %}
+{% set extraWideLabel = analyticsView.isNational %}
 
 {% block chartContent %}
 
@@ -25,7 +25,7 @@
         form=forms[chartId],
         csrfToken=csrfToken,
         report=prisonersOnLevels,
-        labelColumnWidth="extra-wide" if extraWideLabel else undefined
+        labelColumnWidth="extra-wide" if extraWideLabel else "wide"
       ) }}
 
     </section>
@@ -35,9 +35,9 @@
     <section class="govuk-grid-column-two-thirds govuk-!-margin-bottom-9">
 
       {% set populationLabel %}
-        {% if analyticsView.isPrisonLevel() %}
+        {% if analyticsView.isPrisonLevel %}
           Prison population
-        {% elif analyticsView.isRegional() %}
+        {% elif analyticsView.isRegional %}
           Total group population
         {% else %}
           National population

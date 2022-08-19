@@ -29,29 +29,6 @@ const cache = new MemoryStitchedTablesCache()
 const isYouthCustodyServiceOriginal = PrisonRegister.isYouthCustodyService
 
 const prisonLocations = {
-  /*
-  TODO: will be:
-    MDI: [
-    'All',
-    'Houseblock 1',
-    'Houseblock 2',
-    'Houseblock 3',
-    'Houseblock 4',
-    'Houseblock 5',
-    'Houseblock 6',
-    'Houseblock 7',
-    'Houseblock 8',
-    'Segregation Unit',
-  ],
-  BWI: ['All', 'Alwen', 'Bala', 'Casu', 'Ceiriog'],
-  */
-  MDI: ['All', '1', '2', '3', '4', '5', '6', '7', '8', 'SEG'],
-  BWI: ['All', 'A', 'B', 'C', 'CASU'],
-}
-// Behaviour entries source tables don't filter out `Non-wing` location
-const prisonLocationsBehaviourEntries = {
-  /*
-  TODO: will be:
   MDI: [
     'All',
     'Houseblock 1',
@@ -62,13 +39,26 @@ const prisonLocationsBehaviourEntries = {
     'Houseblock 6',
     'Houseblock 7',
     'Houseblock 8',
-    'Non-wing', // TODO: sort to be last
     'Segregation Unit',
   ],
   BWI: ['All', 'Alwen', 'Bala', 'Casu', 'Ceiriog'],
-  */
-  MDI: ['All', '1', '2', '3', '4', '5', '6', '7', '8', 'Non-wing', 'SEG'],
-  BWI: ['All', 'A', 'B', 'C', 'CASU'],
+}
+// Behaviour entries source tables don't filter out `Non-wing` location
+const prisonLocationsBehaviourEntries = {
+  MDI: [
+    'All',
+    'Houseblock 1',
+    'Houseblock 2',
+    'Houseblock 3',
+    'Houseblock 4',
+    'Houseblock 5',
+    'Houseblock 6',
+    'Houseblock 7',
+    'Houseblock 8',
+    'Segregation Unit',
+    'Non-wing',
+  ],
+  BWI: ['All', 'Alwen', 'Bala', 'Casu', 'Ceiriog'],
 }
 
 const prisonLevels = {
@@ -150,7 +140,7 @@ describe('AnalyticsService', () => {
       valB: Record<string, number>
     }
     type StitchedRow = [string, number, number]
-    type MappedRow = [string, number]
+    type MappedRow = { label: string; values: [number] }
 
     const sampleInputTable: Table = {
       ignoredColumn: { '1': 'a', '2': 'b', '3': 'c', '4': 'd' },
@@ -174,14 +164,16 @@ describe('AnalyticsService', () => {
       const stitchedTable = analyticsService.stitchTable<Table, StitchedRow>(sampleInputTable, columnsToPluck)
       const output = mapRowsAndSumTotals<StitchedRow, MappedRow>(
         stitchedTable,
-        ([category, valA, valB]) => [category, valA + valB],
+        ([category, valA, valB]) => {
+          return { label: category, values: [valA + valB] }
+        },
         1,
       )
       expect(output).toEqual<MappedRow[]>([
-        ['A', 6],
-        ['B', 20],
-        ['C', 10],
-        ['All', 36],
+        { label: 'A', values: [6] },
+        { label: 'B', values: [20] },
+        { label: 'C', values: [10] },
+        { label: 'All', values: [36] },
       ])
     })
   })
@@ -331,6 +323,13 @@ describe('AnalyticsService', () => {
       expect(prisonTotal.values[1]).toEqual(sumNegative)
     })
 
+    it('rows (other than totals) include location codes', async () => {
+      const { rows } = await analyticsService.getBehaviourEntriesByLocation()
+      const [totalsRow, ...locationRows] = rows
+      expect(locationRows.every(row => !!row.locationCode)).toBeTruthy()
+      expect(totalsRow.locationCode).toBeUndefined()
+    })
+
     it('throws an error when the table is empty', async () => {
       mockAppS3ClientResponse(s3Client, MockTable.Empty)
 
@@ -414,6 +413,13 @@ describe('AnalyticsService', () => {
 
       const allRow = rows.shift()
       expect(allRow).toEqual({ href: null, label: 'All', values: [122, 145, 26, 746] })
+    })
+
+    it('rows (other than totals) include location codes', async () => {
+      const { rows } = await analyticsService.getPrisonersWithEntriesByLocation()
+      const [totalsRow, ...locationRows] = rows
+      expect(locationRows.every(row => !!row.locationCode)).toBeTruthy()
+      expect(totalsRow.locationCode).toBeUndefined()
     })
 
     it('throws an error when the table is empty', async () => {
@@ -518,6 +524,13 @@ describe('AnalyticsService', () => {
       for (let i = 0; i < columns.length; i += 1) {
         expect(prisonTotal.values[i]).toEqual(totals[i])
       }
+    })
+
+    it('rows (other than totals) include location codes', async () => {
+      const { rows } = await analyticsService.getIncentiveLevelsByLocation()
+      const [totalsRow, ...locationRows] = rows
+      expect(locationRows.every(row => !!row.locationCode)).toBeTruthy()
+      expect(totalsRow.locationCode).toBeUndefined()
     })
 
     it('throws an error when the table is empty', async () => {

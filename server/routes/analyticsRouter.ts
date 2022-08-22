@@ -16,7 +16,7 @@ import {
 import type { ChartId } from './analyticsChartTypes'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
-import PgdRegionService, { National, PgdRegion } from '../services/pgdRegionService'
+import PgdRegionService, { National, type PgdRegion } from '../services/pgdRegionService'
 import {
   StitchedTablesCache,
   MemoryStitchedTablesCache,

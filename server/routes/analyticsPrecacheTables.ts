@@ -5,7 +5,7 @@ import config from '../config'
 import S3Client from '../data/s3Client'
 import AnalyticsView from '../services/analyticsView'
 import AnalyticsService from '../services/analyticsService'
-import { AgeYoungPeople, ProtectedCharacteristic } from '../services/analyticsServiceTypes'
+import { Ages, ProtectedCharacteristic } from '../services/analyticsServiceTypes'
 import PgdRegionService, { National } from '../services/pgdRegionService'
 import { cache } from './analyticsRouter'
 
@@ -23,11 +23,11 @@ async function precacheTablesForRegion(region: string | null) {
 
   // NB: specific characteristic has no effect on what data is loaded and stitched
   const age = ProtectedCharacteristic.Age
-  const youngPeople = AgeYoungPeople
+  const ageGroup = Ages[2]
   await analyticsService.getIncentiveLevelsByProtectedCharacteristic(age)
-  await analyticsService.getIncentiveLevelTrendsByCharacteristic(age, youngPeople)
+  await analyticsService.getIncentiveLevelTrendsByCharacteristic(age, ageGroup)
   await analyticsService.getBehaviourEntriesByProtectedCharacteristic(age)
-  await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(age, youngPeople)
+  await analyticsService.getBehaviourEntryTrendsByProtectedCharacteristic(age, ageGroup)
   await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(age)
 }
 

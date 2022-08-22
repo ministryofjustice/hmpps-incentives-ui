@@ -138,6 +138,7 @@ export default {
     // Whether to hide the 'Days since last review'/'Days on level' columns
     hideDaysColumnsInIncentivesTable: flag('FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE', false),
     useFileSystemCache: flag('FEATURE_FS_CACHE', false),
+    precacheTables: flag('FEATURE_PRECACHE_TABLES', false),
   },
   analyticsDataStaleAferDays: Number(get('ANALYTICS_DATA_STALE_AFTER_DAYS', 0)),
   feedbackUrl: get('FEEDBACK_URL', ''),

@@ -62,7 +62,6 @@ switch (chosenTableType) {
       'location_code',
       'location_desc',
       'incentive',
-      'behaviour_profile',
       'characteristic',
       'charac_group',
       'positives',

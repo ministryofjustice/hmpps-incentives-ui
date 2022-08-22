@@ -179,9 +179,20 @@ describe('AnalyticsView', () => {
     it('for a prison, returns a function that links to Incentives table', () => {
       // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
-        const analyticsView = new AnalyticsView(null, viewType, 'MDI')
+        const analyticsView = new AnalyticsView(null, viewType, 'BWI')
         const urlFn = analyticsView.getUrlFunction()
         expect(urlFn('BWI', 'A')).toEqual(`/incentive-summary/BWI-A`)
+      }
+    })
+
+    it('for a prison, does not link to Incentives table if the location is not a real wing', () => {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const viewType of viewTypes) {
+        const analyticsView = new AnalyticsView(null, viewType, 'BWI')
+        const urlFn = analyticsView.getUrlFunction()
+        expect(urlFn('BWI', 'All')).toBeNull()
+        expect(urlFn('BWI', 'Non-wing')).toBeNull()
+        expect(urlFn('BWI', 'Unknown')).toBeNull()
       }
     })
   })

@@ -30,6 +30,7 @@ export interface CaseEntriesTable extends Table {
   // Unused columns; not currently stored in test data:
   // offender_book_id: Record<string, number>
   // behav_profile: Record<string, string>
+  // wing: Record<string, string>
 }
 
 /**
@@ -43,14 +44,16 @@ export interface IncentiveLevelsTable extends Table {
   location_code: Record<string, string>
   location_desc: Record<string, string>
   incentive: Record<string, string>
-  behaviour_profile: Record<string, string>
   characteristic: Record<string, string>
   charac_group: Record<string, string>
   positives: Record<string, number>
   negatives: Record<string, number>
   // Unused columns; not currently stored in test data:
+  // behaviour_profile: Record<string, string>
   // date: Record<string, number>
+  // incentive_abbr: Record<string, string>
   // offender_book_id: Record<string, number>
+  // wing: Record<string, string>
 }
 
 /**

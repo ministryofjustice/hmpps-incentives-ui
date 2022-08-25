@@ -261,8 +261,7 @@ export default function routes(router: Router): Router {
     const protectedCharacteristic = protectedCharacteristicRoutes[characteristicName]
 
     const groupsForCharacteristic =
-      protectedCharacteristic.id === ProtectedCharacteristic.Age &&
-      !PrisonRegister.isYouthCustodyService(activeCaseLoad)
+      protectedCharacteristic.id === ProtectedCharacteristic.Age && !PrisonRegister.housesYoungPeople(activeCaseLoad)
         ? knownGroupsFor(protectedCharacteristic.id).filter(ageGroup => ageGroup !== AgeYoungPeople)
         : knownGroupsFor(protectedCharacteristic.id)
 

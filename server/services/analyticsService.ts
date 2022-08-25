@@ -503,7 +503,7 @@ export default class AnalyticsService {
     if (
       view.isPrisonLevel &&
       protectedCharacteristic === ProtectedCharacteristic.Age &&
-      !PrisonRegister.isYouthCustodyService(filterValue)
+      !PrisonRegister.housesYoungPeople(filterValue)
     ) {
       missingCharacteristics.delete(AgeYoungPeople)
     }
@@ -584,7 +584,7 @@ export default class AnalyticsService {
     if (
       view.isPrisonLevel &&
       protectedCharacteristic === ProtectedCharacteristic.Age &&
-      !PrisonRegister.isYouthCustodyService(filterValue)
+      !PrisonRegister.housesYoungPeople(filterValue)
     ) {
       missingCharacteristics.delete(AgeYoungPeople)
     }
@@ -884,7 +884,7 @@ export default class AnalyticsService {
     if (
       view.isPrisonLevel &&
       protectedCharacteristic === ProtectedCharacteristic.Age &&
-      !PrisonRegister.isYouthCustodyService(filterValue)
+      !PrisonRegister.housesYoungPeople(filterValue)
     ) {
       missingCharacteristics.delete(AgeYoungPeople)
     }

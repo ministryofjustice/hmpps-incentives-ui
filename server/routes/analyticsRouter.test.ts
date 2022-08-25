@@ -13,7 +13,7 @@ const s3 = {
   send: jest.fn(),
 }
 
-const isYouthCustodyServiceOriginal = PrisonRegister.isYouthCustodyService
+const housesYoungPeopleOriginal = PrisonRegister.housesYoungPeople
 
 jest.mock('@aws-sdk/client-s3', () => {
   const { GetObjectCommand, ListObjectsV2Command } = jest.requireActual('@aws-sdk/client-s3')
@@ -461,13 +461,13 @@ describe('Protected characteristic pages', () => {
 
       describe('when prison is Youth Custody Service', () => {
         beforeAll(() => {
-          // change isYouthCustodyService() to always return true
-          PrisonRegister.isYouthCustodyService = (_prisonId: string) => true
+          // change housesYoungPeople() to always return true
+          PrisonRegister.housesYoungPeople = (_prisonId: string) => true
         })
 
         afterAll(() => {
-          // restore PrisonRegister.isYouthCustodyService() behaviour
-          PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
+          // restore PrisonRegister.housesYoungPeople() behaviour
+          PrisonRegister.housesYoungPeople = housesYoungPeopleOriginal
         })
 
         it(`${queryParamName} value can be 15-17`, () => {
@@ -491,13 +491,13 @@ describe('Protected characteristic pages', () => {
 
       describe('when prison is not Youth Custody Service', () => {
         beforeAll(() => {
-          // change isYouthCustodyService() to always return false
-          PrisonRegister.isYouthCustodyService = (_prisonId: string) => false
+          // change housesYoungPeople() to always return false
+          PrisonRegister.housesYoungPeople = (_prisonId: string) => false
         })
 
         afterAll(() => {
-          // restore PrisonRegister.isYouthCustodyService() behaviour
-          PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
+          // restore PrisonRegister.housesYoungPeople() behaviour
+          PrisonRegister.housesYoungPeople = housesYoungPeopleOriginal
         })
 
         it(`${queryParamName} value cannot be 15-17`, () => {

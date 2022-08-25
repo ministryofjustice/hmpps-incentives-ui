@@ -26,7 +26,7 @@ jest.mock('../data/s3Client')
 
 const cache = new MemoryStitchedTablesCache()
 
-const isYouthCustodyServiceOriginal = PrisonRegister.isYouthCustodyService
+const housesYoungPeopleOriginal = PrisonRegister.housesYoungPeople
 
 const prisonLocations = {
   MDI: [
@@ -596,7 +596,7 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client)
 
       // pretend that MDI is a YCS
-      PrisonRegister.isYouthCustodyService = (prisonId: string) => prisonId === 'MDI'
+      PrisonRegister.housesYoungPeople = (prisonId: string) => prisonId === 'MDI'
     })
 
     it(`[${characteristic}]: has a totals row`, async () => {
@@ -646,8 +646,8 @@ describe('AnalyticsService', () => {
       })
 
       it(`[${characteristic}]: skips 15-17 group in non-YCS prison`, async () => {
-        // make MDI not a YCS by restoring isYouthCustodyService()
-        PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
+        // make MDI not a YCS by restoring housesYoungPeople()
+        PrisonRegister.housesYoungPeople = housesYoungPeopleOriginal
 
         const { rows } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(characteristic)
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
@@ -857,7 +857,7 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client)
 
       // pretend that MDI is a YCS
-      PrisonRegister.isYouthCustodyService = (prisonId: string) => prisonId === 'MDI'
+      PrisonRegister.housesYoungPeople = (prisonId: string) => prisonId === 'MDI'
     })
 
     it(`[${characteristic}]: has a totals row`, async () => {
@@ -906,8 +906,8 @@ describe('AnalyticsService', () => {
       })
 
       it(`[${characteristic}]: skips 15-17 group in non-YCS prison`, async () => {
-        // make MDI not a YCS by restoring isYouthCustodyService()
-        PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
+        // make MDI not a YCS by restoring housesYoungPeople()
+        PrisonRegister.housesYoungPeople = housesYoungPeopleOriginal
 
         const { rows } = await analyticsService.getPrisonersWithEntriesByProtectedCharacteristic(characteristic)
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')
@@ -1055,7 +1055,7 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client)
 
       // pretend that MDI is a YCS
-      PrisonRegister.isYouthCustodyService = (prisonId: string) => prisonId === 'MDI'
+      PrisonRegister.housesYoungPeople = (prisonId: string) => prisonId === 'MDI'
     })
 
     it(`[${characteristic}]: has a totals row`, async () => {
@@ -1102,8 +1102,8 @@ describe('AnalyticsService', () => {
       })
 
       it(`[${characteristic}]: skips 15-17 group in non-YCS prison`, async () => {
-        // make MDI not a YCS by restoring isYouthCustodyService()
-        PrisonRegister.isYouthCustodyService = isYouthCustodyServiceOriginal
+        // make MDI not a YCS by restoring housesYoungPeople()
+        PrisonRegister.housesYoungPeople = housesYoungPeopleOriginal
 
         const { rows } = await analyticsService.getBehaviourEntriesByProtectedCharacteristic(characteristic)
         const zeroRows = rows.filter(({ label: someCharacteristic }) => someCharacteristic === '15-17')

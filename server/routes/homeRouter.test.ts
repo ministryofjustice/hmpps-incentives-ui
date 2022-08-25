@@ -3,8 +3,22 @@ import request from 'supertest'
 
 import config from '../config'
 import { appWithAllRoutes } from './testutils/appSetup'
+import { mockSdkS3ClientResponse } from '../testData/s3Bucket'
 import type { AboutPageFeedbackData } from './forms/aboutPageFeedbackForm'
 import ZendeskClient from '../data/zendeskClient'
+import { cache } from './analyticsRouter'
+
+const s3 = {
+  send: jest.fn(),
+}
+jest.mock('@aws-sdk/client-s3', () => {
+  const { GetObjectCommand, ListObjectsV2Command } = jest.requireActual('@aws-sdk/client-s3')
+  return {
+    S3Client: jest.fn(() => s3),
+    GetObjectCommand,
+    ListObjectsV2Command,
+  }
+})
 
 jest.mock('../data/zendeskClient')
 let originalZendeskConfig: { url: string; username: string; token: string }
@@ -82,6 +96,22 @@ describe('Home page', () => {
 describe('About page', () => {
   const url = '/about'
   const formId = 'about-page-feedback'
+
+  beforeEach(() => {
+    mockSdkS3ClientResponse(s3.send)
+    cache.clear()
+  })
+
+  it('lists prisons using analytics table', () => {
+    return request(app)
+      .get(url)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Wales')
+        expect(res.text).toContain('Berwyn (HMP & YOI)')
+        expect(s3.send).toHaveBeenCalledTimes(2) // once to list tables and once to retrieve
+      })
+  })
 
   describe('has a feedback form', () => {
     it('which is displayed when the page is loaded', () => {

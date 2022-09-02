@@ -7,7 +7,8 @@ generic-service:
   serviceAccountName: hmpps-incentives-preprod-analytical-platform
 
   ingress:
-    host: incentives-ui-preprod.hmpps.service.justice.gov.uk
+    hosts:
+      - incentives-ui-preprod.hmpps.service.justice.gov.uk
 
   env:
     ENVIRONMENT: preprod

@@ -7,8 +7,7 @@ generic-service:
   serviceAccountName: hmpps-incentives-dev-analytical-platform
 
   ingress:
-    hosts:
-      - incentives-ui-dev.hmpps.service.justice.gov.uk
+    host: incentives-ui-dev.hmpps.service.justice.gov.uk
   allowlist: null
 
   env:

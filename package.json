@@ -91,9 +91,9 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.161.0",
+    "@aws-sdk/client-s3": "^3.165.0",
     "@ministryofjustice/frontend": "^1.4.2",
-    "@sentry/node": "^7.11.1",
+    "@sentry/node": "^7.12.1",
     "agentkeepalive": "^4.2.1",
     "applicationinsights": "^2.3.4",
     "body-parser": "^1.20.0",
@@ -117,9 +117,9 @@
     "passport": "^0.6.0",
     "passport-oauth2": "^1.6.1",
     "prom-client": "^14.1.0",
-    "redis": "^4.3.0",
+    "redis": "^4.3.1",
     "superagent": "^8.0.0",
-    "url-value-parser": "^2.1.0",
+    "url-value-parser": "^2.2.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -133,7 +133,7 @@
     "@types/csurf": "^1.11.2",
     "@types/express-session": "^1.17.5",
     "@types/http-errors": "^1.8.2",
-    "@types/jest": "^28.1.7",
+    "@types/jest": "^28.1.8",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^16.11.49",
     "@types/nunjucks": "^3.2.1",
@@ -142,17 +142,17 @@
     "@types/superagent": "^4.1.15",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^5.36.1",
-    "@typescript-eslint/parser": "^5.36.1",
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
     "audit-ci": "^6.3.0",
-    "concurrently": "^7.3.0",
+    "concurrently": "^7.4.0",
     "cookie-session": "^2.0.0",
     "cypress": "^10.7.0",
     "cypress-multi-reporters": "^1.6.1",
     "eslint": "^8.23.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-import-resolver-typescript": "^3.5.0",
+    "eslint-import-resolver-typescript": "^3.5.1",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -166,9 +166,9 @@
     "nock": "^13.2.9",
     "nodemon": "^2.0.19",
     "prettier": "^2.7.1",
-    "sass": "^1.54.7",
+    "sass": "^1.54.9",
     "supertest": "^6.2.4",
     "ts-jest": "^28.0.8",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.3"
   }
 }

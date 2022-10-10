@@ -46,6 +46,15 @@ beforeEach(() => {
 })
 
 describe('Reviews table', () => {
+  beforeAll(() => {
+    const today = new Date('2022-10-09T13:20:35.000+01:00')
+    jest.useFakeTimers({ now: today, advanceTimers: true })
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
+  })
+
   it('should show selected location', () => {
     return request(app)
       .get('/incentive-summary/MDI-2')
@@ -101,6 +110,8 @@ describe('Reviews table', () => {
         expect(res.text).toContain('Saunders, John')
         expect(res.text).toContain('G6123VU')
         expect(res.text).toContain('12 July 2022')
+        expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=POS&fromDate=09/07/2022')
+        expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=NEG&fromDate=09/07/2022')
         expect(res.text).toContain('ACCT open')
       })
   })

@@ -55,13 +55,13 @@
     {% endset %}
 
     {% set positiveBehaviours %}
-      <a href="{{ dpsUrl }}/prisoner/{{ result.prisonerNumber }}/case-notes?type=POS">
+      <a href="{{ dpsUrl }}/prisoner/{{ result.prisonerNumber }}/case-notes?type=POS&{{ caseNoteFilter }}">
         {{ result.positiveBehaviours }}
       </a>
     {% endset %}
 
     {% set negativeBehaviours %}
-      <a href="{{ dpsUrl }}/prisoner/{{ result.prisonerNumber }}/case-notes?type=NEG">
+      <a href="{{ dpsUrl }}/prisoner/{{ result.prisonerNumber }}/case-notes?type=NEG&{{ caseNoteFilter }}">
         {{ result.negativeBehaviours }}
       </a>
     {% endset %}

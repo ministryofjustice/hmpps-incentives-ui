@@ -21,6 +21,8 @@ export default function routes(router: Router): Router {
     let { level: selectedLevelCode }: { level?: string } = req.query
     const agencyId = locationPrefix.split('-')[0]
 
+    const caseNoteFilter = getCaseNoteFilter()
+
     const systemToken = await hmppsAuthClient.getSystemClientToken(user.username)
     const incentivesApi = new IncentivesApi(systemToken)
 
@@ -61,12 +63,23 @@ export default function routes(router: Router): Router {
       locationDescription,
       overdueCount,
       levels,
+      caseNoteFilter,
       selectedLevelCode,
       results,
     })
   })
 
   return router
+}
+
+function getCaseNoteFilter() {
+  const date = new Date()
+  date.setHours(12, 0, 0, 0)
+  date.setMonth(date.getMonth() - 3)
+  const day = date.getDate().toString().padStart(2, '0')
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const year = date.getFullYear()
+  return `fromDate=${day}/${month}/${year}`
 }
 
 interface Result {

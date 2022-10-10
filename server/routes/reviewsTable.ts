@@ -32,9 +32,50 @@ export default function routes(router: Router): Router {
 
     const locationDescription = 'A wing'
     const overdueCount = 16
+    const results: Result[] = [
+      {
+        firstName: 'John',
+        lastName: 'Saunders',
+        prisonerNumber: 'G6123VU',
+        imageId: 0,
+        nextReviewDate: new Date(2022, 6, 12),
+        positiveBehaviours: 3,
+        negativeBehaviours: 2,
+        acctStatus: true,
+      },
+      {
+        firstName: 'Flem',
+        lastName: 'Hermosilla',
+        prisonerNumber: 'G5992UH',
+        imageId: 0,
+        nextReviewDate: new Date(2023, 9, 10),
+        positiveBehaviours: 2,
+        negativeBehaviours: 0,
+        acctStatus: false,
+      },
+    ]
 
-    res.render('pages/reviewsTable', { feedbackUrl, locationDescription, overdueCount, levels, selectedLevelCode })
+    res.render('pages/reviewsTable', {
+      dpsUrl: config.dpsUrl,
+      feedbackUrl,
+      locationDescription,
+      overdueCount,
+      levels,
+      selectedLevelCode,
+      results,
+    })
   })
 
   return router
+}
+
+interface Result {
+  firstName: string
+  lastName: string
+  prisonerNumber: string
+  imageId: number
+  nextReviewDate: Date
+  positiveBehaviours: number
+  negativeBehaviours: number
+  acctStatus: boolean
 }

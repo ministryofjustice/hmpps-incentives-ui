@@ -1,0 +1,9 @@
+.app-reviews-table {
+  tbody tr:nth-child(even) {
+    background-color: govuk-colour('light-grey');
+  }
+
+  tbody td:not(:first-child) {
+    @include govuk-responsive-padding(6, 'top');
+  }
+}

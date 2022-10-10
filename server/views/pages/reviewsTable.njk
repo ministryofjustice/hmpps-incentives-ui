@@ -1,4 +1,5 @@
 {% extends "../partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set pageTitle = applicationName + " – Manage incentive reviews" %}
 
@@ -29,4 +30,74 @@
       </li>
     {% endfor %}
   </ul>
+
+  {% set tableRows = [] %}
+  {% for result in results %}
+    {% set photo %}
+      {% if result.imageId > 0 %}
+        {% set imageUrl = "/prisoner-images/" + prisoner.imageId + ".jpeg" %}
+      {% else %}
+        {% set imageUrl = "/assets/images/prisoner.jpeg" %}
+      {% endif %}
+      <img src="{{ imageUrl }}" alt="Photo of {{ result.prisonerNumber }}" />
+    {% endset %}
+
+    {% set profileLink %}
+      <a href="{{ dpsUrl }}/prisoner/{{ result.prisonerNumber }}">
+        {{ result.lastName }}, {{ result.firstName }}
+        <br />
+        {{ result.prisonerNumber }}
+      </a>
+    {% endset %}
+
+    {% set nextReviewDate %}
+      <strong>{{ result.nextReviewDate | shortDate }}</strong>
+    {% endset %}
+
+    {% set positiveBehaviours %}
+      <a href="{{ dpsUrl }}/prisoner/{{ result.prisonerNumber }}/case-notes?type=POS">
+        {{ result.positiveBehaviours }}
+      </a>
+    {% endset %}
+
+    {% set negativeBehaviours %}
+      <a href="{{ dpsUrl }}/prisoner/{{ result.prisonerNumber }}/case-notes?type=NEG">
+        {{ result.negativeBehaviours }}
+      </a>
+    {% endset %}
+
+    {% set tableRows = (tableRows.push([
+      {html: photo},
+      {html: profileLink},
+      {html: nextReviewDate},
+      {html: positiveBehaviours},
+      {html: negativeBehaviours},
+      {text: "ACCT open" if result.acctStatus else ""}
+    ]), tableRows) %}
+  {% endfor %}
+
+  {{ govukTable({
+    classes: "app-reviews-table",
+    head: [
+      {
+        html: '<span class="govuk-visually-hidden">Prisoner photo</span>'
+      },
+      {
+        text: "Name and prison number"
+      },
+      {
+        text: "Date of next review"
+      },
+      {
+        html: "Positive behaviours <br /> in the last 3 months"
+      },
+      {
+        html: "Negative behaviours <br /> in the last 3 months"
+      },
+      {
+        text: "ACCT status"
+      }
+    ],
+    rows: tableRows
+  }) }}
 {% endblock %}

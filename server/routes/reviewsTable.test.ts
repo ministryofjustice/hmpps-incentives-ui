@@ -11,19 +11,6 @@ import { IncentivesApi, type Level } from '../data/incentivesApi'
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/incentivesApi')
 
-let app: Express
-
-beforeEach(() => {
-  config.featureFlags.newReviewsTable = true
-  app = appWithAllRoutes({})
-
-  const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>
-  hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
-
-  const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
-  incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
-})
-
 const sampleLevels: Level[] = [
   {
     iepLevel: 'BAS',
@@ -44,6 +31,19 @@ const sampleLevels: Level[] = [
     default: false,
   },
 ]
+
+let app: Express
+
+beforeEach(() => {
+  config.featureFlags.newReviewsTable = true
+  app = appWithAllRoutes({})
+
+  const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>
+  hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
+
+  const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
+  incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
+})
 
 describe('Reviews table', () => {
   it('should show selected location', () => {
@@ -67,9 +67,6 @@ describe('Reviews table', () => {
   })
 
   it('shows tabs for each available level', () => {
-    const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
-    incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
-
     return request(app)
       .get('/incentive-summary/MDI-1')
       .expect(res => {
@@ -94,6 +91,17 @@ describe('Reviews table', () => {
         const $body = $(res.text)
         const selectedLevel = $body.find('.govuk-tabs__list-item--selected').text().trim()
         expect(selectedLevel).toEqual(expectedLevel)
+      })
+  })
+
+  it('lists basic review information', () => {
+    return request(app)
+      .get('/incentive-summary/MDI-1')
+      .expect(res => {
+        expect(res.text).toContain('Saunders, John')
+        expect(res.text).toContain('G6123VU')
+        expect(res.text).toContain('12 July 2022')
+        expect(res.text).toContain('ACCT open')
       })
   })
 })

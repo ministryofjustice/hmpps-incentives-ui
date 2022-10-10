@@ -1,4 +1,6 @@
 import type { Express } from 'express'
+import jquery from 'jquery'
+import { JSDOM } from 'jsdom'
 import request from 'supertest'
 
 import config from '../config'
@@ -17,6 +19,9 @@ beforeEach(() => {
 
   const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>
   hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
+
+  const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
+  incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
 })
 
 const sampleLevels: Level[] = [
@@ -69,9 +74,26 @@ describe('Reviews table', () => {
       .get('/incentive-summary/MDI-1')
       .expect(res => {
         // eslint-disable-next-line no-restricted-syntax
-        for(const { iepDescription } of sampleLevels) {
-          expect(res.text).toContain(iepDescription)
+        for (const { iepLevel } of sampleLevels) {
+          expect(res.text).toContain(`?level=${iepLevel}`)
         }
+      })
+  })
+
+  it.each([
+    ['', 'Standard'],
+    ['?level=BAS', 'Basic'],
+    ['?level=ENH', 'Enhanced'],
+    ['?level=EN2', 'Standard'],
+  ])('shows tabs for each available level', (urlSuffix, expectedLevel) => {
+    const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+    return request(app)
+      .get(`/incentive-summary/MDI-1${urlSuffix}`)
+      .expect(res => {
+        const $body = $(res.text)
+        const selectedLevel = $body.find('.govuk-tabs__list-item--selected').text().trim()
+        expect(selectedLevel).toEqual(expectedLevel)
       })
   })
 })

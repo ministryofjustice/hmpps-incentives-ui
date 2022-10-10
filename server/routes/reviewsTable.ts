@@ -18,17 +18,22 @@ export default function routes(router: Router): Router {
 
     const { user } = res.locals
     const { locationPrefix } = req.params
+    let { level: selectedLevelCode }: { level?: string } = req.query
     const agencyId = locationPrefix.split('-')[0]
 
     const systemToken = await hmppsAuthClient.getSystemClientToken(user.username)
     const incentivesApi = new IncentivesApi(systemToken)
 
     const levels = await incentivesApi.getAvailableLevels(agencyId)
+    const defaultLevel = levels.find(level => level.default) ?? levels[0]
+    if (!levels.some(level => level.iepLevel === selectedLevelCode)) {
+      selectedLevelCode = defaultLevel.iepLevel
+    }
 
     const locationDescription = 'A wing'
     const overdueCount = 16
 
-    res.render('pages/reviewsTable', { feedbackUrl, locationDescription, overdueCount, levels })
+    res.render('pages/reviewsTable', { feedbackUrl, locationDescription, overdueCount, levels, selectedLevelCode })
   })
 
   return router

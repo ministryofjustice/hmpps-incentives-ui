@@ -11,4 +11,11 @@
     <strong class="govuk-!-margin-right-3">{{ locationDescription }}</strong>
     <a href="/select-location">Select another location</a>
   </p>
+
+  <dl class="app-data-list govuk-!-margin-top-6 govuk-!-margin-bottom-8">
+    <dt>Overdue reviews</dt>
+    <dd>
+      {{- overdueCount -}}
+    </dd>
+  </dl>
 {% endblock %}

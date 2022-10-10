@@ -1,0 +1,10 @@
+.app-data-list {
+  dt {
+    @include govuk-font($size: 19);
+  }
+
+  dd {
+    @include govuk-font($size: 36, $weight: bold);
+    margin: govuk-spacing(3) 0;
+  }
+}

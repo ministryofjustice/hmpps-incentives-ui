@@ -27,4 +27,14 @@ describe('Reviews table', () => {
         expect(res.text).toContain('A wing')
       })
   })
+
+  it('should show number of overdue reviews', () => {
+    return request(app)
+      .get('/incentive-summary/MDI-2')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Manage incentive reviews')
+        expect(res.text).toContain('<dd>16</dd>')
+      })
+  })
 })

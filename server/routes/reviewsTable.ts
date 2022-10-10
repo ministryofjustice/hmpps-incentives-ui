@@ -12,8 +12,9 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.addItems({ text: 'Manage incentive reviews' })
 
     const locationDescription = 'A wing'
+    const overdueCount = 16
 
-    res.render('pages/reviewsTable', { feedbackUrl, locationDescription })
+    res.render('pages/reviewsTable', { feedbackUrl, locationDescription, overdueCount })
   })
 
   return router

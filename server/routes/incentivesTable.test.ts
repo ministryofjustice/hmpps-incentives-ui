@@ -1,6 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 
+import config from '../config'
 import { appWithAllRoutes } from './testutils/appSetup'
 import BehaviourService from '../services/behaviourService'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -12,6 +13,7 @@ jest.mock('../services/behaviourService')
 let app: Express
 
 beforeEach(() => {
+  config.featureFlags.newReviewsTable = false
   app = appWithAllRoutes({})
 
   const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>

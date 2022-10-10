@@ -1,0 +1,14 @@
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " – Manage incentive reviews" %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
+    Manage incentive reviews
+  </h1>
+
+  <p>
+    <strong class="govuk-!-margin-right-3">{{ locationDescription }}</strong>
+    <a href="/select-location">Select another location</a>
+  </p>
+{% endblock %}

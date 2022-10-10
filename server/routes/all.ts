@@ -1,5 +1,6 @@
 import { Router } from 'express'
 
+import config from '../config'
 import type UserService from '../services/userService'
 import homeRoutes from './home'
 import analyticsRouter from './analyticsRouter'
@@ -8,13 +9,19 @@ import imageRouter from './imageRouter'
 import incentivesTableRoutes from './incentivesTable'
 import prisonerImagesRoutes from './prisonerImages'
 import selectLocationRoutes from './selectLocation'
+import reviewsTableRoutes from './reviewsTable'
 import standardRouter from './standardRouter'
 
 export default function routes(userService: UserService): Router {
   const router = Router({ mergeParams: true })
 
   router.use('/select-location', selectLocationRoutes(standardRouter(userService)))
-  router.use('/incentive-summary/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
+  router.use(
+    '/incentive-summary/:locationPrefix',
+    config.featureFlags.newReviewsTable
+      ? reviewsTableRoutes(standardRouter(userService))
+      : incentivesTableRoutes(standardRouter(userService)),
+  )
   router.use('/analytics/:pgdRegionCode([A-Z0-9]{2,5}|National)?', analyticsRouter(standardRouter(userService)))
   router.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(imageRouter()))
   router.use('/throw-test-error', throwTestErrorRouter(standardRouter(userService)))

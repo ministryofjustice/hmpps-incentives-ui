@@ -13,12 +13,13 @@ metadata:
     role: alert-rules
 spec:
   groups:
-    - name: stale-analytics-data
+    - name: incentives-stale-analytics-data
       rules:
         - alert: stale-analytics-data
           expr: sum(incentives_stale_analytics_data{namespace="{{ .Release.Namespace }}"}) by (table_type) > 0
           annotations:
             message: Analytics source data for table {{ "{{ $labels.table_type }}" }} is more than {{ index .Values "generic-service" "env" "ANALYTICS_DATA_STALE_AFTER_DAYS" }} days old
+            runbook_url: https://dsdmoj.atlassian.net/wiki/spaces/IT/pages/4086267986/Live+Service+Support
           labels:
             severity: {{ index .Values "generic-prometheus-alerts" "alertSeverity" }}
 {{- end }}

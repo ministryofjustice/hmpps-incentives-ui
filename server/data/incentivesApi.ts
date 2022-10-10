@@ -34,6 +34,13 @@ interface IncentivesLocationSummary {
   incentiveLevelSummary: Array<IncentivesLevelSummary>
 }
 
+export interface Level {
+  iepLevel: string
+  iepDescription: string
+  sequence: number
+  default: boolean
+}
+
 class IncentivesApi extends RestClient {
   constructor(systemToken: string) {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
@@ -43,6 +50,10 @@ class IncentivesApi extends RestClient {
     return this.get({
       path: `/incentives-summary/prison/${agencyId}/location/${locationPrefix}?sortBy=NAME&sortDirection=ASC`,
     }) as Promise<IncentivesLocationSummary>
+  }
+
+  getAvailableLevels(agencyId: string): Promise<Level[]> {
+    return this.get({ path: `/iep/levels/${agencyId}` }) as Promise<Level[]>
   }
 }
 

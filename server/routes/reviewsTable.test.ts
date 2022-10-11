@@ -116,4 +116,11 @@ describe('Reviews table', () => {
         expect(res.text).toContain('ACCT open')
       })
   })
+
+  it.each(['?page=', '?page=0', '?page=-1', '?page=one', '?page=two&level=BAS'])(
+    'responds with 404 if page number is invalid',
+    urlSuffix => {
+      return request(app).get(`/incentive-summary/MDI-1${urlSuffix}`).expect(404)
+    }
+  )
 })

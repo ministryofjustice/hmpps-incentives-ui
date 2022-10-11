@@ -1,6 +1,8 @@
 import type { RequestHandler, Router } from 'express'
+import { NotFound } from 'http-errors'
 
 import config from '../config'
+import { pagination } from '../utils/pagination'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import { createRedisClient } from '../data/redisClient'
@@ -19,8 +21,13 @@ export default function routes(router: Router): Router {
     const { user } = res.locals
     const { locationPrefix } = req.params
     let { level: selectedLevelCode }: { level?: string } = req.query
+    const { page: pageString }: { page?: string } = req.query
     const agencyId = locationPrefix.split('-')[0]
 
+    const page = parseInt(pageString ?? '1', 10)
+    if (!(page >= 1)) {
+      throw new NotFound('Page number is out of range')
+    }
     const caseNoteFilter = getCaseNoteFilter()
 
     const systemToken = await hmppsAuthClient.getSystemClientToken(user.username)
@@ -31,6 +38,9 @@ export default function routes(router: Router): Router {
     if (!levels.some(level => level.iepLevel === selectedLevelCode)) {
       selectedLevelCode = defaultLevel.iepLevel
     }
+
+    const pageCount = 10
+    const paginationParams = pagination(page, pageCount, `?level=${selectedLevelCode}&`)
 
     const locationDescription = 'A wing'
     const overdueCount = 16
@@ -66,6 +76,7 @@ export default function routes(router: Router): Router {
       caseNoteFilter,
       selectedLevelCode,
       results,
+      paginationParams,
     })
   })
 

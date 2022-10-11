@@ -110,6 +110,7 @@ describe('Reviews table', () => {
         expect(res.text).toContain('Saunders, John')
         expect(res.text).toContain('G6123VU')
         expect(res.text).toContain('12 July 2022')
+        expect(res.text).toContain('89 days overdue')
         expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=POS&fromDate=09/07/2022')
         expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=NEG&fromDate=09/07/2022')
         expect(res.text).toContain('ACCT open')

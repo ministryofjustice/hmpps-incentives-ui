@@ -52,6 +52,14 @@
 
     {% set nextReviewDate %}
       <strong>{{ result.nextReviewDate | shortDate }}</strong>
+      {% set daysOverdue = result.nextReviewDate | daysSince %}
+      {% if daysOverdue == 1 %}
+        <br />
+        <strong class="app-review-overdue">1 day overdue</strong>
+      {% elif daysOverdue > 1 %}
+        <br />
+        <strong class="app-review-overdue">{{ daysOverdue }} days overdue</strong>
+      {% endif %}
     {% endset %}
 
     {% set positiveBehaviours %}

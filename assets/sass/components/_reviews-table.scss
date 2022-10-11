@@ -7,3 +7,7 @@
     @include govuk-responsive-padding(6, 'top');
   }
 }
+
+.app-review-overdue {
+  color: govuk-colour('red');
+}

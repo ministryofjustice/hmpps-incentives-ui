@@ -43,6 +43,35 @@ beforeEach(() => {
 
   const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
   incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
+  incentivesApi.getReviews.mockResolvedValue({
+    locationDescription: 'Houseblock 1',
+    overdueCount: 16,
+    reviewCount: 135,
+    reviews: [
+      {
+        firstName: 'John',
+        lastName: 'Saunders',
+        prisonerNumber: 'G6123VU',
+        bookingId: 100000,
+        imageId: 0,
+        nextReviewDate: new Date(2022, 6, 12),
+        positiveBehaviours: 3,
+        negativeBehaviours: 2,
+        acctStatus: true,
+      },
+      {
+        firstName: 'Flem',
+        lastName: 'Hermosilla',
+        prisonerNumber: 'G5992UH',
+        bookingId: 100001,
+        imageId: 0,
+        nextReviewDate: new Date(2023, 9, 10),
+        positiveBehaviours: 2,
+        negativeBehaviours: 0,
+        acctStatus: false,
+      },
+    ],
+  })
 })
 
 describe('Reviews table', () => {
@@ -61,7 +90,7 @@ describe('Reviews table', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Manage incentive reviews')
-        expect(res.text).toContain('A wing')
+        expect(res.text).toContain('Houseblock 1')
       })
   })
 
@@ -111,9 +140,29 @@ describe('Reviews table', () => {
         expect(res.text).toContain('G6123VU')
         expect(res.text).toContain('12 July 2022')
         expect(res.text).toContain('89 days overdue')
-        expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=POS&fromDate=09/07/2022')
-        expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=NEG&fromDate=09/07/2022')
+        expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=POS&amp;fromDate=09/07/2022')
+        expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=NEG&amp;fromDate=09/07/2022')
         expect(res.text).toContain('ACCT open')
+      })
+  })
+
+  it.each([
+    ['?level=ENH', 'ENH', [1, 2, 6, 7]],
+    ['?level=ENH&page=1', 'ENH', [1, 2, 6, 7]],
+    ['?page=3&level=STD', 'STD', [1, 2, 3, 4, 6, 7]],
+    ['?page=7', 'STD', [1, 2, 6, 7]],
+  ])('includes pagination component', (urlSuffix, level, pages) => {
+    return request(app)
+      .get(`/incentive-summary/MDI-1${urlSuffix}`)
+      .expect(res => {
+        const pageLink = (page: number) => `?level=${level}&amp;page=${page}`
+        for (let page = 1; page <= 10; page += 1) {
+          if (pages.includes(page)) {
+            expect(res.text).toContain(pageLink(page))
+          } else {
+            expect(res.text).not.toContain(pageLink(page))
+          }
+        }
       })
   })
 
@@ -121,6 +170,6 @@ describe('Reviews table', () => {
     'responds with 404 if page number is invalid',
     urlSuffix => {
       return request(app).get(`/incentive-summary/MDI-1${urlSuffix}`).expect(404)
-    }
+    },
   )
 })

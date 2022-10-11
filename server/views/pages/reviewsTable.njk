@@ -33,27 +33,27 @@
   </ul>
 
   {% set tableRows = [] %}
-  {% for result in results %}
+  {% for review in reviews %}
     {% set photo %}
-      {% if result.imageId > 0 %}
+      {% if review.imageId > 0 %}
         {% set imageUrl = "/prisoner-images/" + prisoner.imageId + ".jpeg" %}
       {% else %}
         {% set imageUrl = "/assets/images/prisoner.jpeg" %}
       {% endif %}
-      <img src="{{ imageUrl }}" alt="Photo of {{ result.prisonerNumber }}" />
+      <img src="{{ imageUrl }}" alt="Photo of {{ review.prisonerNumber }}" />
     {% endset %}
 
     {% set profileLink %}
-      <a href="{{ dpsUrl }}/prisoner/{{ result.prisonerNumber }}">
-        {{ result.lastName }}, {{ result.firstName }}
+      <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}">
+        {{ review.lastName }}, {{ review.firstName }}
         <br />
-        {{ result.prisonerNumber }}
+        {{ review.prisonerNumber }}
       </a>
     {% endset %}
 
     {% set nextReviewDate %}
-      <strong>{{ result.nextReviewDate | shortDate }}</strong>
-      {% set daysOverdue = result.nextReviewDate | daysSince %}
+      <strong>{{ review.nextReviewDate | shortDate }}</strong>
+      {% set daysOverdue = review.nextReviewDate | daysSince %}
       {% if daysOverdue == 1 %}
         <br />
         <strong class="app-review-overdue">1 day overdue</strong>
@@ -64,14 +64,14 @@
     {% endset %}
 
     {% set positiveBehaviours %}
-      <a href="{{ dpsUrl }}/prisoner/{{ result.prisonerNumber }}/case-notes?type=POS&{{ caseNoteFilter }}">
-        {{ result.positiveBehaviours }}
+      <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}/case-notes?type=POS&amp;{{ caseNoteFilter }}">
+        {{ review.positiveBehaviours }}
       </a>
     {% endset %}
 
     {% set negativeBehaviours %}
-      <a href="{{ dpsUrl }}/prisoner/{{ result.prisonerNumber }}/case-notes?type=NEG&{{ caseNoteFilter }}">
-        {{ result.negativeBehaviours }}
+      <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}/case-notes?type=NEG&amp;{{ caseNoteFilter }}">
+        {{ review.negativeBehaviours }}
       </a>
     {% endset %}
 
@@ -81,7 +81,7 @@
       {html: nextReviewDate},
       {html: positiveBehaviours},
       {html: negativeBehaviours},
-      {text: "ACCT open" if result.acctStatus else ""}
+      {text: "ACCT open" if review.acctStatus else ""}
     ]), tableRows) %}
   {% endfor %}
 

@@ -41,6 +41,25 @@ export interface Level {
   default: boolean
 }
 
+export interface IncentivesReviews {
+  locationDescription: string
+  overdueCount: number
+  reviewCount: number
+  reviews: IncentivesReview[]
+}
+
+export interface IncentivesReview {
+  firstName: string
+  lastName: string
+  prisonerNumber: string
+  bookingId: number
+  imageId: number
+  nextReviewDate: Date
+  positiveBehaviours: number
+  negativeBehaviours: number
+  acctStatus: boolean
+}
+
 class IncentivesApi extends RestClient {
   constructor(systemToken: string) {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
@@ -54,6 +73,40 @@ class IncentivesApi extends RestClient {
 
   getAvailableLevels(agencyId: string): Promise<Level[]> {
     return this.get({ path: `/iep/levels/${agencyId}` }) as Promise<Level[]>
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getReviews(agencyId: string, locationPrefix: string, levelCode: string): Promise<IncentivesReviews> {
+    // TODO: this is a stub!!!
+    return Promise.resolve({
+      locationDescription: 'Houseblock 1',
+      overdueCount: 16,
+      reviewCount: 135,
+      reviews: [
+        {
+          firstName: 'John',
+          lastName: 'Saunders',
+          prisonerNumber: 'G6123VU',
+          bookingId: 100000,
+          imageId: 0,
+          nextReviewDate: new Date(2022, 6, 12),
+          positiveBehaviours: 3,
+          negativeBehaviours: 2,
+          acctStatus: true,
+        },
+        {
+          firstName: 'Flem',
+          lastName: 'Hermosilla',
+          prisonerNumber: 'G5992UH',
+          bookingId: 100001,
+          imageId: 0,
+          nextReviewDate: new Date(2023, 9, 10),
+          positiveBehaviours: 2,
+          negativeBehaviours: 0,
+          acctStatus: false,
+        },
+      ],
+    })
   }
 }
 

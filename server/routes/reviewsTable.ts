@@ -12,6 +12,8 @@ import TokenStore from '../data/tokenStore'
 const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient('routes/incentivesTable.ts')))
 const feedbackUrl = config.feedbackUrlForTable || config.feedbackUrl
 
+const PAGE_SIZE = 20
+
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
@@ -39,43 +41,20 @@ export default function routes(router: Router): Router {
       selectedLevelCode = defaultLevel.iepLevel
     }
 
-    const pageCount = 10
-    const paginationParams = pagination(page, pageCount, `?level=${selectedLevelCode}&`)
+    const response = await incentivesApi.getReviews(agencyId, locationPrefix, selectedLevelCode)
 
-    const locationDescription = 'A wing'
-    const overdueCount = 16
-    const results: Result[] = [
-      {
-        firstName: 'John',
-        lastName: 'Saunders',
-        prisonerNumber: 'G6123VU',
-        imageId: 0,
-        nextReviewDate: new Date(2022, 6, 12),
-        positiveBehaviours: 3,
-        negativeBehaviours: 2,
-        acctStatus: true,
-      },
-      {
-        firstName: 'Flem',
-        lastName: 'Hermosilla',
-        prisonerNumber: 'G5992UH',
-        imageId: 0,
-        nextReviewDate: new Date(2023, 9, 10),
-        positiveBehaviours: 2,
-        negativeBehaviours: 0,
-        acctStatus: false,
-      },
-    ]
+    const pageCount = Math.ceil(response.reviewCount / PAGE_SIZE)
+    const paginationParams = pagination(page, pageCount, `?level=${selectedLevelCode}&`)
 
     res.render('pages/reviewsTable', {
       dpsUrl: config.dpsUrl,
       feedbackUrl,
-      locationDescription,
-      overdueCount,
+      locationDescription: response.locationDescription,
+      overdueCount: response.overdueCount,
       levels,
       caseNoteFilter,
       selectedLevelCode,
-      results,
+      reviews: response.reviews,
       paginationParams,
     })
   })
@@ -91,15 +70,4 @@ function getCaseNoteFilter() {
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
   const year = date.getFullYear()
   return `fromDate=${day}/${month}/${year}`
-}
-
-interface Result {
-  firstName: string
-  lastName: string
-  prisonerNumber: string
-  imageId: number
-  nextReviewDate: Date
-  positiveBehaviours: number
-  negativeBehaviours: number
-  acctStatus: boolean
 }

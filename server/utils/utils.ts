@@ -21,3 +21,16 @@ export const initialiseName = (fullName?: string): string | null => {
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
+
+/** Number of days elapsed, ignoring time of day, since `date`; 0 for today or any time in future */
+export const daysSince = (date: Date): number => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const todayUnix = today.valueOf()
+  date.setHours(0, 0, 0, 0)
+  const dateUnix = date.valueOf()
+  if (dateUnix >= todayUnix) {
+    return 0
+  }
+  return (todayUnix - dateUnix) / (1000 * 60 * 60 * 24)
+}

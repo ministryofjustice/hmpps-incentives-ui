@@ -1,4 +1,4 @@
-import { convertToTitleCase, initialiseName } from './utils'
+import { convertToTitleCase, daysSince, initialiseName } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -26,5 +26,48 @@ describe('initialise name', () => {
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
   ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
     expect(initialiseName(a)).toEqual(expected)
+  })
+})
+
+describe('counting days since a date', () => {
+  beforeAll(() => {
+    const today = new Date('2022-10-09T13:20:35.000+01:00')
+    jest.useFakeTimers({ now: today })
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
+  })
+
+  it.each([new Date(2022, 9, 8), new Date(2022, 9, 8, 12), new Date('2022-10-08T13:20:35Z')])(
+    'returns 1 when date is yesterday',
+    date => {
+      expect(daysSince(date)).toEqual<number>(1)
+    },
+  )
+
+  it.each([
+    [new Date(2022, 9, 7), 2],
+    [new Date(2022, 9, 6, 12, 30, 45, 1), 3],
+    [new Date('2021-10-09T13:20:35.000+01:00'), 365],
+  ])('returns days elapsed since date', (date, expectedDays) => {
+    expect(daysSince(date)).toEqual<number>(expectedDays)
+  })
+
+  it.each([
+    new Date('2022-10-09T10:00:00.000+01:00'),
+    new Date('2022-10-09T20:00:00.000Z'),
+    new Date(2022, 9, 9),
+    new Date(2022, 9, 9, 12, 10, 30, 5),
+  ])('returns 0 when date is today', date => {
+    expect(daysSince(date)).toEqual<number>(0)
+  })
+
+  it.each([
+    new Date('2022-10-10T12:00:00.000+01:00'),
+    new Date(2022, 10, 9),
+    new Date('2023-10-09T13:20:35.000+01:00'),
+  ])('returns 0 for dates in future', date => {
+    expect(daysSince(date)).toEqual<number>(0)
   })
 })

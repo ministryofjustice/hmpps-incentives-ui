@@ -85,7 +85,7 @@ describe('Reviews table', () => {
     ['?level=BAS', 'Basic'],
     ['?level=ENH', 'Enhanced'],
     ['?level=EN2', 'Standard'],
-  ])('shows tabs for each available level', (urlSuffix, expectedLevel) => {
+  ])('should select requested tab or fall back to default', (urlSuffix, expectedLevel) => {
     const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
     return request(app)

@@ -5,8 +5,10 @@ import request from 'supertest'
 
 import config from '../config'
 import { appWithAllRoutes } from './testutils/appSetup'
+import { getTestIncentivesReviews } from '../testData/incentivesApi'
 import HmppsAuthClient from '../data/hmppsAuthClient'
-import { IncentivesApi, type Level } from '../data/incentivesApi'
+import type { Level, IncentivesReviewsRequest } from '../data/incentivesApi'
+import { IncentivesApi } from '../data/incentivesApi'
 
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/incentivesApi')
@@ -32,58 +34,36 @@ const sampleLevels: Level[] = [
   },
 ]
 
+let incentivesApi: jest.Mocked<IncentivesApi>
+
+beforeAll(() => {
+  const today = new Date('2022-10-09T13:20:35.000+01:00')
+  jest.useFakeTimers({ now: today, advanceTimers: true })
+
+  const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>
+  hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
+
+  incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
+  incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
+  incentivesApi.getReviews.mockResolvedValue(getTestIncentivesReviews())
+})
+
+afterAll(() => {
+  jest.useRealTimers()
+})
+
 let app: Express
 
 beforeEach(() => {
   config.featureFlags.newReviewsTable = true
   app = appWithAllRoutes({})
+})
 
-  const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>
-  hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
-
-  const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
-  incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
-  incentivesApi.getReviews.mockResolvedValue({
-    locationDescription: 'Houseblock 1',
-    overdueCount: 16,
-    reviewCount: 135,
-    reviews: [
-      {
-        firstName: 'John',
-        lastName: 'Saunders',
-        prisonerNumber: 'G6123VU',
-        bookingId: 100000,
-        imageId: 0,
-        nextReviewDate: new Date(2022, 6, 12),
-        positiveBehaviours: 3,
-        negativeBehaviours: 2,
-        acctStatus: true,
-      },
-      {
-        firstName: 'Flem',
-        lastName: 'Hermosilla',
-        prisonerNumber: 'G5992UH',
-        bookingId: 100001,
-        imageId: 0,
-        nextReviewDate: new Date(2023, 9, 10),
-        positiveBehaviours: 2,
-        negativeBehaviours: 0,
-        acctStatus: false,
-      },
-    ],
-  })
+afterEach(() => {
+  incentivesApi.getReviews.mockClear()
 })
 
 describe('Reviews table', () => {
-  beforeAll(() => {
-    const today = new Date('2022-10-09T13:20:35.000+01:00')
-    jest.useFakeTimers({ now: today, advanceTimers: true })
-  })
-
-  afterAll(() => {
-    jest.useRealTimers()
-  })
-
   it('should show selected location', () => {
     return request(app)
       .get('/incentive-summary/MDI-2')
@@ -114,6 +94,137 @@ describe('Reviews table', () => {
         }
       })
   })
+
+  type ReviewsRequestScenario = {
+    name: string
+    urlSuffix: string
+    expectedRequest: Partial<IncentivesReviewsRequest>
+  }
+  const reviewsRequestScenario: ReviewsRequestScenario[] = [
+    {
+      name: 'without params',
+      urlSuffix: '',
+      expectedRequest: {},
+    },
+    {
+      name: 'with incorrect params',
+      urlSuffix: '?level=ENT&sort=prisonerNumber&order=down',
+      expectedRequest: {},
+    },
+    {
+      name: 'with page param',
+      urlSuffix: '?page=6',
+      expectedRequest: {
+        page: 6,
+      },
+    },
+    {
+      name: 'with level param',
+      urlSuffix: '?level=ENH',
+      expectedRequest: {
+        levelCode: 'ENH',
+      },
+    },
+    {
+      name: 'with incorrect level param',
+      urlSuffix: '?level=EN2',
+      expectedRequest: {},
+    },
+    {
+      name: 'with order param',
+      urlSuffix: '?order=descending',
+      expectedRequest: {
+        order: 'descending',
+      },
+    },
+    {
+      name: 'with incorrect order param',
+      urlSuffix: '?order=',
+      expectedRequest: {},
+    },
+    {
+      name: 'with sort param',
+      urlSuffix: '?sort=name',
+      expectedRequest: {
+        sort: 'name',
+        order: 'ascending',
+      },
+    },
+    {
+      name: 'with incorrect sort param',
+      urlSuffix: '?sort=unknown',
+      expectedRequest: {},
+    },
+    {
+      name: 'with sort and order params',
+      urlSuffix: '?order=descending&sort=name',
+      expectedRequest: {
+        sort: 'name',
+        order: 'descending',
+      },
+    },
+    {
+      name: 'with sort param but incorrect order',
+      urlSuffix: '?order=reversed&sort=name',
+      expectedRequest: {
+        sort: 'name',
+        order: 'ascending',
+      },
+    },
+    {
+      name: 'with level and page params',
+      urlSuffix: '?level=ENH&page=2',
+      expectedRequest: {
+        levelCode: 'ENH',
+        page: 2,
+      },
+    },
+    {
+      name: 'with level, sort and page params',
+      urlSuffix: '?page=3&level=ENH&sort=acctStatus',
+      expectedRequest: {
+        levelCode: 'ENH',
+        page: 3,
+        sort: 'acctStatus',
+        order: 'descending',
+      },
+    },
+    {
+      name: 'with level, sort, order and page params',
+      urlSuffix: '?level=BAS&sort=negativeBehaviours&order=ascending&page=4',
+      expectedRequest: {
+        levelCode: 'BAS',
+        page: 4,
+        sort: 'negativeBehaviours',
+        order: 'ascending',
+      },
+    },
+  ]
+  describe.each(reviewsRequestScenario)(
+    'calls incentives api reviews endpoint',
+    ({ name, urlSuffix, expectedRequest }) => {
+      const defaultRequest: IncentivesReviewsRequest = {
+        agencyId: 'MDI',
+        locationPrefix: 'MDI-1',
+        levelCode: 'STD',
+        sort: 'nextReviewDate',
+        order: 'ascending',
+        page: 1,
+        pageSize: 20,
+      }
+
+      it(name, () => {
+        return request(app)
+          .get(`/incentive-summary/MDI-1${urlSuffix}`)
+          .expect(() => {
+            expect(incentivesApi.getReviews).toHaveBeenCalledWith({
+              ...defaultRequest,
+              ...expectedRequest,
+            })
+          })
+      })
+    },
+  )
 
   it.each([
     ['', 'Standard'],

@@ -65,9 +65,18 @@ export default function routes(router: Router): Router {
       }
     }
     const order = sortOrder as 'ascending' | 'descending'
-    const tableHead = sortableTableHead(tableColumns, `?level=${selectedLevelCode}`, sortColumn, order)
 
-    const response = await incentivesApi.getReviews(agencyId, locationPrefix, selectedLevelCode)
+    const response = await incentivesApi.getReviews({
+      agencyId,
+      locationPrefix,
+      levelCode: selectedLevelCode,
+      sort: sortColumn,
+      order,
+      page,
+      pageSize: PAGE_SIZE,
+    })
+
+    const tableHead = sortableTableHead(tableColumns, `?level=${selectedLevelCode}`, sortColumn, order)
 
     const pageCount = Math.ceil(response.reviewCount / PAGE_SIZE)
     const paginationUrlPrefix = `?level=${selectedLevelCode}&sort=${sortColumn}&order=${order}&`

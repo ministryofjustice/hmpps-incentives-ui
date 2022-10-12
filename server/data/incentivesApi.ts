@@ -1,5 +1,6 @@
 import config from '../config'
 import RestClient from './restClient'
+import { getTestIncentivesReviews } from '../testData/incentivesApi'
 
 interface IncentivesPrisonerSummary {
   prisonerNumber: string
@@ -41,13 +42,26 @@ export interface Level {
   default: boolean
 }
 
-export interface IncentivesReviews {
+// NB: Reviews request field names are TBC
+export type IncentivesReviewsRequest = {
+  agencyId: string
+  locationPrefix: string
+  levelCode: string
+  sort?: string
+  order?: 'ascending' | 'descending'
+  page?: number
+  pageSize?: number
+}
+
+// NB: Reviews response field names are TBC
+export interface IncentivesReviewsResponse {
   locationDescription: string
   overdueCount: number
   reviewCount: number
   reviews: IncentivesReview[]
 }
 
+// NB: Reviews response field names are TBC
 export interface IncentivesReview {
   firstName: string
   lastName: string
@@ -75,38 +89,24 @@ class IncentivesApi extends RestClient {
     return this.get({ path: `/iep/levels/${agencyId}` }) as Promise<Level[]>
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getReviews(agencyId: string, locationPrefix: string, levelCode: string): Promise<IncentivesReviews> {
+  getReviews({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    agencyId,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    locationPrefix,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    levelCode,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    sort,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    order,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    page,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    pageSize,
+  }: IncentivesReviewsRequest): Promise<IncentivesReviewsResponse> {
     // TODO: this is a stub!!!
-    return Promise.resolve({
-      locationDescription: 'Houseblock 1',
-      overdueCount: 16,
-      reviewCount: 135,
-      reviews: [
-        {
-          firstName: 'John',
-          lastName: 'Saunders',
-          prisonerNumber: 'G6123VU',
-          bookingId: 100000,
-          imageId: 0,
-          nextReviewDate: new Date(2022, 6, 12),
-          positiveBehaviours: 3,
-          negativeBehaviours: 2,
-          acctStatus: true,
-        },
-        {
-          firstName: 'Flem',
-          lastName: 'Hermosilla',
-          prisonerNumber: 'G5992UH',
-          bookingId: 100001,
-          imageId: 0,
-          nextReviewDate: new Date(2023, 9, 10),
-          positiveBehaviours: 2,
-          negativeBehaviours: 0,
-          acctStatus: false,
-        },
-      ],
-    })
+    return Promise.resolve(getTestIncentivesReviews())
   }
 }
 

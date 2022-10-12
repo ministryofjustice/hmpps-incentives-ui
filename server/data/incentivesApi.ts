@@ -80,13 +80,13 @@ class IncentivesApi extends RestClient {
   }
 
   getLocationSummary(agencyId: string, locationPrefix: string): Promise<IncentivesLocationSummary> {
-    return this.get({
+    return this.get<IncentivesLocationSummary>({
       path: `/incentives-summary/prison/${agencyId}/location/${locationPrefix}?sortBy=NAME&sortDirection=ASC`,
-    }) as Promise<IncentivesLocationSummary>
+    })
   }
 
   getAvailableLevels(agencyId: string): Promise<Level[]> {
-    return this.get({ path: `/iep/levels/${agencyId}` }) as Promise<Level[]>
+    return this.get<Level[]>({ path: `/iep/levels/${agencyId}` })
   }
 
   getReviews({

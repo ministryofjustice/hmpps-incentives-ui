@@ -87,26 +87,7 @@
 
   {{ govukTable({
     classes: "app-reviews-table",
-    head: [
-      {
-        html: '<span class="govuk-visually-hidden">Prisoner photo</span>'
-      },
-      {
-        text: "Name and prison number"
-      },
-      {
-        text: "Date of next review"
-      },
-      {
-        html: "Positive behaviours <br /> in the last 3 months"
-      },
-      {
-        html: "Negative behaviours <br /> in the last 3 months"
-      },
-      {
-        text: "ACCT status"
-      }
-    ],
+    head: tableHead,
     rows: tableRows
   }) }}
 

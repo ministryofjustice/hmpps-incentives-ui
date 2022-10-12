@@ -146,25 +146,239 @@ describe('Reviews table', () => {
       })
   })
 
-  it.each([
-    ['?level=ENH', 'ENH', [1, 2, 6, 7]],
-    ['?level=ENH&page=1', 'ENH', [1, 2, 6, 7]],
-    ['?page=3&level=STD', 'STD', [1, 2, 3, 4, 6, 7]],
-    ['?page=7', 'STD', [1, 2, 6, 7]],
-  ])('includes pagination component', (urlSuffix, level, pages) => {
-    return request(app)
-      .get(`/incentive-summary/MDI-1${urlSuffix}`)
-      .expect(res => {
-        const pageLink = (page: number) => `?level=${level}&amp;page=${page}`
-        for (let page = 1; page <= 10; page += 1) {
-          if (pages.includes(page)) {
-            expect(res.text).toContain(pageLink(page))
-          } else {
-            expect(res.text).not.toContain(pageLink(page))
-          }
-        }
+  type SortingScenario = {
+    name: string
+    givenUrl: string
+    expectedLevel: string
+    expectedSort: string
+    expectedOrder: 'ascending' | 'descending'
+  }
+  const sortingScenarios: SortingScenario[] = [
+    {
+      name: 'uses default level and sorting if not provided',
+      givenUrl: '',
+      expectedLevel: 'STD',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+    },
+    {
+      name: 'preserves level and uses default sorting if not provided',
+      givenUrl: '?level=ENH',
+      expectedLevel: 'ENH',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+    },
+    {
+      name: 'preserves level, dropping page, and uses default sorting if not provided',
+      givenUrl: '?level=ENH&page=3',
+      expectedLevel: 'ENH',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+    },
+    {
+      name: 'accepts provided sort and uses default level',
+      givenUrl: '?sort=name',
+      expectedLevel: 'STD',
+      expectedSort: 'name',
+      expectedOrder: 'ascending',
+    },
+    {
+      name: 'accepts provided sort & ordering and uses default level',
+      givenUrl: '?sort=name&order=descending',
+      expectedLevel: 'STD',
+      expectedSort: 'name',
+      expectedOrder: 'descending',
+    },
+    {
+      name: 'accepts provided sort and uses default level',
+      givenUrl: '?sort=positiveBehaviours',
+      expectedLevel: 'STD',
+      expectedSort: 'positiveBehaviours',
+      expectedOrder: 'descending',
+    },
+    {
+      name: 'accepts provided sort & ordering and uses default level',
+      givenUrl: '?sort=positiveBehaviours&order=descending',
+      expectedLevel: 'STD',
+      expectedSort: 'positiveBehaviours',
+      expectedOrder: 'descending',
+    },
+    {
+      name: 'accepts provided sort and preserves level',
+      givenUrl: '?sort=name&level=BAS',
+      expectedLevel: 'BAS',
+      expectedSort: 'name',
+      expectedOrder: 'ascending',
+    },
+    {
+      name: 'accepts provided sort & ordering and preserves level',
+      givenUrl: '?sort=name&order=descending&level=BAS',
+      expectedLevel: 'BAS',
+      expectedSort: 'name',
+      expectedOrder: 'descending',
+    },
+    {
+      name: 'accepts provided sort and preserves level',
+      givenUrl: '?sort=positiveBehaviours&level=BAS',
+      expectedLevel: 'BAS',
+      expectedSort: 'positiveBehaviours',
+      expectedOrder: 'descending',
+    },
+    {
+      name: 'accepts provided sort & ordering and preserves level',
+      givenUrl: '?sort=positiveBehaviours&order=descending&level=BAS',
+      expectedLevel: 'BAS',
+      expectedSort: 'positiveBehaviours',
+      expectedOrder: 'descending',
+    },
+  ]
+  describe.each(sortingScenarios)(
+    'includes sortable columns which',
+    ({ name, givenUrl, expectedLevel, expectedSort, expectedOrder }) => {
+      // NB: sorting resets page, but preserves level
+
+      const oppositeOrder = expectedOrder === 'ascending' ? 'descending' : 'ascending'
+
+      it(name, () => {
+        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+        return request(app)
+          .get(`/incentive-summary/MDI-1${givenUrl}`)
+          .expect(res => {
+            const $body = $(res.text)
+            const columns = $body
+              .find('.app-reviews-table thead tr th')
+              .map((index, th: HTMLTableCellElement) => {
+                const href = $(th).find('a').attr('href')
+                const order = th.getAttribute('aria-sort')
+                if (index === 0) {
+                  // first column is not sortable and has no link
+                  expect(href).toBeUndefined()
+                  expect(order).toBeNull()
+                }
+                return { href, order }
+              })
+              .get()
+              .slice(1)
+
+            // eslint-disable-next-line no-restricted-syntax
+            for (const { href, order } of columns) {
+              const column = /sort=([^&]+)/.exec(href)[1]
+              // level should be preserved
+              expect(href).toContain(`?level=${expectedLevel}&`)
+              // page should be reset
+              expect(href).not.toContain('page=')
+              if (column === expectedSort) {
+                // column by which table is sorted
+                expect(order).toEqual(expectedOrder)
+                // sorted column's link should flip order
+                expect(href).toContain(`sort=${column}&order=${oppositeOrder}`)
+              } else {
+                // column by which table is not sorted
+                expect(order).toEqual('none')
+                // unsorted column's link should replicate order
+                expect(href).toContain(`sort=${column}&order=${expectedOrder}`)
+              }
+            }
+          })
       })
-  })
+    },
+  )
+
+  type PaginationScenario = {
+    name: string
+    givenUrl: string
+    expectedLevel: string
+    expectedSort: string
+    expectedOrder: 'ascending' | 'descending'
+    expectedPages: number[]
+  }
+  const paginationScenarios: PaginationScenario[] = [
+    {
+      name: 'preserves level and uses default sorting; defaults to page 1',
+      givenUrl: '?level=ENH',
+      expectedLevel: 'ENH',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+      expectedPages: [1, 2, 6, 7],
+    },
+    {
+      name: 'preserves level and uses default sorting; accepts page',
+      givenUrl: '?level=ENH&page=1',
+      expectedLevel: 'ENH',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+      expectedPages: [1, 2, 6, 7],
+    },
+    {
+      name: 'preserves level and uses default sorting; accepts another page',
+      givenUrl: '?page=3&level=STD',
+      expectedLevel: 'STD',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+      expectedPages: [1, 2, 3, 4, 6, 7],
+    },
+    {
+      name: 'uses default level and sorting if not provided',
+      givenUrl: '',
+      expectedLevel: 'STD',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+      expectedPages: [1, 2, 6, 7],
+    },
+    {
+      name: 'uses default level and sorting if not provided; accepts page',
+      givenUrl: '?page=7',
+      expectedLevel: 'STD',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+      expectedPages: [1, 2, 6, 7],
+    },
+    {
+      name: 'preserves sort and uses default level if not provided',
+      givenUrl: '?page=7&sort=name',
+      expectedLevel: 'STD',
+      expectedSort: 'name',
+      expectedOrder: 'ascending',
+      expectedPages: [1, 2, 6, 7],
+    },
+    {
+      name: 'preserves sort and order, but uses default level if not provided',
+      givenUrl: '?page=7&order=descending&sort=name',
+      expectedLevel: 'STD',
+      expectedSort: 'name',
+      expectedOrder: 'descending',
+      expectedPages: [1, 2, 6, 7],
+    },
+  ]
+  describe.each(paginationScenarios)(
+    'includes pagination component which',
+    ({ name, givenUrl, expectedLevel, expectedSort, expectedOrder, expectedPages }) => {
+      // NB: pagination preserves sort and level
+
+      const paginationUrlPrefix = `?level=${expectedLevel}&amp;sort=${expectedSort}&amp;order=${expectedOrder}`
+
+      it(name, () => {
+        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+        return request(app)
+          .get(`/incentive-summary/MDI-1${givenUrl}`)
+          .expect(res => {
+            const $body = $(res.text)
+            const paginationHtml = $body.find('.app-reviews-pagination').html()
+
+            const pageLink = (page: number) => `${paginationUrlPrefix}&amp;page=${page}`
+            for (let page = 1; page <= 10; page += 1) {
+              if (expectedPages.includes(page)) {
+                expect(paginationHtml).toContain(pageLink(page))
+              } else {
+                expect(paginationHtml).not.toContain(pageLink(page))
+              }
+            }
+          })
+      })
+    },
+  )
 
   it.each(['?page=', '?page=0', '?page=-1', '?page=one', '?page=two&level=BAS'])(
     'responds with 404 if page number is invalid',

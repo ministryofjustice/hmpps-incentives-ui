@@ -11,4 +11,22 @@
     <strong class="govuk-!-margin-right-3">{{ locationDescription }}</strong>
     <a href="/select-location">Select another location</a>
   </p>
+
+  <dl class="app-data-list govuk-!-margin-top-6 govuk-!-margin-bottom-8">
+    <dt>Overdue reviews</dt>
+    <dd>
+      {{- overdueCount -}}
+    </dd>
+  </dl>
+
+  <h2 class="govuk-heading-l">Prisoner details and review status</h2>
+  <ul class="govuk-tabs__list">
+    {% for level in levels %}
+      <li class="govuk-tabs__list-item {% if level.iepLevel == selectedLevelCode %}govuk-tabs__list-item--selected{% endif %}">
+        <a class="govuk-tabs__tab" href="?level={{ level.iepLevel }}">
+          {{ level.iepDescription }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
 {% endblock %}

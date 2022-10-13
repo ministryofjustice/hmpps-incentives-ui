@@ -93,6 +93,8 @@ export default function routes(router: Router): Router {
       tableHead,
       reviews: response.reviews,
       paginationParams,
+      sort: sortColumn,
+      order,
     })
   })
 

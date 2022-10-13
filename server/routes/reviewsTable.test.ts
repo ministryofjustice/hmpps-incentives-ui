@@ -84,17 +84,6 @@ describe('Reviews table', () => {
       })
   })
 
-  it('shows tabs for each available level', () => {
-    return request(app)
-      .get('/incentive-summary/MDI-1')
-      .expect(res => {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const { iepLevel } of sampleLevels) {
-          expect(res.text).toContain(`?level=${iepLevel}`)
-        }
-      })
-  })
-
   type ReviewsRequestScenario = {
     name: string
     urlSuffix: string
@@ -226,22 +215,101 @@ describe('Reviews table', () => {
     },
   )
 
-  it.each([
-    ['', 'Standard'],
-    ['?level=BAS', 'Basic'],
-    ['?level=ENH', 'Enhanced'],
-    ['?level=EN2', 'Standard'],
-  ])('should select requested tab or fall back to default', (urlSuffix, expectedLevel) => {
-    const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+  type TabScenario = {
+    name: string
+    givenUrl: string
+    expectedLevel: string
+    expectedSort: string
+    expectedOrder: 'ascending' | 'descending'
+  }
+  const tabScenarios: TabScenario[] = [
+    {
+      name: 'shows each available level',
+      givenUrl: '',
+      expectedLevel: 'STD',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+    },
+    {
+      name: 'highlights requested level tab',
+      givenUrl: '?level=ENH',
+      expectedLevel: 'ENH',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+    },
+    {
+      name: 'falls back to default when given incorrect level',
+      givenUrl: '?level=EN2',
+      expectedLevel: 'STD',
+      expectedSort: 'nextReviewDate',
+      expectedOrder: 'ascending',
+    },
+    {
+      name: 'preserves sort',
+      givenUrl: '?sort=name',
+      expectedLevel: 'STD',
+      expectedSort: 'name',
+      expectedOrder: 'ascending',
+    },
+    {
+      name: 'preserves sort and order',
+      givenUrl: '?sort=negativeBehaviours&order=ascending',
+      expectedLevel: 'STD',
+      expectedSort: 'negativeBehaviours',
+      expectedOrder: 'ascending',
+    },
+    {
+      name: 'accepts all parameters',
+      givenUrl: '?level=BAS&sort=acctStatus&order=descending&page=3',
+      expectedLevel: 'BAS',
+      expectedSort: 'acctStatus',
+      expectedOrder: 'descending',
+    },
+  ]
+  describe.each(tabScenarios)(
+    'includes tab component which',
+    ({ name, givenUrl, expectedLevel, expectedSort, expectedOrder }) => {
+      // NB: tabs reset page and sort, but preserve level
 
-    return request(app)
-      .get(`/incentive-summary/MDI-1${urlSuffix}`)
-      .expect(res => {
-        const $body = $(res.text)
-        const selectedLevel = $body.find('.govuk-tabs__list-item--selected').text().trim()
-        expect(selectedLevel).toEqual(expectedLevel)
+      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+      it(name, () => {
+        return request(app)
+          .get(`/incentive-summary/MDI-1${givenUrl}`)
+          .expect(res => {
+            const $body = $(res.text)
+            const $tabsUl = $body.find('.govuk-tabs__list')
+
+            let selectedLevel: string | null = null
+            const tabContents = $tabsUl
+              .find('a')
+              .map((_, a) => {
+                const { href } = a
+                const title = a.textContent.trim()
+                const level = /level=([^&]+)/.exec(href)[1]
+                expect(level).toBeTruthy()
+
+                if ($(a).parent().hasClass('govuk-tabs__list-item--selected')) {
+                  expect(selectedLevel).toBeNull()
+                  selectedLevel = level
+                }
+
+                return { href, title }
+              })
+              .get()
+
+            const expectedTabContents = sampleLevels.map(({ iepLevel, iepDescription }) => {
+              const href = `?level=${iepLevel}&sort=${expectedSort}&order=${expectedOrder}`
+              const title = iepDescription
+              return { href, title }
+            })
+
+            expect(selectedLevel).toEqual(expectedLevel)
+            expect(tabContents).toEqual(expectedTabContents)
+          })
       })
-  })
+    },
+  )
 
   it('lists basic review information', () => {
     return request(app)

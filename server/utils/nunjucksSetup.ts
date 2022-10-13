@@ -6,7 +6,7 @@ import * as pathModule from 'path'
 import config from '../config'
 import { calculateTrendsRange, makeChartPalette } from './analytics'
 import format from './format'
-import { initialiseName } from './utils'
+import { daysSince, initialiseName } from './utils'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -67,6 +67,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   njkEnv.addFilter('splitYearAndMonth', format.splitYearAndMonth)
   njkEnv.addFilter('thousands', format.thousands)
   njkEnv.addFilter('percentageOf', format.percentage)
+  njkEnv.addFilter('daysSince', daysSince)
 
   // analytics charts
   njkEnv.addFilter('chartPalette', makeChartPalette)

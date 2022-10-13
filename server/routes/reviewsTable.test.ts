@@ -11,19 +11,6 @@ import { IncentivesApi, type Level } from '../data/incentivesApi'
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/incentivesApi')
 
-let app: Express
-
-beforeEach(() => {
-  config.featureFlags.newReviewsTable = true
-  app = appWithAllRoutes({})
-
-  const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>
-  hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
-
-  const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
-  incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
-})
-
 const sampleLevels: Level[] = [
   {
     iepLevel: 'BAS',
@@ -45,7 +32,29 @@ const sampleLevels: Level[] = [
   },
 ]
 
+let app: Express
+
+beforeEach(() => {
+  config.featureFlags.newReviewsTable = true
+  app = appWithAllRoutes({})
+
+  const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>
+  hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
+
+  const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
+  incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
+})
+
 describe('Reviews table', () => {
+  beforeAll(() => {
+    const today = new Date('2022-10-09T13:20:35.000+01:00')
+    jest.useFakeTimers({ now: today, advanceTimers: true })
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
+  })
+
   it('should show selected location', () => {
     return request(app)
       .get('/incentive-summary/MDI-2')
@@ -67,9 +76,6 @@ describe('Reviews table', () => {
   })
 
   it('shows tabs for each available level', () => {
-    const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
-    incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
-
     return request(app)
       .get('/incentive-summary/MDI-1')
       .expect(res => {
@@ -85,7 +91,7 @@ describe('Reviews table', () => {
     ['?level=BAS', 'Basic'],
     ['?level=ENH', 'Enhanced'],
     ['?level=EN2', 'Standard'],
-  ])('shows tabs for each available level', (urlSuffix, expectedLevel) => {
+  ])('should select requested tab or fall back to default', (urlSuffix, expectedLevel) => {
     const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
     return request(app)
@@ -94,6 +100,20 @@ describe('Reviews table', () => {
         const $body = $(res.text)
         const selectedLevel = $body.find('.govuk-tabs__list-item--selected').text().trim()
         expect(selectedLevel).toEqual(expectedLevel)
+      })
+  })
+
+  it('lists basic review information', () => {
+    return request(app)
+      .get('/incentive-summary/MDI-1')
+      .expect(res => {
+        expect(res.text).toContain('Saunders, John')
+        expect(res.text).toContain('G6123VU')
+        expect(res.text).toContain('12 July 2022')
+        expect(res.text).toContain('89 days overdue')
+        expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=POS&fromDate=09/07/2022')
+        expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=NEG&fromDate=09/07/2022')
+        expect(res.text).toContain('ACCT open')
       })
   })
 })

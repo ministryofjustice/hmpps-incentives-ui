@@ -1,4 +1,46 @@
 .app-reviews-table {
+  thead {
+    th a {
+      display: inline-block;
+      position: relative;
+      padding-right: 20px;
+
+      &::before, &::after {
+        position: absolute;
+        right: 0;
+        font-size: 14px;
+        line-height: 1;
+      }
+    }
+
+    th[aria-sort='none'] {
+      a::before {
+        content: ' ▲';
+        top: 0;
+        font-size: 12px;
+      }
+      a::after {
+        content: ' ▼';
+        top: 12px;
+        font-size: 12px;
+      }
+    }
+
+    th[aria-sort='ascending'] {
+      a::before {
+        content: ' ▲';
+        top: 4px;
+      }
+    }
+
+    th[aria-sort='descending'] {
+      a::after {
+        content: ' ▼';
+        top: 6px;
+      }
+    }
+  }
+
   tbody tr:nth-child(even) {
     background-color: govuk-colour('light-grey');
   }
@@ -10,4 +52,9 @@
 
 .app-review-overdue {
   color: govuk-colour('red');
+}
+
+.app-reviews-pagination {
+  display: flex;
+  justify-content: end;
 }

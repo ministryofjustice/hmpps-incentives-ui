@@ -1,6 +1,6 @@
-import { IncentivesLocationSummary } from '../data/incentivesApi'
+import type { IncentivesLocationSummary, IncentivesReviewsResponse } from '../data/incentivesApi'
 
-function getTestIncentivesLocationSummary({
+export function getTestIncentivesLocationSummary({
   prisonId = 'MDI',
   locationId = 'MDI-2',
   locationDescription = 'Houseblock 2',
@@ -78,5 +78,34 @@ function getTestIncentivesLocationSummary({
   }
 }
 
-// eslint-disable-next-line import/prefer-default-export
-export { getTestIncentivesLocationSummary }
+export function getTestIncentivesReviews(): IncentivesReviewsResponse {
+  return {
+    locationDescription: 'Houseblock 1',
+    overdueCount: 16,
+    reviewCount: 135,
+    reviews: [
+      {
+        firstName: 'John',
+        lastName: 'Saunders',
+        prisonerNumber: 'G6123VU',
+        bookingId: 100000,
+        imageId: 0,
+        nextReviewDate: new Date(2022, 6, 12),
+        positiveBehaviours: 3,
+        negativeBehaviours: 2,
+        acctStatus: true,
+      },
+      {
+        firstName: 'Flem',
+        lastName: 'Hermosilla',
+        prisonerNumber: 'G5992UH',
+        bookingId: 100001,
+        imageId: 0,
+        nextReviewDate: new Date(2023, 9, 10),
+        positiveBehaviours: 2,
+        negativeBehaviours: 0,
+        acctStatus: false,
+      },
+    ],
+  }
+}

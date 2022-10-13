@@ -312,16 +312,36 @@ describe('Reviews table', () => {
   )
 
   it('lists basic review information', () => {
+    const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
     return request(app)
       .get('/incentive-summary/MDI-1')
       .expect(res => {
-        expect(res.text).toContain('Saunders, John')
-        expect(res.text).toContain('G6123VU')
-        expect(res.text).toContain('12 July 2022')
-        expect(res.text).toContain('89 days overdue')
-        expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=POS&amp;fromDate=09/07/2022')
-        expect(res.text).toContain('/prisoner/G6123VU/case-notes?type=NEG&amp;fromDate=09/07/2022')
-        expect(res.text).toContain('ACCT open')
+        const $body = $(res.text)
+        const firstRowCells: HTMLTableCellElement[] = $body.find('.app-reviews-table tbody tr').first().find('td').get()
+        const [
+          photoCell,
+          nameCell,
+          nextReviewDateCell,
+          positiveBehavioursCell,
+          negativeBehavioursCell,
+          acctStatusCell,
+        ] = firstRowCells
+
+        expect(photoCell.innerHTML).toContain('Photo of G6123VU')
+        expect(nameCell.textContent).toContain('Saunders, John')
+        expect(nameCell.textContent).toContain('G6123VU')
+        expect(nextReviewDateCell.textContent).toContain('12 July 2022')
+        expect(nextReviewDateCell.textContent).toContain('89 days overdue')
+        expect(positiveBehavioursCell.textContent.trim()).toEqual('3')
+        expect(positiveBehavioursCell.innerHTML).toContain(
+          '/prisoner/G6123VU/case-notes?type=POS&amp;fromDate=09/07/2022',
+        )
+        expect(negativeBehavioursCell.textContent.trim()).toEqual('2')
+        expect(negativeBehavioursCell.innerHTML).toContain(
+          '/prisoner/G6123VU/case-notes?type=NEG&amp;fromDate=09/07/2022',
+        )
+        expect(acctStatusCell.textContent).toContain('ACCT open')
       })
   })
 

@@ -22,8 +22,8 @@ class PrisonApi extends RestClient {
   }
 
   getUserLocations(): Promise<Array<Location>> {
-    return (this.get({ path: `/api/users/me/locations` }) as Promise<Array<Location>>).then(l => {
-      return l.filter(location => {
+    return this.get<Array<Location>>({ path: `/api/users/me/locations` }).then(locations => {
+      return locations.filter(location => {
         return location.currentOccupancy > 0
       })
     })

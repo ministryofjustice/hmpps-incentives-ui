@@ -45,7 +45,13 @@ export default class RestClient {
     return this.config.timeout
   }
 
-  async get({ path = null, query = {}, headers = {}, responseType = '', raw = false }: GetRequest): Promise<unknown> {
+  async get<Response = unknown>({
+    path = null,
+    query = {},
+    headers = {},
+    responseType = '',
+    raw = false,
+  }: GetRequest): Promise<Response> {
     logger.info(`Get using user credentials: calling ${this.name}: ${path} ${query}`)
     try {
       const result = await superagent
@@ -70,13 +76,13 @@ export default class RestClient {
     }
   }
 
-  async post({
+  async post<Response = unknown>({
     path = null,
     headers = {},
     responseType = '',
     data = {},
     raw = false,
-  }: PostRequest = {}): Promise<unknown> {
+  }: PostRequest = {}): Promise<Response> {
     logger.info(`Post using user credentials: calling ${this.name}: ${path}`)
     try {
       const result = await superagent
@@ -101,7 +107,7 @@ export default class RestClient {
     }
   }
 
-  async stream({ path = null, headers = {} }: StreamRequest = {}): Promise<unknown> {
+  async stream({ path = null, headers = {} }: StreamRequest = {}): Promise<Readable> {
     logger.info(`Get using user credentials: calling ${this.name}: ${path}`)
     return new Promise((resolve, reject) => {
       superagent

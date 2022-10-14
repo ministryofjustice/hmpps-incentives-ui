@@ -17,10 +17,10 @@ class NomisUserRolesApi extends RestClient {
   }
 
   getUserCaseloads(): Promise<UserCaseload> {
-    return (this.get({ path: '/me/caseloads' }) as Promise<UserCaseload>).then(t => {
+    return this.get<UserCaseload>({ path: '/me/caseloads' }).then(userCaseload => {
       return {
-        activeCaseload: t.activeCaseload,
-        caseloads: t.caseloads,
+        activeCaseload: userCaseload.activeCaseload,
+        caseloads: userCaseload.caseloads,
       }
     })
   }

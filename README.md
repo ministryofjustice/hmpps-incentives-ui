@@ -18,7 +18,7 @@ The UI application needs a suite of services to work:
 
 ### Requirements
 
-This application is built for node 16 and docker will be needed to run it locally.
+This application is built for node 18 and docker will be needed to run it locally.
 [nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm)
 can be used to install appropriate node versions.
 

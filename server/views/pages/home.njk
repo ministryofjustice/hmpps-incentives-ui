@@ -12,16 +12,21 @@
 
   <ul class="govuk-grid-row card-group">
     <li class="govuk-grid-column-one-third card-group__item">
-      {% if featureFlags.hideDaysColumnsInIncentivesTable %}
+      {% if featureFlags.newReviewsTable %}
+        {% set cardHeading = "Manage incentive reviews" %}
+        {% set cardDescription = "See overdue review dates and recent behaviour entries for prisoners in your residential location." %}
+      {% elif featureFlags.hideDaysColumnsInIncentivesTable %}
+        {% set cardHeading = "Prisoner incentive information" %}
         {% set cardDescription = "See incentive levels and behaviour entries for the prison population, by residential location." %}
       {% else %}
+        {% set cardHeading = "Prisoner incentive information" %}
         {% set cardDescription = "See review dates, incentive levels and behaviour entries by residential location." %}
       {% endif %}
 
       {{ card({
         href: "/select-location",
         clickable: "true",
-        heading: "Prisoner incentive information",
+        heading: cardHeading,
         description: cardDescription,
         id: "incentive-information"
       }) }}

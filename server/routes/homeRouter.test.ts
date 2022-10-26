@@ -47,10 +47,11 @@ beforeEach(() => {
 })
 
 describe('Home page', () => {
-  describe(`'hideDaysColumnsInIncentivesTable' feature flag`, () => {
-    describe('when on', () => {
+  describe('has feature flags controlling reviews table card', () => {
+    describe('when `hideDaysColumnsInIncentivesTable` is on', () => {
       beforeEach(() => {
         app.locals.featureFlags.hideDaysColumnsInIncentivesTable = true
+        app.locals.featureFlags.newReviewsTable = false
       })
 
       it('incentive information tile does not mention review dates', () => {
@@ -65,13 +66,32 @@ describe('Home page', () => {
           })
       })
     })
-
-    describe('when off', () => {
+    describe('when `newReviewsTable` is on', () => {
       beforeEach(() => {
         app.locals.featureFlags.hideDaysColumnsInIncentivesTable = false
+        app.locals.featureFlags.newReviewsTable = true
       })
 
-      it('incentive information tile mentions review dates', () => {
+      it('incentive information tile does mention review dates', () => {
+        return request(app)
+          .get('/')
+          .expect(res => {
+            expect(res.text).toContain('Manage incentive reviews')
+            expect(res.text).toContain(
+              'See overdue review dates and recent behaviour entries for prisoners in your residential location',
+            )
+            expect(res.text).toContain('review date')
+          })
+      })
+    })
+
+    describe('when both are off', () => {
+      beforeEach(() => {
+        app.locals.featureFlags.hideDaysColumnsInIncentivesTable = false
+        app.locals.featureFlags.newReviewsTable = false
+      })
+
+      it('incentive information tile mentions old-style review dates', () => {
         return request(app)
           .get('/')
           .expect(res => {

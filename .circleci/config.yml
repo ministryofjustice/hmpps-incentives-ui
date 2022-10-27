@@ -209,6 +209,7 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
+          helm_timeout: 7m
           jira_update: true
           context: hmpps-common-vars
           filters:
@@ -233,6 +234,7 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
+          helm_timeout: 7m
           jira_update: true
           jira_env_type: staging
           context:
@@ -254,6 +256,7 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_prod
           env: "prod"
+          helm_timeout: 7m
           jira_update: true
           jira_env_type: production
           slack_notification: true

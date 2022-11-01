@@ -24,8 +24,8 @@
     },
     {
       "matchDatasources": ["docker-compose"],
-      "matchPackageNames": ["bitnami/redis"],
-      "allowedVersions": "5.0"
+      "matchPackageNames": ["redis"],
+      "allowedVersions": "6.2"
     },
     {
       "matchDatasources": ["orb"],

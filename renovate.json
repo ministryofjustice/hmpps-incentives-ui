@@ -20,22 +20,22 @@
     },
     {
       "matchDatasources": ["docker"],
-      "allowedVersions": "18.11-bullseye-slim"
+      "allowedVersions": "18.12-bullseye-slim"
     },
     {
       "matchDatasources": ["docker-compose"],
-      "matchPackageNames": ["bitnami/redis"],
-      "allowedVersions": "5.0"
+      "matchPackageNames": ["redis"],
+      "allowedVersions": "6.2"
     },
     {
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/node"],
-      "allowedVersions": "18.11-browsers"
+      "allowedVersions": "18.12-browsers"
     },
     {
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/redis"],
-      "allowedVersions": "5.0"
+      "allowedVersions": "6.2"
     }
   ]
 }

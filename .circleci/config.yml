@@ -15,7 +15,7 @@ parameters:
 
   node-version:
     type: string
-    default: 18.11-browsers
+    default: 18.12-browsers
 
   python-version:
     type: string
@@ -25,8 +25,8 @@ executors:
   # same as hmpps/node_redis executor with the addition of minio containers
   integration-tests:
     docker:
-      - image: cimg/node:18.11-browsers
-      - image: cimg/redis:5.0
+      - image: cimg/node:18.12-browsers
+      - image: cimg/redis:6.2
       - image: minio/minio
         command: server --address :9000 /data
         environment:
@@ -209,6 +209,7 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
+          helm_timeout: 7m
           jira_update: true
           context: hmpps-common-vars
           filters:
@@ -233,6 +234,7 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
+          helm_timeout: 7m
           jira_update: true
           jira_env_type: staging
           context:
@@ -254,6 +256,7 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_prod
           env: "prod"
+          helm_timeout: 7m
           jira_update: true
           jira_env_type: production
           slack_notification: true

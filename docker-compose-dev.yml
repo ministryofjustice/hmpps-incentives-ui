@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   redis:
-    image: bitnami/redis:5.0
+    image: redis:6.2
     networks:
       - hmpps
     container_name: inc-ui-redis

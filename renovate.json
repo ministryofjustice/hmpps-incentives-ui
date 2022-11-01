@@ -20,7 +20,7 @@
     },
     {
       "matchDatasources": ["docker"],
-      "allowedVersions": "18.11-bullseye-slim"
+      "allowedVersions": "18.12-bullseye-slim"
     },
     {
       "matchDatasources": ["docker-compose"],
@@ -30,7 +30,7 @@
     {
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/node"],
-      "allowedVersions": "18.11-browsers"
+      "allowedVersions": "18.12-browsers"
     },
     {
       "matchDatasources": ["orb"],

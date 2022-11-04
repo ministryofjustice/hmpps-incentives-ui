@@ -1,8 +1,8 @@
 import type { RequestHandler, Router } from 'express'
 
+import path from 'path'
 import { PrisonApi } from '../data/prisonApi'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import path from 'path'
 
 const secondsInWeek = 604800
 

@@ -5,7 +5,6 @@ import { getTestIncentivesReviews } from '../testData/incentivesApi'
 interface IncentivesPrisonerSummary {
   prisonerNumber: string
   bookingId: number
-  imageId: number
   firstName: string
   lastName: string
   daysOnLevel: number
@@ -67,7 +66,6 @@ export interface IncentivesReview {
   lastName: string
   prisonerNumber: string
   bookingId: number
-  imageId: number
   nextReviewDate: Date
   positiveBehaviours: number
   negativeBehaviours: number

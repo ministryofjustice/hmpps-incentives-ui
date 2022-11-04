@@ -114,13 +114,11 @@
 
     {% set rows = [] %}
       {% for prisoner in level.prisonerBehaviours %}
-        {% set imageUrl = "/prisoner-images/" + prisoner.prisonerNumber + ".jpeg" %}
-
         {% set prisonerFullName = (prisoner.lastName + ", " + prisoner.firstName) | escape %}
 
         {% set row = [
           {
-            html: '<img src="' + imageUrl + '" alt="' + prisonerFullName + '’s photo" width="90" />'
+            html: '<img src="/prisoner-images/' + prisoner.prisonerNumber + '.jpeg" alt="' + prisonerFullName + '’s photo" width="90" />'
           },
           {
             html: '<a href="' + dpsHome + "/prisoner/" + prisoner.prisonerNumber + "/case-notes?fromDate=" + threeMonthsAgo | dateParam + '" data-ga-category="Incentives information > Clicked on link" data-ga-action="prisoner name">' + prisonerFullName + "<br>" + prisoner.prisonerNumber + "</a>",

@@ -26,7 +26,6 @@ export function getTestIncentivesLocationSummary({
           {
             prisonerNumber: 'A1234AB',
             bookingId: 111111,
-            imageId: 222222,
             firstName: 'Jane',
             lastName: 'Doe',
             daysOnLevel: 50,
@@ -47,7 +46,6 @@ export function getTestIncentivesLocationSummary({
           {
             prisonerNumber: 'B1234CD',
             bookingId: 222222,
-            imageId: 333333,
             firstName: 'James',
             lastName: 'Dean',
             daysOnLevel: 100,
@@ -61,7 +59,6 @@ export function getTestIncentivesLocationSummary({
           {
             prisonerNumber: 'C1234EF',
             bookingId: 333333,
-            imageId: 444444,
             firstName: 'John',
             lastName: 'Doe',
             daysOnLevel: 10,
@@ -89,7 +86,6 @@ export function getTestIncentivesReviews(): IncentivesReviewsResponse {
         lastName: 'Saunders',
         prisonerNumber: 'G6123VU',
         bookingId: 100000,
-        imageId: 0,
         nextReviewDate: new Date(2022, 6, 12),
         positiveBehaviours: 3,
         negativeBehaviours: 2,
@@ -100,7 +96,6 @@ export function getTestIncentivesReviews(): IncentivesReviewsResponse {
         lastName: 'Hermosilla',
         prisonerNumber: 'G5992UH',
         bookingId: 100001,
-        imageId: 0,
         nextReviewDate: new Date(2023, 9, 10),
         positiveBehaviours: 2,
         negativeBehaviours: 0,

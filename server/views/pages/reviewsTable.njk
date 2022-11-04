@@ -35,8 +35,7 @@
   {% set tableRows = [] %}
   {% for review in reviews %}
     {% set photo %}
-      {% set imageUrl = "/prisoner-images/" + prisoner.prisonerNumber + ".jpeg" %}
-      <img src="{{ imageUrl }}" alt="Photo of {{ review.prisonerNumber }}" />
+      <img src="/prisoner-images/{{ prisoner.prisonerNumber }}.jpeg" alt="Photo of {{ review.prisonerNumber }}" />
     {% endset %}
 
     {% set profileLink %}

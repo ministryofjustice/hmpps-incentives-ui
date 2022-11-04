@@ -2,6 +2,7 @@ import type { RequestHandler, Router } from 'express'
 
 import { PrisonApi } from '../data/prisonApi'
 import asyncMiddleware from '../middleware/asyncMiddleware'
+import path from 'path'
 
 const secondsInWeek = 604800
 
@@ -17,7 +18,8 @@ export default function routes(router: Router): Router {
     res.setHeader('Cache-Control', `private, max-age=${secondsInWeek}`)
 
     if (imageData == null) {
-      res.sendFile('prisoner.jpeg', { root: `${__dirname}/../../../assets/images` })
+      const imagePath = path.join(__dirname, '..', '..', '..', 'assets', 'images', 'prisoner.jpeg')
+      res.sendFile(imagePath)
     } else {
       res.send(imageData)
     }

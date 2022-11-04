@@ -26,7 +26,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/prisonApi/api/images/([0-9]+)/data',
+        urlPattern: '/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)/image/data',
       },
       response: {
         status: 200,

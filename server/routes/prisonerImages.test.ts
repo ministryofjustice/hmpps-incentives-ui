@@ -14,7 +14,7 @@ let userService: jest.Mocked<UserService>
 
 beforeEach(() => {
   prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getImage.mockResolvedValue('image 123 data')
+  prisonApi.getImageByPrisonerNumber.mockResolvedValue('image 123 data')
 
   userService = UserService.prototype as jest.Mocked<UserService>
 
@@ -25,16 +25,16 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner-images/:imageId.jpeg', () => {
+describe('GET /prisoner-images/:prisonerNumber.jpeg', () => {
   it('responds with the image data', () => {
-    const imageId = '123'
+    const prisonerNumber = 'A1234AB'
     const secondsInWeek = 604800
 
     return request(app)
-      .get(`/prisoner-images/${imageId}.jpeg`)
+      .get(`/prisoner-images/${prisonerNumber}.jpeg`)
       .expect('Content-Type', /images\/jpeg/)
       .expect(res => {
-        expect(prisonApi.getImage).toBeCalledWith(imageId)
+        expect(prisonApi.getImageByPrisonerNumber).toBeCalledWith(prisonerNumber)
 
         expect(res.statusCode).toBe(200)
         expect(res.headers['cache-control']).toEqual(`private, max-age=${secondsInWeek}`)

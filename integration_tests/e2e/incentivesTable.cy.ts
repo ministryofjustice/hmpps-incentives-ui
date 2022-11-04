@@ -59,7 +59,7 @@ context('Wing incentives table page', () => {
         expect(entries.length).equal(1)
 
         expect(entries[0]).to.deep.equal({
-          imageSrc: '/prisoner-images/222222.jpeg',
+          imageSrc: '/prisoner-images/A1234AB.jpeg',
           name: 'Doe, Jane<br>A1234AB',
           nameLink: caseNotesLink('A1234AB'),
           positiveBehaviours: '100',
@@ -87,7 +87,7 @@ context('Wing incentives table page', () => {
         expect(entries.length).equal(2)
 
         expect(entries[0]).to.deep.equal({
-          imageSrc: '/prisoner-images/333333.jpeg',
+          imageSrc: '/prisoner-images/B1234CD.jpeg',
           name: 'Dean, James<br>B1234CD',
           nameLink: caseNotesLink('B1234CD'),
           positiveBehaviours: '123',
@@ -102,7 +102,7 @@ context('Wing incentives table page', () => {
           provenAdjudicationsLink: provenAdjudicationsLink('B1234CD'),
         })
         expect(entries[1]).to.deep.equal({
-          imageSrc: '/prisoner-images/444444.jpeg',
+          imageSrc: '/prisoner-images/C1234EF.jpeg',
           name: 'Doe, John<br>C1234EF',
           nameLink: caseNotesLink('C1234EF'),
           positiveBehaviours: '80',

@@ -11,11 +11,16 @@ export default function routes(router: Router): Router {
   get('/', async (req, res, next) => {
     const prisonApi = new PrisonApi(res.locals.user.token)
 
-    const imageData = await prisonApi.getImage(req.params.imageId)
+    const imageData = await prisonApi.getImageByPrisonerNumber(req.params.prisonerNumber)
 
     res.setHeader('Content-Type', 'images/jpeg')
     res.setHeader('Cache-Control', `private, max-age=${secondsInWeek}`)
-    res.send(imageData)
+
+    if (imageData == null) {
+      res.sendFile('prisoner.jpeg', { root: `${__dirname}/../../../assets/images` })
+    } else {
+      res.send(imageData)
+    }
   })
 
   return router

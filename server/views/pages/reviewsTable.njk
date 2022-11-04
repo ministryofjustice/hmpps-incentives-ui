@@ -35,11 +35,7 @@
   {% set tableRows = [] %}
   {% for review in reviews %}
     {% set photo %}
-      {% if review.imageId > 0 %}
-        {% set imageUrl = "/prisoner-images/" + prisoner.imageId + ".jpeg" %}
-      {% else %}
-        {% set imageUrl = "/assets/images/prisoner.jpeg" %}
-      {% endif %}
+      {% set imageUrl = "/prisoner-images/" + prisoner.prisonerNumber + ".jpeg" %}
       <img src="{{ imageUrl }}" alt="Photo of {{ review.prisonerNumber }}" />
     {% endset %}
 

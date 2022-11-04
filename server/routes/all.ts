@@ -23,7 +23,7 @@ export default function routes(userService: UserService): Router {
       : incentivesTableRoutes(standardRouter(userService)),
   )
   router.use('/analytics/:pgdRegionCode([A-Z0-9]{2,5}|National)?', analyticsRouter(standardRouter(userService)))
-  router.use('/prisoner-images/:imageId.jpeg', prisonerImagesRoutes(imageRouter()))
+  router.use('/prisoner-images/:prisonerNumber.jpeg', prisonerImagesRoutes(imageRouter()))
   router.use('/throw-test-error', throwTestErrorRouter(standardRouter(userService)))
   router.use('/', homeRoutes(standardRouter(userService)))
 

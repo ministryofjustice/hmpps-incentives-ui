@@ -4,6 +4,7 @@
       display: inline-block;
       position: relative;
       padding-right: 20px;
+      color: $govuk-link-colour;
 
       &::before, &::after {
         position: absolute;

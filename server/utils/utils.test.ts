@@ -70,4 +70,22 @@ describe('counting days since a date', () => {
   ])('returns 0 for dates in future', date => {
     expect(daysSince(date)).toEqual<number>(0)
   })
+
+  describe('returns a whole number of days when dates cross daylight saving switches', () => {
+    it('when clocks go back', () => {
+      const today = new Date('2022-11-09T13:20:35.000+00:00')
+      jest.useFakeTimers({ now: today })
+
+      const date = new Date('2022-07-12T12:10:35.000+01:00')
+      expect(daysSince(date)).toEqual<number>(120)
+    })
+
+    it('when clocks go forward', () => {
+      const today = new Date('2023-05-02T13:20:35.000+01:00')
+      jest.useFakeTimers({ now: today })
+
+      const date = new Date('2023-02-10T12:10:35.000+00:00')
+      expect(daysSince(date)).toEqual<number>(81)
+    })
+  })
 })

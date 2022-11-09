@@ -32,5 +32,5 @@ export const daysSince = (date: Date): number => {
   if (dateUnix >= todayUnix) {
     return 0
   }
-  return (todayUnix - dateUnix) / (1000 * 60 * 60 * 24)
+  return Math.round((todayUnix - dateUnix) / (1000 * 60 * 60 * 24))
 }

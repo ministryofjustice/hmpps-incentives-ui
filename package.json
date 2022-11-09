@@ -157,7 +157,7 @@
     "audit-ci": "^6.3.0",
     "concurrently": "^7.5.0",
     "cookie-session": "^2.0.0",
-    "cypress": "^10.11.0",
+    "cypress": "^11.0.0",
     "cypress-multi-reporters": "^1.6.1",
     "dotenv": "^16.0.3",
     "eslint": "^8.26.0",

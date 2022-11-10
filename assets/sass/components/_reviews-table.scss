@@ -1,9 +1,24 @@
+@include govuk-media-query($until: desktop) {
+  .app-reviews-container {
+    overflow-x: scroll;
+
+    .app-reviews-table {
+      min-width: map-get($govuk-breakpoints, desktop);
+    }
+  }
+}
+
 .app-reviews-table {
+  .govuk-table__header {
+    padding: govuk-spacing(4) govuk-spacing(4) govuk-spacing(4) 0;
+  }
+
   thead {
     th a {
       display: inline-block;
       position: relative;
       padding-right: 20px;
+      color: $govuk-link-colour;
 
       &::before, &::after {
         position: absolute;
@@ -48,6 +63,10 @@
   tbody td:not(:first-child) {
     @include govuk-responsive-padding(6, 'top');
   }
+}
+
+.app-review-photo {
+  width: 90px;
 }
 
 .app-review-overdue {

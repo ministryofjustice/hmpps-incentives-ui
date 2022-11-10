@@ -35,7 +35,7 @@
   {% set tableRows = [] %}
   {% for review in reviews %}
     {% set photo %}
-      <img src="/prisoner-images/{{ prisoner.prisonerNumber }}.jpeg" alt="Photo of {{ review.prisonerNumber }}" />
+      <img src="/prisoner-images/{{ review.prisonerNumber }}.jpeg" class="app-review-photo" alt="Photo of {{ review.prisonerNumber }}" />
     {% endset %}
 
     {% set profileLink %}
@@ -80,11 +80,13 @@
     ]), tableRows) %}
   {% endfor %}
 
-  {{ govukTable({
-    classes: "app-reviews-table",
-    head: tableHead,
-    rows: tableRows
-  }) }}
+  <div class="app-reviews-container">
+    {{ govukTable({
+      classes: "app-reviews-table",
+      head: tableHead,
+      rows: tableRows
+    }) }}
+  </div>
 
   <div class="app-reviews-pagination">
     {{ govukPagination(paginationParams) }}

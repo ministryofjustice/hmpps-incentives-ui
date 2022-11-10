@@ -22,6 +22,11 @@ export default function routes(userService: UserService): Router {
       ? reviewsTableRoutes(standardRouter(userService))
       : incentivesTableRoutes(standardRouter(userService)),
   )
+  // TODO: allows testing both tables side-by-side; remove once v2 is completed
+  if (config.environment !== 'prod') {
+    router.use('/incentive-summary--1/:locationPrefix', incentivesTableRoutes(standardRouter(userService)))
+    router.use('/incentive-summary--2/:locationPrefix', reviewsTableRoutes(standardRouter(userService)))
+  }
   router.use('/analytics/:pgdRegionCode([A-Z0-9]{2,5}|National)?', analyticsRouter(standardRouter(userService)))
   router.use('/prisoner-images/:prisonerNumber.jpeg', prisonerImagesRoutes(imageRouter()))
   router.use('/throw-test-error', throwTestErrorRouter(standardRouter(userService)))

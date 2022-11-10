@@ -80,11 +80,13 @@
     ]), tableRows) %}
   {% endfor %}
 
-  {{ govukTable({
-    classes: "app-reviews-table",
-    head: tableHead,
-    rows: tableRows
-  }) }}
+  <div class="app-reviews-container">
+    {{ govukTable({
+      classes: "app-reviews-table",
+      head: tableHead,
+      rows: tableRows
+    }) }}
+  </div>
 
   <div class="app-reviews-pagination">
     {{ govukPagination(paginationParams) }}

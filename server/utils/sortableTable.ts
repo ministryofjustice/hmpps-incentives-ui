@@ -11,10 +11,10 @@ export type HeaderCell =
  * Produces parameters for head of GOV.UK Table component macro
  * to label sortable columns and add links
  */
-export function sortableTableHead(
-  columns: { column: string; escapedHtml: string; unsortable?: true }[],
+export function sortableTableHead<Column = string>(
+  columns: { column: Column; escapedHtml: string; unsortable?: true }[],
   urlPrefix: string,
-  sortColumn: string,
+  sortColumn: Column,
   order: 'ascending' | 'descending',
 ): HeaderCell[] {
   return columns.map(({ column, escapedHtml, unsortable }) => {

@@ -11,7 +11,12 @@ import type { Level, IncentivesReviewsRequest } from '../data/incentivesApi'
 import { IncentivesApi } from '../data/incentivesApi'
 
 jest.mock('../data/hmppsAuthClient')
-jest.mock('../data/incentivesApi')
+jest.mock('../data/incentivesApi', () => {
+  type module = typeof import('../data/incentivesApi')
+  const realModule = jest.requireActual<module>('../data/incentivesApi')
+  const mockedModule = jest.createMockFromModule<module>('../data/incentivesApi')
+  return { __esModule: true, ...realModule, IncentivesApi: mockedModule.IncentivesApi }
+})
 
 const sampleLevels: Level[] = [
   {

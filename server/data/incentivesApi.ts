@@ -22,7 +22,7 @@ interface IncentivesLevelSummary {
   prisonerBehaviours: Array<IncentivesPrisonerSummary>
 }
 
-interface IncentivesLocationSummary {
+export interface IncentivesLocationSummary {
   prisonId: string
   locationId: string
   locationDescription: string
@@ -41,9 +41,13 @@ export interface Level {
 }
 
 // NB: Reviews request field names are TBC
+export const sortOptions = ['name', 'nextReviewDate', 'positiveBehaviours', 'negativeBehaviours', 'acctStatus'] as const
+export const orderOptions = ['ascending', 'descending'] as const
+
+// NB: Reviews request field names are TBC
 export type IncentivesReviewsPaginationAndSorting = {
-  sort?: string
-  order?: 'ascending' | 'descending'
+  sort?: typeof sortOptions[number]
+  order?: typeof orderOptions[number]
   page?: number
   pageSize?: number
 }
@@ -75,7 +79,7 @@ export interface IncentivesReview {
   acctStatus: boolean
 }
 
-class IncentivesApi extends RestClient {
+export class IncentivesApi extends RestClient {
   constructor(systemToken: string) {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
   }
@@ -117,5 +121,3 @@ class IncentivesApi extends RestClient {
     })
   }
 }
-
-export { IncentivesApi, IncentivesLocationSummary }

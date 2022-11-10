@@ -1,6 +1,5 @@
 import config from '../config'
 import RestClient from './restClient'
-import { getTestIncentivesReviews } from '../testData/incentivesApi'
 
 interface IncentivesPrisonerSummary {
   prisonerNumber: string
@@ -42,15 +41,19 @@ export interface Level {
 }
 
 // NB: Reviews request field names are TBC
-export type IncentivesReviewsRequest = {
-  agencyId: string
-  locationPrefix: string
-  levelCode: string
+export type IncentivesReviewsPaginationAndSorting = {
   sort?: string
   order?: 'ascending' | 'descending'
   page?: number
   pageSize?: number
 }
+
+// NB: Reviews request field names are TBC
+export type IncentivesReviewsRequest = {
+  agencyId: string
+  locationPrefix: string
+  levelCode: string
+} & IncentivesReviewsPaginationAndSorting
 
 // NB: Reviews response field names are TBC
 export interface IncentivesReviewsResponse {
@@ -88,23 +91,30 @@ class IncentivesApi extends RestClient {
   }
 
   getReviews({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     agencyId,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     locationPrefix,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     levelCode,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     sort,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     order,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     page,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     pageSize,
   }: IncentivesReviewsRequest): Promise<IncentivesReviewsResponse> {
-    // TODO: this is a stub!!!
-    return Promise.resolve(getTestIncentivesReviews())
+    const prison = encodeURIComponent(agencyId)
+    const location = encodeURIComponent(locationPrefix)
+    return this.get<IncentivesReviewsResponse>({
+      path: `/incentives-reviews/prison/${prison}/location/${location}`,
+      query: { page, pageSize, sort, order },
+    }).then(response => {
+      response.reviews = response.reviews.map(review => {
+        // convert string date to js _midday_ datetime to avoid timezone offsets
+        const nextReviewDate = review.nextReviewDate as unknown as string
+        // eslint-disable-next-line no-param-reassign
+        review.nextReviewDate = new Date(`${nextReviewDate}T12:00:00`)
+        return review
+      })
+      return response
+    })
   }
 }
 

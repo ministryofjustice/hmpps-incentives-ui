@@ -84,6 +84,7 @@ export function getTestIncentivesReviews(): IncentivesReviewsResponse {
       {
         firstName: 'John',
         lastName: 'Saunders',
+        levelCode: 'STD',
         prisonerNumber: 'G6123VU',
         bookingId: 100000,
         nextReviewDate: new Date(2022, 6, 12),
@@ -94,6 +95,7 @@ export function getTestIncentivesReviews(): IncentivesReviewsResponse {
       {
         firstName: 'Flem',
         lastName: 'Hermosilla',
+        levelCode: 'STD',
         prisonerNumber: 'G5992UH',
         bookingId: 100001,
         nextReviewDate: new Date(2023, 9, 10),

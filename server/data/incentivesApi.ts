@@ -71,6 +71,7 @@ export interface IncentivesReviewsResponse {
 export interface IncentivesReview {
   firstName: string
   lastName: string
+  levelCode: string
   prisonerNumber: string
   bookingId: number
   nextReviewDate: Date
@@ -97,7 +98,6 @@ export class IncentivesApi extends RestClient {
   getReviews({
     agencyId,
     locationPrefix,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     levelCode,
     sort,
     order,
@@ -107,8 +107,8 @@ export class IncentivesApi extends RestClient {
     const prison = encodeURIComponent(agencyId)
     const location = encodeURIComponent(locationPrefix)
     return this.get<IncentivesReviewsResponse>({
-      path: `/incentives-reviews/prison/${prison}/location/${location}`,
-      query: { page, pageSize, sort, order },
+      path: `/incentives-reviews/prison/${prison}/location/${location}/level/${levelCode}`,
+      query: { sort, order, page, pageSize },
     }).then(response => {
       response.reviews = response.reviews.map(review => {
         // convert string date to js _midday_ datetime to avoid timezone offsets

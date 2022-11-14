@@ -53,7 +53,7 @@ describe('IncentiveApi', () => {
     ]
     it.each(scenarios)('passes $name query params to Incentives API', async ({ params }) => {
       incentivesApi
-        .get(`/incentives-reviews/prison/${agencyId}/location/${locationPrefix}`)
+        .get(`/incentives-reviews/prison/${agencyId}/location/${locationPrefix}/level/${levelCode}`)
         .query(params)
         .matchHeader('authorization', `Bearer ${accessToken}`)
         .reply(200, {
@@ -79,7 +79,7 @@ describe('IncentiveApi', () => {
 
     it('parses dates from Incentives API', async () => {
       incentivesApi
-        .get(`/incentives-reviews/prison/${agencyId}/location/${locationPrefix}`)
+        .get(`/incentives-reviews/prison/${agencyId}/location/${locationPrefix}/level/${levelCode}`)
         .matchHeader('authorization', `Bearer ${accessToken}`)
         .reply(200, {
           locationDescription: '1 wing',
@@ -89,6 +89,7 @@ describe('IncentiveApi', () => {
             {
               firstName: 'Flem',
               lastName: 'Hermosilla',
+              levelCode,
               prisonerNumber: 'G5992UH',
               bookingId: 100001,
               nextReviewDate: '2023-09-10',
@@ -108,6 +109,7 @@ describe('IncentiveApi', () => {
           {
             firstName: 'Flem',
             lastName: 'Hermosilla',
+            levelCode,
             prisonerNumber: 'G5992UH',
             bookingId: 100001,
             nextReviewDate: new Date(2023, 8, 10, 12),

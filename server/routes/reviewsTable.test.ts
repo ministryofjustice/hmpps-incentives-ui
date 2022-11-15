@@ -60,7 +60,7 @@ afterAll(() => {
 let app: Express
 
 beforeEach(() => {
-  config.featureFlags.newReviewsTable = true
+  config.featureFlags.newReviewsTable = ['*']
   app = appWithAllRoutes({})
 })
 

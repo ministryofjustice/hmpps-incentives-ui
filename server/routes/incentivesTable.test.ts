@@ -13,7 +13,7 @@ jest.mock('../services/behaviourService')
 let app: Express
 
 beforeEach(() => {
-  config.featureFlags.newReviewsTable = false
+  config.featureFlags.newReviewsTable = []
   app = appWithAllRoutes({})
 
   const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>

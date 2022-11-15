@@ -12,7 +12,7 @@
 
   <ul class="govuk-grid-row card-group">
     <li class="govuk-grid-column-one-third card-group__item">
-      {% if featureFlags.newReviewsTable %}
+      {% if newReviewsTable %}
         {% set cardHeading = "Manage incentive reviews" %}
         {% set cardDescription = "See overdue review dates and recent behaviour entries for prisoners in your residential location." %}
       {% elif featureFlags.hideDaysColumnsInIncentivesTable %}

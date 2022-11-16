@@ -51,7 +51,7 @@ describe('Home page', () => {
     describe('when `hideDaysColumnsInIncentivesTable` is on', () => {
       beforeEach(() => {
         app.locals.featureFlags.hideDaysColumnsInIncentivesTable = true
-        app.locals.featureFlags.newReviewsTable = false
+        app.locals.featureFlags.newReviewsTable = []
       })
 
       it('incentive information tile does not mention review dates', () => {
@@ -69,7 +69,7 @@ describe('Home page', () => {
     describe('when `newReviewsTable` is on', () => {
       beforeEach(() => {
         app.locals.featureFlags.hideDaysColumnsInIncentivesTable = false
-        app.locals.featureFlags.newReviewsTable = true
+        app.locals.featureFlags.newReviewsTable = ['*']
       })
 
       it('incentive information tile does mention review dates', () => {
@@ -88,7 +88,7 @@ describe('Home page', () => {
     describe('when both are off', () => {
       beforeEach(() => {
         app.locals.featureFlags.hideDaysColumnsInIncentivesTable = false
-        app.locals.featureFlags.newReviewsTable = false
+        app.locals.featureFlags.newReviewsTable = []
       })
 
       it('incentive information tile mentions old-style review dates', () => {

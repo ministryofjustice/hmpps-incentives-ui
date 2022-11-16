@@ -4,6 +4,7 @@ import { BadRequest, MethodNotAllowed } from 'http-errors'
 import config from '../config'
 import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
+import { userActiveCaseloadMatches } from '../middleware/featureGate'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import S3Client from '../data/s3Client'
 import AnalyticsService from '../services/analyticsService'
@@ -19,7 +20,9 @@ export default function routes(router: Router): Router {
   get('/', (req, res) => {
     res.locals.breadcrumbs.lastItem.href = undefined
 
-    res.render('pages/home.njk')
+    const newReviewsTable = userActiveCaseloadMatches(config.featureFlags.newReviewsTable, res.locals.user)
+
+    res.render('pages/home.njk', { newReviewsTable })
   })
 
   const formId = 'about-page-feedback'

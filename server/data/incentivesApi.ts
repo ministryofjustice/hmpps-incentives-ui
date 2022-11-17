@@ -42,7 +42,7 @@ export interface Level {
 
 // NB: Reviews request field names are TBC
 export const sortOptions = ['name', 'nextReviewDate', 'positiveBehaviours', 'negativeBehaviours', 'acctStatus'] as const
-export const orderOptions = ['ascending', 'descending'] as const
+export const orderOptions = ['asc', 'desc'] as const
 
 // NB: Reviews request field names are TBC
 export type IncentivesReviewsPaginationAndSorting = {

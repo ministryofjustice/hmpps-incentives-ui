@@ -1,8 +1,11 @@
+import { orderOptions } from '../data/incentivesApi'
+
+type AriaSort = 'ascending' | 'descending' | 'none'
 export type HeaderCell =
   | {
       html: string
       attributes: {
-        'aria-sort': 'ascending' | 'descending' | 'none'
+        'aria-sort': AriaSort
       }
     }
   | { html: string }
@@ -15,7 +18,7 @@ export function sortableTableHead<Column = string>(
   columns: { column: Column; escapedHtml: string; unsortable?: true }[],
   urlPrefix: string,
   sortColumn: Column,
-  order: 'ascending' | 'descending',
+  order: typeof orderOptions[number],
 ): HeaderCell[] {
   return columns.map(({ column, escapedHtml, unsortable }) => {
     if (unsortable) {
@@ -25,22 +28,29 @@ export function sortableTableHead<Column = string>(
     let sortQuery: string
     let sortDescription: string
     if (column === sortColumn) {
-      if (order === 'ascending') {
-        sortQuery = `sort=${column}&order=descending`
+      // flips order of the currently sorted column
+      if (order === 'asc') {
+        sortQuery = `sort=${column}&amp;order=desc`
         sortDescription = '<span class="govuk-visually-hidden">(sorted ascending)</span>'
       } else {
-        sortQuery = `sort=${column}&order=ascending`
+        sortQuery = `sort=${column}&amp;order=asc`
         sortDescription = '<span class="govuk-visually-hidden">(sorted descending)</span>'
       }
     } else {
-      sortQuery = `sort=${column}&order=${order}`
+      // preserves order if another column is sorted by
+      sortQuery = `sort=${column}&amp;order=${order}`
       sortDescription = ''
     }
     return {
-      html: `<a href="${urlPrefix}&${sortQuery}">${escapedHtml} ${sortDescription}</a>`,
+      html: `<a href="${urlPrefix}&amp;${sortQuery}">${escapedHtml} ${sortDescription}</a>`,
       attributes: {
-        'aria-sort': column === sortColumn ? order : 'none',
+        'aria-sort': column === sortColumn ? ariaSort[order] : 'none',
       },
     }
   })
+}
+
+const ariaSort: Record<typeof orderOptions[number], AriaSort> = {
+  asc: 'ascending',
+  desc: 'descending',
 }

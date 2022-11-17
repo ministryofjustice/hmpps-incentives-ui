@@ -47,9 +47,9 @@ describe('IncentiveApi', () => {
 
     const scenarios: { name: string; params: IncentivesReviewsPaginationAndSorting }[] = [
       { name: 'no', params: {} },
-      { name: 'sorting', params: { sort: 'nextReviewDate', order: 'ascending' } },
+      { name: 'sorting', params: { sort: 'nextReviewDate', order: 'asc' } },
       { name: 'pagination', params: { page: 2, pageSize: 10 } },
-      { name: 'all', params: { sort: 'negativeBehaviours', order: 'descending', page: 3, pageSize: 20 } },
+      { name: 'all', params: { sort: 'negativeBehaviours', order: 'desc', page: 3, pageSize: 20 } },
     ]
     it.each(scenarios)('passes $name query params to Incentives API', async ({ params }) => {
       incentivesApi

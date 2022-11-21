@@ -90,7 +90,7 @@ export function getTestIncentivesReviews(): IncentivesReviewsResponse {
         nextReviewDate: new Date(2022, 6, 12),
         positiveBehaviours: 3,
         negativeBehaviours: 2,
-        acctStatus: true,
+        hasAcctOpen: true,
       },
       {
         firstName: 'Flem',
@@ -101,7 +101,7 @@ export function getTestIncentivesReviews(): IncentivesReviewsResponse {
         nextReviewDate: new Date(2023, 9, 10),
         positiveBehaviours: 2,
         negativeBehaviours: 0,
-        acctStatus: false,
+        hasAcctOpen: false,
       },
     ],
   }

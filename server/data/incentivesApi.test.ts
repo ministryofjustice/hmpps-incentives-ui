@@ -95,7 +95,7 @@ describe('IncentiveApi', () => {
               nextReviewDate: '2023-09-10',
               positiveBehaviours: 2,
               negativeBehaviours: 0,
-              acctStatus: false,
+              hasAcctOpen: false,
             },
           ],
         })
@@ -115,7 +115,7 @@ describe('IncentiveApi', () => {
             nextReviewDate: new Date(2023, 8, 10, 12),
             positiveBehaviours: 2,
             negativeBehaviours: 0,
-            acctStatus: false,
+            hasAcctOpen: false,
           },
         ],
       })

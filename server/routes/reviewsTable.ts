@@ -26,7 +26,7 @@ const tableColumns: Parameters<typeof sortableTableHead<string>>[0] = [
   { column: 'NEXT_REVIEW_DATE', escapedHtml: 'Date of next review' },
   { column: 'POSITIVE_BEHAVIOURS', escapedHtml: 'Positive behaviours <br /> in the last 3 months' },
   { column: 'NEGATIVE_BEHAVIOURS', escapedHtml: 'Negative behaviours <br /> in the last 3 months' },
-  { column: 'ACCT_STATUS', escapedHtml: 'ACCT status' },
+  { column: 'HAS_ACCT_OPEN', escapedHtml: 'ACCT status' },
 ]
 
 export default function routes(router: Router): Router {
@@ -112,7 +112,7 @@ function parseSorting(sortString: string | undefined, orderString: string | unde
   // default ordering if not provided or invalid
   if (!orderOptions.includes(orderString as Order)) {
     // these columns prefer descending order:
-    if (['POSITIVE_BEHAVIOURS', 'NEGATIVE_BEHAVIOURS', 'ACCT_STATUS'].includes(sortString)) {
+    if (['POSITIVE_BEHAVIOURS', 'NEGATIVE_BEHAVIOURS', 'HAS_ACCT_OPEN'].includes(sortString)) {
       // eslint-disable-next-line no-param-reassign
       orderString = 'DESC'
     } else {

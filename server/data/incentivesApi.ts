@@ -47,7 +47,7 @@ export const sortOptions = [
   'NEXT_REVIEW_DATE',
   'POSITIVE_BEHAVIOURS',
   'NEGATIVE_BEHAVIOURS',
-  'ACCT_STATUS',
+  'HAS_ACCT_OPEN',
 ] as const
 export const orderOptions = ['ASC', 'DESC'] as const
 
@@ -84,7 +84,7 @@ export interface IncentivesReview {
   nextReviewDate: Date
   positiveBehaviours: number
   negativeBehaviours: number
-  acctStatus: boolean
+  hasAcctOpen: boolean
 }
 
 export class IncentivesApi extends RestClient {

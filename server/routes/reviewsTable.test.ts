@@ -175,11 +175,11 @@ describe('Reviews table', () => {
     },
     {
       name: 'with level, sort and page params',
-      urlSuffix: '?page=3&level=ENH&sort=ACCT_STATUS',
+      urlSuffix: '?page=3&level=ENH&sort=HAS_ACCT_OPEN',
       expectedRequest: {
         levelCode: 'ENH',
         page: 3,
-        sort: 'ACCT_STATUS',
+        sort: 'HAS_ACCT_OPEN',
         order: 'DESC',
       },
     },
@@ -265,9 +265,9 @@ describe('Reviews table', () => {
     },
     {
       name: 'accepts all parameters',
-      givenUrl: '?level=BAS&sort=ACCT_STATUS&order=DESC&page=3',
+      givenUrl: '?level=BAS&sort=HAS_ACCT_OPEN&order=DESC&page=3',
       expectedLevel: 'BAS',
-      expectedSort: 'ACCT_STATUS',
+      expectedSort: 'HAS_ACCT_OPEN',
       expectedOrder: 'DESC',
     },
   ]
@@ -324,14 +324,8 @@ describe('Reviews table', () => {
       .expect(res => {
         const $body = $(res.text)
         const firstRowCells: HTMLTableCellElement[] = $body.find('.app-reviews-table tbody tr').first().find('td').get()
-        const [
-          photoCell,
-          nameCell,
-          nextReviewDateCell,
-          positiveBehavioursCell,
-          negativeBehavioursCell,
-          acctStatusCell,
-        ] = firstRowCells
+        const [photoCell, nameCell, nextReviewDateCell, positiveBehavioursCell, negativeBehavioursCell, acctCell] =
+          firstRowCells
 
         expect(photoCell.innerHTML).toContain('Photo of G6123VU')
         expect(nameCell.textContent).toContain('Saunders, John')
@@ -346,7 +340,7 @@ describe('Reviews table', () => {
         expect(negativeBehavioursCell.innerHTML).toContain(
           '/prisoner/G6123VU/case-notes?type=NEG&amp;fromDate=09/07/2022',
         )
-        expect(acctStatusCell.textContent).toContain('ACCT open')
+        expect(acctCell.textContent).toContain('ACCT open')
       })
   })
 

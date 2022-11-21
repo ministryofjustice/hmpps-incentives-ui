@@ -40,8 +40,15 @@ export interface Level {
   default: boolean
 }
 
-// NB: Reviews request field names are TBC
-export const sortOptions = ['name', 'nextReviewDate', 'positiveBehaviours', 'negativeBehaviours', 'acctStatus'] as const
+export const sortOptions = [
+  'PRISONER_NUMBER',
+  'FIRST_NAME',
+  'LAST_NAME',
+  'NEXT_REVIEW_DATE',
+  'POSITIVE_BEHAVIOURS',
+  'NEGATIVE_BEHAVIOURS',
+  'ACCT_STATUS',
+] as const
 export const orderOptions = ['asc', 'desc'] as const
 
 // NB: Reviews request field names are TBC

@@ -22,11 +22,11 @@ const PAGE_SIZE = 20
 
 const tableColumns: Parameters<typeof sortableTableHead<string>>[0] = [
   { column: 'photo', escapedHtml: '<span class="govuk-visually-hidden">Prisoner photo</span>', unsortable: true },
-  { column: 'name', escapedHtml: 'Name and prison number' },
-  { column: 'nextReviewDate', escapedHtml: 'Date of next review' },
-  { column: 'positiveBehaviours', escapedHtml: 'Positive behaviours <br /> in the last 3 months' },
-  { column: 'negativeBehaviours', escapedHtml: 'Negative behaviours <br /> in the last 3 months' },
-  { column: 'acctStatus', escapedHtml: 'ACCT status' },
+  { column: 'LAST_NAME', escapedHtml: 'Name and prison number' },
+  { column: 'NEXT_REVIEW_DATE', escapedHtml: 'Date of next review' },
+  { column: 'POSITIVE_BEHAVIOURS', escapedHtml: 'Positive behaviours <br /> in the last 3 months' },
+  { column: 'NEGATIVE_BEHAVIOURS', escapedHtml: 'Negative behaviours <br /> in the last 3 months' },
+  { column: 'ACCT_STATUS', escapedHtml: 'ACCT status' },
 ]
 
 export default function routes(router: Router): Router {
@@ -106,13 +106,13 @@ function parseSorting(sortString: string | undefined, orderString: string | unde
   // default to sorting by next review date if not provided or invalid
   if (!sortOptions.includes(sortString as Sort)) {
     // eslint-disable-next-line no-param-reassign
-    sortString = 'nextReviewDate'
+    sortString = 'NEXT_REVIEW_DATE'
   }
 
   // default ordering if not provided or invalid
   if (!orderOptions.includes(orderString as Order)) {
     // these columns prefer descending order:
-    if (['positiveBehaviours', 'negativeBehaviours', 'acctStatus'].includes(sortString)) {
+    if (['POSITIVE_BEHAVIOURS', 'NEGATIVE_BEHAVIOURS', 'ACCT_STATUS'].includes(sortString)) {
       // eslint-disable-next-line no-param-reassign
       orderString = 'desc'
     } else {

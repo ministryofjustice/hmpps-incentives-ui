@@ -7,7 +7,7 @@ import config from '../config'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { getTestIncentivesReviews } from '../testData/incentivesApi'
 import HmppsAuthClient from '../data/hmppsAuthClient'
-import type { Level, IncentivesReviewsRequest, orderOptions } from '../data/incentivesApi'
+import type { Level, IncentivesReviewsRequest, sortOptions, orderOptions } from '../data/incentivesApi'
 import { IncentivesApi } from '../data/incentivesApi'
 
 jest.mock('../data/hmppsAuthClient')
@@ -138,30 +138,30 @@ describe('Reviews table', () => {
     },
     {
       name: 'with sort param',
-      urlSuffix: '?sort=name',
+      urlSuffix: '?sort=LAST_NAME',
       expectedRequest: {
-        sort: 'name',
+        sort: 'LAST_NAME',
         order: 'asc',
       },
     },
     {
       name: 'with incorrect sort param',
-      urlSuffix: '?sort=unknown',
+      urlSuffix: '?sort=PRISON',
       expectedRequest: {},
     },
     {
       name: 'with sort and order params',
-      urlSuffix: '?order=desc&sort=name',
+      urlSuffix: '?order=desc&sort=LAST_NAME',
       expectedRequest: {
-        sort: 'name',
+        sort: 'LAST_NAME',
         order: 'desc',
       },
     },
     {
       name: 'with sort param but incorrect order',
-      urlSuffix: '?order=reversed&sort=name',
+      urlSuffix: '?order=reversed&sort=LAST_NAME',
       expectedRequest: {
-        sort: 'name',
+        sort: 'LAST_NAME',
         order: 'asc',
       },
     },
@@ -175,21 +175,21 @@ describe('Reviews table', () => {
     },
     {
       name: 'with level, sort and page params',
-      urlSuffix: '?page=3&level=ENH&sort=acctStatus',
+      urlSuffix: '?page=3&level=ENH&sort=ACCT_STATUS',
       expectedRequest: {
         levelCode: 'ENH',
         page: 3,
-        sort: 'acctStatus',
+        sort: 'ACCT_STATUS',
         order: 'desc',
       },
     },
     {
       name: 'with level, sort, order and page params',
-      urlSuffix: '?level=BAS&sort=negativeBehaviours&order=asc&page=4',
+      urlSuffix: '?level=BAS&sort=NEGATIVE_BEHAVIOURS&order=asc&page=4',
       expectedRequest: {
         levelCode: 'BAS',
         page: 4,
-        sort: 'negativeBehaviours',
+        sort: 'NEGATIVE_BEHAVIOURS',
         order: 'asc',
       },
     },
@@ -201,7 +201,7 @@ describe('Reviews table', () => {
         agencyId: 'MDI',
         locationPrefix: 'MDI-1',
         levelCode: 'STD',
-        sort: 'nextReviewDate',
+        sort: 'NEXT_REVIEW_DATE',
         order: 'asc',
         page: 1,
         pageSize: 20,
@@ -224,7 +224,7 @@ describe('Reviews table', () => {
     name: string
     givenUrl: string
     expectedLevel: string
-    expectedSort: string
+    expectedSort: typeof sortOptions[number]
     expectedOrder: typeof orderOptions[number]
   }
   const tabScenarios: TabScenario[] = [
@@ -232,42 +232,42 @@ describe('Reviews table', () => {
       name: 'shows each available level',
       givenUrl: '',
       expectedLevel: 'STD',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
     },
     {
       name: 'highlights requested level tab',
       givenUrl: '?level=ENH',
       expectedLevel: 'ENH',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
     },
     {
       name: 'falls back to default when given incorrect level',
       givenUrl: '?level=EN2',
       expectedLevel: 'STD',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
     },
     {
       name: 'preserves sort',
-      givenUrl: '?sort=name',
+      givenUrl: '?sort=LAST_NAME',
       expectedLevel: 'STD',
-      expectedSort: 'name',
+      expectedSort: 'LAST_NAME',
       expectedOrder: 'asc',
     },
     {
       name: 'preserves sort and order',
-      givenUrl: '?sort=negativeBehaviours&order=asc',
+      givenUrl: '?sort=NEGATIVE_BEHAVIOURS&order=asc',
       expectedLevel: 'STD',
-      expectedSort: 'negativeBehaviours',
+      expectedSort: 'NEGATIVE_BEHAVIOURS',
       expectedOrder: 'asc',
     },
     {
       name: 'accepts all parameters',
-      givenUrl: '?level=BAS&sort=acctStatus&order=desc&page=3',
+      givenUrl: '?level=BAS&sort=ACCT_STATUS&order=desc&page=3',
       expectedLevel: 'BAS',
-      expectedSort: 'acctStatus',
+      expectedSort: 'ACCT_STATUS',
       expectedOrder: 'desc',
     },
   ]
@@ -354,7 +354,7 @@ describe('Reviews table', () => {
     name: string
     givenUrl: string
     expectedLevel: string
-    expectedSort: string
+    expectedSort: typeof sortOptions[number]
     expectedOrder: typeof orderOptions[number]
   }
   const sortingScenarios: SortingScenario[] = [
@@ -362,77 +362,77 @@ describe('Reviews table', () => {
       name: 'uses default level and sorting if not provided',
       givenUrl: '',
       expectedLevel: 'STD',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
     },
     {
       name: 'preserves level and uses default sorting if not provided',
       givenUrl: '?level=ENH',
       expectedLevel: 'ENH',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
     },
     {
       name: 'preserves level, dropping page, and uses default sorting if not provided',
       givenUrl: '?level=ENH&page=3',
       expectedLevel: 'ENH',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
     },
     {
       name: 'accepts provided sort and uses default level',
-      givenUrl: '?sort=name',
+      givenUrl: '?sort=LAST_NAME',
       expectedLevel: 'STD',
-      expectedSort: 'name',
+      expectedSort: 'LAST_NAME',
       expectedOrder: 'asc',
     },
     {
       name: 'accepts provided sort & ordering and uses default level',
-      givenUrl: '?sort=name&order=desc',
+      givenUrl: '?sort=LAST_NAME&order=desc',
       expectedLevel: 'STD',
-      expectedSort: 'name',
+      expectedSort: 'LAST_NAME',
       expectedOrder: 'desc',
     },
     {
       name: 'accepts provided sort and uses default level',
-      givenUrl: '?sort=positiveBehaviours',
+      givenUrl: '?sort=POSITIVE_BEHAVIOURS',
       expectedLevel: 'STD',
-      expectedSort: 'positiveBehaviours',
+      expectedSort: 'POSITIVE_BEHAVIOURS',
       expectedOrder: 'desc',
     },
     {
       name: 'accepts provided sort & ordering and uses default level',
-      givenUrl: '?sort=positiveBehaviours&order=desc',
+      givenUrl: '?sort=POSITIVE_BEHAVIOURS&order=desc',
       expectedLevel: 'STD',
-      expectedSort: 'positiveBehaviours',
+      expectedSort: 'POSITIVE_BEHAVIOURS',
       expectedOrder: 'desc',
     },
     {
       name: 'accepts provided sort and preserves level',
-      givenUrl: '?sort=name&level=BAS',
+      givenUrl: '?sort=LAST_NAME&level=BAS',
       expectedLevel: 'BAS',
-      expectedSort: 'name',
+      expectedSort: 'LAST_NAME',
       expectedOrder: 'asc',
     },
     {
       name: 'accepts provided sort & ordering and preserves level',
-      givenUrl: '?sort=name&order=desc&level=BAS',
+      givenUrl: '?sort=LAST_NAME&order=desc&level=BAS',
       expectedLevel: 'BAS',
-      expectedSort: 'name',
+      expectedSort: 'LAST_NAME',
       expectedOrder: 'desc',
     },
     {
       name: 'accepts provided sort and preserves level',
-      givenUrl: '?sort=positiveBehaviours&level=BAS',
+      givenUrl: '?sort=POSITIVE_BEHAVIOURS&level=BAS',
       expectedLevel: 'BAS',
-      expectedSort: 'positiveBehaviours',
+      expectedSort: 'POSITIVE_BEHAVIOURS',
       expectedOrder: 'desc',
     },
     {
       name: 'accepts provided sort & ordering and preserves level',
-      givenUrl: '?sort=positiveBehaviours&order=desc&level=BAS',
+      givenUrl: '?sort=POSITIVE_BEHAVIOURS&order=desc&level=BAS',
       expectedLevel: 'BAS',
-      expectedSort: 'positiveBehaviours',
+      expectedSort: 'POSITIVE_BEHAVIOURS',
       expectedOrder: 'desc',
     },
   ]
@@ -494,7 +494,7 @@ describe('Reviews table', () => {
     name: string
     givenUrl: string
     expectedLevel: string
-    expectedSort: string
+    expectedSort: typeof sortOptions[number]
     expectedOrder: typeof orderOptions[number]
     expectedPages: number[]
   }
@@ -503,7 +503,7 @@ describe('Reviews table', () => {
       name: 'preserves level and uses default sorting; defaults to page 1',
       givenUrl: '?level=ENH',
       expectedLevel: 'ENH',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
       expectedPages: [1, 2, 6, 7],
     },
@@ -511,7 +511,7 @@ describe('Reviews table', () => {
       name: 'preserves level and uses default sorting; accepts page',
       givenUrl: '?level=ENH&page=1',
       expectedLevel: 'ENH',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
       expectedPages: [1, 2, 6, 7],
     },
@@ -519,7 +519,7 @@ describe('Reviews table', () => {
       name: 'preserves level and uses default sorting; accepts another page',
       givenUrl: '?page=3&level=STD',
       expectedLevel: 'STD',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
       expectedPages: [1, 2, 3, 4, 6, 7],
     },
@@ -527,7 +527,7 @@ describe('Reviews table', () => {
       name: 'uses default level and sorting if not provided',
       givenUrl: '',
       expectedLevel: 'STD',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
       expectedPages: [1, 2, 6, 7],
     },
@@ -535,23 +535,23 @@ describe('Reviews table', () => {
       name: 'uses default level and sorting if not provided; accepts page',
       givenUrl: '?page=7',
       expectedLevel: 'STD',
-      expectedSort: 'nextReviewDate',
+      expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'asc',
       expectedPages: [1, 2, 6, 7],
     },
     {
       name: 'preserves sort and uses default level if not provided',
-      givenUrl: '?page=7&sort=name',
+      givenUrl: '?page=7&sort=LAST_NAME',
       expectedLevel: 'STD',
-      expectedSort: 'name',
+      expectedSort: 'LAST_NAME',
       expectedOrder: 'asc',
       expectedPages: [1, 2, 6, 7],
     },
     {
       name: 'preserves sort and order, but uses default level if not provided',
-      givenUrl: '?page=7&order=desc&sort=name',
+      givenUrl: '?page=7&order=desc&sort=LAST_NAME',
       expectedLevel: 'STD',
-      expectedSort: 'name',
+      expectedSort: 'LAST_NAME',
       expectedOrder: 'desc',
       expectedPages: [1, 2, 6, 7],
     },

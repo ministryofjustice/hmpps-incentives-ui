@@ -114,10 +114,10 @@ function parseSorting(sortString: string | undefined, orderString: string | unde
     // these columns prefer descending order:
     if (['POSITIVE_BEHAVIOURS', 'NEGATIVE_BEHAVIOURS', 'ACCT_STATUS'].includes(sortString)) {
       // eslint-disable-next-line no-param-reassign
-      orderString = 'desc'
+      orderString = 'DESC'
     } else {
       // eslint-disable-next-line no-param-reassign
-      orderString = 'asc'
+      orderString = 'ASC'
     }
   }
 

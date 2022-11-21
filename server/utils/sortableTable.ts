@@ -29,11 +29,11 @@ export function sortableTableHead<Column = string>(
     let sortDescription: string
     if (column === sortColumn) {
       // flips order of the currently sorted column
-      if (order === 'asc') {
-        sortQuery = `sort=${column}&amp;order=desc`
+      if (order === 'ASC') {
+        sortQuery = `sort=${column}&amp;order=DESC`
         sortDescription = '<span class="govuk-visually-hidden">(sorted ascending)</span>'
       } else {
-        sortQuery = `sort=${column}&amp;order=asc`
+        sortQuery = `sort=${column}&amp;order=ASC`
         sortDescription = '<span class="govuk-visually-hidden">(sorted descending)</span>'
       }
     } else {
@@ -51,6 +51,6 @@ export function sortableTableHead<Column = string>(
 }
 
 const ariaSort: Record<typeof orderOptions[number], AriaSort> = {
-  asc: 'ascending',
-  desc: 'descending',
+  ASC: 'ascending',
+  DESC: 'descending',
 }

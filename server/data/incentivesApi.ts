@@ -49,7 +49,7 @@ export const sortOptions = [
   'NEGATIVE_BEHAVIOURS',
   'ACCT_STATUS',
 ] as const
-export const orderOptions = ['asc', 'desc'] as const
+export const orderOptions = ['ASC', 'DESC'] as const
 
 // NB: Reviews request field names are TBC
 export type IncentivesReviewsPaginationAndSorting = {

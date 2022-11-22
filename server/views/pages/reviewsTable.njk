@@ -76,7 +76,7 @@
       {html: nextReviewDate},
       {html: positiveBehaviours},
       {html: negativeBehaviours},
-      {text: "ACCT open" if review.acctStatus else ""}
+      {text: "ACCT open" if review.hasAcctOpen else ""}
     ]), tableRows) %}
   {% endfor %}
 

@@ -40,9 +40,16 @@ export interface Level {
   default: boolean
 }
 
-// NB: Reviews request field names are TBC
-export const sortOptions = ['name', 'nextReviewDate', 'positiveBehaviours', 'negativeBehaviours', 'acctStatus'] as const
-export const orderOptions = ['ascending', 'descending'] as const
+export const sortOptions = [
+  'PRISONER_NUMBER',
+  'FIRST_NAME',
+  'LAST_NAME',
+  'NEXT_REVIEW_DATE',
+  'POSITIVE_BEHAVIOURS',
+  'NEGATIVE_BEHAVIOURS',
+  'HAS_ACCT_OPEN',
+] as const
+export const orderOptions = ['ASC', 'DESC'] as const
 
 // NB: Reviews request field names are TBC
 export type IncentivesReviewsPaginationAndSorting = {
@@ -77,7 +84,7 @@ export interface IncentivesReview {
   nextReviewDate: Date
   positiveBehaviours: number
   negativeBehaviours: number
-  acctStatus: boolean
+  hasAcctOpen: boolean
 }
 
 export class IncentivesApi extends RestClient {

@@ -47,9 +47,9 @@ describe('IncentiveApi', () => {
 
     const scenarios: { name: string; params: IncentivesReviewsPaginationAndSorting }[] = [
       { name: 'no', params: {} },
-      { name: 'sorting', params: { sort: 'nextReviewDate', order: 'ascending' } },
+      { name: 'sorting', params: { sort: 'NEXT_REVIEW_DATE', order: 'ASC' } },
       { name: 'pagination', params: { page: 2, pageSize: 10 } },
-      { name: 'all', params: { sort: 'negativeBehaviours', order: 'descending', page: 3, pageSize: 20 } },
+      { name: 'all', params: { sort: 'NEGATIVE_BEHAVIOURS', order: 'DESC', page: 3, pageSize: 20 } },
     ]
     it.each(scenarios)('passes $name query params to Incentives API', async ({ params }) => {
       incentivesApi
@@ -95,7 +95,7 @@ describe('IncentiveApi', () => {
               nextReviewDate: '2023-09-10',
               positiveBehaviours: 2,
               negativeBehaviours: 0,
-              acctStatus: false,
+              hasAcctOpen: false,
             },
           ],
         })
@@ -115,7 +115,7 @@ describe('IncentiveApi', () => {
             nextReviewDate: new Date(2023, 8, 10, 12),
             positiveBehaviours: 2,
             negativeBehaviours: 0,
-            acctStatus: false,
+            hasAcctOpen: false,
           },
         ],
       })

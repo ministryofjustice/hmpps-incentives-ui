@@ -109,7 +109,7 @@ describe('Reviews table', () => {
       name: 'with page param',
       urlSuffix: '?page=6',
       expectedRequest: {
-        page: 6,
+        page: 5,
       },
     },
     {
@@ -170,7 +170,7 @@ describe('Reviews table', () => {
       urlSuffix: '?level=ENH&page=2',
       expectedRequest: {
         levelCode: 'ENH',
-        page: 2,
+        page: 1,
       },
     },
     {
@@ -178,7 +178,7 @@ describe('Reviews table', () => {
       urlSuffix: '?page=3&level=ENH&sort=HAS_ACCT_OPEN',
       expectedRequest: {
         levelCode: 'ENH',
-        page: 3,
+        page: 2,
         sort: 'HAS_ACCT_OPEN',
         order: 'DESC',
       },
@@ -188,7 +188,7 @@ describe('Reviews table', () => {
       urlSuffix: '?level=BAS&sort=NEGATIVE_BEHAVIOURS&order=ASC&page=4',
       expectedRequest: {
         levelCode: 'BAS',
-        page: 4,
+        page: 3,
         sort: 'NEGATIVE_BEHAVIOURS',
         order: 'ASC',
       },
@@ -203,7 +203,7 @@ describe('Reviews table', () => {
         levelCode: 'STD',
         sort: 'NEXT_REVIEW_DATE',
         order: 'ASC',
-        page: 1,
+        page: 0,
         pageSize: 20,
       }
 

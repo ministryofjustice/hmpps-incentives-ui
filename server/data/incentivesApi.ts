@@ -51,7 +51,6 @@ export const sortOptions = [
 ] as const
 export const orderOptions = ['ASC', 'DESC'] as const
 
-// NB: Reviews request field names are TBC
 export type IncentivesReviewsPaginationAndSorting = {
   sort?: typeof sortOptions[number]
   order?: typeof orderOptions[number]
@@ -59,14 +58,12 @@ export type IncentivesReviewsPaginationAndSorting = {
   pageSize?: number
 }
 
-// NB: Reviews request field names are TBC
 export type IncentivesReviewsRequest = {
   agencyId: string
   locationPrefix: string
   levelCode: string
 } & IncentivesReviewsPaginationAndSorting
 
-// NB: Reviews response field names are TBC
 export interface IncentivesReviewsResponse {
   locationDescription: string
   overdueCount: number
@@ -74,7 +71,6 @@ export interface IncentivesReviewsResponse {
   reviews: IncentivesReview[]
 }
 
-// NB: Reviews response field names are TBC
 export interface IncentivesReview {
   firstName: string
   lastName: string

@@ -62,7 +62,7 @@ export default function routes(router: Router): Router {
       levelCode: selectedLevelCode,
       sort,
       order,
-      page,
+      page: page - 1,
       pageSize: PAGE_SIZE,
     })
 

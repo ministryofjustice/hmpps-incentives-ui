@@ -50,7 +50,6 @@ beforeAll(() => {
 
   incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
   incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
-  incentivesApi.getReviews.mockResolvedValue(getTestIncentivesReviews())
 })
 
 afterAll(() => {
@@ -62,6 +61,7 @@ let app: Express
 beforeEach(() => {
   config.featureFlags.newReviewsTable = ['*']
   app = appWithAllRoutes({})
+  incentivesApi.getReviews.mockResolvedValue(getTestIncentivesReviews())
 })
 
 afterEach(() => {
@@ -341,6 +341,26 @@ describe('Reviews table', () => {
           '/prisoner/G6123VU/case-notes?type=NEG&amp;fromDate=09/07/2022',
         )
         expect(acctCell.textContent).toContain('ACCT open')
+      })
+  })
+
+  it('shows an informative message instead of no rows', () => {
+    const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+    incentivesApi.getReviews.mockResolvedValue({
+      ...getTestIncentivesReviews(),
+      reviewCount: 0,
+      reviews: [],
+    })
+
+    return request(app)
+      .get('/incentive-summary/MDI-1')
+      .expect(res => {
+        const $body = $(res.text)
+        const firstRowCells: HTMLTableCellElement[] = $body.find('.app-reviews-table tbody tr').first().find('td').get()
+        expect(firstRowCells.length).toEqual(1)
+        const [messageCell] = firstRowCells
+        expect(messageCell.textContent).toContain('There are no prisoners at Houseblock 1 on Standard')
       })
   })
 

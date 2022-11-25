@@ -51,9 +51,11 @@ export default function routes(router: Router): Router {
 
     const agencyId = locationPrefix.split('-')[0]
     const levels = await incentivesApi.getAvailableLevels(agencyId)
+    let selectedLevelDescription = levels.find(level => level.iepLevel === selectedLevelCode)?.iepDescription
     const defaultLevel = levels.find(level => level.default) ?? levels[0]
     if (!levels.some(level => level.iepLevel === selectedLevelCode)) {
       selectedLevelCode = defaultLevel.iepLevel
+      selectedLevelDescription = defaultLevel.iepDescription
     }
 
     const response = await incentivesApi.getReviews({
@@ -80,6 +82,7 @@ export default function routes(router: Router): Router {
       levels,
       caseNoteFilter,
       selectedLevelCode,
+      selectedLevelDescription,
       tableHead,
       reviews: response.reviews,
       paginationParams,

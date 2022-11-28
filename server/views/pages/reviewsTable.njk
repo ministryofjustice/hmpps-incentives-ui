@@ -80,11 +80,20 @@
     ]), tableRows) %}
   {% endfor %}
 
+  {% set noPrisonersOnLevel -%}
+    <p class="govuk-!-margin-4 govuk-!-text-align-centre">
+      There are no prisoners at {{ locationDescription }} on {{ selectedLevelDescription }}
+    </p>
+  {%- endset %}
+
   <div class="app-reviews-container">
     {{ govukTable({
       classes: "app-reviews-table",
       head: tableHead,
-      rows: tableRows
+      rows: tableRows if tableRows.length > 0 else [[{
+        html: noPrisonersOnLevel,
+        colspan: 6
+      }]]
     }) }}
   </div>
 

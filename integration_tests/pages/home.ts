@@ -5,11 +5,15 @@ export default class HomePage extends Page {
     super('Manage incentives')
   }
 
-  viewIncentivesLevelsLink = (): PageElement => cy.get('[data-test="incentive-information"] a')
+  viewIncentivesLevelsLink = (): PageElement<HTMLAnchorElement> => cy.get('[data-test="incentive-information"] a')
 
-  viewAnalyticsLink = (): PageElement => cy.get('[data-test="incentive-analytics"] a')
+  viewAnalyticsLink = (): PageElement<HTMLAnchorElement> => cy.get('[data-test="incentive-analytics"] a')
 
-  selectPgdRegionLink = (): PageElement => cy.get('[data-test="select-pgd-region"] a')
+  selectPgdRegionLink = (): PageElement<HTMLAnchorElement> => cy.get('[data-test="select-pgd-region"] a')
 
-  aboutPageLink = (): PageElement => cy.get('[data-test="about-data"] a')
+  aboutPageLink = (): PageElement<HTMLAnchorElement> => cy.get('[data-test="about-data"] a')
+
+  get cards(): PageElement<HTMLDivElement> {
+    return cy.get('.card')
+  }
 }

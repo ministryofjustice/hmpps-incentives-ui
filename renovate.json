@@ -36,6 +36,10 @@
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/redis"],
       "allowedVersions": "6.2"
+    },
+    {
+      "matchPackageNames": ["typescript"],
+      "rangeStrategy": "bump"
     }
   ]
 }

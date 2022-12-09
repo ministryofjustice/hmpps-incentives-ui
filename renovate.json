@@ -40,6 +40,10 @@
     {
       "matchPackageNames": ["typescript"],
       "rangeStrategy": "bump"
+    },
+    {
+      "matchPackageNames": ["govuk-frontend"],
+      "rangeStrategy": "bump"
     }
   ]
 }

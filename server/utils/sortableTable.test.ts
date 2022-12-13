@@ -1,7 +1,7 @@
 import { type HeaderCell, sortableTableHead } from './sortableTable'
 
-type Colum = 'month' | 'rate'
-const sampleColumns: Parameters<typeof sortableTableHead<Colum>>[0] = [
+type Column = 'month' | 'rate'
+const sampleColumns: Parameters<typeof sortableTableHead<Column>>[0] = [
   { column: 'month', escapedHtml: 'Month you apply' },
   { column: 'rate', escapedHtml: 'Rate for vehicles' },
 ]
@@ -9,14 +9,14 @@ const sampleColumns: Parameters<typeof sortableTableHead<Colum>>[0] = [
 describe('sortableTableHead', () => {
   describe('should label sorted column with aria attribute', () => {
     it('when a column is sorted ascending', () => {
-      expect(sortableTableHead<Colum>(sampleColumns, '?size=large', 'month', 'ASC')).toEqual<HeaderCell[]>([
+      expect(sortableTableHead<Column>(sampleColumns, '?size=large', 'month', 'ASC')).toEqual<HeaderCell[]>([
         { html: expect.stringContaining('Month you apply'), attributes: { 'aria-sort': 'ascending' } },
         { html: expect.stringContaining('Rate for vehicles'), attributes: { 'aria-sort': 'none' } },
       ])
     })
 
     it('when a different column is sorted descending', () => {
-      expect(sortableTableHead<Colum>(sampleColumns, '?size=large', 'rate', 'DESC')).toEqual<HeaderCell[]>([
+      expect(sortableTableHead<Column>(sampleColumns, '?size=large', 'rate', 'DESC')).toEqual<HeaderCell[]>([
         { html: expect.stringContaining('Month you apply'), attributes: { 'aria-sort': 'none' } },
         { html: expect.stringContaining('Rate for vehicles'), attributes: { 'aria-sort': 'descending' } },
       ])
@@ -32,7 +32,7 @@ describe('sortableTableHead', () => {
 
   describe('should link column to sort action', () => {
     it('when a column is sorted ascending', () => {
-      expect(sortableTableHead<Colum>(sampleColumns, '?size=large', 'month', 'ASC')).toEqual([
+      expect(sortableTableHead<Column>(sampleColumns, '?size=large', 'month', 'ASC')).toEqual([
         // flip order if same column clicked
         expect.objectContaining({ html: expect.stringContaining('?size=large&amp;sort=month&amp;order=DESC') }),
         // preserve same order if different column clicked
@@ -41,7 +41,7 @@ describe('sortableTableHead', () => {
     })
 
     it('when a different column is sorted descending', () => {
-      expect(sortableTableHead<Colum>(sampleColumns, '?size=large', 'rate', 'DESC')).toEqual([
+      expect(sortableTableHead<Column>(sampleColumns, '?size=large', 'rate', 'DESC')).toEqual([
         // preserve same order if different column clicked
         expect.objectContaining({ html: expect.stringContaining('?size=large&amp;sort=month&amp;order=DESC') }),
         // flip order if same column clicked

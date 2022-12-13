@@ -19,7 +19,7 @@ const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient('ro
 
 const PAGE_SIZE = 20
 
-const tableColumns: Parameters<typeof sortableTableHead<string>>[0] = [
+const tableColumns: Parameters<typeof sortableTableHead<string>>[1] = [
   { column: 'photo', escapedHtml: '<span class="govuk-visually-hidden">Prisoner photo</span>', unsortable: true },
   { column: 'LAST_NAME', escapedHtml: 'Name and prison number' },
   { column: 'NEXT_REVIEW_DATE', escapedHtml: 'Date of next review' },
@@ -67,7 +67,7 @@ export default function routes(router: Router): Router {
       pageSize: PAGE_SIZE,
     })
 
-    const tableHead = sortableTableHead(tableColumns, `?level=${selectedLevelCode}`, sort, order)
+    const tableHead = sortableTableHead('Reviews table', tableColumns, `?level=${selectedLevelCode}`, sort, order)
 
     const pageCount = Math.ceil(response.reviewCount / PAGE_SIZE)
     const paginationUrlPrefix = `?level=${selectedLevelCode}&sort=${sort}&order=${order}&`

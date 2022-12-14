@@ -1,4 +1,4 @@
-function gaSendEvent(event) {
+function gaSendEvent() {
   const elem = $(this)
 
   const gaCategory = elem.data('ga-category')

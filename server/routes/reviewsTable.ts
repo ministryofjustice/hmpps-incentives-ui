@@ -76,6 +76,7 @@ export default function routes(router: Router): Router {
     res.render('pages/reviewsTable', {
       dpsUrl: config.dpsUrl,
       feedbackUrl: config.feedbackUrlForReviewsTable || config.feedbackUrlForTable || config.feedbackUrl,
+      locationPrefix,
       locationDescription: response.locationDescription,
       overdueCount: response.overdueCount,
       levels,

@@ -16,7 +16,6 @@ import {
 import TokenStore from '../data/tokenStore'
 
 const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient('routes/incentivesTable.ts')))
-const feedbackUrl = config.feedbackUrlForTable || config.feedbackUrl
 
 const PAGE_SIZE = 20
 
@@ -76,7 +75,7 @@ export default function routes(router: Router): Router {
 
     res.render('pages/reviewsTable', {
       dpsUrl: config.dpsUrl,
-      feedbackUrl,
+      feedbackUrl: config.feedbackUrlForReviewsTable || config.feedbackUrlForTable || config.feedbackUrl,
       locationDescription: response.locationDescription,
       overdueCount: response.overdueCount,
       levels,

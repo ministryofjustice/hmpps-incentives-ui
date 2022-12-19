@@ -143,5 +143,6 @@ export default {
   feedbackUrl: get('FEEDBACK_URL', ''),
   feedbackUrlForAnalytics: get('FEEDBACK_URL_ANALYTICS', ''),
   feedbackUrlForTable: get('FEEDBACK_URL_TABLE', ''),
+  feedbackUrlForReviewsTable: get('FEEDBACK_URL_REVIEWS_TABLE', ''),
   phaseName: get('PHASE_NAME', ''),
 }

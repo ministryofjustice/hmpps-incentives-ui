@@ -69,6 +69,21 @@ afterEach(() => {
 })
 
 describe('Reviews table', () => {
+  it('should show correct feedback link', () => {
+    config.feedbackUrl = 'https://example.com/incorrect-1'
+    config.feedbackUrlForAnalytics = 'https://example.com/incorrect-2'
+    config.feedbackUrlForTable = 'https://example.com/incorrect-3'
+    config.feedbackUrlForReviewsTable = 'https://example.com/correct'
+
+    return request(app)
+      .get('/incentive-summary/MDI-2')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('https://example.com/correct')
+        expect(res.text).not.toContain('https://example.com/incorrect')
+      })
+  })
+
   it('should show selected location', () => {
     return request(app)
       .get('/incentive-summary/MDI-2')

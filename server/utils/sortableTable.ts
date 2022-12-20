@@ -16,13 +16,19 @@ export type HeaderCell =
  * Produces parameters for head of GOV.UK Table component macro
  * to label sortable columns and add links
  */
-export function sortableTableHead<Column = string>(
-  gaPrefix: string,
-  columns: { column: Column; escapedHtml: string; unsortable?: true }[],
-  urlPrefix: string,
-  sortColumn: Column,
-  order: typeof orderOptions[number],
-): HeaderCell[] {
+export function sortableTableHead<Column = string>({
+  gaPrefix,
+  columns,
+  urlPrefix,
+  sortColumn,
+  order,
+}: {
+  gaPrefix: string
+  columns: { column: Column; escapedHtml: string; unsortable?: true }[]
+  urlPrefix: string
+  sortColumn: Column
+  order: typeof orderOptions[number]
+}): HeaderCell[] {
   return columns.map(({ column, escapedHtml, unsortable }) => {
     if (unsortable) {
       return { html: escapedHtml }
@@ -54,6 +60,8 @@ export function sortableTableHead<Column = string>(
     }
   })
 }
+
+export type SortableTableColumns<T> = Parameters<typeof sortableTableHead<T>>[0]['columns']
 
 const ariaSort: Record<typeof orderOptions[number], AriaSort> = {
   ASC: 'ascending',

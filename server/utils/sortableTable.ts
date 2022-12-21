@@ -6,8 +6,8 @@ export type HeaderCell =
       html: string
       attributes: {
         'aria-sort': AriaSort
-        'data-ga-category': string
-        'data-ga-action': string
+        'data-ga-category'?: string
+        'data-ga-action'?: string
       }
     }
   | { html: string }
@@ -17,17 +17,17 @@ export type HeaderCell =
  * to label sortable columns and add links
  */
 export function sortableTableHead<Column = string>({
-  gaPrefix,
   columns,
   urlPrefix,
   sortColumn,
   order,
+  gaPrefix,
 }: {
-  gaPrefix: string
   columns: { column: Column; escapedHtml: string; unsortable?: true }[]
   urlPrefix: string
   sortColumn: Column
   order: typeof orderOptions[number]
+  gaPrefix?: string
 }): HeaderCell[] {
   return columns.map(({ column, escapedHtml, unsortable }) => {
     if (unsortable) {
@@ -54,8 +54,12 @@ export function sortableTableHead<Column = string>({
       html: `<a href="${urlPrefix}&amp;${sortQuery}">${escapedHtml} ${sortDescription}</a>`,
       attributes: {
         'aria-sort': column === sortColumn ? ariaSort[order] : 'none',
-        'data-ga-category': `${gaPrefix} > Sorted table`,
-        'data-ga-action': `by ${column}`,
+        ...(gaPrefix
+          ? {
+              'data-ga-category': `${gaPrefix} > Sorted table`,
+              'data-ga-action': `by ${column}`,
+            }
+          : {}),
       },
     }
   })

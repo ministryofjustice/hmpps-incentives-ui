@@ -6,6 +6,8 @@ export type HeaderCell =
       html: string
       attributes: {
         'aria-sort': AriaSort
+        'data-ga-category'?: string
+        'data-ga-action'?: string
       }
     }
   | { html: string }
@@ -14,12 +16,19 @@ export type HeaderCell =
  * Produces parameters for head of GOV.UK Table component macro
  * to label sortable columns and add links
  */
-export function sortableTableHead<Column = string>(
-  columns: { column: Column; escapedHtml: string; unsortable?: true }[],
-  urlPrefix: string,
-  sortColumn: Column,
-  order: typeof orderOptions[number],
-): HeaderCell[] {
+export function sortableTableHead<Column = string>({
+  columns,
+  urlPrefix,
+  sortColumn,
+  order,
+  gaPrefix,
+}: {
+  columns: { column: Column; escapedHtml: string; unsortable?: true }[]
+  urlPrefix: string
+  sortColumn: Column
+  order: typeof orderOptions[number]
+  gaPrefix?: string
+}): HeaderCell[] {
   return columns.map(({ column, escapedHtml, unsortable }) => {
     if (unsortable) {
       return { html: escapedHtml }
@@ -45,10 +54,18 @@ export function sortableTableHead<Column = string>(
       html: `<a href="${urlPrefix}&amp;${sortQuery}">${escapedHtml} ${sortDescription}</a>`,
       attributes: {
         'aria-sort': column === sortColumn ? ariaSort[order] : 'none',
+        ...(gaPrefix
+          ? {
+              'data-ga-category': `${gaPrefix} > Sorted table`,
+              'data-ga-action': `by ${column}`,
+            }
+          : {}),
       },
     }
   })
 }
+
+export type SortableTableColumns<T> = Parameters<typeof sortableTableHead<T>>[0]['columns']
 
 const ariaSort: Record<typeof orderOptions[number], AriaSort> = {
   ASC: 'ascending',

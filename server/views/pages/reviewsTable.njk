@@ -5,6 +5,8 @@
 {% set pageTitle = applicationName + " – Manage incentive reviews" %}
 
 {% block content %}
+  <span id="ga-label" data-ga-label="{{ locationPrefix }}"></span>
+
   <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
     Manage incentive reviews
   </h1>
@@ -25,7 +27,7 @@
   <ul class="govuk-tabs__list">
     {% for level in levels %}
       <li class="govuk-tabs__list-item {% if level.iepLevel == selectedLevelCode %}govuk-tabs__list-item--selected{% endif %}">
-        <a class="govuk-tabs__tab" href="?level={{ level.iepLevel }}&amp;sort={{ sort }}&amp;order={{ order }}">
+        <a class="govuk-tabs__tab" href="?level={{ level.iepLevel }}&amp;sort={{ sort }}&amp;order={{ order }}" data-ga-category="Reviews table > Clicked on incentive level tab" data-ga-action = "{{ level.iepDescription }}">
           {{ level.iepDescription }}
         </a>
       </li>
@@ -39,7 +41,7 @@
     {% endset %}
 
     {% set profileLink %}
-      <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}">
+      <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}" data-ga-category="Reviews table > Clicked on link" data-ga-action="prisoner name">
         {{ review.lastName }}, {{ review.firstName }}
         <br />
         {{ review.prisonerNumber }}
@@ -59,13 +61,13 @@
     {% endset %}
 
     {% set positiveBehaviours %}
-      <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}/case-notes?type=POS&amp;{{ caseNoteFilter }}">
+      <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}/case-notes?type=POS&amp;{{ caseNoteFilter }}" data-ga-category="Reviews table > Clicked on link" data-ga-action="positive behaviours">
         {{ review.positiveBehaviours }}
       </a>
     {% endset %}
 
     {% set negativeBehaviours %}
-      <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}/case-notes?type=NEG&amp;{{ caseNoteFilter }}">
+      <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}/case-notes?type=NEG&amp;{{ caseNoteFilter }}" data-ga-category="Reviews table > Clicked on link" data-ga-action="negative behaviours">
         {{ review.negativeBehaviours }}
       </a>
     {% endset %}
@@ -101,3 +103,8 @@
     {{ govukPagination(paginationParams) }}
   </div>
 {% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/assets/gaSendEvents.js"></script>
+{% endblock bodyEnd %}

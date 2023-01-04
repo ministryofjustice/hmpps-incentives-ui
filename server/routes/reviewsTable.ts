@@ -3,7 +3,7 @@ import { NotFound } from 'http-errors'
 
 import config from '../config'
 import { pagination } from '../utils/pagination'
-import { sortableTableHead } from '../utils/sortableTable'
+import { type SortableTableColumns, sortableTableHead } from '../utils/sortableTable'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import { createRedisClient } from '../data/redisClient'
@@ -19,7 +19,7 @@ const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient('ro
 
 const PAGE_SIZE = 20
 
-const tableColumns: Parameters<typeof sortableTableHead<string>>[0] = [
+const tableColumns: SortableTableColumns<string> = [
   { column: 'photo', escapedHtml: '<span class="govuk-visually-hidden">Prisoner photo</span>', unsortable: true },
   { column: 'LAST_NAME', escapedHtml: 'Name and prison number' },
   { column: 'NEXT_REVIEW_DATE', escapedHtml: 'Date of next review' },
@@ -67,7 +67,13 @@ export default function routes(router: Router): Router {
       pageSize: PAGE_SIZE,
     })
 
-    const tableHead = sortableTableHead(tableColumns, `?level=${selectedLevelCode}`, sort, order)
+    const tableHead = sortableTableHead({
+      gaPrefix: 'Reviews table',
+      columns: tableColumns,
+      urlPrefix: `?level=${selectedLevelCode}`,
+      sortColumn: sort,
+      order,
+    })
 
     const pageCount = Math.ceil(response.reviewCount / PAGE_SIZE)
     const paginationUrlPrefix = `?level=${selectedLevelCode}&sort=${sort}&order=${order}&`
@@ -76,6 +82,7 @@ export default function routes(router: Router): Router {
     res.render('pages/reviewsTable', {
       dpsUrl: config.dpsUrl,
       feedbackUrl: config.feedbackUrlForReviewsTable || config.feedbackUrlForTable || config.feedbackUrl,
+      locationPrefix,
       locationDescription: response.locationDescription,
       overdueCount: response.overdueCount,
       levels,

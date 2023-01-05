@@ -24,7 +24,7 @@ generic-service:
     PHASE_NAME: "DEV"
     FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE: "true"
     FEATURE_FS_CACHE: "true"
-    FEATURE_NEW_REVIEWS_TABLE: "MDI,BAI,CFI,CWI,DAI,EXI,HOI,WCI,WHI,WII,WNI"
+    FEATURE_NEW_REVIEWS_TABLE: "MDI,BAI,CFI,CWI,DAI,EXI,GHI,GMI,HOI,SWI,UKI,WCI,WDI,WHI,WII,WNI"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

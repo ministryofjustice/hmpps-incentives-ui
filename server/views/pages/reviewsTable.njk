@@ -132,4 +132,27 @@
 {% block bodyEnd %}
   {{ super() }}
   <script src="/assets/gaSendEvents.js"></script>
+
+  <script type="text/javascript" nonce="{{ cspNonce }}">
+    function hideBanner(event) {
+      const dismissLink = $(this)
+      const id = dismissLink.data('notification-id')
+
+      const notificationBanner = dismissLink.parents('.govuk-notification-banner')
+      const csrf = $('#_csrf').val()
+
+      $.ajax({
+        type: 'POST',
+        url: '/notification/dismiss',
+        headers: {
+          'X-CSRF-Token': csrf,
+        },
+        data: { id: id },
+      })
+        .done(() => notificationBanner.hide())
+        .fail(() => window.location = '/')
+    }
+
+    $('.notification_dismiss_link').on('click', hideBanner)
+  </script>
 {% endblock bodyEnd %}

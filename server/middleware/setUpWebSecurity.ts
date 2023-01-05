@@ -37,6 +37,7 @@ export default function setUpWebSecurity(): Router {
           fontSrc: ["'self'", 'https://*.hotjar.com'],
           frameSrc: ['https://*.hotjar.com'],
           connectSrc: [
+            "'self'",
             '*.google-analytics.com',
             '*.googletagmanager.com',
             '*.analytics.google.com',

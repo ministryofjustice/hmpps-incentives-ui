@@ -14,6 +14,7 @@ import {
   type IncentivesReviewsPaginationAndSorting,
 } from '../data/incentivesApi'
 import TokenStore from '../data/tokenStore'
+import NotificationService from '../services/notificationService'
 
 const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient('routes/incentivesTable.ts')))
 
@@ -79,6 +80,9 @@ export default function routes(router: Router): Router {
     const paginationUrlPrefix = `?level=${selectedLevelCode}&sort=${sort}&order=${order}&`
     const paginationParams = pagination(page, pageCount, paginationUrlPrefix)
 
+    const notificationId = 'NATIONAL-POLICY-PDF'
+    const showNotification = !NotificationService.isDismissed(req, notificationId)
+
     res.render('pages/reviewsTable', {
       dpsUrl: config.dpsUrl,
       feedbackUrl: config.feedbackUrlForReviewsTable || config.feedbackUrlForTable || config.feedbackUrl,
@@ -94,6 +98,7 @@ export default function routes(router: Router): Router {
       paginationParams,
       sort,
       order,
+      showNotification,
     })
   })
 

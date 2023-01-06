@@ -8,7 +8,7 @@ jest.mock('../services/userService')
 
 const notificationId = 'test-notification-id'
 const expectedCookieName = `notification-banner-${notificationId}`
-const expectedMaxAgeSecs = 52 * 24 * 3600
+const expectedMaxAgeSecs = 365 * 24 * 3600
 
 let app: Express
 let userService: jest.Mocked<UserService>

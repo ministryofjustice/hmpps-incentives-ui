@@ -3,7 +3,7 @@ import type { NextFunction, Request, RequestHandler, Response, Router } from 'ex
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import NotificationService from '../services/notificationService'
 
-const oneYearMs = 52 * 24 * 3600 * 1000
+const oneYearMs = 365 * 24 * 3600 * 1000
 
 export default function routes(router: Router): Router {
   const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))

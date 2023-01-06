@@ -146,7 +146,6 @@
         data: { id: id },
       })
         .done(() => notificationBanner.hide())
-        .fail(() => window.location = '/')
     }
 
     $('.notification_dismiss_link').on('click', hideBanner)

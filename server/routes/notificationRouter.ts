@@ -3,6 +3,8 @@ import type { NextFunction, Request, RequestHandler, Response, Router } from 'ex
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import NotificationService from '../services/notificationService'
 
+const oneYearMs = 52 * 24 * 3600 * 1000
+
 export default function routes(router: Router): Router {
   const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
@@ -16,8 +18,7 @@ export default function routes(router: Router): Router {
     }
 
     const cookieName = NotificationService.cookieName(id)
-    const oneYear = 52 * 24 * 3600000
-    res.cookie(cookieName, 'dismissed', { maxAge: oneYear, httpOnly: true })
+    res.cookie(cookieName, 'dismissed', { maxAge: oneYearMs, httpOnly: true })
 
     res.status(200)
     return res.end()

@@ -41,7 +41,8 @@
         <p class="govuk-!-margin-top-2"><a class="govuk-link govuk-link--no-visited-state notification_dismiss_link" data-notification-id="NATIONAL-POLICY-PDF" href="#">Dismiss</a></p>
     {% endset %}
     {{ govukNotificationBanner({
-      html: html
+      html: html,
+      classes: 'reviews-policy-notification-banner'
     }) }}
   {% endif %}
 

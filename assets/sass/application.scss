@@ -25,3 +25,7 @@ $govuk-page-width: $moj-page-width;
 @import './global';
 @import './incentive-summary';
 @import './pgd-region';
+
+.reviews-policy-notification-banner.govuk-notification-banner p {
+  max-width: 90%;
+}

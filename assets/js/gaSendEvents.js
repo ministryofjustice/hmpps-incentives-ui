@@ -15,8 +15,12 @@ function gaSendEvent() {
     }
   }
 
-  if (typeof ga === typeof Function) ga('send', 'event', gaCategory, gaAction, gaLabel)
+  // universal analytics
+  if (typeof ga === typeof Function) {
+    ga('send', 'event', gaCategory, gaAction, gaLabel)
+  }
 
+  // google analytics 4
   if (typeof gtag === typeof Function) {
     gtag('event', 'incentives_event', {
       category: gaCategory,
@@ -26,6 +30,9 @@ function gaSendEvent() {
   }
 }
 
-$('.govuk-tabs__tab[data-ga-category]').on('focus', gaSendEvent)
-$('.govuk-table a[data-ga-category]').on('click', gaSendEvent)
-$('.govuk-table .govuk-table__header[data-ga-category]').on('click', gaSendEvent)
+$(() => {
+  $('.reviews-policy-notification-banner a[data-ga-category]').on('click', gaSendEvent)
+  $('.govuk-tabs__tab[data-ga-category]').on('focus', gaSendEvent)
+  $('.govuk-table a[data-ga-category]').on('click', gaSendEvent)
+  $('.govuk-table .govuk-table__header[data-ga-category]').on('click', gaSendEvent)
+})

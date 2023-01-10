@@ -41,7 +41,7 @@ $(() => {
   })
 
   // Dismissable notification banners
-  function hideBanner() {
+  function hideBanner(event) {
     const dismissLink = $(this)
     const id = dismissLink.data('notification-id')
 
@@ -56,6 +56,8 @@ $(() => {
       },
       data: { id },
     }).done(() => notificationBanner.hide())
+
+    event.preventDefault()
   }
 
   $('.notification_dismiss_link').on('click', hideBanner)

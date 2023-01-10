@@ -31,14 +31,16 @@
 
     {% set html %}
         <p>
-          Review dates are calculated according to the <a class="govuk-notification-banner__link" href="https://www.gov.uk/government/publications/incentives-policy-framework" target="_blank">national incentives policy framework</a>.
+          Review dates are calculated according to the <a href="https://www.gov.uk/government/publications/incentives-policy-framework" data-ga-category="Policy banner > Clicked on link" data-ga-action="national incentives policy framework on GOV.UK">national incentives policy framework</a>.
         </p>
 
         <p>
           Your local policy should ensure incentive reviews take place within the guidelines of the national policy.
         </p>
 
-        <p class="govuk-!-margin-top-2"><a class="govuk-link govuk-link--no-visited-state notification_dismiss_link" data-notification-id="NATIONAL-POLICY-PDF" href="#">Dismiss</a></p>
+        <p class="govuk-!-margin-top-2">
+          <a class="govuk-link govuk-link--no-visited-state notification_dismiss_link" data-notification-id="NATIONAL-POLICY-PDF" data-ga-category="Policy banner > Dismissed notification" data-ga-action="dismiss" href="#">Dismiss</a>
+        </p>
     {% endset %}
     {{ govukNotificationBanner({
       html: html,
@@ -49,7 +51,7 @@
   <ul class="govuk-tabs__list">
     {% for level in levels %}
       <li class="govuk-tabs__list-item {% if level.iepLevel == selectedLevelCode %}govuk-tabs__list-item--selected{% endif %}">
-        <a class="govuk-tabs__tab" href="?level={{ level.iepLevel }}&amp;sort={{ sort }}&amp;order={{ order }}" data-ga-category="Reviews table > Clicked on incentive level tab" data-ga-action = "{{ level.iepDescription }}">
+        <a class="govuk-tabs__tab" href="?level={{ level.iepLevel }}&amp;sort={{ sort }}&amp;order={{ order }}" data-ga-category="Reviews table > Clicked on incentive level tab" data-ga-action="{{ level.iepDescription }}">
           {{ level.iepDescription }}
         </a>
       </li>

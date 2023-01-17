@@ -1,26 +1,26 @@
 {
-  "extends": [
-    "config:base",
-    ":disableDependencyDashboard",
-    ":preserveSemverRanges"
-  ],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>ministryofjustice/hmpps-renovate-config:node"],
   "assigneesFromCodeOwners": true,
-  "timezone": "Europe/London",
-  "schedule": [
-    "after 9am every weekday",
-    "before 5pm every weekday"
-  ],
-  "enabledManagers": ["npm", "nvm", "dockerfile", "docker-compose", "helmv3", "helm-values", "circleci"],
   "packageRules": [
+    {
+      "matchManagers": ["npm"],
+      "rangeStrategy": "bump",
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "all non major NPM dependencies",
+      "groupSlug": "all-npm-minor-patch",
+      "stabilityDays": 3
+    },
+    {
+      "matchPackageNames": ["typescript", "govuk-frontend"],
+      "rangeStrategy": "bump",
+      "stabilityDays": 0
+    },
     {
       "matchManagers": ["npm"],
       "matchPackageNames": ["@types/node"],
       "matchUpdateTypes": ["major"],
       "enabled": false
-    },
-    {
-      "matchDatasources": ["docker"],
-      "allowedVersions": "18.12-bullseye-slim"
     },
     {
       "matchDatasources": ["docker-compose"],
@@ -36,14 +36,9 @@
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/redis"],
       "allowedVersions": "6.2"
-    },
-    {
-      "matchPackageNames": ["typescript"],
-      "rangeStrategy": "bump"
-    },
-    {
-      "matchPackageNames": ["govuk-frontend"],
-      "rangeStrategy": "bump"
     }
-  ]
+  ],
+  "vulnerabilityAlerts": {
+    "stabilityDays": 0
+  }
 }

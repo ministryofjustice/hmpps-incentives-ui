@@ -5,7 +5,10 @@
   "packageRules": [
     {
       "matchManagers": ["npm"],
-      "rangeStrategy": "bump",
+      "rangeStrategy": "bump"
+    },
+    {
+      "matchManagers": ["npm"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non major NPM dependencies",
       "groupSlug": "all-npm-minor-patch",

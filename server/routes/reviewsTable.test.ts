@@ -239,8 +239,8 @@ describe('Reviews table', () => {
     name: string
     givenUrl: string
     expectedLevel: string
-    expectedSort: typeof sortOptions[number]
-    expectedOrder: typeof orderOptions[number]
+    expectedSort: (typeof sortOptions)[number]
+    expectedOrder: (typeof orderOptions)[number]
   }
   const tabScenarios: TabScenario[] = [
     {
@@ -383,8 +383,8 @@ describe('Reviews table', () => {
     name: string
     givenUrl: string
     expectedLevel: string
-    expectedSort: typeof sortOptions[number]
-    expectedOrder: typeof orderOptions[number]
+    expectedSort: (typeof sortOptions)[number]
+    expectedOrder: (typeof orderOptions)[number]
   }
   const sortingScenarios: SortingScenario[] = [
     {
@@ -523,8 +523,8 @@ describe('Reviews table', () => {
     name: string
     givenUrl: string
     expectedLevel: string
-    expectedSort: typeof sortOptions[number]
-    expectedOrder: typeof orderOptions[number]
+    expectedSort: (typeof sortOptions)[number]
+    expectedOrder: (typeof orderOptions)[number]
     expectedPages: number[]
   }
   const paginationScenarios: PaginationScenario[] = [

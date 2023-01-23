@@ -14,7 +14,7 @@ export const palette = [
   'app-chart-colour--orange',
   'app-chart-colour--light-green',
 ] as const
-export type Colour = typeof palette[number] | 'app-chart-colour--red' // red is the final fallback
+export type Colour = (typeof palette)[number] | 'app-chart-colour--red' // red is the final fallback
 
 export function makeChartPalette(columns: string[]): Colour[] {
   let availableColours = [...palette]

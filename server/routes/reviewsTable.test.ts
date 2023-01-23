@@ -215,7 +215,7 @@ describe('Reviews table', () => {
       const defaultRequest: IncentivesReviewsRequest = {
         agencyId: 'MDI',
         locationPrefix: 'MDI-1',
-        levelCode: 'STD',
+        levelCode: 'BAS',
         sort: 'NEXT_REVIEW_DATE',
         order: 'ASC',
         page: 0,
@@ -246,7 +246,7 @@ describe('Reviews table', () => {
     {
       name: 'shows each available level',
       givenUrl: '',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
     },
@@ -260,21 +260,21 @@ describe('Reviews table', () => {
     {
       name: 'falls back to default when given incorrect level',
       givenUrl: '?level=EN2',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
     },
     {
       name: 'preserves sort',
       givenUrl: '?sort=LAST_NAME',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'ASC',
     },
     {
       name: 'preserves sort and order',
       givenUrl: '?sort=NEGATIVE_BEHAVIOURS&order=ASC',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'NEGATIVE_BEHAVIOURS',
       expectedOrder: 'ASC',
     },
@@ -375,7 +375,7 @@ describe('Reviews table', () => {
         const firstRowCells: HTMLTableCellElement[] = $body.find('.app-reviews-table tbody tr').first().find('td').get()
         expect(firstRowCells.length).toEqual(1)
         const [messageCell] = firstRowCells
-        expect(messageCell.textContent).toContain('There are no prisoners at Houseblock 1 on Standard')
+        expect(messageCell.textContent).toContain('There are no prisoners at Houseblock 1 on Basic')
       })
   })
 
@@ -390,7 +390,7 @@ describe('Reviews table', () => {
     {
       name: 'uses default level and sorting if not provided',
       givenUrl: '',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
     },
@@ -411,28 +411,28 @@ describe('Reviews table', () => {
     {
       name: 'accepts provided sort and uses default level',
       givenUrl: '?sort=LAST_NAME',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'ASC',
     },
     {
       name: 'accepts provided sort & ordering and uses default level',
       givenUrl: '?sort=LAST_NAME&order=DESC',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'DESC',
     },
     {
       name: 'accepts provided sort and uses default level',
       givenUrl: '?sort=POSITIVE_BEHAVIOURS',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'POSITIVE_BEHAVIOURS',
       expectedOrder: 'DESC',
     },
     {
       name: 'accepts provided sort & ordering and uses default level',
       givenUrl: '?sort=POSITIVE_BEHAVIOURS&order=DESC',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'POSITIVE_BEHAVIOURS',
       expectedOrder: 'DESC',
     },
@@ -555,7 +555,7 @@ describe('Reviews table', () => {
     {
       name: 'uses default level and sorting if not provided',
       givenUrl: '',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
       expectedPages: [1, 2, 6, 7],
@@ -563,7 +563,7 @@ describe('Reviews table', () => {
     {
       name: 'uses default level and sorting if not provided; accepts page',
       givenUrl: '?page=7',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
       expectedPages: [1, 2, 6, 7],
@@ -571,7 +571,7 @@ describe('Reviews table', () => {
     {
       name: 'preserves sort and uses default level if not provided',
       givenUrl: '?page=7&sort=LAST_NAME',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'ASC',
       expectedPages: [1, 2, 6, 7],
@@ -579,7 +579,7 @@ describe('Reviews table', () => {
     {
       name: 'preserves sort and order, but uses default level if not provided',
       givenUrl: '?page=7&order=DESC&sort=LAST_NAME',
-      expectedLevel: 'STD',
+      expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'DESC',
       expectedPages: [1, 2, 6, 7],

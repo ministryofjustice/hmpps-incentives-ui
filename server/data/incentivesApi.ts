@@ -52,8 +52,8 @@ export const sortOptions = [
 export const orderOptions = ['ASC', 'DESC'] as const
 
 export type IncentivesReviewsPaginationAndSorting = {
-  sort?: typeof sortOptions[number]
-  order?: typeof orderOptions[number]
+  sort?: (typeof sortOptions)[number]
+  order?: (typeof orderOptions)[number]
   page?: number
   pageSize?: number
 }

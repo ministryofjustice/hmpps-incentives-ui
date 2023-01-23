@@ -41,4 +41,4 @@ export const chartIds = [
   'prisoners-with-entries-by-sexual-orientation',
 ] as const
 
-export type ChartId = typeof chartIds[number]
+export type ChartId = (typeof chartIds)[number]

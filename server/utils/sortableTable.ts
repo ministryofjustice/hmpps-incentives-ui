@@ -26,7 +26,7 @@ export function sortableTableHead<Column = string>({
   columns: { column: Column; escapedHtml: string; unsortable?: true }[]
   urlPrefix: string
   sortColumn: Column
-  order: typeof orderOptions[number]
+  order: (typeof orderOptions)[number]
   gaPrefix?: string
 }): HeaderCell[] {
   return columns.map(({ column, escapedHtml, unsortable }) => {
@@ -67,7 +67,7 @@ export function sortableTableHead<Column = string>({
 
 export type SortableTableColumns<T> = Parameters<typeof sortableTableHead<T>>[0]['columns']
 
-const ariaSort: Record<typeof orderOptions[number], AriaSort> = {
+const ariaSort: Record<(typeof orderOptions)[number], AriaSort> = {
   ASC: 'ascending',
   DESC: 'descending',
 }

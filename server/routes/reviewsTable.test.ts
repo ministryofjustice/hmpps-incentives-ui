@@ -258,7 +258,7 @@ describe('Reviews table', () => {
       expectedOrder: 'ASC',
     },
     {
-      name: 'falls back to default when given incorrect level',
+      name: 'falls back to basic when given incorrect level',
       givenUrl: '?level=EN2',
       expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
@@ -388,7 +388,7 @@ describe('Reviews table', () => {
   }
   const sortingScenarios: SortingScenario[] = [
     {
-      name: 'uses default level and sorting if not provided',
+      name: 'uses basic level and sorting if not provided',
       givenUrl: '',
       expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
@@ -409,28 +409,28 @@ describe('Reviews table', () => {
       expectedOrder: 'ASC',
     },
     {
-      name: 'accepts provided sort and uses default level',
+      name: 'accepts provided sort and uses basic level',
       givenUrl: '?sort=LAST_NAME',
       expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'ASC',
     },
     {
-      name: 'accepts provided sort & ordering and uses default level',
+      name: 'accepts provided sort & ordering and uses basic level',
       givenUrl: '?sort=LAST_NAME&order=DESC',
       expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'DESC',
     },
     {
-      name: 'accepts provided sort and uses default level',
+      name: 'accepts provided sort and uses basic level',
       givenUrl: '?sort=POSITIVE_BEHAVIOURS',
       expectedLevel: 'BAS',
       expectedSort: 'POSITIVE_BEHAVIOURS',
       expectedOrder: 'DESC',
     },
     {
-      name: 'accepts provided sort & ordering and uses default level',
+      name: 'accepts provided sort & ordering and uses basic level',
       givenUrl: '?sort=POSITIVE_BEHAVIOURS&order=DESC',
       expectedLevel: 'BAS',
       expectedSort: 'POSITIVE_BEHAVIOURS',
@@ -553,7 +553,7 @@ describe('Reviews table', () => {
       expectedPages: [1, 2, 3, 4, 6, 7],
     },
     {
-      name: 'uses default level and sorting if not provided',
+      name: 'uses basic level and sorting if not provided',
       givenUrl: '',
       expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
@@ -561,7 +561,7 @@ describe('Reviews table', () => {
       expectedPages: [1, 2, 6, 7],
     },
     {
-      name: 'uses default level and sorting if not provided; accepts page',
+      name: 'uses basic level and sorting if not provided; accepts page',
       givenUrl: '?page=7',
       expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
@@ -569,7 +569,7 @@ describe('Reviews table', () => {
       expectedPages: [1, 2, 6, 7],
     },
     {
-      name: 'preserves sort and uses default level if not provided',
+      name: 'preserves sort and uses basic level if not provided',
       givenUrl: '?page=7&sort=LAST_NAME',
       expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
@@ -577,7 +577,7 @@ describe('Reviews table', () => {
       expectedPages: [1, 2, 6, 7],
     },
     {
-      name: 'preserves sort and order, but uses default level if not provided',
+      name: 'preserves sort and order, but uses basic level if not provided',
       givenUrl: '?page=7&order=DESC&sort=LAST_NAME',
       expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',

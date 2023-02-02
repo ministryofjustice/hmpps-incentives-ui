@@ -55,7 +55,7 @@ export default function routes(router: Router): Router {
     const selectedLevel = levels.find(level => level.iepLevel === selectedLevelCode)
     let selectedLevelDescription = selectedLevel?.iepDescription
     if (!selectedLevel) {
-      const basicOrFirstLevel = levels.find(level => level.iepDescription === 'Basic') ?? levels[0]
+      const basicOrFirstLevel = levels.find(level => level.iepLevel === 'BAS') ?? levels[0]
       selectedLevelCode = basicOrFirstLevel.iepLevel
       selectedLevelDescription = basicOrFirstLevel.iepDescription
     }

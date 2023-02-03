@@ -100,7 +100,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.259.0",
+    "@aws-sdk/client-s3": "^3.261.0",
     "@ministryofjustice/frontend": "^1.6.4",
     "@sentry/node": "^7.34.0",
     "agentkeepalive": "^4.2.1",
@@ -126,7 +126,7 @@
     "passport": "^0.6.0",
     "passport-oauth2": "^1.6.1",
     "prom-client": "^14.1.1",
-    "redis": "^4.6.3",
+    "redis": "^4.6.4",
     "superagent": "^8.0.9",
     "url-value-parser": "^2.2.0",
     "uuid": "^9.0.0"

@@ -14,7 +14,7 @@
   "scripts": {
     "prepare": "husky install",
     "copy-views": "cp -R server/views dist/server/",
-    "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend --load-path=node_modules/@ministryofjustice/frontend --load-path=. ./assets/sass/application.scss:./assets/stylesheets/application.css --style compressed",
+    "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend --load-path=node_modules/@ministryofjustice/frontend --load-path=. assets/scss/application.scss:./assets/stylesheets/application.css --style compressed",
     "watch-ts": "tsc -w",
     "watch-views": "nodemon --watch server/views -e html,njk -x npm run copy-views",
     "watch-node": "DEBUG=gov-starter-server* nodemon -r dotenv/config --watch dist/ dist/server.js | bunyan -o short",
@@ -180,7 +180,8 @@
     "nock": "^13.3.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.3",
-    "sass": "^1.57.1",
+    "prettier-plugin-jinja-template": "^0.0.5",
+    "sass": "^1.58.0",
     "supertest": "^6.3.3",
     "ts-jest": "^29.0.5",
     "typescript": "^4.9.5"

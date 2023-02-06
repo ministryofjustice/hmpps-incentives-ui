@@ -17,12 +17,20 @@
     <a href="/select-location">Select another location</a>
   </p>
 
-  <dl class="app-data-list govuk-!-margin-top-6 govuk-!-margin-bottom-8">
-    <dt>Overdue reviews</dt>
-    <dd>
-      {{- overdueCount -}}
-    </dd>
-  </dl>
+  <div class="govuk-grid-row govuk-!-margin-top-8 govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-l">Overdue reviews</h2>
+    </div>
+
+    {% for level in levels %}
+      <div class="govuk-grid-column-one-quarter" data-qa="number-at-level-{{ level.levelCode }}">
+        <p class="govuk-body govuk-!-margin-bottom-2">{{ level.levelName }}</p>
+        <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold">
+          {{ level.overdueCount | default(0) }}
+        </span>
+      </div>
+    {% endfor %}
+  </div>
 
   <h2 class="govuk-heading-l">Prisoner details and review status</h2>
 
@@ -50,9 +58,9 @@
 
   <ul class="govuk-tabs__list">
     {% for level in levels %}
-      <li class="govuk-tabs__list-item {% if level.iepLevel == selectedLevelCode %}govuk-tabs__list-item--selected{% endif %}">
-        <a class="govuk-tabs__tab" href="?level={{ level.iepLevel }}&amp;sort={{ sort }}&amp;order={{ order }}" data-ga-category="Reviews table > Clicked on incentive level tab" data-ga-action="{{ level.iepDescription }}">
-          {{ level.iepDescription }}
+      <li class="govuk-tabs__list-item {% if level.levelCode == selectedLevelCode %}govuk-tabs__list-item--selected{% endif %}">
+        <a class="govuk-tabs__tab" href="?level={{ level.levelCode }}&amp;sort={{ sort }}&amp;order={{ order }}" data-ga-category="Reviews table > Clicked on incentive level tab" data-ga-action="{{ level.levelName }}">
+          {{ level.levelName }} ({{ level.reviewCount }})
         </a>
       </li>
     {% endfor %}

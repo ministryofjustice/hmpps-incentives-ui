@@ -23,7 +23,7 @@
     </div>
 
     {% for level in levels %}
-      <div class="govuk-grid-column-one-quarter" data-qa="number-at-level-{{ level.levelCode }}">
+      <div class="govuk-grid-column-one-quarter" data-qa="overdue-at-level-{{ level.levelCode }}">
         <p class="govuk-body govuk-!-margin-bottom-2">{{ level.levelName }}</p>
         <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold">
           {{ level.overdueCount | default(0) }}

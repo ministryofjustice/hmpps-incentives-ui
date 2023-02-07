@@ -80,6 +80,26 @@ export function getTestIncentivesReviews(): IncentivesReviewsResponse {
     locationDescription: 'Houseblock 1',
     overdueCount: 16,
     reviewCount: 135,
+    levels: [
+      {
+        levelCode: 'BAS',
+        levelName: 'Basic',
+        reviewCount: 138,
+        overdueCount: 16,
+      },
+      {
+        levelCode: 'STD',
+        levelName: 'Standard',
+        reviewCount: 135,
+        overdueCount: 0,
+      },
+      {
+        levelCode: 'ENH',
+        levelName: 'Enhanced',
+        reviewCount: 130,
+        overdueCount: 0,
+      },
+    ],
     reviews: [
       {
         firstName: 'John',

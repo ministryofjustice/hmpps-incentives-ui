@@ -60,6 +60,26 @@ describe('IncentiveApi', () => {
           locationDescription: '1 wing',
           overdueCount: 0,
           reviewCount: 0,
+          levels: [
+            {
+              levelCode: 'BAS',
+              levelName: 'Basic',
+              reviewCount: 0,
+              overdueCount: 0,
+            },
+            {
+              levelCode: 'STD',
+              levelName: 'Standard',
+              reviewCount: 0,
+              overdueCount: 0,
+            },
+            {
+              levelCode: 'ENH',
+              levelName: 'Enhanced',
+              reviewCount: 0,
+              overdueCount: 0,
+            },
+          ],
           reviews: [],
         })
 
@@ -73,6 +93,26 @@ describe('IncentiveApi', () => {
         locationDescription: '1 wing',
         overdueCount: 0,
         reviewCount: 0,
+        levels: [
+          {
+            levelCode: 'BAS',
+            levelName: 'Basic',
+            reviewCount: 0,
+            overdueCount: 0,
+          },
+          {
+            levelCode: 'STD',
+            levelName: 'Standard',
+            reviewCount: 0,
+            overdueCount: 0,
+          },
+          {
+            levelCode: 'ENH',
+            levelName: 'Enhanced',
+            reviewCount: 0,
+            overdueCount: 0,
+          },
+        ],
         reviews: [],
       })
     })
@@ -85,6 +125,26 @@ describe('IncentiveApi', () => {
           locationDescription: '1 wing',
           overdueCount: 2,
           reviewCount: 1,
+          levels: [
+            {
+              levelCode: 'BAS',
+              levelName: 'Basic',
+              reviewCount: 10,
+              overdueCount: 0,
+            },
+            {
+              levelCode: 'STD',
+              levelName: 'Standard',
+              reviewCount: 1,
+              overdueCount: 0,
+            },
+            {
+              levelCode: 'ENH',
+              levelName: 'Enhanced',
+              reviewCount: 10,
+              overdueCount: 2,
+            },
+          ],
           reviews: [
             {
               firstName: 'Flem',
@@ -105,6 +165,26 @@ describe('IncentiveApi', () => {
         locationDescription: '1 wing',
         overdueCount: 2,
         reviewCount: 1,
+        levels: [
+          {
+            levelCode: 'BAS',
+            levelName: 'Basic',
+            reviewCount: 10,
+            overdueCount: 0,
+          },
+          {
+            levelCode: 'STD',
+            levelName: 'Standard',
+            reviewCount: 1,
+            overdueCount: 0,
+          },
+          {
+            levelCode: 'ENH',
+            levelName: 'Enhanced',
+            reviewCount: 10,
+            overdueCount: 2,
+          },
+        ],
         reviews: [
           {
             firstName: 'Flem',

@@ -17,22 +17,28 @@
     <a href="/select-location">Select another location</a>
   </p>
 
-  <div class="govuk-grid-row govuk-!-margin-top-8 govuk-grid-row">
+  <div class="govuk-grid-row govuk-!-margin-top-8">
     <div class="govuk-grid-column-full">
       <h2 class="govuk-heading-l">Overdue reviews</h2>
     </div>
+  </div>
 
+  <div class="govuk-grid-row">
     {% for level in levels %}
-      <div class="govuk-grid-column-one-quarter" data-qa="overdue-at-level-{{ level.levelCode }}">
-        <p class="govuk-body govuk-!-margin-bottom-2">{{ level.levelName }}</p>
-        <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold">
+      <div class="govuk-grid-column-one-quarter govuk-!-margin-bottom-7" data-qa="overdue-at-level-{{ level.levelCode }}">
+        <p class="govuk-body govuk-!-margin-bottom-7">{{ level.levelName }}</p>
+        <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold govuk-!-margin-bottom-4">
           {{ level.overdueCount | default(0) }}
         </span>
       </div>
+      {% if loop.index0 % 4 == 3 %}
+        </div>
+        <div class="govuk-grid-row">
+      {% endif  %}
     {% endfor %}
   </div>
 
-  <h2 class="govuk-heading-l">Prisoner details and review status</h2>
+  <h2 class="govuk-heading-l govuk-!-margin-top-5">Prisoner details and review status</h2>
 
   {% if showNotification %}
     <input type="hidden" id="_csrf" name="_csrf" value="{{ csrfToken }}" />

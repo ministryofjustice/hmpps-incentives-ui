@@ -39,6 +39,8 @@ const sampleLevels: Level[] = [
   },
 ]
 
+const reviewsResponse = getTestIncentivesReviews()
+
 let incentivesApi: jest.Mocked<IncentivesApi>
 
 beforeAll(() => {
@@ -61,7 +63,7 @@ let app: Express
 beforeEach(() => {
   config.featureFlags.newReviewsTable = ['*']
   app = appWithAllRoutes({})
-  incentivesApi.getReviews.mockResolvedValue(getTestIncentivesReviews())
+  incentivesApi.getReviews.mockResolvedValue(reviewsResponse)
 })
 
 afterEach(() => {
@@ -95,12 +97,20 @@ describe('Reviews table', () => {
   })
 
   it('should show number of overdue reviews', () => {
+    const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
     return request(app)
       .get('/incentive-summary/MDI-2')
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Manage incentive reviews')
-        expect(res.text).toContain('<dd>16</dd>')
+
+        const $body = $(res.text)
+        reviewsResponse.levels.forEach(({ levelCode, levelName, overdueCount }) => {
+          const overdueAtLevel = $body.find(`div[data-qa="overdue-at-level-${levelCode}"]`).text()
+          expect(overdueAtLevel).toContain(levelName)
+          expect(overdueAtLevel).toContain(overdueCount.toString())
+        })
       })
   })
 
@@ -318,9 +328,9 @@ describe('Reviews table', () => {
               })
               .get()
 
-            const expectedTabContents = sampleLevels.map(({ iepLevel, iepDescription }) => {
-              const href = `?level=${iepLevel}&sort=${expectedSort}&order=${expectedOrder}`
-              const title = iepDescription
+            const expectedTabContents = reviewsResponse.levels.map(({ levelCode, levelName, reviewCount }) => {
+              const href = `?level=${levelCode}&sort=${expectedSort}&order=${expectedOrder}`
+              const title = `${levelName} (${reviewCount})`
               return { href, title }
             })
 

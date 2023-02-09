@@ -78,7 +78,8 @@ export default function routes(router: Router): Router {
       order,
     })
 
-    const pageCount = Math.ceil(response.reviewCount / PAGE_SIZE)
+    const { reviewCount } = response.levels.find(level => level.levelCode === selectedLevelCode)
+    const pageCount = Math.ceil(reviewCount / PAGE_SIZE)
     const paginationUrlPrefix = `?level=${selectedLevelCode}&sort=${sort}&order=${order}&`
     const paginationParams = pagination(page, pageCount, paginationUrlPrefix)
 
@@ -90,8 +91,7 @@ export default function routes(router: Router): Router {
       feedbackUrl: config.feedbackUrlForReviewsTable || config.feedbackUrlForTable || config.feedbackUrl,
       locationPrefix,
       locationDescription: response.locationDescription,
-      overdueCount: response.overdueCount,
-      levels,
+      levels: response.levels,
       caseNoteFilter,
       selectedLevelCode,
       selectedLevelDescription,

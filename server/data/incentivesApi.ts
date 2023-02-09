@@ -64,10 +64,17 @@ export type IncentivesReviewsRequest = {
   levelCode: string
 } & IncentivesReviewsPaginationAndSorting
 
+export interface IncentivesReviewsLevel {
+  levelCode: string
+  levelName: string
+  reviewCount: number
+  overdueCount: number
+}
 export interface IncentivesReviewsResponse {
   locationDescription: string
   overdueCount: number
   reviewCount: number
+  levels: IncentivesReviewsLevel[]
   reviews: IncentivesReview[]
 }
 

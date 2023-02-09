@@ -17,14 +17,28 @@
     <a href="/select-location">Select another location</a>
   </p>
 
-  <dl class="app-data-list govuk-!-margin-top-6 govuk-!-margin-bottom-8">
-    <dt>Overdue reviews</dt>
-    <dd>
-      {{- overdueCount -}}
-    </dd>
-  </dl>
+  <div class="govuk-grid-row govuk-!-margin-top-8">
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-l">Overdue reviews</h2>
+    </div>
+  </div>
 
-  <h2 class="govuk-heading-l">Prisoner details and review status</h2>
+  <div class="govuk-grid-row">
+    {% for level in levels %}
+      <div class="govuk-grid-column-one-quarter govuk-!-margin-bottom-7" data-qa="overdue-at-level-{{ level.levelCode }}">
+        <p class="govuk-body govuk-!-margin-bottom-7">{{ level.levelName }}</p>
+        <span class="govuk-body govuk-!-font-size-36 govuk-!-font-weight-bold govuk-!-margin-bottom-4">
+          {{ level.overdueCount | default(0) }}
+        </span>
+      </div>
+      {% if loop.index0 % 4 == 3 %}
+        </div>
+        <div class="govuk-grid-row">
+      {% endif  %}
+    {% endfor %}
+  </div>
+
+  <h2 class="govuk-heading-l govuk-!-margin-top-5">Prisoner details and review status</h2>
 
   {% if showNotification %}
     <input type="hidden" id="_csrf" name="_csrf" value="{{ csrfToken }}" />
@@ -50,9 +64,9 @@
 
   <ul class="govuk-tabs__list">
     {% for level in levels %}
-      <li class="govuk-tabs__list-item {% if level.iepLevel == selectedLevelCode %}govuk-tabs__list-item--selected{% endif %}">
-        <a class="govuk-tabs__tab" href="?level={{ level.iepLevel }}&amp;sort={{ sort }}&amp;order={{ order }}" data-ga-category="Reviews table > Clicked on incentive level tab" data-ga-action="{{ level.iepDescription }}">
-          {{ level.iepDescription }}
+      <li class="govuk-tabs__list-item {% if level.levelCode == selectedLevelCode %}govuk-tabs__list-item--selected{% endif %}">
+        <a class="govuk-tabs__tab" href="?level={{ level.levelCode }}&amp;sort={{ sort }}&amp;order={{ order }}" data-ga-category="Reviews table > Clicked on incentive level tab" data-ga-action="{{ level.levelName }}">
+          {{ level.levelName }} ({{ level.reviewCount }})
         </a>
       </li>
     {% endfor %}

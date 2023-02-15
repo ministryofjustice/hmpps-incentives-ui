@@ -141,7 +141,7 @@
     "@types/cookie-parser": "^1.4.3",
     "@types/cookie-session": "^2.0.44",
     "@types/csurf": "^1.11.2",
-    "@types/express-session": "^1.17.5",
+    "@types/express-session": "^1.17.6",
     "@types/http-errors": "^2.0.1",
     "@types/jest": "^29.4.0",
     "@types/jquery": "^3.5.16",

@@ -57,7 +57,7 @@ describe('GET /incentive-summary/:locationPrefix', () => {
           .get('/incentive-summary/MDI-2')
           .expect('Content-Type', /html/)
           .expect(res => {
-            expect(res.text).toContain('Behaviour entries since last review or 3 months')
+            expect(res.text).toContain('Behaviour entries in the last 3 months')
           })
       })
     })
@@ -72,7 +72,7 @@ describe('GET /incentive-summary/:locationPrefix', () => {
           .get('/incentive-summary/MDI-2')
           .expect('Content-Type', /html/)
           .expect(res => {
-            expect(res.text).toContain('Review dates and behaviour entries since last review or 3 months')
+            expect(res.text).toContain('Review dates and behaviour entries in the last 3 months')
           })
       })
     })

@@ -24,8 +24,8 @@ const tableColumns: SortableTableColumns<string> = [
   { column: 'photo', escapedHtml: '<span class="govuk-visually-hidden">Prisoner photo</span>', unsortable: true },
   { column: 'LAST_NAME', escapedHtml: 'Name and prison number' },
   { column: 'NEXT_REVIEW_DATE', escapedHtml: 'Date of next review' },
-  { column: 'POSITIVE_BEHAVIOURS', escapedHtml: 'Positive behaviours <br /> in the last 3 months' },
-  { column: 'NEGATIVE_BEHAVIOURS', escapedHtml: 'Negative behaviours <br /> in the last 3 months' },
+  { column: 'POSITIVE_BEHAVIOURS', escapedHtml: 'Positive behaviours <br /> since last review or 3 months' },
+  { column: 'NEGATIVE_BEHAVIOURS', escapedHtml: 'Negative behaviours <br /> since last review or 3 months' },
   { column: 'HAS_ACCT_OPEN', escapedHtml: 'ACCT status' },
 ]
 

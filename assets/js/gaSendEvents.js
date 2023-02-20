@@ -31,7 +31,6 @@ function gaSendEvent() {
 }
 
 $(() => {
-  $('.reviews-policy-notification-banner a[data-ga-category]').on('click', gaSendEvent)
   $('.govuk-tabs__tab[data-ga-category]').on('focus', gaSendEvent)
   $('.govuk-table a[data-ga-category]').on('click', gaSendEvent)
   $('.govuk-table .govuk-table__header[data-ga-category]').on('click', gaSendEvent)

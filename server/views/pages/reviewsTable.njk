@@ -1,5 +1,4 @@
 {% extends "../partials/layout.njk" %}
-{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
@@ -35,28 +34,6 @@
   </div>
 
   <h2 class="govuk-heading-l govuk-!-margin-top-5">Prisoner details and review status</h2>
-
-  {% if showNotification %}
-    <input type="hidden" id="_csrf" name="_csrf" value="{{ csrfToken }}" />
-
-    {% set html %}
-        <p>
-          Review dates are calculated according to the <a href="https://www.gov.uk/government/publications/incentives-policy-framework" data-ga-category="Policy banner > Clicked on link" data-ga-action="national incentives policy framework on GOV.UK">national incentives policy framework</a>.
-        </p>
-
-        <p>
-          Your local policy should ensure incentive reviews take place within the guidelines of the national policy.
-        </p>
-
-        <p class="govuk-!-margin-top-2">
-          <a class="govuk-link govuk-link--no-visited-state notification_dismiss_link" data-notification-id="NATIONAL-POLICY-PDF" data-ga-category="Policy banner > Dismissed notification" data-ga-action="dismiss" href="#">Dismiss</a>
-        </p>
-    {% endset %}
-    {{ govukNotificationBanner({
-      html: html,
-      classes: 'reviews-policy-notification-banner'
-    }) }}
-  {% endif %}
 
   <ul class="govuk-tabs__list">
     {% for level in levels %}

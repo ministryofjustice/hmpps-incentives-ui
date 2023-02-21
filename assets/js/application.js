@@ -39,26 +39,4 @@ $(() => {
       })
     }
   })
-
-  // Dismissable notification banners
-  function hideBanner(event) {
-    const dismissLink = $(this)
-    const id = dismissLink.data('notification-id')
-
-    const notificationBanner = dismissLink.parents('.govuk-notification-banner')
-    const csrf = $('#_csrf').val()
-
-    $.ajax({
-      type: 'POST',
-      url: '/notification/dismiss',
-      headers: {
-        'X-CSRF-Token': csrf,
-      },
-      data: { id },
-    }).done(() => notificationBanner.hide())
-
-    event.preventDefault()
-  }
-
-  $('.notification_dismiss_link').on('click', hideBanner)
 })

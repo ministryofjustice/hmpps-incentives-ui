@@ -5,7 +5,6 @@ import { userActiveCaseloadMatches } from '../middleware/featureGate'
 import type UserService from '../services/userService'
 import homeRoutes from './home'
 import analyticsRouter from './analyticsRouter'
-import notificationRouter from './notificationRouter'
 import throwTestErrorRouter from './throwTestErrorRouter'
 import imageRouter from './imageRouter'
 import incentivesTableRoutes from './incentivesTable'
@@ -40,7 +39,6 @@ export default function routes(userService: UserService): Router {
   router.use('/analytics/:pgdRegionCode([A-Z0-9]{2,5}|National)?', analyticsRouter(standardRouter(userService)))
   router.use('/prisoner-images/:prisonerNumber.jpeg', prisonerImagesRoutes(imageRouter()))
   router.use('/throw-test-error', throwTestErrorRouter(standardRouter(userService)))
-  router.use('/notification/dismiss', notificationRouter(standardRouter(userService)))
   router.use('/', homeRoutes(standardRouter(userService)))
 
   return router

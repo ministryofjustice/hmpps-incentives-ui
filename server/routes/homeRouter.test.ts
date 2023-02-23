@@ -72,15 +72,15 @@ describe('Home page', () => {
         app.locals.featureFlags.newReviewsTable = ['*']
       })
 
-      it('incentive information tile does mention review dates', () => {
+      it('incentive information tile does mention overdue reviews', () => {
         return request(app)
           .get('/')
           .expect(res => {
             expect(res.text).toContain('Manage incentive reviews')
             expect(res.text).toContain(
-              'See overdue review dates and recent behaviour entries for prisoners in your residential location',
+              'See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location',
             )
-            expect(res.text).toContain('review date')
+            expect(res.text).toContain('overdue reviews')
           })
       })
     })

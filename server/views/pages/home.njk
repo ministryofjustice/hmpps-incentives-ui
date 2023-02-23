@@ -6,15 +6,18 @@
 
 {% block content %}
 
-  <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
+  <h1 class="govuk-heading-xl govuk-!-margin-bottom-9">
     {{ applicationName }}
   </h1>
 
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-4">
+    Incentive levels by prisoner
+  </h2>
   <ul class="govuk-grid-row card-group">
     <li class="govuk-grid-column-one-third card-group__item">
       {% if newReviewsTable %}
         {% set cardHeading = "Manage incentive reviews" %}
-        {% set cardDescription = "See overdue review dates and recent behaviour entries for prisoners in your residential location." %}
+        {% set cardDescription = "See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location." %}
       {% elif featureFlags.hideDaysColumnsInIncentivesTable %}
         {% set cardHeading = "Prisoner incentive information" %}
         {% set cardDescription = "See incentive levels and behaviour entries for the prison population, by residential location." %}
@@ -32,13 +35,19 @@
       }) }}
 
     </li>
+  </ul>
+
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-4">
+    Data visualisations
+  </h2>
+  <ul class="govuk-grid-row card-group">
     <li class="govuk-grid-column-one-third card-group__item">
 
       {{ card({
         href: "/analytics/incentive-levels",
         clickable: "true",
         heading: "Incentive levels and behaviour entry charts",
-        description: "Data visualisations for incentive levels and behaviour entries at establishment level, including protected characteristics.",
+        description: "Data visualisation for incentive levels and behaviour entries at establishment level, including protected characteristics.",
         id: "incentive-analytics"
       }) }}
 
@@ -50,7 +59,7 @@
         href: "/analytics/select-pgd-region",
         clickable: "true",
         heading: "Prison group and national charts",
-        description: "Data visualisations for incentive levels, behaviour entries and protected characteristics at prison group and national level.",
+        description: "Data visualisation for incentive levels, behaviour entries and protected characteristics prison group and national level.",
         id: "select-pgd-region"
       }) }}
 
@@ -60,7 +69,7 @@
       {{ card({
         href: "/about",
         clickable: "true",
-        heading: "About",
+        heading: "About the data visualisations",
         description: "Information on how we collect, group and analyse data for the Manage incentive charts.",
         id: "about-data"
       }) }}

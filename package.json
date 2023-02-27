@@ -100,12 +100,12 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.272.0",
+    "@aws-sdk/client-s3": "^3.278.0",
     "@ministryofjustice/frontend": "^1.6.4",
     "@sentry/node": "^7.38.0",
     "agentkeepalive": "^4.2.1",
     "applicationinsights": "^2.4.2",
-    "body-parser": "^1.20.1",
+    "body-parser": "^1.20.2",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
     "compression": "^1.7.4",
@@ -153,7 +153,7 @@
     "@types/passport-oauth2": "^1.4.12",
     "@types/superagent": "^4.1.16",
     "@types/supertest": "^2.0.12",
-    "@types/uuid": "^9.0.0",
+    "@types/uuid": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
     "audit-ci": "^6.6.1",

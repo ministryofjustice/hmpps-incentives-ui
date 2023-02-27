@@ -65,27 +65,18 @@ export default function routes(router: Router): Router {
       const yesComments = form.getField('yesComments').value
       const noComments = form.getField('noComments').value
       const tags = ['hmpps-incentives', 'about-page-feedback', `useful-${informationUseful}`]
-      let comment =
-        informationUseful === 'yes'
-          ? `
+      let comment = `
 About page (${url})
 Prison: ${activeCaseLoad}
 
-Is this information useful? ${informationUseful}`
-          : `
-About page (${url})
-Prison: ${activeCaseLoad}
-
-Is this information useful? ${informationUseful}`
+Is this information useful? ${informationUseful}
+`
       if (yesComments) {
         comment += `
-
 Comments:
 ${yesComments}`
-      }
-      if (noComments) {
+      } else if (noComments) {
         comment += `
-
 Comments:
 ${noComments}`
       }

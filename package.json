@@ -100,7 +100,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.278.0",
+    "@aws-sdk/client-s3": "^3.279.0",
     "@ministryofjustice/frontend": "^1.6.4",
     "@sentry/node": "^7.38.0",
     "agentkeepalive": "^4.2.1",
@@ -126,7 +126,7 @@
     "passport": "^0.6.0",
     "passport-oauth2": "^1.6.1",
     "prom-client": "^14.1.1",
-    "redis": "^4.6.4",
+    "redis": "^4.6.5",
     "superagent": "^8.0.9",
     "url-value-parser": "^2.2.0",
     "uuid": "^9.0.0"
@@ -159,7 +159,7 @@
     "audit-ci": "^6.6.1",
     "concurrently": "^7.6.0",
     "cookie-session": "^2.0.0",
-    "cypress": "^12.6.0",
+    "cypress": "^12.7.0",
     "cypress-multi-reporters": "^1.6.2",
     "dotenv": "^16.0.3",
     "eslint": "^8.34.0",

@@ -13,6 +13,7 @@ export default function setUpStaticResources(): Router {
   //  Static Resources Configuration
   const cacheControl = { maxAge: config.staticResourceCacheDuration * 1000 }
 
+  // frontend assets
   Array.of(
     '/assets',
     '/assets/stylesheets',
@@ -24,10 +25,18 @@ export default function setUpStaticResources(): Router {
   ).forEach(dir => {
     router.use('/assets', express.static(path.join(process.cwd(), dir), cacheControl))
   })
+  router.use(
+    '/assets/js/jquery.min.js',
+    express.static(path.join(process.cwd(), '/node_modules/jquery/dist/jquery.min.js'), cacheControl),
+  )
 
-  Array.of('/node_modules/jquery/dist/jquery.min.js').forEach(dir => {
-    router.use('/assets/js/jquery.min.js', express.static(path.join(process.cwd(), dir), cacheControl))
-  })
+  // downloads
+  router.use(
+    '/user-guide.pdf',
+    express.static(path.join(process.cwd(), '/assets/downloads/user-guide.pdf'), {
+      maxAge: '2h',
+    }),
+  )
 
   // Don't cache dynamic resources
   router.use(noCache())

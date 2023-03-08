@@ -73,6 +73,14 @@
       {% endif %}
     {% endset %}
 
+    {% set daysSinceLastReview %}
+      {% if review.daysSinceLastReview is null %}
+        Not reviewed
+      {% else %}
+        {{ review.daysSinceLastReview }}
+      {% endif %}
+    {% endset %}
+
     {% set positiveBehaviours %}
       <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}/case-notes?type=POS&amp;{{ caseNoteFilter }}" data-ga-category="Reviews table > Clicked on link" data-ga-action="positive behaviours">
         {{ review.positiveBehaviours }}
@@ -89,6 +97,7 @@
       {html: photo},
       {html: profileLink},
       {html: nextReviewDate},
+      {html: daysSinceLastReview},
       {html: positiveBehaviours},
       {html: negativeBehaviours},
       {text: "ACCT open" if review.hasAcctOpen else ""}
@@ -107,7 +116,7 @@
       head: tableHead,
       rows: tableRows if tableRows.length > 0 else [[{
         html: noPrisonersOnLevel,
-        colspan: 6
+        colspan: 7
       }]]
     }) }}
   </div>

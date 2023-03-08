@@ -348,15 +348,24 @@ describe('Reviews table', () => {
       .get('/incentive-summary/MDI-1')
       .expect(res => {
         const $body = $(res.text)
-        const firstRowCells: HTMLTableCellElement[] = $body.find('.app-reviews-table tbody tr').first().find('td').get()
-        const [photoCell, nameCell, nextReviewDateCell, positiveBehavioursCell, negativeBehavioursCell, acctCell] =
-          firstRowCells
+        const tableRows = $body.find('.app-reviews-table tbody tr')
+        const firstRowCells: HTMLTableCellElement[] = tableRows.eq(0).find('td').get()
+        const [
+          photoCell,
+          nameCell,
+          nextReviewDateCell,
+          daysSinceLastReviewCell,
+          positiveBehavioursCell,
+          negativeBehavioursCell,
+          acctCell,
+        ] = firstRowCells
 
         expect(photoCell.innerHTML).toContain('Photo of G6123VU')
         expect(nameCell.textContent).toContain('Saunders, John')
         expect(nameCell.textContent).toContain('G6123VU')
         expect(nextReviewDateCell.textContent).toContain('12 July 2022')
         expect(nextReviewDateCell.textContent).toContain('89 days overdue')
+        expect(daysSinceLastReviewCell.textContent).toContain('37')
         expect(positiveBehavioursCell.textContent.trim()).toEqual('3')
         expect(positiveBehavioursCell.innerHTML).toContain(
           '/prisoner/G6123VU/case-notes?type=POS&amp;fromDate=09/07/2022',
@@ -366,6 +375,10 @@ describe('Reviews table', () => {
           '/prisoner/G6123VU/case-notes?type=NEG&amp;fromDate=09/07/2022',
         )
         expect(acctCell.textContent).toContain('ACCT open')
+
+        const secondRowCells: HTMLTableCellElement[] = tableRows.eq(1).find('td').get()
+        const daysSinceLastReviewWithoutRealReviewCell = secondRowCells[3]
+        expect(daysSinceLastReviewWithoutRealReviewCell.textContent).toContain('Not reviewed')
       })
   })
 

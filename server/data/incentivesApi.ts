@@ -45,6 +45,7 @@ export const sortOptions = [
   'FIRST_NAME',
   'LAST_NAME',
   'NEXT_REVIEW_DATE',
+  'DAYS_SINCE_LAST_REVIEW',
   'POSITIVE_BEHAVIOURS',
   'NEGATIVE_BEHAVIOURS',
   'HAS_ACCT_OPEN',
@@ -64,18 +65,19 @@ export type IncentivesReviewsRequest = {
   levelCode: string
 } & IncentivesReviewsPaginationAndSorting
 
-export interface IncentivesReviewsLevel {
-  levelCode: string
-  levelName: string
-  reviewCount: number
-  overdueCount: number
-}
 export interface IncentivesReviewsResponse {
   locationDescription: string
   overdueCount: number
   reviewCount: number
   levels: IncentivesReviewsLevel[]
   reviews: IncentivesReview[]
+}
+
+export interface IncentivesReviewsLevel {
+  levelCode: string
+  levelName: string
+  reviewCount: number
+  overdueCount: number
 }
 
 export interface IncentivesReview {
@@ -85,6 +87,7 @@ export interface IncentivesReview {
   prisonerNumber: string
   bookingId: number
   nextReviewDate: Date
+  daysSinceLastReview: number | null
   positiveBehaviours: number
   negativeBehaviours: number
   hasAcctOpen: boolean

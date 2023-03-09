@@ -32,7 +32,7 @@ const tableColumns: SortableTableColumns<string> = [
     column: 'NEGATIVE_BEHAVIOURS',
     escapedHtml: 'Negative behaviours <br /> since last review <br /> (up to 3 months)',
   },
-  { column: 'HAS_ACCT_OPEN', escapedHtml: 'ACCT status' },
+  { column: 'info', escapedHtml: 'Additional information', unsortable: true },
 ]
 
 export default function routes(router: Router): Router {
@@ -130,7 +130,7 @@ function parseSorting(sortString: string | undefined, orderString: string | unde
   // default ordering if not provided or invalid
   if (!orderOptions.includes(orderString as Order)) {
     // these columns prefer descending order:
-    if (['POSITIVE_BEHAVIOURS', 'NEGATIVE_BEHAVIOURS', 'HAS_ACCT_OPEN'].includes(sortString)) {
+    if (['POSITIVE_BEHAVIOURS', 'NEGATIVE_BEHAVIOURS', 'HAS_ACCT_OPEN', 'IS_NEW_TO_PRISON'].includes(sortString)) {
       // eslint-disable-next-line no-param-reassign
       orderString = 'DESC'
     } else {

@@ -112,6 +112,7 @@ export function getTestIncentivesReviews(): IncentivesReviewsResponse {
         positiveBehaviours: 3,
         negativeBehaviours: 2,
         hasAcctOpen: true,
+        isNewToPrison: false,
       },
       {
         firstName: 'Flem',
@@ -124,6 +125,7 @@ export function getTestIncentivesReviews(): IncentivesReviewsResponse {
         positiveBehaviours: 2,
         negativeBehaviours: 0,
         hasAcctOpen: false,
+        isNewToPrison: true,
       },
     ],
   }

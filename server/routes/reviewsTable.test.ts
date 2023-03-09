@@ -357,7 +357,7 @@ describe('Reviews table', () => {
           daysSinceLastReviewCell,
           positiveBehavioursCell,
           negativeBehavioursCell,
-          acctCell,
+          additionalInfoWithAcctOpen,
         ] = firstRowCells
 
         expect(photoCell.innerHTML).toContain('Photo of G6123VU')
@@ -374,11 +374,13 @@ describe('Reviews table', () => {
         expect(negativeBehavioursCell.innerHTML).toContain(
           '/prisoner/G6123VU/case-notes?type=NEG&amp;fromDate=09/07/2022',
         )
-        expect(acctCell.textContent).toContain('ACCT open')
+        expect(additionalInfoWithAcctOpen.textContent).toContain('ACCT open')
 
         const secondRowCells: HTMLTableCellElement[] = tableRows.eq(1).find('td').get()
         const daysSinceLastReviewWithoutRealReviewCell = secondRowCells[3]
+        const additionalInfoWithNewToPrison = secondRowCells[6]
         expect(daysSinceLastReviewWithoutRealReviewCell.textContent).toContain('Not reviewed')
+        expect(additionalInfoWithNewToPrison.textContent).toContain('New to prison')
       })
   })
 
@@ -515,7 +517,7 @@ describe('Reviews table', () => {
                 return { href, ariaSortOrder }
               })
               .get()
-              .slice(1)
+              .slice(1, -1) // `photo` and `info` columns aren't sortable
 
             // eslint-disable-next-line no-restricted-syntax
             for (const { href, ariaSortOrder } of columns) {

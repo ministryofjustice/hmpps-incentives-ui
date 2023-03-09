@@ -29,6 +29,16 @@ export default {
     return { year: parseInt(year, 10) || undefined, month: months[parseInt(month, 10)] }
   },
 
+  daysAgo(days: number | null): string | undefined {
+    if (days === null || days === undefined) {
+      return undefined
+    }
+    if (days === 1) {
+      return '1 day ago'
+    }
+    return `${days} days ago`
+  },
+
   thousands(integer: number) {
     if (notNumber(integer)) return '?'
     return Math.round(integer).toLocaleString('en-GB')

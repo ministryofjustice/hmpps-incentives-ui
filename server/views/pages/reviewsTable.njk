@@ -74,11 +74,7 @@
     {% endset %}
 
     {% set daysSinceLastReview %}
-      {% if review.daysSinceLastReview is null %}
-        Not reviewed
-      {% else %}
-        {{ review.daysSinceLastReview }}
-      {% endif %}
+      {{ review.daysSinceLastReview | daysAgo | default('Not reviewed') }}
     {% endset %}
 
     {% set positiveBehaviours %}

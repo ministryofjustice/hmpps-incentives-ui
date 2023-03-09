@@ -65,6 +65,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   njkEnv.addFilter('date', format.date)
   njkEnv.addFilter('shortDate', format.shortDate)
   njkEnv.addFilter('splitYearAndMonth', format.splitYearAndMonth)
+  njkEnv.addFilter('daysAgo', format.daysAgo)
   njkEnv.addFilter('thousands', format.thousands)
   njkEnv.addFilter('percentageOf', format.percentage)
   njkEnv.addFilter('daysSince', daysSince)

@@ -75,6 +75,17 @@ describe.each([
 })
 
 describe.each([
+  [null, undefined],
+  [undefined, undefined],
+  [0, '0 days ago'],
+  [1, '1 day ago'],
+  [2, '2 days ago'],
+  [201, '201 days ago'],
+])('Format number of days ago', (days: number | null, expected: string | undefined) => {
+  expect(format.daysAgo(days)).toEqual(expected)
+})
+
+describe.each([
   [0, '0'],
   [1, '1'],
   [123, '123'],

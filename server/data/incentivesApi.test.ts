@@ -157,6 +157,7 @@ describe('IncentiveApi', () => {
               positiveBehaviours: 2,
               negativeBehaviours: 0,
               hasAcctOpen: false,
+              isNewToPrison: false,
             },
           ],
         })
@@ -198,6 +199,7 @@ describe('IncentiveApi', () => {
             positiveBehaviours: 2,
             negativeBehaviours: 0,
             hasAcctOpen: false,
+            isNewToPrison: false,
           },
         ],
       })

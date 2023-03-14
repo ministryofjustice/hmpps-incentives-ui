@@ -49,6 +49,7 @@ export const sortOptions = [
   'POSITIVE_BEHAVIOURS',
   'NEGATIVE_BEHAVIOURS',
   'HAS_ACCT_OPEN',
+  'IS_NEW_TO_PRISON',
 ] as const
 export const orderOptions = ['ASC', 'DESC'] as const
 
@@ -91,6 +92,7 @@ export interface IncentivesReview {
   positiveBehaviours: number
   negativeBehaviours: number
   hasAcctOpen: boolean
+  isNewToPrison: boolean
 }
 
 export class IncentivesApi extends RestClient {

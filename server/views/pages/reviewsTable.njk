@@ -89,6 +89,18 @@
       </a>
     {% endset %}
 
+    {% set additionalInformation %}
+      {% if review.hasAcctOpen %}
+        ACCT open
+      {% endif %}
+      {% if review.hasAcctOpen and review.isNewToPrison %}
+        <br />
+      {% endif %}
+      {% if review.isNewToPrison %}
+        New to prison
+      {% endif %}
+    {% endset %}
+
     {% set tableRows = (tableRows.push([
       {html: photo},
       {html: profileLink},
@@ -96,7 +108,7 @@
       {html: daysSinceLastReview},
       {html: positiveBehaviours},
       {html: negativeBehaviours},
-      {text: "ACCT open" if review.hasAcctOpen else ""}
+      {text: additionalInformation}
     ]), tableRows) %}
   {% endfor %}
 

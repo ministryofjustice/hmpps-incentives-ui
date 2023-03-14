@@ -1,4 +1,4 @@
-import promClient, { type metric as PromMetric } from 'prom-client'
+import promClient from 'prom-client'
 
 import config from '../config'
 import PrisonRegister from '../data/prisonRegister'
@@ -1255,9 +1255,7 @@ describe('AnalyticsService', () => {
 
     async function getStaleAnalyticsMetrics() {
       const metrics = await promClient.register.getMetricsAsJSON()
-      const staleAnalyticsMetric = metrics[0] as PromMetric & {
-        values: { value: number; labels: Record<string, string> }[]
-      }
+      const staleAnalyticsMetric = metrics[0]
       expect(staleAnalyticsMetric.name).toEqual<string>('incentives_stale_analytics_data')
       expect(staleAnalyticsMetric.values).toHaveLength(1)
       return staleAnalyticsMetric.values[0]

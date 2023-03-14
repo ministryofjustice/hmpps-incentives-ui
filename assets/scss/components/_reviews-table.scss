@@ -3,7 +3,7 @@
     overflow-x: scroll;
 
     .app-reviews-table {
-      min-width: map-get($govuk-breakpoints, desktop);
+      min-width: $moj-page-width;
     }
   }
 }

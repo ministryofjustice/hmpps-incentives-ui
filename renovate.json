@@ -28,7 +28,7 @@
     {
       "matchDatasources": ["docker-compose"],
       "matchPackageNames": ["redis"],
-      "allowedVersions": "6.2"
+      "allowedVersions": "7.0"
     },
     {
       "matchDatasources": ["orb"],
@@ -38,7 +38,7 @@
     {
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/redis"],
-      "allowedVersions": "6.2"
+      "allowedVersions": "7.0"
     }
   ],
   "vulnerabilityAlerts": {

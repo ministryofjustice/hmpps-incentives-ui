@@ -26,7 +26,7 @@ executors:
   integration-tests:
     docker:
       - image: cimg/node:18.14-browsers
-      - image: cimg/redis:6.2
+      - image: cimg/redis:7.0
       - image: minio/minio
         command: server --address :9000 /data
         environment:

@@ -123,7 +123,7 @@ ${noComments}`
         return [{ text: region }, { html: prisons.join('<br />') }]
       })
 
-      res.render('pages/about.njk', {
+      res.render('pages/about-analytics.njk', {
         prisonRegionTableRows,
         messages: req.flash(),
         form: res.locals.forms['about-page-feedback'],

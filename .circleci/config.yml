@@ -15,7 +15,7 @@ parameters:
 
   node-version:
     type: string
-    default: 18.14-browsers
+    default: 18.15-browsers
 
   python-version:
     type: string
@@ -25,7 +25,7 @@ executors:
   # same as hmpps/node_redis executor with the addition of minio containers
   integration-tests:
     docker:
-      - image: cimg/node:18.14-browsers
+      - image: cimg/node:18.15-browsers
       - image: cimg/redis:7.0
       - image: minio/minio
         command: server --address :9000 /data

@@ -11,6 +11,8 @@ export default class HomePage extends Page {
 
   selectPgdRegionLink = (): PageElement<HTMLAnchorElement> => cy.get('[data-test="select-pgd-region"] a')
 
+  aboutNationalPolicyLink = (): PageElement<HTMLAnchorElement> => cy.get('[data-test="about-national-policy"] a')
+
   aboutAnalyticsPageLink = (): PageElement<HTMLAnchorElement> => cy.get('[data-test="about-data"] a')
 
   get cards(): PageElement<HTMLDivElement> {

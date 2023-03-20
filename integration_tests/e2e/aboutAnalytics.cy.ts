@@ -1,8 +1,8 @@
 import Page from '../pages/page'
-import AboutPage from '../pages/about'
+import AboutAnalyticsPage from '../pages/aboutAnalytics'
 import HomePage from '../pages/home'
 
-context('About page', () => {
+context('About Analytics page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
@@ -13,11 +13,11 @@ context('About page', () => {
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
-    homePage.aboutPageLink().click()
+    homePage.aboutAnalyticsPageLink().click()
   })
 
   it('users can submit feedback', () => {
-    let page = Page.verifyOnPage(AboutPage)
+    let page = Page.verifyOnPage(AboutAnalyticsPage)
 
     // leave some comments and submit
     page.feedbackForm.find('[name=informationUseful][value=no]').click()
@@ -25,7 +25,7 @@ context('About page', () => {
     page.feedbackForm.submit()
 
     // should remain on the same page with a success message and no error summary
-    page = Page.verifyOnPage(AboutPage)
+    page = Page.verifyOnPage(AboutAnalyticsPage)
     page.messages.spread((...$divs) => {
       expect($divs).to.have.lengthOf(1)
       expect($divs[0]).to.contain('Your feedback has been submitted')
@@ -34,13 +34,13 @@ context('About page', () => {
   })
 
   it('users will see errors if they submit invalid feedback', () => {
-    let page = Page.verifyOnPage(AboutPage)
+    let page = Page.verifyOnPage(AboutAnalyticsPage)
 
     // try to submit without selecting radio button
     page.feedbackForm.submit()
 
     // should remain on the same page with error message
-    page = Page.verifyOnPage(AboutPage)
+    page = Page.verifyOnPage(AboutAnalyticsPage)
     page.messages.should('not.exist')
     page.errorSummaryTitle.contains('There is a problem')
     page.errorSummaryItems.spread((...$lis) => {

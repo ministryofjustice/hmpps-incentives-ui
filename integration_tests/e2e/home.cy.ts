@@ -1,5 +1,5 @@
 import Page from '../pages/page'
-import AboutPage from '../pages/about'
+import AboutAnalyticsPage from '../pages/aboutAnalytics'
 import HomePage from '../pages/home'
 
 context('Home page', () => {
@@ -15,6 +15,6 @@ context('Home page', () => {
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
     homePage.cards.last().find('.card__description').contains('Information on how we collect').click()
-    Page.verifyOnPage(AboutPage)
+    Page.verifyOnPage(AboutAnalyticsPage)
   })
 })

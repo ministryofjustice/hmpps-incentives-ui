@@ -1,0 +1,82 @@
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " – National policy: frequency of reviews" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">National policy: frequency of reviews</h1>
+
+      <p>
+        The national incentives policy framework (2020) is designed to help prisons incentivise good behaviour.
+      </p>
+      <p>
+        It states how frequently reviews should occur, at a minimum.
+      </p>
+
+      {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+      {{ govukWarningText({
+        text: "Your local policy may require more frequent reviews. Check your policy document for details.",
+        iconFallbackText: "Warning"
+      }) }}
+
+      <h2 class="govuk-heading-l" id="key-facts">
+        Key facts
+      </h2>
+
+      <p>
+        All prisoners must be given a review at least once a year, regardless of their incentive level.
+      </p>
+      <p>
+        Reviews can happen at any time, but there are stricter rules for new prisoners, young people and prisoners on Basic.
+      </p>
+
+      <h3 class="govuk-heading-m" id="new-prisoners">
+        New prisoners
+      </h3>
+
+      <p>
+        Young people should be reviewed within 1 month of arrival.
+      </p>
+      <p>
+        All other new prisoners should be reviewed within 3 months of arrival.
+      </p>
+
+      <h3 class="govuk-heading-m" id="prisoners-on-basic">
+        Prisoners on Basic
+      </h3>
+
+      <p>
+        All prisoners must be reviewed within 7 days of moving to Basic.
+      </p>
+      <p>
+        If the prisoner remains on Basic after the initial 7 day review:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          prisoners identified as at risk of suicide or self harm must be reviewed at least every 14 days, taking into account whether they’re on an ACCT
+        </li>
+        <li>
+          young people must be reviewed at least every 14 days
+        </li>
+        <li>
+          all other prisoners must be reviewed at least every 28 days
+        </li>
+      </ul>
+      <p>
+        A review and upgrade to Standard level can take place at any time within these timescales.
+      </p>
+
+      <a href="https://www.gov.uk/government/publications/incentives-policy-framework">
+        Read the full national incentives policy framework (GOV.UK)
+      </a>
+
+    </div>
+  </div>
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  {% include "../partials/hotjar.njk" %}
+{% endblock %}

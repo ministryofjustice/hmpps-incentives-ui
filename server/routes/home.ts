@@ -25,6 +25,12 @@ export default function routes(router: Router): Router {
     res.render('pages/home.njk', { newReviewsTable })
   })
 
+  get('/about-national-policy', (req, res) => {
+    res.locals.breadcrumbs.addItems({ text: 'National policy: frequency of reviews' })
+
+    res.render('pages/about-national-policy.njk')
+  })
+
   const formId = 'about-page-feedback'
 
   router.all(
@@ -123,7 +129,7 @@ ${noComments}`
         return [{ text: region }, { html: prisons.join('<br />') }]
       })
 
-      res.render('pages/about.njk', {
+      res.render('pages/about-analytics.njk', {
         prisonRegionTableRows,
         messages: req.flash(),
         form: res.locals.forms['about-page-feedback'],

@@ -1,5 +1,7 @@
 import type { NextFunction, Request, Response, RequestHandler } from 'express'
-import { featureGate, activeCaseloadGate, usernameGate } from './featureGate'
+
+import config from '../config'
+import { environmentGate, featureGate, activeCaseloadGate, usernameGate } from './featureGate'
 
 /** Trivial request handler that always returns "OK" */
 const simpleRequestHandler: RequestHandler = (req, res) => {
@@ -46,6 +48,33 @@ function expectRequestHandlerTo404(handler: RequestHandler, req: Request, res: R
   expect(next).toBeCalled()
   expect(next.mock.calls[0][0].status).toEqual(404)
 }
+
+describe('environmentGate', () => {
+  let previousEnvironment: string
+  beforeAll(() => {
+    previousEnvironment = config.environment
+  })
+  afterEach(() => {
+    config.environment = previousEnvironment
+  })
+
+  /** Gated request handler that requires particular environments */
+  const gatedHandler = environmentGate(['dev', 'preprod'], simpleRequestHandler)
+
+  it.each(['preprod', 'dev'])('calls handler when in correct environment (%s)', (environment: string) => {
+    config.environment = environment
+    const req = mockRequest()
+    const res = mockResponse()
+    expectRequestHandlerToBeCalled(gatedHandler, req, res)
+  })
+
+  it.each(['local', 'prod'])('returns 404 when not in correct environment (%s)', (environment: string) => {
+    config.environment = environment
+    const req = mockRequest()
+    const res = mockResponse()
+    expectRequestHandlerTo404(gatedHandler, req, res)
+  })
+})
 
 describe('featureGate', () => {
   /** Gated request handler that requires flag "testFlag" */

@@ -38,10 +38,7 @@ export default function routes(userService: UserService): Router {
     router.use('/incentive-summary--1/:locationPrefix', reviewsTableV1)
     router.use('/incentive-summary--2/:locationPrefix', reviewsTableV2)
   }
-  router.use(
-    '/incentive-levels',
-    environmentGate(['local', 'dev'], incentiveLevelRoutes(standardRouter(userService))),
-  )
+  router.use('/incentive-levels', environmentGate(['local', 'dev'], incentiveLevelRoutes(standardRouter(userService))))
   router.use(
     '/prison-incentive-levels',
     environmentGate(['local', 'dev'], prisonIncentiveLevelRoutes(standardRouter(userService))),

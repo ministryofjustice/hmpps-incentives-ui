@@ -128,3 +128,29 @@ describe.each([
     expect(format.percentage(value, total, false)).toEqual(expectedUnrounded)
   })
 })
+
+describe.each([
+  [0, '£0'],
+  [1, '1p'],
+  [10, '10p'],
+  [99, '99p'],
+  [1_00, '£1'],
+  [1_01, '£1.01'],
+  [10_00, '£10'],
+  [10_01, '£10.01'],
+  [1000_00, '£1,000'],
+  [1000_99, '£1,000.99'],
+  // fractional numbers should not be used: these might not be stable and are unexpected edge cases
+  [0.1, '0p'],
+  [0.99, '0p'],
+  [1000_99.5, '£1,001'],
+  // incorrect types
+  [NaN, '?'],
+  [undefined, '?'],
+  [null, '?'],
+  ['', '?'],
+])('Format currency from pence', (value: number, expected: string) => {
+  it(`${value} formats as ${expected}`, () => {
+    expect(format.currencyFromPence(value)).toEqual(expected)
+  })
+})

@@ -68,6 +68,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   njkEnv.addFilter('daysAgo', format.daysAgo)
   njkEnv.addFilter('thousands', format.thousands)
   njkEnv.addFilter('percentageOf', format.percentage)
+  njkEnv.addFilter('currencyFromPence', format.currencyFromPence)
   njkEnv.addFilter('daysSince', daysSince)
 
   // analytics charts

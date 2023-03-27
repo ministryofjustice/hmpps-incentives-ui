@@ -1,4 +1,10 @@
-import { convertToTitleCase, daysSince, initialiseName } from './utils'
+import {
+  convertToTitleCase,
+  daysSince,
+  initialiseName,
+  penceAmountToInputString,
+  inputStringToPenceAmount,
+} from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -88,4 +94,38 @@ describe('counting days since a date', () => {
       expect(daysSince(date)).toEqual<number>(81)
     })
   })
+})
+
+describe('convert between numeric pence and pound-pence string representations', () => {
+  it.each([
+    [0, '0.00'],
+    [1, '0.01'],
+    [100, '1.00'],
+    [100_00, '100.00'],
+    [1000_00, '1000.00'],
+  ])('penceAmountToInputString(%s) → %s', (input: number, expected: string) => {
+    expect(penceAmountToInputString(input)).toEqual(expected)
+  })
+
+  it.each([NaN, null, undefined, '0.00', ''])('penceAmountToInputString(%s) throws an error', (input: unknown) => {
+    expect(() => penceAmountToInputString(input as number)).toThrow()
+  })
+  it.each([
+    ['0', 0],
+    ['1', 1_00],
+    ['1.00', 1_00],
+    ['10', 10_00],
+    ['10.00', 10_00],
+    ['10.99', 10_99],
+    ['1000.01', 1000_01],
+  ])('inputStringToPenceAmount(%s) → %s', (input: string, expected: number) => {
+    expect(inputStringToPenceAmount(input)).toEqual(expected)
+  })
+
+  it.each(['', null, undefined, '£1', '£1.00', '1.', '1,000', '1,000.00'])(
+    'inputStringToPenceAmount(%s) throws an error',
+    (input: unknown) => {
+      expect(() => inputStringToPenceAmount(input as string)).toThrow()
+    },
+  )
 })

@@ -1,6 +1,21 @@
 import type { NextFunction, Request, Response, RequestHandler } from 'express'
 import { NotFound } from 'http-errors'
 
+import config from '../config'
+
+/**
+ * Wraps a request handler and returns 404 unless the current environment appears in given environments
+ */
+export function environmentGate(environments: string[], handler: RequestHandler): RequestHandler {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    if (environments && environments.includes(config.environment)) {
+      handler(req, res, next)
+    } else {
+      next(new NotFound())
+    }
+  }
+}
+
 /**
  * Wraps a request handler and returns 404 unless the given feature flag is set
  */

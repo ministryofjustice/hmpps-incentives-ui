@@ -40,7 +40,7 @@ export const daysSince = (date: Date): number => {
  * Used to pre-fill currency text inputs from internal money representation.
  */
 export function penceAmountToInputString(pence: number): string {
-  if (typeof pence !== 'number' || isNaN(pence)) {
+  if (typeof pence !== 'number' || Number.isNaN(pence)) {
     throw Error('Invalid amount input')
   }
   const pounds = Math.floor(pence / 100)
@@ -54,15 +54,18 @@ export const currencyInputRE = /^(\d+)(\.\d\d)?$/
  * Parses user input of pounds and pence, excluding £ symbol, to get numeric representation in pence.
  */
 export function inputStringToPenceAmount(pounds: string): number {
-  let matches = undefined
-  if (typeof pounds !== 'string' || !pounds || !(matches = currencyInputRE.exec(pounds))) {
+  if (typeof pounds !== 'string' || !pounds) {
+    throw Error('Invalid amount input')
+  }
+  const matches = currencyInputRE.exec(pounds)
+  if (!matches) {
     throw Error('Invalid amount input')
   }
   let pence = parseInt(matches[1], 10) * 100
   if (matches[2]) {
     pence += parseInt(matches[2].slice(1), 10)
   }
-  if (isNaN(pence)) {
+  if (Number.isNaN(pence)) {
     throw Error('Invalid amount input')
   }
   return pence

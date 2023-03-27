@@ -25,6 +25,11 @@ export interface PrisonIncentiveLevel {
   privilegedVisitOrders: number
 }
 
+export type PrisonIncentiveLevelUpdate = Omit<
+  Partial<PrisonIncentiveLevel>,
+  'prisonId' | 'levelCode' | 'levelDescription'
+>
+
 interface IncentivesPrisonerSummary {
   prisonerNumber: string
   bookingId: number
@@ -147,6 +152,17 @@ export class IncentivesApi extends RestClient {
   getPrisonIncentiveLevel(prisonId: string, levelCode: string): Promise<PrisonIncentiveLevel> {
     return this.get({
       path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}/level/${encodeURIComponent(levelCode)}`,
+    })
+  }
+
+  updatePrisonIncentiveLevel(
+    prisonId: string,
+    levelCode: string,
+    data: PrisonIncentiveLevelUpdate,
+  ): Promise<PrisonIncentiveLevel> {
+    return this.patch({
+      path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}/level/${encodeURIComponent(levelCode)}`,
+      data,
     })
   }
 

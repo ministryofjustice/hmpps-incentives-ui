@@ -1,6 +1,7 @@
 {% extends "../partials/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set pageTitle = applicationName + " – " + prisonIncentiveLevel.levelDescription + " level in " + prisonName %}
@@ -8,6 +9,8 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+      {% include "../partials/messages.njk" %}
 
       <h1 class="govuk-heading-xl">{{ prisonIncentiveLevel.levelDescription }} level in {{ prisonName }}</h1>
 
@@ -59,6 +62,25 @@
           }
         ]
       }) }}
+
+      <p>
+        {% if canEdit %}
+          {% if incentiveLevel.required %}
+
+            This level is required in all prisons and cannot be disabled.
+
+          {% else %}
+
+            {{ govukButton({
+              text: "Disable this level",
+              classes: "govuk-button--warning",
+              element: "a",
+              href: "/prison-incentive-levels/" + prisonIncentiveLevel.levelCode + "/deactivate"
+            }) }}
+
+          {% endif %}
+        {% endif %}
+      </p>
 
     </div>
   </div>

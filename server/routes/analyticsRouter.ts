@@ -1,5 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
-import { BadRequest, MethodNotAllowed, NotFound } from 'http-errors'
+import { BadRequest, NotFound } from 'http-errors'
 
 import config from '../config'
 import logger from '../../logger'
@@ -14,6 +14,7 @@ import {
   ProtectedCharacteristic,
 } from '../services/analyticsServiceTypes'
 import type { ChartId } from './analyticsChartTypes'
+import { requireGetOrPost } from './forms/forms'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
 import PgdRegionService, { National, type PgdRegion } from '../services/pgdRegionService'
@@ -120,18 +121,7 @@ export default function routes(router: Router): Router {
   })
 
   const routeWithFeedback = (path: string, chartIds: ReadonlyArray<ChartId>, handler: RequestHandler) =>
-    router.all(
-      path,
-      (req, res, next) => {
-        if (req.method !== 'GET' && req.method !== 'POST') {
-          next(new MethodNotAllowed())
-          return
-        }
-        next()
-      },
-      asyncMiddleware(chartFeedbackHandler(chartIds)),
-      asyncMiddleware(handler),
-    )
+    router.all(path, requireGetOrPost, asyncMiddleware(chartFeedbackHandler(chartIds)), asyncMiddleware(handler))
 
   const behaviourEntryChartIds: ChartId[] = [
     'entries-by-location',

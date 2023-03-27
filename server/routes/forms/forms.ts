@@ -1,3 +1,6 @@
+import type { RequestHandler } from 'express'
+import { MethodNotAllowed } from 'http-errors'
+
 export interface BaseFormData {
   /**
    * Unique identifier to distinguish multiple forms on one page
@@ -88,4 +91,12 @@ export default abstract class Form<Data extends BaseFormData> {
       error: this.fieldErrors[field],
     }
   }
+}
+
+export const requireGetOrPost: RequestHandler = (req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    next(new MethodNotAllowed())
+    return
+  }
+  next()
 }

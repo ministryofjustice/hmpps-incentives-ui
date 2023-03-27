@@ -1,5 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
-import { BadRequest, MethodNotAllowed } from 'http-errors'
+import { BadRequest } from 'http-errors'
 
 import config from '../config'
 import logger from '../../logger'
@@ -13,6 +13,7 @@ import AnalyticsView from '../services/analyticsView'
 import { National } from '../services/pgdRegionService'
 import AboutPageFeedbackForm from './forms/aboutPageFeedbackForm'
 import { cache } from './analyticsRouter'
+import { requireGetOrPost } from './forms/forms'
 
 export default function routes(router: Router): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
@@ -31,17 +32,11 @@ export default function routes(router: Router): Router {
     res.render('pages/about-national-policy.njk')
   })
 
-  const formId = 'about-page-feedback'
+  const formId = 'about-page-feedback' as const
 
   router.all(
     '/about',
-    (req: Request, res: Response, next: NextFunction) => {
-      if (req.method !== 'GET' && req.method !== 'POST') {
-        next(new MethodNotAllowed())
-        return
-      }
-      next()
-    },
+    requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
       const form = new AboutPageFeedbackForm(formId)
       res.locals.forms = res.locals.forms || {}
@@ -132,7 +127,7 @@ ${noComments}`
       res.render('pages/about-analytics.njk', {
         prisonRegionTableRows,
         messages: req.flash(),
-        form: res.locals.forms['about-page-feedback'],
+        form: res.locals.forms[formId],
       })
     }),
   )

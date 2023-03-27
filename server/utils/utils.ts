@@ -34,3 +34,36 @@ export const daysSince = (date: Date): number => {
   }
   return Math.round((todayUnix - dateUnix) / (1000 * 60 * 60 * 24))
 }
+
+/**
+ * Converts a numeric amount of pence into a string of pounds and pence, excluding the £ symbol.
+ * Used to pre-fill currency text inputs from internal money representation.
+ */
+export function penceAmountToInputString(pence: number): string {
+  if (typeof pence !== 'number' || isNaN(pence)) {
+    throw Error('Invalid amount input')
+  }
+  const pounds = Math.floor(pence / 100)
+  const fractional = `${pence % 100}`.padStart(2, '0')
+  return `${pounds}.${fractional}`
+}
+
+export const currencyInputRE = /^(\d+)(\.\d\d)?$/
+
+/**
+ * Parses user input of pounds and pence, excluding £ symbol, to get numeric representation in pence.
+ */
+export function inputStringToPenceAmount(pounds: string): number {
+  let matches = undefined
+  if (typeof pounds !== 'string' || !pounds || !(matches = currencyInputRE.exec(pounds))) {
+    throw Error('Invalid amount input')
+  }
+  let pence = parseInt(matches[1], 10) * 100
+  if (matches[2]) {
+    pence += parseInt(matches[2].slice(1), 10)
+  }
+  if (isNaN(pence)) {
+    throw Error('Invalid amount input')
+  }
+  return pence
+}

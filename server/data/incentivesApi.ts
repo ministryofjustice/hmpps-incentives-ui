@@ -138,6 +138,13 @@ export class IncentivesApi extends RestClient {
     return this.get({ path: `/incentive/levels/${encodeURIComponent(code)}` })
   }
 
+  createIncentiveLevel(data: IncentiveLevel): Promise<IncentiveLevel> {
+    return this.post({
+      path: '/incentive/levels',
+      data: data as unknown as Record<string, unknown>,
+    })
+  }
+
   updateIncentiveLevel(levelCode: string, data: IncentiveLevelUpdate): Promise<IncentiveLevel> {
     return this.patch({
       path: `/incentive/levels/${encodeURIComponent(levelCode)}`,

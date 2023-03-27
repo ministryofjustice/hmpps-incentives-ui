@@ -1,5 +1,6 @@
 {% extends "../partials/layout.njk" %}
 
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set pageTitle = applicationName + " – Incentive levels" %}
@@ -22,17 +23,13 @@
           {% endif %}
         {% endset %}
 
-        {% set url -%}
-          /incentive-levels/{{ incentiveLevel.code }}
-        {%- endset %}
-
         {% set rows = (rows.push({
           key: { text: "Level" },
           value: { html: name },
           actions: {
             items: [
               {
-                href: url,
+                href: "/incentive-levels/view/" + incentiveLevel.code,
                 text: "View",
                 visuallyHiddenText: "level"
               }
@@ -44,6 +41,16 @@
       {{ govukSummaryList({
         rows: rows
       }) }}
+
+      <p>
+        {% if canEdit %}
+          {{ govukButton({
+            text: "Add a new level",
+            element: "a",
+            href: "/incentive-levels/add"
+          }) }}
+        {% endif %}
+      </p>
 
     </div>
   </div>

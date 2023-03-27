@@ -8,6 +8,8 @@ export interface IncentiveLevel {
   required: boolean
 }
 
+export type IncentiveLevelUpdate = Omit<Partial<IncentiveLevel>, 'code'>
+
 export interface PrisonIncentiveLevel {
   prisonId: string
   levelCode: string
@@ -129,6 +131,13 @@ export class IncentivesApi extends RestClient {
 
   getIncentiveLevel(code: string): Promise<IncentiveLevel> {
     return this.get({ path: `/incentive/levels/${encodeURIComponent(code)}` })
+  }
+
+  updateIncentiveLevel(levelCode: string, data: IncentiveLevelUpdate): Promise<IncentiveLevel> {
+    return this.patch({
+      path: `/incentive/levels/${encodeURIComponent(levelCode)}`,
+      data,
+    })
   }
 
   getPrisonIncentiveLevels(prisonId: string): Promise<PrisonIncentiveLevel[]> {

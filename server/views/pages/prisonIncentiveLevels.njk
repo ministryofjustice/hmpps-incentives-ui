@@ -31,8 +31,41 @@
       {% endfor %}
 
       {{ govukSummaryList({
+        card: {
+          title: {
+            text: "Levels in use"
+          }
+        },
         rows: rows
       }) }}
+
+      {% set rows = [] %}
+
+      {% for inactiveIncentiveLevel in inactiveIncentiveLevels %}
+        {% set rows = (rows.push({
+          key: { text: "Level" },
+          value: { text: inactiveIncentiveLevel.description },
+          actions: {
+            items: [
+              {
+                href: "/prison-incentive-levels/add/" + inactiveIncentiveLevel.code,
+                text: "Add this level"
+              }
+            ]
+          }
+        }), rows) %}
+      {% endfor %}
+
+      {% if rows | length > 0 %}
+        {{ govukSummaryList({
+          card: {
+            title: {
+              text: "Available levels"
+            }
+          },
+          rows: rows
+        }) }}
+      {% endif %}
 
     </div>
   </div>

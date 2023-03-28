@@ -25,13 +25,19 @@ export default function routes(router: Router): Router {
 
     const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
     const canEdit = hasRole(res)
-    const prisonIncentiveLevels = await incentivesApi.getPrisonIncentiveLevels(prisonId)
+    const [incentiveLevels, prisonIncentiveLevels] = await Promise.all([
+      incentivesApi.getIncentiveLevels(),
+      incentivesApi.getPrisonIncentiveLevels(prisonId),
+    ])
+    const activeLevelCodes = new Set(prisonIncentiveLevels.map(prisonIncentiveLevel => prisonIncentiveLevel.levelCode))
+    const inactiveIncentiveLevels = incentiveLevels.filter(incentiveLevel => !activeLevelCodes.has(incentiveLevel.code))
 
     res.locals.breadcrumbs.addItems({ text: `Manage levels in ${prisonName}` })
     return res.render('pages/prisonIncentiveLevels.njk', {
       messages: req.flash(),
       canEdit,
       prisonIncentiveLevels,
+      inactiveIncentiveLevels,
       prisonName,
     })
   })
@@ -42,8 +48,10 @@ export default function routes(router: Router): Router {
     const { levelCode } = req.params
     const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
     const canEdit = hasRole(res)
-    const incentiveLevel = await incentivesApi.getIncentiveLevel(levelCode)
-    const prisonIncentiveLevel = await incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode)
+    const [incentiveLevel, prisonIncentiveLevel] = await Promise.all([
+      incentivesApi.getIncentiveLevel(levelCode),
+      incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode),
+    ])
 
     res.locals.breadcrumbs.addItems(
       { text: `Manage levels in ${prisonName}`, href: '/prison-incentive-levels' },
@@ -76,6 +84,24 @@ export default function routes(router: Router): Router {
 
   router.get('/activate/:levelCode', requireRole, asyncMiddleware(activateDeactivate(true)))
   router.get('/deactivate/:levelCode', requireRole, asyncMiddleware(activateDeactivate(false)))
+
+  router.get(
+    '/add/:levelCode',
+    requireRole,
+    asyncMiddleware(async (req, res) => {
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+
+      const { levelCode } = req.params
+      const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
+      const prisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, { active: true })
+      // TODO: handle errors
+      const message = `${prisonIncentiveLevel.levelDescription} is now available in ${prisonName}`
+      logger.info(message)
+      req.flash('success', message)
+
+      res.redirect(`/prison-incentive-levels/edit/${levelCode}`)
+    }),
+  )
 
   const formId = 'prisonIncentiveLevel' as const
   router.all(

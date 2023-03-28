@@ -48,10 +48,12 @@ export default function routes(router: Router): Router {
     const { levelCode } = req.params
     const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
     const canEdit = hasRole(res)
-    const [incentiveLevel, prisonIncentiveLevel] = await Promise.all([
+    const [incentiveLevel, prisonIncentiveLevel, prisonIncentiveLevels] = await Promise.all([
       incentivesApi.getIncentiveLevel(levelCode),
       incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode),
+      incentivesApi.getPrisonIncentiveLevels(prisonId),
     ])
+    const defaultPrisonIncentiveLevel = prisonIncentiveLevels.find(level => level.defaultOnAdmission)
 
     res.locals.breadcrumbs.addItems(
       { text: `Manage levels in ${prisonName}`, href: '/prison-incentive-levels' },
@@ -62,6 +64,7 @@ export default function routes(router: Router): Router {
       canEdit,
       incentiveLevel,
       prisonIncentiveLevel,
+      defaultPrisonIncentiveLevel,
       prisonName,
     })
   })
@@ -100,6 +103,26 @@ export default function routes(router: Router): Router {
       req.flash('success', message)
 
       res.redirect(`/prison-incentive-levels/edit/${levelCode}`)
+    }),
+  )
+
+  router.get(
+    '/set-default-for-admission/:levelCode',
+    requireRole,
+    asyncMiddleware(async (req, res) => {
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+
+      const { levelCode } = req.params
+      const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
+      const prisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
+        defaultOnAdmission: true,
+      })
+      // TODO: handle errors
+      const message = `${prisonIncentiveLevel.levelDescription} is now the default level for admissions in ${prisonName}`
+      logger.info(message)
+      req.flash('success', message)
+
+      return res.redirect(`/prison-incentive-levels/view/${levelCode}`)
     }),
   )
 

@@ -88,6 +88,21 @@
 
           {% endif %}
         </div>
+
+        {% if prisonIncentiveLevel.levelCode == defaultPrisonIncentiveLevel.levelCode %}
+          <p>
+            This level is the default for admissions in {{ prisonName }}.
+          </p>
+        {% else %}
+          <p>
+            The default level for admissions in {{ prisonName }} is {{ defaultPrisonIncentiveLevel.levelDescription }}.
+          </p>
+          {{ govukButton({
+            text: "Change the default level to " + prisonIncentiveLevel.levelDescription,
+            element: "a",
+            href: "/prison-incentive-levels/set-default-for-admission/" + prisonIncentiveLevel.levelCode
+          }) }}
+          {% endif %}
       {% endif %}
 
     </div>

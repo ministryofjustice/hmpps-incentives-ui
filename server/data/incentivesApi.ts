@@ -15,6 +15,7 @@ export interface PrisonIncentiveLevel {
   levelCode: string
   levelDescription: string
   active: boolean
+  defaultOnAdmission: boolean
 
   remandTransferLimitInPence: number
   remandSpendLimitInPence: number

@@ -2,6 +2,7 @@
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% set pageTitle = applicationName + " – Incentive levels" %}
 
@@ -16,10 +17,13 @@
       {% set rows = [] %}
 
       {% for incentiveLevel in incentiveLevels %}
-        {% set name %}
+        {% set nameHtml %}
           {{ incentiveLevel.description }}
           {% if not incentiveLevel.active %}
-            (Disabled)
+            {{ govukTag({
+              text: "Disabled",
+              classes: "govuk-tag--grey"
+            }) }}
           {% endif %}
         {% endset %}
 
@@ -50,7 +54,7 @@
         {% set rows = (rows.push({
           classes: "app-incentive-levels-list",
           key: { text: "Level" },
-          value: { html: name },
+          value: { html: nameHtml },
           actions: { items: actions }
         }), rows) %}
       {% endfor %}

@@ -1,6 +1,7 @@
 {% extends "../partials/layout.njk" %}
 
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% set pageTitle = applicationName + " – Incentive levels in " + prisonName %}
 
@@ -15,9 +16,18 @@
       {% set rows = [] %}
 
       {% for prisonIncentiveLevel in prisonIncentiveLevels %}
+        {% set nameHtml %}
+          {{ prisonIncentiveLevel.levelDescription }}
+          {% if prisonIncentiveLevel.defaultOnAdmission %}
+            {{ govukTag({
+              text: "Default for admissions"
+            }) }}
+          {% endif %}
+        {% endset %}
+
         {% set rows = (rows.push({
           key: { text: "Level" },
-          value: { text: prisonIncentiveLevel.levelDescription },
+          value: { html: nameHtml },
           actions: {
             items: [
               {

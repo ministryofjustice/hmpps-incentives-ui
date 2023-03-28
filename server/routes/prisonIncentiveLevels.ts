@@ -1,10 +1,14 @@
-import type { RequestHandler, Response, Router } from 'express'
+import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
+import { BadRequest } from 'http-errors'
 import jwtDecode from 'jwt-decode'
 
 import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import authorisationMiddleware from '../middleware/authorisationMiddleware'
 import { IncentivesApi } from '../data/incentivesApi'
+import { requireGetOrPost } from './forms/forms'
+import PrisonIncentiveLevelForm from './forms/prisonIncentiveLevelForm'
+import { penceAmountToInputString, inputStringToPenceAmount } from '../utils/utils'
 
 const role = 'ROLE_MAINTAIN_PRISON_IEP_LEVELS'
 const requireRole = authorisationMiddleware([role])
@@ -32,7 +36,7 @@ export default function routes(router: Router): Router {
     })
   })
 
-  get('/:levelCode', async (req, res) => {
+  get('/view/:levelCode', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
     const { levelCode } = req.params
@@ -67,11 +71,108 @@ export default function routes(router: Router): Router {
     logger.info(message)
     req.flash('success', message)
 
-    return res.redirect(active ? `/prison-incentive-levels/${levelCode}` : '/prison-incentive-levels')
+    return res.redirect(active ? `/prison-incentive-levels/view/${levelCode}` : '/prison-incentive-levels')
   }
 
-  router.get('/:levelCode/activate', requireRole, asyncMiddleware(activateDeactivate(true)))
-  router.get('/:levelCode/deactivate', requireRole, asyncMiddleware(activateDeactivate(false)))
+  router.get('/activate/:levelCode', requireRole, asyncMiddleware(activateDeactivate(true)))
+  router.get('/deactivate/:levelCode', requireRole, asyncMiddleware(activateDeactivate(false)))
+
+  const formId = 'prisonIncentiveLevel' as const
+  router.all(
+    '/edit/:levelCode',
+    requireRole,
+    requireGetOrPost,
+    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+      const form = new PrisonIncentiveLevelForm(formId)
+      res.locals.forms = res.locals.forms || {}
+      res.locals.forms[formId] = form
+
+      if (req.method !== 'POST') {
+        next()
+        return
+      }
+      if (!req.body.formId || req.body.formId !== formId) {
+        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${formId} are allowed`)
+        next(new BadRequest())
+        return
+      }
+
+      form.submit(req.body)
+      if (form.hasErrors) {
+        logger.warn(`Form ${form.formId} submitted with errors`)
+        next()
+        return
+      }
+
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+      const { levelCode } = req.params as { levelCode?: string }
+      const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
+
+      const remandTransferLimitInPence = inputStringToPenceAmount(form.getField('remandTransferLimit').value)
+      const remandSpendLimitInPence = inputStringToPenceAmount(form.getField('remandSpendLimit').value)
+      const convictedTransferLimitInPence = inputStringToPenceAmount(form.getField('convictedTransferLimit').value)
+      const convictedSpendLimitInPence = inputStringToPenceAmount(form.getField('convictedSpendLimit').value)
+
+      const visitOrders = parseInt(form.getField('visitOrders').value, 10)
+      const privilegedVisitOrders = parseInt(form.getField('privilegedVisitOrders').value, 10)
+
+      try {
+        const updatedPrisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
+          remandTransferLimitInPence,
+          remandSpendLimitInPence,
+          convictedTransferLimitInPence,
+          convictedSpendLimitInPence,
+          visitOrders,
+          privilegedVisitOrders,
+        })
+        const message = `Incentive level information for ${updatedPrisonIncentiveLevel.levelDescription} at ${prisonName} was saved.`
+        req.flash('success', message)
+        logger.info(message)
+      } catch (error) {
+        logger.error('Failed to update prison incentive level', error)
+      }
+
+      res.redirect(`/prison-incentive-levels/view/${levelCode}`)
+    }),
+    asyncMiddleware(async (req, res) => {
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+
+      const { levelCode } = req.params
+      const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
+      const form: PrisonIncentiveLevelForm = res.locals.forms[formId]
+
+      const prisonIncentiveLevel = await incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode)
+
+      const remandTransferLimit = penceAmountToInputString(prisonIncentiveLevel.remandTransferLimitInPence)
+      const remandSpendLimit = penceAmountToInputString(prisonIncentiveLevel.remandSpendLimitInPence)
+      const convictedTransferLimit = penceAmountToInputString(prisonIncentiveLevel.convictedTransferLimitInPence)
+      const convictedSpendLimit = penceAmountToInputString(prisonIncentiveLevel.convictedSpendLimitInPence)
+
+      const visitOrders = prisonIncentiveLevel.visitOrders.toString()
+      const privilegedVisitOrders = prisonIncentiveLevel.privilegedVisitOrders.toString()
+
+      form.submit({
+        formId,
+        remandTransferLimit,
+        remandSpendLimit,
+        convictedTransferLimit,
+        convictedSpendLimit,
+        visitOrders,
+        privilegedVisitOrders,
+      })
+
+      res.locals.breadcrumbs.addItems(
+        { text: `Manage levels in ${prisonName}`, href: '/prison-incentive-levels' },
+        { text: prisonIncentiveLevel.levelDescription },
+      )
+      return res.render('pages/prisonIncentiveLevelForm.njk', {
+        messages: req.flash(),
+        form,
+        prisonIncentiveLevel,
+        prisonName,
+      })
+    }),
+  )
 
   return router
 }

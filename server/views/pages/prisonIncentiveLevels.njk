@@ -15,17 +15,13 @@
       {% set rows = [] %}
 
       {% for prisonIncentiveLevel in prisonIncentiveLevels %}
-        {% set url -%}
-          /prison-incentive-levels/{{ prisonIncentiveLevel.levelCode }}
-        {%- endset %}
-
         {% set rows = (rows.push({
           key: { text: "Level" },
           value: { text: prisonIncentiveLevel.levelDescription },
           actions: {
             items: [
               {
-                href: url,
+                href: "/prison-incentive-levels/view/" + prisonIncentiveLevel.levelCode,
                 text: "View",
                 visuallyHiddenText: "level"
               }

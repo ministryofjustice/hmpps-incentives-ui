@@ -142,6 +142,7 @@ export default function routes(router: Router): Router {
 
       const { levelCode } = req.params as { levelCode?: string }
       const form: IncentiveLevelForm = res.locals.forms[formId]
+
       const incentiveLevel: IncentiveLevel | null = levelCode ? await incentivesApi.getIncentiveLevel(levelCode) : null
       if (incentiveLevel) {
         let availability

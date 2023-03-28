@@ -63,11 +63,19 @@
         ]
       }) }}
 
-      <p>
-        {% if canEdit %}
+      {% if canEdit %}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Edit details",
+            element: "a",
+            href: "/prison-incentive-levels/edit/" + prisonIncentiveLevel.levelCode
+          }) }}
+
           {% if incentiveLevel.required %}
 
-            This level is required in all prisons and cannot be disabled.
+            <p>
+              This level is required in all prisons and cannot be disabled.
+            </p>
 
           {% else %}
 
@@ -75,12 +83,12 @@
               text: "Disable this level",
               classes: "govuk-button--warning",
               element: "a",
-              href: "/prison-incentive-levels/" + prisonIncentiveLevel.levelCode + "/deactivate"
+              href: "/prison-incentive-levels/deactivate/" + prisonIncentiveLevel.levelCode
             }) }}
 
           {% endif %}
-        {% endif %}
-      </p>
+        </div>
+      {% endif %}
 
     </div>
   </div>

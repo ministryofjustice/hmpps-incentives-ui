@@ -153,6 +153,13 @@ export class IncentivesApi extends RestClient {
     })
   }
 
+  setIncentiveLevelOrder(levelCodes: string[]): Promise<IncentiveLevel[]> {
+    return this.patch({
+      path: `/incentive/level-order`,
+      data: levelCodes as unknown as Record<string, unknown>,
+    })
+  }
+
   getPrisonIncentiveLevels(prisonId: string): Promise<PrisonIncentiveLevel[]> {
     return this.get({ path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}` })
   }

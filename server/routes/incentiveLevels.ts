@@ -1,5 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
-import { BadRequest } from 'http-errors'
+import { BadRequest, NotFound } from 'http-errors'
 import jwtDecode from 'jwt-decode'
 
 import logger from '../../logger'
@@ -60,6 +60,34 @@ export default function routes(router: Router): Router {
 
   router.get('/activate/:levelCode', requireRole, asyncMiddleware(activateDeactivate(true)))
   router.get('/deactivate/:levelCode', requireRole, asyncMiddleware(activateDeactivate(false)))
+
+  const moveLevel: { (move: 'up' | 'down'): RequestHandler } = move => async (req, res) => {
+    const incentivesApi = new IncentivesApi(res.locals.user.token)
+
+    const { levelCode } = req.params
+    const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
+    const previousIndex = incentiveLevels.findIndex(incentiveLevel => incentiveLevel.code === levelCode)
+    if (typeof previousIndex !== 'number' || previousIndex < 0) {
+      throw new NotFound()
+    }
+    if ((previousIndex === 0 && move === 'up') || (previousIndex === incentiveLevels.length - 1 && move === 'down')) {
+      throw new BadRequest()
+    }
+    const newIndex = move === 'up' ? previousIndex - 1 : previousIndex + 1
+    const level1 = incentiveLevels[previousIndex]
+    const level2 = incentiveLevels[newIndex]
+    incentiveLevels[newIndex] = level1
+    incentiveLevels[previousIndex] = level2
+    await incentivesApi.setIncentiveLevelOrder(incentiveLevels.map(incentiveLevel => incentiveLevel.code))
+    const message = 'Incentive levels reordered'
+    logger.info(message)
+    req.flash('success', message)
+
+    return res.redirect('/incentive-levels')
+  }
+
+  router.get('/move-up/:levelCode', requireRole, asyncMiddleware(moveLevel('up')))
+  router.get('/move-down/:levelCode', requireRole, asyncMiddleware(moveLevel('down')))
 
   const formId = 'incentiveLevel' as const
   router.all(

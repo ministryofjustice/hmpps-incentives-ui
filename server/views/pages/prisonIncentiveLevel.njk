@@ -1,0 +1,65 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = applicationName + " – " + prisonIncentiveLevel.levelDescription + " level in " + prisonName %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">{{ prisonIncentiveLevel.levelDescription }} level in {{ prisonName }}</h1>
+
+      {{ govukBackLink({
+        text: "Back",
+        href: "/prison-incentive-levels"
+      }) }}
+
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: "Spend limits"
+          }
+        },
+        rows: [
+          {
+            key: { text: "Remand transfer limit" },
+            value: { text: prisonIncentiveLevel.remandTransferLimitInPence | currencyFromPence }
+          },
+          {
+            key: { text: "Remand spend limit" },
+            value: { text: prisonIncentiveLevel.remandSpendLimitInPence | currencyFromPence }
+          },
+          {
+            key: { text: "Convicted transfer limit" },
+            value: { text: prisonIncentiveLevel.convictedTransferLimitInPence | currencyFromPence }
+          },
+          {
+            key: { text: "Convicted spend limit" },
+            value: { text: prisonIncentiveLevel.convictedSpendLimitInPence | currencyFromPence }
+          }
+        ]
+      }) }}
+
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: "Visit orders"
+          }
+        },
+        rows: [
+          {
+            key: { text: "Visits per fortnight" },
+            value: { text: prisonIncentiveLevel.visitOrders }
+          },
+          {
+            key: { text: "Privileged visits per 4 weeks" },
+            value: { text: prisonIncentiveLevel.privilegedVisitOrders }
+          }
+        ]
+      }) }}
+
+    </div>
+  </div>
+{% endblock %}

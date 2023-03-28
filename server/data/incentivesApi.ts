@@ -1,6 +1,28 @@
 import config from '../config'
 import RestClient from './restClient'
 
+export interface IncentiveLevel {
+  code: string
+  description: string
+  active: boolean
+  required: boolean
+}
+
+export interface PrisonIncentiveLevel {
+  prisonId: string
+  levelCode: string
+  levelDescription: string
+  active: boolean
+
+  remandTransferLimitInPence: number
+  remandSpendLimitInPence: number
+  convictedTransferLimitInPence: number
+  convictedSpendLimitInPence: number
+
+  visitOrders: number
+  privilegedVisitOrders: number
+}
+
 interface IncentivesPrisonerSummary {
   prisonerNumber: string
   bookingId: number
@@ -98,6 +120,25 @@ export interface IncentivesReview {
 export class IncentivesApi extends RestClient {
   constructor(systemToken: string) {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
+  }
+
+  getIncentiveLevels(withInactive = false): Promise<IncentiveLevel[]> {
+    const path = withInactive ? '/incentive/levels?with-inactive=true' : '/incentive/levels'
+    return this.get({ path })
+  }
+
+  getIncentiveLevel(code: string): Promise<IncentiveLevel> {
+    return this.get({ path: `/incentive/levels/${encodeURIComponent(code)}` })
+  }
+
+  getPrisonIncentiveLevels(prisonId: string): Promise<PrisonIncentiveLevel[]> {
+    return this.get({ path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}` })
+  }
+
+  getPrisonIncentiveLevel(prisonId: string, levelCode: string): Promise<PrisonIncentiveLevel> {
+    return this.get({
+      path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}/level/${encodeURIComponent(levelCode)}`,
+    })
   }
 
   getLocationSummary(agencyId: string, locationPrefix: string): Promise<IncentivesLocationSummary> {

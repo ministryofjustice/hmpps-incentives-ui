@@ -192,23 +192,25 @@ export default function routes(router: Router): Router {
 
       const prisonIncentiveLevel = await incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode)
 
-      const remandTransferLimit = penceAmountToInputString(prisonIncentiveLevel.remandTransferLimitInPence)
-      const remandSpendLimit = penceAmountToInputString(prisonIncentiveLevel.remandSpendLimitInPence)
-      const convictedTransferLimit = penceAmountToInputString(prisonIncentiveLevel.convictedTransferLimitInPence)
-      const convictedSpendLimit = penceAmountToInputString(prisonIncentiveLevel.convictedSpendLimitInPence)
+      if (!form.submitted) {
+        const remandTransferLimit = penceAmountToInputString(prisonIncentiveLevel.remandTransferLimitInPence)
+        const remandSpendLimit = penceAmountToInputString(prisonIncentiveLevel.remandSpendLimitInPence)
+        const convictedTransferLimit = penceAmountToInputString(prisonIncentiveLevel.convictedTransferLimitInPence)
+        const convictedSpendLimit = penceAmountToInputString(prisonIncentiveLevel.convictedSpendLimitInPence)
 
-      const visitOrders = prisonIncentiveLevel.visitOrders.toString()
-      const privilegedVisitOrders = prisonIncentiveLevel.privilegedVisitOrders.toString()
+        const visitOrders = prisonIncentiveLevel.visitOrders.toString()
+        const privilegedVisitOrders = prisonIncentiveLevel.privilegedVisitOrders.toString()
 
-      form.submit({
-        formId,
-        remandTransferLimit,
-        remandSpendLimit,
-        convictedTransferLimit,
-        convictedSpendLimit,
-        visitOrders,
-        privilegedVisitOrders,
-      })
+        form.submit({
+          formId,
+          remandTransferLimit,
+          remandSpendLimit,
+          convictedTransferLimit,
+          convictedSpendLimit,
+          visitOrders,
+          privilegedVisitOrders,
+        })
+      }
 
       res.locals.breadcrumbs.addItems(
         { text: `Manage levels in ${prisonName}`, href: '/prison-incentive-levels' },

@@ -172,7 +172,7 @@ export default function routes(router: Router): Router {
       const form: IncentiveLevelForm = res.locals.forms[formId]
 
       const incentiveLevel: IncentiveLevel | null = levelCode ? await incentivesApi.getIncentiveLevel(levelCode) : null
-      if (incentiveLevel) {
+      if (incentiveLevel && !form.submitted) {
         let availability
         if (incentiveLevel.required) {
           availability = 'required' as const

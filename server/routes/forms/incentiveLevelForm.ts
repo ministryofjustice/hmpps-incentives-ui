@@ -9,11 +9,9 @@ export interface IncentiveLevelData extends BaseFormData {
 export default class IncentiveLevelForm extends Form<IncentiveLevelData> {
   protected validate(): void {
     if (typeof this.data.code !== 'undefined' && this.data.code.length < 1) {
-      delete this.data.code
       this.addError('code', 'The level’s code is required')
     }
     if (!this.data.description || this.data.description.length < 1) {
-      delete this.data.description
       this.addError('description', 'The level’s description is required')
     }
     if (!['required', 'active', 'inactive'].includes(this.data.availability)) {

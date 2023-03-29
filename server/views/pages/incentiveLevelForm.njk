@@ -39,6 +39,7 @@
             id: form.formId + "-" + fieldId,
             name: fieldId,
             value: field.value,
+            spellcheck: false,
             errorMessage: { text: field.error } if field.error else undefined
           }) }}
         {% endif %}
@@ -51,6 +52,7 @@
           id: form.formId + "-" + fieldId,
           name: fieldId,
           value: field.value,
+          spellcheck: true,
           errorMessage: { text: field.error } if field.error else undefined
         }) }}
 

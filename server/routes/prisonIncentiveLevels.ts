@@ -10,11 +10,11 @@ import { requireGetOrPost } from './forms/forms'
 import PrisonIncentiveLevelForm from './forms/prisonIncentiveLevelForm'
 import { penceAmountToInputString, inputStringToPenceAmount } from '../utils/utils'
 
-const role = 'ROLE_MAINTAIN_PRISON_IEP_LEVELS'
-const requireRole = authorisationMiddleware([role])
-const hasRole = (res: Response) => {
+const prisonManageRole = 'ROLE_MAINTAIN_PRISON_IEP_LEVELS'
+const requirePrisonManageRole = authorisationMiddleware([prisonManageRole])
+const hasPrisonManageRole = (res: Response) => {
   const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
-  return roles && roles.includes(role)
+  return roles && roles.includes(prisonManageRole)
 }
 
 export default function routes(router: Router): Router {
@@ -24,7 +24,7 @@ export default function routes(router: Router): Router {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
     const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
-    const canEdit = hasRole(res)
+    const canEdit = hasPrisonManageRole(res)
     const [incentiveLevels, prisonIncentiveLevels] = await Promise.all([
       incentivesApi.getIncentiveLevels(),
       incentivesApi.getPrisonIncentiveLevels(prisonId),
@@ -47,7 +47,7 @@ export default function routes(router: Router): Router {
 
     const { levelCode } = req.params
     const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
-    const canEdit = hasRole(res)
+    const canEdit = hasPrisonManageRole(res)
     const [incentiveLevel, prisonIncentiveLevel, prisonIncentiveLevels] = await Promise.all([
       incentivesApi.getIncentiveLevel(levelCode),
       incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode),
@@ -85,12 +85,12 @@ export default function routes(router: Router): Router {
     return res.redirect(active ? `/prison-incentive-levels/view/${levelCode}` : '/prison-incentive-levels')
   }
 
-  router.get('/activate/:levelCode', requireRole, asyncMiddleware(activateDeactivate(true)))
-  router.get('/deactivate/:levelCode', requireRole, asyncMiddleware(activateDeactivate(false)))
+  router.get('/activate/:levelCode', requirePrisonManageRole, asyncMiddleware(activateDeactivate(true)))
+  router.get('/deactivate/:levelCode', requirePrisonManageRole, asyncMiddleware(activateDeactivate(false)))
 
   router.get(
     '/add/:levelCode',
-    requireRole,
+    requirePrisonManageRole,
     asyncMiddleware(async (req, res) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
 
@@ -108,7 +108,7 @@ export default function routes(router: Router): Router {
 
   router.get(
     '/set-default-for-admission/:levelCode',
-    requireRole,
+    requirePrisonManageRole,
     asyncMiddleware(async (req, res) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
 
@@ -129,7 +129,7 @@ export default function routes(router: Router): Router {
   const formId = 'prisonIncentiveLevel' as const
   router.all(
     '/edit/:levelCode',
-    requireRole,
+    requirePrisonManageRole,
     requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
       const form = new PrisonIncentiveLevelForm(formId)

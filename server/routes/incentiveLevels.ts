@@ -9,11 +9,11 @@ import { IncentivesApi, IncentiveLevel } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
 import IncentiveLevelForm from './forms/incentiveLevelForm'
 
-const role = 'ROLE_MAINTAIN_INCENTIVE_LEVELS'
-const requireRole = authorisationMiddleware([role])
-const hasRole = (res: Response) => {
+const globalManageRole = 'ROLE_MAINTAIN_INCENTIVE_LEVELS'
+const requireGlobalManageRole = authorisationMiddleware([globalManageRole])
+const hasGlobalManageRole = (res: Response) => {
   const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
-  return roles && roles.includes(role)
+  return roles && roles.includes(globalManageRole)
 }
 
 export default function routes(router: Router): Router {
@@ -22,7 +22,7 @@ export default function routes(router: Router): Router {
   get('/', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
-    const canEdit = hasRole(res)
+    const canEdit = hasGlobalManageRole(res)
     const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
 
     res.locals.breadcrumbs.addItems({ text: 'Manage levels' })
@@ -33,7 +33,7 @@ export default function routes(router: Router): Router {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
     const { levelCode } = req.params
-    const canEdit = hasRole(res)
+    const canEdit = hasGlobalManageRole(res)
     const incentiveLevel = await incentivesApi.getIncentiveLevel(levelCode)
 
     res.locals.breadcrumbs.addItems(
@@ -58,8 +58,8 @@ export default function routes(router: Router): Router {
     return res.redirect(active ? `/incentive-levels/view/${levelCode}` : '/incentive-levels')
   }
 
-  router.get('/activate/:levelCode', requireRole, asyncMiddleware(activateDeactivate(true)))
-  router.get('/deactivate/:levelCode', requireRole, asyncMiddleware(activateDeactivate(false)))
+  router.get('/activate/:levelCode', requireGlobalManageRole, asyncMiddleware(activateDeactivate(true)))
+  router.get('/deactivate/:levelCode', requireGlobalManageRole, asyncMiddleware(activateDeactivate(false)))
 
   const moveLevel: { (move: 'up' | 'down'): RequestHandler } = move => async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
@@ -86,13 +86,13 @@ export default function routes(router: Router): Router {
     return res.redirect('/incentive-levels')
   }
 
-  router.get('/move-up/:levelCode', requireRole, asyncMiddleware(moveLevel('up')))
-  router.get('/move-down/:levelCode', requireRole, asyncMiddleware(moveLevel('down')))
+  router.get('/move-up/:levelCode', requireGlobalManageRole, asyncMiddleware(moveLevel('up')))
+  router.get('/move-down/:levelCode', requireGlobalManageRole, asyncMiddleware(moveLevel('down')))
 
   const formId = 'incentiveLevel' as const
   router.all(
     ['/add', '/edit/:levelCode'],
-    requireRole,
+    requireGlobalManageRole,
     requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
       const form = new IncentiveLevelForm(formId)

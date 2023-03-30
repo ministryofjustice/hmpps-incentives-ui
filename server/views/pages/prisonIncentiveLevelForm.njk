@@ -30,53 +30,53 @@
           }
         }) %}
 
-          {% set formId = "remandTransferLimit" %}
-          {% set field = form.getField(formId) %}
+          {% set fieldId = "remandTransferLimit" %}
+          {% set field = form.getField(fieldId) %}
           {{ govukInput({
             label: { text: "Remand transfer limit" },
             prefix: { text: "£" },
             classes: "govuk-input--width-5",
-            id: form.formId + "-" + formId,
-            name: formId,
+            id: form.formId + "-" + fieldId,
+            name: fieldId,
             value: field.value,
             spellcheck: false,
             errorMessage: { text: field.error } if field.error else undefined
           }) }}
 
-          {% set formId = "remandSpendLimit" %}
-          {% set field = form.getField(formId) %}
+          {% set fieldId = "remandSpendLimit" %}
+          {% set field = form.getField(fieldId) %}
           {{ govukInput({
             label: { text: "Remand spend limit" },
             prefix: { text: "£" },
             classes: "govuk-input--width-5",
-            id: form.formId + "-" + formId,
-            name: formId,
+            id: form.formId + "-" + fieldId,
+            name: fieldId,
             value: field.value,
             spellcheck: false,
             errorMessage: { text: field.error } if field.error else undefined
           }) }}
 
-          {% set formId = "convictedTransferLimit" %}
-          {% set field = form.getField(formId) %}
+          {% set fieldId = "convictedTransferLimit" %}
+          {% set field = form.getField(fieldId) %}
           {{ govukInput({
             label: { text: "Convicted transfer limit" },
             prefix: { text: "£" },
             classes: "govuk-input--width-5",
-            id: form.formId + "-" + formId,
-            name: formId,
+            id: form.formId + "-" + fieldId,
+            name: fieldId,
             value: field.value,
             spellcheck: false,
             errorMessage: { text: field.error } if field.error else undefined
           }) }}
 
-          {% set formId = "convictedSpendLimit" %}
-          {% set field = form.getField(formId) %}
+          {% set fieldId = "convictedSpendLimit" %}
+          {% set field = form.getField(fieldId) %}
           {{ govukInput({
             label: { text: "Convicted spend limit" },
             prefix: { text: "£" },
             classes: "govuk-input--width-5",
-            id: form.formId + "-" + formId,
-            name: formId,
+            id: form.formId + "-" + fieldId,
+            name: fieldId,
             value: field.value,
             spellcheck: false,
             errorMessage: { text: field.error } if field.error else undefined
@@ -91,26 +91,26 @@
           }
         }) %}
 
-          {% set formId = "visitOrders" %}
-          {% set field = form.getField(formId) %}
+          {% set fieldId = "visitOrders" %}
+          {% set field = form.getField(fieldId) %}
           {{ govukInput({
             label: { text: "Visits per fortnight" },
             classes: "govuk-input--width-3",
-            id: form.formId + "-" + formId,
-            name: formId,
+            id: form.formId + "-" + fieldId,
+            name: fieldId,
             value: field.value,
             inputmode: "numeric",
             spellcheck: false,
             errorMessage: { text: field.error } if field.error else undefined
           }) }}
 
-          {% set formId = "privilegedVisitOrders" %}
-          {% set field = form.getField(formId) %}
+          {% set fieldId = "privilegedVisitOrders" %}
+          {% set field = form.getField(fieldId) %}
           {{ govukInput({
             label: { text: "Privileged visits per 4 weeks" },
             classes: "govuk-input--width-3",
-            id: form.formId + "-" + formId,
-            name: formId,
+            id: form.formId + "-" + fieldId,
+            name: fieldId,
             value: field.value,
             inputmode: "numeric",
             spellcheck: false,

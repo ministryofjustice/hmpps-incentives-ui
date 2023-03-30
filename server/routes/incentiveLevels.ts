@@ -86,6 +86,7 @@ export default function routes(router: Router): Router {
     return res.redirect('/incentive-levels')
   }
 
+  // NB: move direction refers to a visual represenation where levels are presented in a list top-to-bottom
   router.get('/move-up/:levelCode', requireGlobalManageRole, asyncMiddleware(moveLevel('up')))
   router.get('/move-down/:levelCode', requireGlobalManageRole, asyncMiddleware(moveLevel('down')))
 

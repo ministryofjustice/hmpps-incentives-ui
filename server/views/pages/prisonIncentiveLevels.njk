@@ -1,6 +1,7 @@
 {% extends "../partials/layout.njk" %}
 
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% set pageTitle = applicationName + " – Incentive levels in " + prisonName %}
 
@@ -8,22 +9,29 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+      {% include "../partials/messages.njk" %}
+
       <h1 class="govuk-heading-xl">Incentive levels in {{ prisonName }}</h1>
 
       {% set rows = [] %}
 
       {% for prisonIncentiveLevel in prisonIncentiveLevels %}
-        {% set url -%}
-          /prison-incentive-levels/{{ prisonIncentiveLevel.levelCode }}
-        {%- endset %}
+        {% set nameHtml %}
+          {{ prisonIncentiveLevel.levelDescription }}
+          {% if prisonIncentiveLevel.defaultOnAdmission %}
+            {{ govukTag({
+              text: "Default for admissions"
+            }) }}
+          {% endif %}
+        {% endset %}
 
         {% set rows = (rows.push({
           key: { text: "Level" },
-          value: { text: prisonIncentiveLevel.levelDescription },
+          value: { html: nameHtml },
           actions: {
             items: [
               {
-                href: url,
+                href: "/prison-incentive-levels/view/" + prisonIncentiveLevel.levelCode,
                 text: "View",
                 visuallyHiddenText: "level"
               }
@@ -33,8 +41,41 @@
       {% endfor %}
 
       {{ govukSummaryList({
+        card: {
+          title: {
+            text: "Levels in use"
+          }
+        },
         rows: rows
       }) }}
+
+      {% set rows = [] %}
+
+      {% for inactiveIncentiveLevel in inactiveIncentiveLevels %}
+        {% set rows = (rows.push({
+          key: { text: "Level" },
+          value: { text: inactiveIncentiveLevel.description },
+          actions: {
+            items: [
+              {
+                href: "/prison-incentive-levels/add/" + inactiveIncentiveLevel.code,
+                text: "Add this level"
+              }
+            ]
+          }
+        }), rows) %}
+      {% endfor %}
+
+      {% if rows | length > 0 %}
+        {{ govukSummaryList({
+          card: {
+            title: {
+              text: "Available levels"
+            }
+          },
+          rows: rows
+        }) }}
+      {% endif %}
 
     </div>
   </div>

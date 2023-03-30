@@ -8,11 +8,14 @@ export interface IncentiveLevel {
   required: boolean
 }
 
+export type IncentiveLevelUpdate = Omit<Partial<IncentiveLevel>, 'code'>
+
 export interface PrisonIncentiveLevel {
   prisonId: string
   levelCode: string
   levelDescription: string
   active: boolean
+  defaultOnAdmission: boolean
 
   remandTransferLimitInPence: number
   remandSpendLimitInPence: number
@@ -22,6 +25,11 @@ export interface PrisonIncentiveLevel {
   visitOrders: number
   privilegedVisitOrders: number
 }
+
+export type PrisonIncentiveLevelUpdate = Omit<
+  Partial<PrisonIncentiveLevel>,
+  'prisonId' | 'levelCode' | 'levelDescription'
+>
 
 interface IncentivesPrisonerSummary {
   prisonerNumber: string
@@ -131,6 +139,27 @@ export class IncentivesApi extends RestClient {
     return this.get({ path: `/incentive/levels/${encodeURIComponent(code)}` })
   }
 
+  createIncentiveLevel(data: IncentiveLevel): Promise<IncentiveLevel> {
+    return this.post({
+      path: '/incentive/levels',
+      data: data as unknown as Record<string, unknown>,
+    })
+  }
+
+  updateIncentiveLevel(levelCode: string, data: IncentiveLevelUpdate): Promise<IncentiveLevel> {
+    return this.patch({
+      path: `/incentive/levels/${encodeURIComponent(levelCode)}`,
+      data,
+    })
+  }
+
+  setIncentiveLevelOrder(levelCodes: string[]): Promise<IncentiveLevel[]> {
+    return this.patch({
+      path: `/incentive/level-order`,
+      data: levelCodes as unknown as Record<string, unknown>,
+    })
+  }
+
   getPrisonIncentiveLevels(prisonId: string): Promise<PrisonIncentiveLevel[]> {
     return this.get({ path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}` })
   }
@@ -138,6 +167,17 @@ export class IncentivesApi extends RestClient {
   getPrisonIncentiveLevel(prisonId: string, levelCode: string): Promise<PrisonIncentiveLevel> {
     return this.get({
       path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}/level/${encodeURIComponent(levelCode)}`,
+    })
+  }
+
+  updatePrisonIncentiveLevel(
+    prisonId: string,
+    levelCode: string,
+    data: PrisonIncentiveLevelUpdate,
+  ): Promise<PrisonIncentiveLevel> {
+    return this.patch({
+      path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}/level/${encodeURIComponent(levelCode)}`,
+      data,
     })
   }
 

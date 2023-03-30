@@ -1,6 +1,8 @@
 {% extends "../partials/layout.njk" %}
 
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% set pageTitle = applicationName + " – Incentive levels" %}
 
@@ -8,40 +10,68 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+      {% include "../partials/messages.njk" %}
+
       <h1 class="govuk-heading-xl">Incentive levels</h1>
 
       {% set rows = [] %}
 
       {% for incentiveLevel in incentiveLevels %}
-        {% set name %}
+        {% set nameHtml %}
           {{ incentiveLevel.description }}
           {% if not incentiveLevel.active %}
-            (Disabled)
+            {{ govukTag({
+              text: "Disabled",
+              classes: "govuk-tag--grey"
+            }) }}
           {% endif %}
         {% endset %}
 
-        {% set url -%}
-          /incentive-levels/{{ incentiveLevel.code }}
-        {%- endset %}
+        {% set actions = [] %}
+        {% if canEdit %}
+          {% if not loop.first %}
+            {%  set actions = (actions.push({
+              href: "/incentive-levels/move-up/" + incentiveLevel.code,
+              text: "▲",
+              visuallyHiddenText: "Move level up"
+            }), actions) %}
+          {% endif %}
+
+          {% if not loop.last %}
+            {%  set actions = (actions.push({
+              href: "/incentive-levels/move-down/" + incentiveLevel.code,
+              text: "▼",
+              visuallyHiddenText: "Move level down"
+            }), actions) %}
+          {% endif %}
+        {% endif %}
+        {%  set actions = (actions.push({
+          href: "/incentive-levels/view/" + incentiveLevel.code,
+          text: "View",
+          visuallyHiddenText: "level details"
+        }), actions) %}
 
         {% set rows = (rows.push({
+          classes: "app-incentive-levels-list",
           key: { text: "Level" },
-          value: { html: name },
-          actions: {
-            items: [
-              {
-                href: url,
-                text: "View",
-                visuallyHiddenText: "level"
-              }
-            ]
-          }
+          value: { html: nameHtml },
+          actions: { items: actions }
         }), rows) %}
       {% endfor %}
 
       {{ govukSummaryList({
         rows: rows
       }) }}
+
+      <p>
+        {% if canEdit %}
+          {{ govukButton({
+            text: "Add a new level",
+            element: "a",
+            href: "/incentive-levels/add"
+          }) }}
+        {% endif %}
+      </p>
 
     </div>
   </div>

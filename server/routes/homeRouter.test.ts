@@ -47,60 +47,17 @@ beforeEach(() => {
 })
 
 describe('Home page', () => {
-  describe('has feature flags controlling reviews table card', () => {
-    describe('when `hideDaysColumnsInIncentivesTable` is on', () => {
-      beforeEach(() => {
-        app.locals.featureFlags.hideDaysColumnsInIncentivesTable = true
-        app.locals.featureFlags.newReviewsTable = []
-      })
-
-      it('incentive information tile does not mention review dates', () => {
-        return request(app)
-          .get('/')
-          .expect(res => {
-            expect(res.text).toContain('Prisoner incentive information')
-            expect(res.text).toContain(
-              'See incentive levels and behaviour entries for the prison population, by residential location.',
-            )
-            expect(res.text).not.toContain('See review dates')
-          })
-      })
-    })
-    describe('when `newReviewsTable` is on', () => {
-      beforeEach(() => {
-        app.locals.featureFlags.hideDaysColumnsInIncentivesTable = false
-        app.locals.featureFlags.newReviewsTable = ['*']
-      })
-
-      it('incentive information tile does mention overdue reviews', () => {
-        return request(app)
-          .get('/')
-          .expect(res => {
-            expect(res.text).toContain('Manage incentive reviews')
-            expect(res.text).toContain(
-              'See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location',
-            )
-            expect(res.text).toContain('overdue reviews')
-          })
-      })
-    })
-
-    describe('when both are off', () => {
-      beforeEach(() => {
-        app.locals.featureFlags.hideDaysColumnsInIncentivesTable = false
-        app.locals.featureFlags.newReviewsTable = []
-      })
-
-      it('incentive information tile mentions old-style review dates', () => {
-        return request(app)
-          .get('/')
-          .expect(res => {
-            expect(res.text).toContain('Prisoner incentive information')
-            expect(res.text).toContain(
-              'See review dates, incentive levels and behaviour entries by residential location.',
-            )
-          })
-      })
+  describe('has a manage incentive reviews tile', () => {
+    it('incentive information tile does mention overdue reviews', () => {
+      return request(app)
+        .get('/')
+        .expect(res => {
+          expect(res.text).toContain('Manage incentive reviews')
+          expect(res.text).toContain(
+            'See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location',
+          )
+          expect(res.text).toContain('overdue reviews')
+        })
     })
   })
 

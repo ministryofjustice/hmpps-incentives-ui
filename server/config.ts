@@ -135,7 +135,6 @@ export default {
     addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),
     // Whether to hide the 'Days since last review'/'Days on level' columns
     hideDaysColumnsInIncentivesTable: flag('FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE', false),
-    newReviewsTable: get('FEATURE_NEW_REVIEWS_TABLE', '').split(','),
     useFileSystemCache: flag('FEATURE_FS_CACHE', false),
     precacheTables: flag('FEATURE_PRECACHE_TABLES', false),
   },

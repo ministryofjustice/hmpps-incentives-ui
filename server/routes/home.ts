@@ -20,9 +20,7 @@ export default function routes(router: Router): Router {
   get('/', (req, res) => {
     res.locals.breadcrumbs.lastItem.href = undefined
 
-    const newReviewsTable = userActiveCaseloadMatches(config.featureFlags.newReviewsTable, res.locals.user)
-
-    res.render('pages/home.njk', { newReviewsTable })
+    res.render('pages/home.njk')
   })
 
   get('/about-national-policy', (req, res) => {

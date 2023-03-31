@@ -61,7 +61,6 @@ afterAll(() => {
 let app: Express
 
 beforeEach(() => {
-  config.featureFlags.newReviewsTable = ['*']
   app = appWithAllRoutes({})
   incentivesApi.getReviews.mockResolvedValue(reviewsResponse)
 })

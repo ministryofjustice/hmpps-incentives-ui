@@ -1,7 +1,6 @@
 import { Router } from 'express'
 
-import config from '../config'
-import { userActiveCaseloadMatches, environmentGate } from '../middleware/featureGate'
+import { environmentGate } from '../middleware/featureGate'
 import type UserService from '../services/userService'
 import homeRoutes from './home'
 import analyticsRouter from './analyticsRouter'

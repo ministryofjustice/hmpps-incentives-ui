@@ -15,16 +15,9 @@
   </h2>
   <ul class="govuk-grid-row card-group">
     <li class="govuk-grid-column-one-third card-group__item">
-      {% if newReviewsTable %}
-        {% set cardHeading = "Manage incentive reviews" %}
-        {% set cardDescription = "See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location." %}
-      {% elif featureFlags.hideDaysColumnsInIncentivesTable %}
-        {% set cardHeading = "Prisoner incentive information" %}
-        {% set cardDescription = "See incentive levels and behaviour entries for the prison population, by residential location." %}
-      {% else %}
-        {% set cardHeading = "Prisoner incentive information" %}
-        {% set cardDescription = "See review dates, incentive levels and behaviour entries by residential location." %}
-      {% endif %}
+
+      {% set cardHeading = "Manage incentive reviews" %}
+      {% set cardDescription = "See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location." %}
 
       {{ card({
         href: "/select-location",

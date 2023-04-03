@@ -42,7 +42,6 @@ generic-service:
     BUNYAN_NO_COLOR: "1"
     PHASE_NAME: ""
     FEATURE_ADD_TEST_ERROR_ENDPOINT: ""
-    FEATURE_HIDE_DAYS_COLUMNS_IN_INCENTIVES_TABLE: ""
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

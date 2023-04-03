@@ -1,6 +1,7 @@
 {% extends "../partials/layout.njk" %}
 
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set pageTitle = applicationName + " – " + prisonIncentiveLevel.levelDescription + " level in " + prisonName %}
@@ -8,6 +9,8 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+      {% include "../partials/messages.njk" %}
 
       <h1 class="govuk-heading-xl">{{ prisonIncentiveLevel.levelDescription }} level in {{ prisonName }}</h1>
 
@@ -59,6 +62,48 @@
           }
         ]
       }) }}
+
+      {% if canEdit %}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Edit details",
+            element: "a",
+            href: "/prison-incentive-levels/edit/" + prisonIncentiveLevel.levelCode
+          }) }}
+
+          {% if incentiveLevel.required %}
+
+            <p>
+              This level is required in all prisons and cannot be disabled.
+            </p>
+
+          {% else %}
+
+            {{ govukButton({
+              text: "Disable this level",
+              classes: "govuk-button--warning",
+              element: "a",
+              href: "/prison-incentive-levels/deactivate/" + prisonIncentiveLevel.levelCode
+            }) }}
+
+          {% endif %}
+        </div>
+
+        {% if prisonIncentiveLevel.levelCode == defaultPrisonIncentiveLevel.levelCode %}
+          <p>
+            This level is the default for admissions in {{ prisonName }}.
+          </p>
+        {% else %}
+          <p>
+            The default level for admissions in {{ prisonName }} is {{ defaultPrisonIncentiveLevel.levelDescription }}.
+          </p>
+          {{ govukButton({
+            text: "Change the default level to " + prisonIncentiveLevel.levelDescription,
+            element: "a",
+            href: "/prison-incentive-levels/set-default-for-admission/" + prisonIncentiveLevel.levelCode
+          }) }}
+          {% endif %}
+      {% endif %}
 
     </div>
   </div>

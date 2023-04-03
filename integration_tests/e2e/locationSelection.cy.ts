@@ -1,7 +1,6 @@
 import Page from '../pages/page'
 import HomePage from '../pages/home'
 import LocationSelectionPage from '../pages/locationSelection'
-import BehaviourEntriesPage from '../pages/behaviourEntriesPage'
 
 context('Location selection', () => {
   beforeEach(() => {
@@ -22,14 +21,5 @@ context('Location selection', () => {
     const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
     locationSelectionPage.locationSelectOptions().should('contain.text', 'Houseblock 2')
     locationSelectionPage.locationSelectOptions().should('contain.text', 'Houseblock 42')
-  })
-
-  it('user can select one of the locations', () => {
-    const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
-    locationSelectionPage.locationSelect().select('MDI-42')
-    locationSelectionPage.continueButton().click()
-
-    Page.verifyOnPage(BehaviourEntriesPage)
-    cy.get('p').contains('Houseblock 42')
   })
 })

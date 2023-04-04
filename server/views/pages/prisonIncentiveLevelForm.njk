@@ -14,7 +14,9 @@
       {% include "../partials/messages.njk" %}
       {% include "../partials/formErrorSummary.njk" %}
 
-      <h1 class="govuk-heading-xl">{{ prisonIncentiveLevel.levelName }} level in {{ prisonName }}</h1>
+      <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-form">
+        {{ prisonIncentiveLevel.levelName }} level in {{ prisonName }}
+      </h1>
 
       {{ govukBackLink({
         text: "Back",

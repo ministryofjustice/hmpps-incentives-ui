@@ -5,7 +5,7 @@ import request from 'supertest'
 
 import config from '../config'
 import { appWithAllRoutes } from './testutils/appSetup'
-import getTestIncentivesReviews from '../testData/incentivesApi'
+import { getTestIncentivesReviews } from '../testData/incentivesApi'
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import type { Level, IncentivesReviewsRequest, sortOptions, orderOptions } from '../data/incentivesApi'
 import { IncentivesApi } from '../data/incentivesApi'

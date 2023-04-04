@@ -11,7 +11,9 @@
 
       {% include "../partials/messages.njk" %}
 
-      <h1 class="govuk-heading-xl">Incentive levels in {{ prisonName }}</h1>
+      <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-list">
+        Incentive levels in {{ prisonName }}
+      </h1>
 
       {% set rows = [] %}
 

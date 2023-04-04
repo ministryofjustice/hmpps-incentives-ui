@@ -14,7 +14,7 @@
       {% include "../partials/messages.njk" %}
       {% include "../partials/formErrorSummary.njk" %}
 
-      <h1 class="govuk-heading-xl">
+      <h1 class="govuk-heading-xl" data-qa="incentive-levels-form">
         {% if incentiveLevel %}
           {{ incentiveLevel.name }} level
         {% else %}

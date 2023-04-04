@@ -56,6 +56,7 @@ export default function routes(router: Router): Router {
     const incentivesApi = new IncentivesApi(systemToken)
 
     const agencyId = locationPrefix.split('-')[0]
+    // TODO: replace with getPrisonIncentiveLevels once api switches
     const levels = await incentivesApi.getAvailableLevels(agencyId)
 
     const selectedLevel = levels.find(level => level.iepLevel === selectedLevelCode)

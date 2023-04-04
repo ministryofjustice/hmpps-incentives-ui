@@ -34,6 +34,7 @@ const testLocation: Location = getTestLocation({
   locationPrefix: 'MDI-2',
   userDescription: 'Houseblock 2',
 })
+
 class MockUserService extends UserService {
   constructor() {
     super(undefined)

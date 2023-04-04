@@ -5,7 +5,7 @@
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-{% set pageTitle = applicationName + " – " + prisonIncentiveLevel.levelDescription + " level in " + prisonName %}
+{% set pageTitle = applicationName + " – " + prisonIncentiveLevel.levelName + " level in " + prisonName %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -14,7 +14,7 @@
       {% include "../partials/messages.njk" %}
       {% include "../partials/formErrorSummary.njk" %}
 
-      <h1 class="govuk-heading-xl">{{ prisonIncentiveLevel.levelDescription }} level in {{ prisonName }}</h1>
+      <h1 class="govuk-heading-xl">{{ prisonIncentiveLevel.levelName }} level in {{ prisonName }}</h1>
 
       {{ govukBackLink({
         text: "Back",

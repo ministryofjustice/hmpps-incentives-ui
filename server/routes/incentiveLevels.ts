@@ -36,10 +36,7 @@ export default function routes(router: Router): Router {
     const canEdit = hasGlobalManageRole(res)
     const incentiveLevel = await incentivesApi.getIncentiveLevel(levelCode)
 
-    res.locals.breadcrumbs.addItems(
-      { text: 'Manage levels', href: '/incentive-levels' },
-      { text: incentiveLevel.description },
-    )
+    res.locals.breadcrumbs.addItems({ text: 'Manage levels', href: '/incentive-levels' }, { text: incentiveLevel.name })
     return res.render('pages/incentiveLevel.njk', { messages: req.flash(), canEdit, incentiveLevel })
   })
 
@@ -49,9 +46,7 @@ export default function routes(router: Router): Router {
     const { levelCode } = req.params
     const incentiveLevel = await incentivesApi.updateIncentiveLevel(levelCode, { active })
     // TODO: handle errors
-    const message = active
-      ? `${incentiveLevel.description} is now active`
-      : `${incentiveLevel.description} is no longer active`
+    const message = active ? `${incentiveLevel.name} is now active` : `${incentiveLevel.name} is no longer active`
     logger.info(message)
     req.flash('success', message)
 
@@ -137,11 +132,11 @@ export default function routes(router: Router): Router {
       if (levelCode) {
         try {
           const updatedIncentiveLevel = await incentivesApi.updateIncentiveLevel(levelCode, {
-            description: form.getField('description').value,
+            name: form.getField('name').value,
             active,
             required,
           })
-          const message = `Incentive level ${updatedIncentiveLevel.description} was saved.`
+          const message = `Incentive level ${updatedIncentiveLevel.name} was saved.`
           req.flash('success', message)
           logger.info(message)
         } catch (error) {
@@ -151,12 +146,12 @@ export default function routes(router: Router): Router {
         try {
           const createdIncentiveLevel = await incentivesApi.createIncentiveLevel({
             code: form.getField('code').value,
-            description: form.getField('description').value,
+            name: form.getField('name').value,
             active,
             required,
           })
           levelCode = createdIncentiveLevel.code
-          const message = `New incentive level ${createdIncentiveLevel.description} was added.`
+          const message = `New incentive level ${createdIncentiveLevel.name} was added.`
           req.flash('success', message)
           logger.info(message)
         } catch (error) {
@@ -185,14 +180,14 @@ export default function routes(router: Router): Router {
         form.submit({
           formId,
           code: incentiveLevel.code,
-          description: incentiveLevel.description,
+          name: incentiveLevel.name,
           availability,
         })
       }
 
       res.locals.breadcrumbs.addItems(
         { text: 'Manage levels', href: '/incentive-levels' },
-        { text: incentiveLevel ? incentiveLevel.description : 'Add new level' },
+        { text: incentiveLevel ? incentiveLevel.name : 'Add new level' },
       )
       return res.render('pages/incentiveLevelForm.njk', {
         messages: req.flash(),

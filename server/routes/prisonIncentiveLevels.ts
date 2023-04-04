@@ -57,7 +57,7 @@ export default function routes(router: Router): Router {
 
     res.locals.breadcrumbs.addItems(
       { text: `Manage levels in ${prisonName}`, href: '/prison-incentive-levels' },
-      { text: prisonIncentiveLevel.levelDescription },
+      { text: prisonIncentiveLevel.levelName },
     )
     return res.render('pages/prisonIncentiveLevel.njk', {
       messages: req.flash(),
@@ -77,8 +77,8 @@ export default function routes(router: Router): Router {
     const prisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, { active })
     // TODO: handle errors
     const message = active
-      ? `${prisonIncentiveLevel.levelDescription} is now available in ${prisonName}`
-      : `${prisonIncentiveLevel.levelDescription} is no longer available in ${prisonName}`
+      ? `${prisonIncentiveLevel.levelName} is now available in ${prisonName}`
+      : `${prisonIncentiveLevel.levelName} is no longer available in ${prisonName}`
     logger.info(message)
     req.flash('success', message)
 
@@ -98,7 +98,7 @@ export default function routes(router: Router): Router {
       const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
       const prisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, { active: true })
       // TODO: handle errors
-      const message = `${prisonIncentiveLevel.levelDescription} is now available in ${prisonName}`
+      const message = `${prisonIncentiveLevel.levelName} is now available in ${prisonName}`
       logger.info(message)
       req.flash('success', message)
 
@@ -118,7 +118,7 @@ export default function routes(router: Router): Router {
         defaultOnAdmission: true,
       })
       // TODO: handle errors
-      const message = `${prisonIncentiveLevel.levelDescription} is now the default level for admissions in ${prisonName}`
+      const message = `${prisonIncentiveLevel.levelName} is now the default level for admissions in ${prisonName}`
       logger.info(message)
       req.flash('success', message)
 
@@ -174,7 +174,7 @@ export default function routes(router: Router): Router {
           visitOrders,
           privilegedVisitOrders,
         })
-        const message = `Incentive level information for ${updatedPrisonIncentiveLevel.levelDescription} at ${prisonName} was saved.`
+        const message = `Incentive level information for ${updatedPrisonIncentiveLevel.levelName} at ${prisonName} was saved.`
         req.flash('success', message)
         logger.info(message)
       } catch (error) {
@@ -214,7 +214,7 @@ export default function routes(router: Router): Router {
 
       res.locals.breadcrumbs.addItems(
         { text: `Manage levels in ${prisonName}`, href: '/prison-incentive-levels' },
-        { text: prisonIncentiveLevel.levelDescription },
+        { text: prisonIncentiveLevel.levelName },
       )
       return res.render('pages/prisonIncentiveLevelForm.njk', {
         messages: req.flash(),

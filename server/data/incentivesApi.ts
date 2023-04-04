@@ -3,7 +3,7 @@ import RestClient from './restClient'
 
 export interface IncentiveLevel {
   code: string
-  description: string
+  name: string
   active: boolean
   required: boolean
 }
@@ -13,7 +13,7 @@ export type IncentiveLevelUpdate = Omit<Partial<IncentiveLevel>, 'code'>
 export interface PrisonIncentiveLevel {
   prisonId: string
   levelCode: string
-  levelDescription: string
+  levelName: string
   active: boolean
   defaultOnAdmission: boolean
 
@@ -26,10 +26,7 @@ export interface PrisonIncentiveLevel {
   privilegedVisitOrders: number
 }
 
-export type PrisonIncentiveLevelUpdate = Omit<
-  Partial<PrisonIncentiveLevel>,
-  'prisonId' | 'levelCode' | 'levelDescription'
->
+export type PrisonIncentiveLevelUpdate = Omit<Partial<PrisonIncentiveLevel>, 'prisonId' | 'levelCode' | 'levelName'>
 
 interface IncentivesPrisonerSummary {
   prisonerNumber: string

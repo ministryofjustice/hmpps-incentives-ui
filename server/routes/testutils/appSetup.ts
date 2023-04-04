@@ -83,7 +83,9 @@ function appSetup(
     req.session = testSession
 
     res.locals = {}
-    res.locals.user = user
+    const authHeader = req.header('authorization')
+    const token = /^Bearer\s+(?<token>.*)\s*$/.exec(authHeader)?.groups?.token
+    res.locals.user = { ...user, token }
 
     next()
   })

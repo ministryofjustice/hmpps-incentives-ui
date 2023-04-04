@@ -79,4 +79,35 @@
     </li>
   </ul>
 
+  {% if canManageIncentiveLevels or canManagePrisonIncentiveLevels %}
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-4" data-qa="admin-section">
+      Admin
+    </h2>
+    <ul class="govuk-grid-row card-group">
+      {% if canManageIncentiveLevels %}
+        <li class="govuk-grid-column-one-third card-group__item">
+          {{ card({
+            href: "/incentive-levels",
+            clickable: "true",
+            heading: "Manage incentive levels in all prisons",
+            description: "Add and remove incentive levels which are available for all establishments to use.",
+            id: "manage-incentive-levels"
+          }) }}
+        </li>
+      {% endif %}
+
+      {% if canManagePrisonIncentiveLevels %}
+        <li class="govuk-grid-column-one-third card-group__item">
+          {{ card({
+            href: "/prison-incentive-levels",
+            clickable: "true",
+            heading: "Incentive level settings",
+            description: "View and change incentive level defaults for your establishment, including spends, transfer and visit limits.",
+            id: "manage-prison-incentive-levels"
+          }) }}
+        </li>
+      {% endif %}
+    </ul>
+  {% endif %}
+
 {% endblock %}

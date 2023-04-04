@@ -1,20 +1,13 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
 import { BadRequest, NotFound } from 'http-errors'
-import jwtDecode from 'jwt-decode'
 
 import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import authorisationMiddleware from '../middleware/authorisationMiddleware'
 import { IncentivesApi, IncentiveLevel } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
 import IncentiveLevelForm from './forms/incentiveLevelForm'
 
-const globalManageRole = 'ROLE_MAINTAIN_INCENTIVE_LEVELS'
-const requireGlobalManageRole = authorisationMiddleware([globalManageRole])
-const hasGlobalManageRole = (res: Response) => {
-  const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
-  return roles && roles.includes(globalManageRole)
-}
+export const manageIncentiveLevelsRole = 'ROLE_MAINTAIN_INCENTIVE_LEVELS'
 
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
@@ -22,22 +15,20 @@ export default function routes(router: Router): Router {
   get('/', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
-    const canEdit = hasGlobalManageRole(res)
     const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
 
     res.locals.breadcrumbs.addItems({ text: 'Manage levels' })
-    return res.render('pages/incentiveLevels.njk', { messages: req.flash(), canEdit, incentiveLevels })
+    return res.render('pages/incentiveLevels.njk', { messages: req.flash(), incentiveLevels })
   })
 
   get('/view/:levelCode', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
     const { levelCode } = req.params
-    const canEdit = hasGlobalManageRole(res)
     const incentiveLevel = await incentivesApi.getIncentiveLevel(levelCode)
 
     res.locals.breadcrumbs.addItems({ text: 'Manage levels', href: '/incentive-levels' }, { text: incentiveLevel.name })
-    return res.render('pages/incentiveLevel.njk', { messages: req.flash(), canEdit, incentiveLevel })
+    return res.render('pages/incentiveLevel.njk', { messages: req.flash(), incentiveLevel })
   })
 
   const activateDeactivate: { (active: boolean): RequestHandler } = active => async (req, res) => {
@@ -53,8 +44,8 @@ export default function routes(router: Router): Router {
     return res.redirect(active ? `/incentive-levels/view/${levelCode}` : '/incentive-levels')
   }
 
-  router.get('/activate/:levelCode', requireGlobalManageRole, asyncMiddleware(activateDeactivate(true)))
-  router.get('/deactivate/:levelCode', requireGlobalManageRole, asyncMiddleware(activateDeactivate(false)))
+  router.get('/activate/:levelCode', asyncMiddleware(activateDeactivate(true)))
+  router.get('/deactivate/:levelCode', asyncMiddleware(activateDeactivate(false)))
 
   const moveLevel: { (move: 'up' | 'down'): RequestHandler } = move => async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
@@ -82,13 +73,12 @@ export default function routes(router: Router): Router {
   }
 
   // NB: move direction refers to a visual represenation where levels are presented in a list top-to-bottom
-  router.get('/move-up/:levelCode', requireGlobalManageRole, asyncMiddleware(moveLevel('up')))
-  router.get('/move-down/:levelCode', requireGlobalManageRole, asyncMiddleware(moveLevel('down')))
+  router.get('/move-up/:levelCode', asyncMiddleware(moveLevel('up')))
+  router.get('/move-down/:levelCode', asyncMiddleware(moveLevel('down')))
 
   const formId = 'incentiveLevel' as const
   router.all(
     ['/add', '/edit/:levelCode'],
-    requireGlobalManageRole,
     requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
       const form = new IncentiveLevelForm(formId)

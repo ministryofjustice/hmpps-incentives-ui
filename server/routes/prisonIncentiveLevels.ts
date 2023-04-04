@@ -1,21 +1,14 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
 import { BadRequest } from 'http-errors'
-import jwtDecode from 'jwt-decode'
 
 import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import authorisationMiddleware from '../middleware/authorisationMiddleware'
 import { IncentivesApi } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
 import PrisonIncentiveLevelForm from './forms/prisonIncentiveLevelForm'
 import { penceAmountToInputString, inputStringToPenceAmount } from '../utils/utils'
 
-const prisonManageRole = 'ROLE_MAINTAIN_PRISON_IEP_LEVELS'
-const requirePrisonManageRole = authorisationMiddleware([prisonManageRole])
-const hasPrisonManageRole = (res: Response) => {
-  const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
-  return roles && roles.includes(prisonManageRole)
-}
+export const managePrisonIncentiveLevelsRole = 'ROLE_MAINTAIN_PRISON_IEP_LEVELS'
 
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
@@ -24,7 +17,6 @@ export default function routes(router: Router): Router {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
     const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
-    const canEdit = hasPrisonManageRole(res)
     const [incentiveLevels, prisonIncentiveLevels] = await Promise.all([
       incentivesApi.getIncentiveLevels(),
       incentivesApi.getPrisonIncentiveLevels(prisonId),
@@ -35,7 +27,6 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.addItems({ text: `Manage levels in ${prisonName}` })
     return res.render('pages/prisonIncentiveLevels.njk', {
       messages: req.flash(),
-      canEdit,
       prisonIncentiveLevels,
       inactiveIncentiveLevels,
       prisonName,
@@ -47,7 +38,6 @@ export default function routes(router: Router): Router {
 
     const { levelCode } = req.params
     const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
-    const canEdit = hasPrisonManageRole(res)
     const [incentiveLevel, prisonIncentiveLevel, prisonIncentiveLevels] = await Promise.all([
       incentivesApi.getIncentiveLevel(levelCode),
       incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode),
@@ -61,7 +51,6 @@ export default function routes(router: Router): Router {
     )
     return res.render('pages/prisonIncentiveLevel.njk', {
       messages: req.flash(),
-      canEdit,
       incentiveLevel,
       prisonIncentiveLevel,
       defaultPrisonIncentiveLevel,
@@ -85,12 +74,11 @@ export default function routes(router: Router): Router {
     return res.redirect(active ? `/prison-incentive-levels/view/${levelCode}` : '/prison-incentive-levels')
   }
 
-  router.get('/activate/:levelCode', requirePrisonManageRole, asyncMiddleware(activateDeactivate(true)))
-  router.get('/deactivate/:levelCode', requirePrisonManageRole, asyncMiddleware(activateDeactivate(false)))
+  router.get('/activate/:levelCode', asyncMiddleware(activateDeactivate(true)))
+  router.get('/deactivate/:levelCode', asyncMiddleware(activateDeactivate(false)))
 
   router.get(
     '/add/:levelCode',
-    requirePrisonManageRole,
     asyncMiddleware(async (req, res) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
 
@@ -108,7 +96,6 @@ export default function routes(router: Router): Router {
 
   router.get(
     '/set-default-for-admission/:levelCode',
-    requirePrisonManageRole,
     asyncMiddleware(async (req, res) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
 
@@ -129,7 +116,6 @@ export default function routes(router: Router): Router {
   const formId = 'prisonIncentiveLevel' as const
   router.all(
     '/edit/:levelCode',
-    requirePrisonManageRole,
     requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
       const form = new PrisonIncentiveLevelForm(formId)

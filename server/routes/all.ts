@@ -1,13 +1,14 @@
 import { Router } from 'express'
 
+import authorisationMiddleware from '../middleware/authorisationMiddleware'
 import { environmentGate } from '../middleware/featureGate'
 import type UserService from '../services/userService'
 import homeRoutes from './home'
 import analyticsRouter from './analyticsRouter'
 import throwTestErrorRouter from './throwTestErrorRouter'
 import imageRouter from './imageRouter'
-import incentiveLevelRoutes from './incentiveLevels'
-import prisonIncentiveLevelRoutes from './prisonIncentiveLevels'
+import incentiveLevelRoutes, { manageIncentiveLevelsRole } from './incentiveLevels'
+import prisonIncentiveLevelRoutes, { managePrisonIncentiveLevelsRole } from './prisonIncentiveLevels'
 import prisonerImagesRoutes from './prisonerImages'
 import selectLocationRoutes from './selectLocation'
 import reviewsTableRoutes from './reviewsTable'
@@ -16,19 +17,17 @@ import standardRouter from './standardRouter'
 export default function routes(userService: UserService): Router {
   const router = Router({ mergeParams: true })
 
-  const reviewsTable = reviewsTableRoutes(standardRouter(userService))
-
   router.use('/select-location', selectLocationRoutes(standardRouter(userService)))
-  router.use(
-    '/incentive-summary/:locationPrefix',
-    standardRouter(userService).use((req, res, next) => {
-      reviewsTable(req, res, next)
-    }),
-  )
+  router.use('/incentive-summary/:locationPrefix', reviewsTableRoutes(standardRouter(userService)))
 
-  router.use('/incentive-levels', environmentGate(['local', 'dev'], incentiveLevelRoutes(standardRouter(userService))))
+  router.use(
+    '/incentive-levels',
+    authorisationMiddleware([manageIncentiveLevelsRole]),
+    environmentGate(['local', 'dev'], incentiveLevelRoutes(standardRouter(userService))),
+  )
   router.use(
     '/prison-incentive-levels',
+    authorisationMiddleware([managePrisonIncentiveLevelsRole]),
     environmentGate(['local', 'dev'], prisonIncentiveLevelRoutes(standardRouter(userService))),
   )
   router.use('/analytics/:pgdRegionCode([A-Z0-9]{2,5}|National)?', analyticsRouter(standardRouter(userService)))

@@ -28,22 +28,19 @@
         {% endset %}
 
         {% set actions = [] %}
-        {% if canEdit %}
-          {% if not loop.first %}
-            {%  set actions = (actions.push({
-              href: "/incentive-levels/move-up/" + incentiveLevel.code,
-              text: "▲",
-              visuallyHiddenText: "Move level up"
-            }), actions) %}
-          {% endif %}
-
-          {% if not loop.last %}
-            {%  set actions = (actions.push({
-              href: "/incentive-levels/move-down/" + incentiveLevel.code,
-              text: "▼",
-              visuallyHiddenText: "Move level down"
-            }), actions) %}
-          {% endif %}
+        {% if not loop.first %}
+          {%  set actions = (actions.push({
+            href: "/incentive-levels/move-up/" + incentiveLevel.code,
+            text: "▲",
+            visuallyHiddenText: "Move level up"
+          }), actions) %}
+        {% endif %}
+        {% if not loop.last %}
+          {%  set actions = (actions.push({
+            href: "/incentive-levels/move-down/" + incentiveLevel.code,
+            text: "▼",
+            visuallyHiddenText: "Move level down"
+          }), actions) %}
         {% endif %}
         {%  set actions = (actions.push({
           href: "/incentive-levels/view/" + incentiveLevel.code,
@@ -64,13 +61,11 @@
       }) }}
 
       <p>
-        {% if canEdit %}
-          {{ govukButton({
-            text: "Add a new level",
-            element: "a",
-            href: "/incentive-levels/add"
-          }) }}
-        {% endif %}
+        {{ govukButton({
+          text: "Add a new level",
+          element: "a",
+          href: "/incentive-levels/add"
+        }) }}
       </p>
 
     </div>

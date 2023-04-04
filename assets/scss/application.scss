@@ -21,19 +21,8 @@ $govuk-page-width: $moj-page-width;
 @import './components/header-bar';
 @import './components/tables';
 @import './components/reviews-table';
+@import './components/incentive-levels';
 
 @import './global';
 @import './incentive-summary';
 @import './pgd-region';
-
-// TODO: remove once incentive level management is designed
-.app-incentive-levels-list {
-  @include govuk-media-query($from: tablet) {
-    .govuk-summary-list__key {
-      width: 20%;
-    }
-    .govuk-summary-list__actions {
-      width: 30%;
-    }
-  }
-}

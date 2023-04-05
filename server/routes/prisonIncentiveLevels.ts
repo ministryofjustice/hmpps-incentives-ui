@@ -46,12 +46,10 @@ export default function routes(router: Router): Router {
 
     const { levelCode } = req.params
     const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
-    const [incentiveLevel, prisonIncentiveLevel, prisonIncentiveLevels] = await Promise.all([
+    const [incentiveLevel, prisonIncentiveLevel] = await Promise.all([
       incentivesApi.getIncentiveLevel(levelCode),
       incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode),
-      incentivesApi.getPrisonIncentiveLevels(prisonId),
     ])
-    const defaultPrisonIncentiveLevel = prisonIncentiveLevels.find(level => level.defaultOnAdmission)
 
     res.locals.breadcrumbs.addItems(
       { text: 'Incentive level settings', href: '/prison-incentive-levels' },
@@ -61,7 +59,6 @@ export default function routes(router: Router): Router {
       messages: req.flash(),
       incentiveLevel,
       prisonIncentiveLevel,
-      defaultPrisonIncentiveLevel,
       prisonName,
     })
   })

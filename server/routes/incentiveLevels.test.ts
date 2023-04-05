@@ -25,6 +25,11 @@ beforeEach(() => {
   incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[1])
 })
 
+afterEach(() => {
+  incentivesApi.updateIncentiveLevel.mockClear()
+  incentivesApi.setIncentiveLevelOrder.mockClear()
+})
+
 const tokenWithMissingRole = createUserToken([])
 const tokenWithNecessaryRole = createUserToken(['ROLE_MAINTAIN_INCENTIVE_LEVELS'])
 

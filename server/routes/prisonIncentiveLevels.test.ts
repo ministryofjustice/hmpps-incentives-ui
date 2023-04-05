@@ -7,6 +7,8 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../testData/incentivesApi'
 import { IncentivesApi } from '../data/incentivesApi'
+import type { PrisonIncentiveLevelDeactivateData } from './forms/prisonIncentiveLevelDeactivateForm'
+import type { PrisonIncentiveLevelEditData } from './forms/prisonIncentiveLevelEditForm'
 
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/incentivesApi', () => {
@@ -229,6 +231,19 @@ describe('Prison incentive level management', () => {
         .expect(404)
     })
 
+    it('should 404 if level is required globally (POST)', () => {
+      const validForm: PrisonIncentiveLevelDeactivateData = {
+        formId: 'prisonIncentiveLevelDeactivateForm',
+        confirmation: 'yes',
+      }
+
+      return request(app)
+        .post('/prison-incentive-levels/remove/STD')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
+        .expect(404)
+    })
+
     it('should 404 if level is already inactive', () => {
       incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[5])
       incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[3])
@@ -236,6 +251,22 @@ describe('Prison incentive level management', () => {
       return request(app)
         .get('/prison-incentive-levels/remove/ENT')
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(404)
+    })
+
+    it('should 404 if level is already inactive', () => {
+      incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[5])
+      incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[3])
+
+      const validForm: PrisonIncentiveLevelDeactivateData = {
+        formId: 'prisonIncentiveLevelDeactivateForm',
+        confirmation: 'yes',
+      }
+
+      return request(app)
+        .post('/prison-incentive-levels/remove/ENT')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
         .expect(404)
     })
 
@@ -306,6 +337,30 @@ describe('Prison incentive level management', () => {
       return request(app)
         .get('/prison-incentive-levels/edit/ENT')
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(404)
+    })
+
+    it('should 404 if level is inactive', () => {
+      incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[3])
+
+      const validForm: PrisonIncentiveLevelEditData = {
+        formId: 'prisonIncentiveLevelEditForm',
+
+        defaultOnAdmission: 'yes',
+
+        remandTransferLimit: '60.50',
+        remandSpendLimit: '605',
+        convictedTransferLimit: '19.80',
+        convictedSpendLimit: '198',
+
+        visitOrders: '1',
+        privilegedVisitOrders: '1',
+      }
+
+      return request(app)
+        .post('/prison-incentive-levels/edit/ENT')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
         .expect(404)
     })
 

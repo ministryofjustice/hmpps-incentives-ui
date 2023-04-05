@@ -18,7 +18,7 @@ export default function routes(router: Router): Router {
     const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
 
     res.locals.breadcrumbs.addItems({ text: 'Manage levels' })
-    return res.render('pages/incentiveLevels.njk', { messages: req.flash(), incentiveLevels })
+    res.render('pages/incentiveLevels.njk', { messages: req.flash(), incentiveLevels })
   })
 
   get('/view/:levelCode', async (req, res) => {
@@ -28,7 +28,7 @@ export default function routes(router: Router): Router {
     const incentiveLevel = await incentivesApi.getIncentiveLevel(levelCode)
 
     res.locals.breadcrumbs.addItems({ text: 'Manage levels', href: '/incentive-levels' }, { text: incentiveLevel.name })
-    return res.render('pages/incentiveLevel.njk', { messages: req.flash(), incentiveLevel })
+    res.render('pages/incentiveLevel.njk', { messages: req.flash(), incentiveLevel })
   })
 
   const activateDeactivate: { (active: boolean): RequestHandler } = active => async (req, res) => {
@@ -41,7 +41,7 @@ export default function routes(router: Router): Router {
     logger.info(message)
     req.flash('success', message)
 
-    return res.redirect(active ? `/incentive-levels/view/${levelCode}` : '/incentive-levels')
+    res.redirect(active ? `/incentive-levels/view/${levelCode}` : '/incentive-levels')
   }
 
   router.get('/activate/:levelCode', asyncMiddleware(activateDeactivate(true)))
@@ -69,7 +69,7 @@ export default function routes(router: Router): Router {
     logger.info(message)
     req.flash('success', message)
 
-    return res.redirect('/incentive-levels')
+    res.redirect('/incentive-levels')
   }
 
   // NB: move direction refers to a visual represenation where levels are presented in a list top-to-bottom
@@ -181,7 +181,7 @@ export default function routes(router: Router): Router {
         { text: 'Manage levels', href: '/incentive-levels' },
         { text: incentiveLevel ? incentiveLevel.name : 'Add new level' },
       )
-      return res.render('pages/incentiveLevelForm.njk', {
+      res.render('pages/incentiveLevelForm.njk', {
         messages: req.flash(),
         form,
         incentiveLevel,

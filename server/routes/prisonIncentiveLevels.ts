@@ -33,7 +33,7 @@ export default function routes(router: Router): Router {
       })
 
     res.locals.breadcrumbs.addItems({ text: 'Incentive level settings' })
-    return res.render('pages/prisonIncentiveLevels.njk', {
+    res.render('pages/prisonIncentiveLevels.njk', {
       messages: req.flash(),
       prisonIncentiveLevels: prisonIncentiveLevelsWithRequiredFlag,
       canAddLevel,
@@ -55,7 +55,7 @@ export default function routes(router: Router): Router {
       { text: 'Incentive level settings', href: '/prison-incentive-levels' },
       { text: `View settings for ${prisonIncentiveLevel.levelName}` },
     )
-    return res.render('pages/prisonIncentiveLevel.njk', {
+    res.render('pages/prisonIncentiveLevel.njk', {
       messages: req.flash(),
       incentiveLevel,
       prisonIncentiveLevel,
@@ -93,11 +93,23 @@ export default function routes(router: Router): Router {
         const incentivesApi = new IncentivesApi(res.locals.user.token)
         const { levelCode } = req.params
         const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
+
+        const [incentiveLevel, prisonIncentiveLevel] = await Promise.all([
+          incentivesApi.getIncentiveLevel(levelCode),
+          incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode),
+        ])
+        if (!prisonIncentiveLevel.active) {
+          throw NotFound('Prison incentive level is already inactive')
+        }
+        if (incentiveLevel.required) {
+          throw NotFound('Incentive level is required globally')
+        }
+
         try {
-          const prisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
+          const deactivatedPrisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
             active: false,
           })
-          const message = `${prisonIncentiveLevel.levelName} is no longer available in ${prisonName}`
+          const message = `${deactivatedPrisonIncentiveLevel.levelName} is no longer available in ${prisonName}`
           logger.info(message)
           req.flash('success', message)
         } catch (error) {
@@ -119,7 +131,6 @@ export default function routes(router: Router): Router {
         incentivesApi.getIncentiveLevel(levelCode),
         incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode),
       ])
-
       if (!prisonIncentiveLevel.active) {
         throw NotFound('Prison incentive level is already inactive')
       }
@@ -131,7 +142,7 @@ export default function routes(router: Router): Router {
         { text: 'Incentive level settings', href: '/prison-incentive-levels' },
         { text: `Are you sure you want to remove ${prisonIncentiveLevel.levelName}?` },
       )
-      return res.render('pages/prisonIncentiveLevelDeactivateForm.njk', {
+      res.render('pages/prisonIncentiveLevelDeactivateForm.njk', {
         messages: req.flash(),
         form,
         prisonIncentiveLevel,

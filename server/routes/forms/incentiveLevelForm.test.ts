@@ -1,7 +1,7 @@
 import IncentiveLevelForm, { type IncentiveLevelData } from './incentiveLevelForm'
 
 describe('IncentiveLevelForm', () => {
-  const formId = 'test-form-1'
+  const formId = 'test-form-1' as const
 
   const validData: Partial<IncentiveLevelData>[] = [
     { name: 'Standard', availability: 'required' },

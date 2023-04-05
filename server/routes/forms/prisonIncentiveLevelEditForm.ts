@@ -1,7 +1,9 @@
 import Form, { type BaseFormData } from './forms'
 import { currencyInputRE } from '../../utils/utils'
 
-export interface PrisonIncentiveLevelData extends BaseFormData {
+export interface PrisonIncentiveLevelEditData extends BaseFormData {
+  defaultOnAdmission?: 'yes' | ''
+
   remandTransferLimit: string
   remandSpendLimit: string
   convictedTransferLimit: string
@@ -11,8 +13,14 @@ export interface PrisonIncentiveLevelData extends BaseFormData {
   privilegedVisitOrders: string
 }
 
-export default class PrisonIncentiveLevelForm extends Form<PrisonIncentiveLevelData> {
+export default class PrisonIncentiveLevelEditForm<
+  Data extends PrisonIncentiveLevelEditData = PrisonIncentiveLevelEditData,
+> extends Form<Data> {
   protected validate(): void {
+    if (this.data.defaultOnAdmission && this.data.defaultOnAdmission !== 'yes') {
+      this.addError('defaultOnAdmission', 'Invalid value')
+    }
+
     if (!currencyInputRE.test(this.data.remandTransferLimit)) {
       this.addError('remandTransferLimit', 'Remand transfer limit must be in pounds and pence')
     }

@@ -6,7 +6,7 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, type PrisonIncentiveLevel } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
 import PrisonIncentiveLevelDeactivateForm from './forms/prisonIncentiveLevelDeactivateForm'
-import PrisonIncentiveLevelForm from './forms/prisonIncentiveLevelForm'
+import PrisonIncentiveLevelEditForm from './forms/prisonIncentiveLevelEditForm'
 import { penceAmountToInputString, inputStringToPenceAmount } from '../utils/utils'
 
 export const managePrisonIncentiveLevelsRole = 'ROLE_MAINTAIN_PRISON_IEP_LEVELS'
@@ -148,7 +148,7 @@ export default function routes(router: Router): Router {
     '/edit/:levelCode',
     requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-      const form = new PrisonIncentiveLevelForm(editFormId)
+      const form = new PrisonIncentiveLevelEditForm(editFormId)
       res.locals.forms = res.locals.forms || {}
       res.locals.forms[editFormId] = form
 
@@ -205,7 +205,7 @@ export default function routes(router: Router): Router {
 
       const { levelCode } = req.params
       const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
-      const form: PrisonIncentiveLevelForm = res.locals.forms[editFormId]
+      const form: PrisonIncentiveLevelEditForm = res.locals.forms[editFormId]
 
       const prisonIncentiveLevel = await incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode)
 

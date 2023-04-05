@@ -140,7 +140,7 @@ export default function routes(router: Router): Router {
     }),
   )
 
-  const editFormId = 'prisonIncentiveLevel' as const
+  const editFormId = 'prisonIncentiveLevelEditForm' as const
   router.all(
     '/edit/:levelCode',
     requireGetOrPost,
@@ -170,6 +170,13 @@ export default function routes(router: Router): Router {
       const { levelCode } = req.params as { levelCode?: string }
       const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
 
+      const prisonIncentiveLevel = await incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode)
+      if (!prisonIncentiveLevel.active) {
+        throw NotFound('Prison incentive level is inactive')
+      }
+
+      const defaultOnAdmission = form.getField('defaultOnAdmission').value === 'yes'
+
       const remandTransferLimitInPence = inputStringToPenceAmount(form.getField('remandTransferLimit').value)
       const remandSpendLimitInPence = inputStringToPenceAmount(form.getField('remandSpendLimit').value)
       const convictedTransferLimitInPence = inputStringToPenceAmount(form.getField('convictedTransferLimit').value)
@@ -180,6 +187,7 @@ export default function routes(router: Router): Router {
 
       try {
         const updatedPrisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
+          defaultOnAdmission,
           remandTransferLimitInPence,
           remandSpendLimitInPence,
           convictedTransferLimitInPence,
@@ -205,8 +213,13 @@ export default function routes(router: Router): Router {
       const form: PrisonIncentiveLevelEditForm = res.locals.forms[editFormId]
 
       const prisonIncentiveLevel = await incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode)
+      if (!prisonIncentiveLevel.active) {
+        throw NotFound('Prison incentive level is inactive')
+      }
 
       if (!form.submitted) {
+        const defaultOnAdmission = prisonIncentiveLevel.defaultOnAdmission ? 'yes' : undefined
+
         const remandTransferLimit = penceAmountToInputString(prisonIncentiveLevel.remandTransferLimitInPence)
         const remandSpendLimit = penceAmountToInputString(prisonIncentiveLevel.remandSpendLimitInPence)
         const convictedTransferLimit = penceAmountToInputString(prisonIncentiveLevel.convictedTransferLimitInPence)
@@ -217,6 +230,7 @@ export default function routes(router: Router): Router {
 
         form.submit({
           formId: editFormId,
+          defaultOnAdmission,
           remandTransferLimit,
           remandSpendLimit,
           convictedTransferLimit,
@@ -230,7 +244,7 @@ export default function routes(router: Router): Router {
         { text: 'Incentive level settings', href: '/prison-incentive-levels' },
         { text: `Change settings for ${prisonIncentiveLevel.levelName}` },
       )
-      return res.render('pages/prisonIncentiveLevelForm.njk', {
+      res.render('pages/prisonIncentiveLevelEditForm.njk', {
         messages: req.flash(),
         form,
         prisonIncentiveLevel,

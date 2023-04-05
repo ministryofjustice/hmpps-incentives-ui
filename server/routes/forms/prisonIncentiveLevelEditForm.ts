@@ -36,7 +36,7 @@ export default class PrisonIncentiveLevelEditForm<
 
     const number = /^\d+$/
     if (!number.test(this.data.visitOrders)) {
-      this.addError('visitOrders', 'Visits per fortnight must be a number')
+      this.addError('visitOrders', 'Visits per 2 weeks must be a number')
     }
     if (!number.test(this.data.privilegedVisitOrders)) {
       this.addError('privilegedVisitOrders', 'Privileged visits per 4 weeks must be a number')

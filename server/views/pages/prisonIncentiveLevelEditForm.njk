@@ -1,6 +1,7 @@
 {% extends "../partials/layout.njk" %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
@@ -13,36 +14,43 @@
       {% include "../partials/messages.njk" %}
       {% include "../partials/formErrorSummary.njk" %}
 
-      <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-form">
+      <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-edit">
         Change settings for {{ prisonIncentiveLevel.levelName }}
       </h1>
 
       <form id="form-{{ form.formId }}" method="post" novalidate>
 
+        {{ govukCheckboxes({
+          name: "defaultOnAdmission",
+          fieldset: {
+            legend: {
+              text: "Default incentive level",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Make this the default level for new prisoners in your establishment",
+              checked: prisonIncentiveLevel.defaultOnAdmission
+            }
+          ]
+        }) }}
+
+        <h2 class="govuk-heading-l govuk-!-margin-top-8">
+          Money
+        </h2>
+
         {% call govukFieldset({
           legend: {
-            text: "Spend limits",
+            text: "Transfer limit from private cash, in pounds per week",
             classes: "govuk-fieldset__legend--m"
           }
         }) %}
-
           {% set fieldId = "remandTransferLimit" %}
           {% set field = form.getField(fieldId) %}
           {{ govukInput({
-            label: { text: "Remand transfer limit" },
-            prefix: { text: "£" },
-            classes: "govuk-input--width-5",
-            id: form.formId + "-" + fieldId,
-            name: fieldId,
-            value: field.value,
-            spellcheck: false,
-            errorMessage: { text: field.error } if field.error else undefined
-          }) }}
-
-          {% set fieldId = "remandSpendLimit" %}
-          {% set field = form.getField(fieldId) %}
-          {{ govukInput({
-            label: { text: "Remand spend limit" },
+            label: { text: "Remand prisoners" },
             prefix: { text: "£" },
             classes: "govuk-input--width-5",
             id: form.formId + "-" + fieldId,
@@ -55,7 +63,27 @@
           {% set fieldId = "convictedTransferLimit" %}
           {% set field = form.getField(fieldId) %}
           {{ govukInput({
-            label: { text: "Convicted transfer limit" },
+            label: { text: "Convicted prisoners" },
+            prefix: { text: "£" },
+            classes: "govuk-input--width-5",
+            id: form.formId + "-" + fieldId,
+            name: fieldId,
+            value: field.value,
+            spellcheck: false,
+            errorMessage: { text: field.error } if field.error else undefined
+          }) }}
+        {% endcall %}
+
+        {% call govukFieldset({
+          legend: {
+            text: "Maximum allowed in spends account, in pounds",
+            classes: "govuk-fieldset__legend--m"
+          }
+        }) %}
+          {% set fieldId = "remandSpendLimit" %}
+          {% set field = form.getField(fieldId) %}
+          {{ govukInput({
+            label: { text: "Remand prisoners" },
             prefix: { text: "£" },
             classes: "govuk-input--width-5",
             id: form.formId + "-" + fieldId,
@@ -68,7 +96,7 @@
           {% set fieldId = "convictedSpendLimit" %}
           {% set field = form.getField(fieldId) %}
           {{ govukInput({
-            label: { text: "Convicted spend limit" },
+            label: { text: "Convicted prisoners" },
             prefix: { text: "£" },
             classes: "govuk-input--width-5",
             id: form.formId + "-" + fieldId,
@@ -80,17 +108,20 @@
 
         {% endcall %}
 
+        <h2 class="govuk-heading-l govuk-!-margin-top-8">
+          Visits
+        </h2>
+
         {% call govukFieldset({
           legend: {
-            text: "Visit orders",
+            text: "Visit limits for convicted prisoners",
             classes: "govuk-fieldset__legend--m"
           }
         }) %}
-
           {% set fieldId = "visitOrders" %}
           {% set field = form.getField(fieldId) %}
           {{ govukInput({
-            label: { text: "Visits per fortnight" },
+            label: { text: "Visits per 2 weeks" },
             classes: "govuk-input--width-3",
             id: form.formId + "-" + fieldId,
             name: fieldId,
@@ -112,7 +143,6 @@
             spellcheck: false,
             errorMessage: { text: field.error } if field.error else undefined
           }) }}
-
         {% endcall %}
 
         <input type="hidden" name="formId" value="{{ form.formId }}" />

@@ -1,0 +1,53 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " – Are you sure you want to remove " + prisonIncentiveLevel.levelName + "?" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+
+      {% include "../partials/messages.njk" %}
+      {% include "../partials/formErrorSummary.njk" %}
+
+      <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-deactivate">
+        Are you sure you want to remove {{ prisonIncentiveLevel.levelName }}?
+      </h1>
+      <p>
+        This incentive level will no longer be available for use in your establishment.
+        Removal will not affect prisoners who are already on this level.
+      </p>
+
+      <form id="form-{{ form.formId }}" method="post" novalidate>
+
+        {{ govukRadios({
+          name: "confirmation",
+          fieldset: {
+            legend: {
+              text: "Remove this level?",
+              classes: "govuk-visually-hidden"
+            }
+          },
+          items: [
+            { text: "Yes", value: "yes" },
+            { text: "No", value: "no" }
+          ]
+        }) }}
+
+        <input type="hidden" name="formId" value="{{ form.formId }}" />
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue",
+            preventDoubleClick: true
+          }) }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

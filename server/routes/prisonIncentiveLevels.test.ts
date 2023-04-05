@@ -24,7 +24,10 @@ beforeEach(() => {
 
   incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
   incentivesApi.getIncentiveLevels.mockResolvedValue(sampleIncentiveLevels)
-  incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(samplePrisonIncentiveLevels)
+  incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(
+    samplePrisonIncentiveLevels.filter(prisonIncentiveLevel => prisonIncentiveLevel.active),
+  )
+  incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[1])
   incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[1])
 })
 
@@ -32,8 +35,8 @@ const tokenWithMissingRole = createUserToken([])
 const tokenWithNecessaryRole = createUserToken(['ROLE_MAINTAIN_PRISON_IEP_LEVELS'])
 
 describe('Prison incentive level management', () => {
-  it.each(['/prison-incentive-levels', '/prison-incentive-levels/view/STD'])(
-    'should not be accessible without correct role',
+  it.each(['/prison-incentive-levels', '/prison-incentive-levels/view/STD', '/prison-incentive-levels/remove/STD'])(
+    'should not be accessible without correct role: %s',
     (url: string) => {
       return request(app)
         .get(url)
@@ -48,7 +51,7 @@ describe('Prison incentive level management', () => {
   it.each([
     ['/prison-incentive-levels', 'prison-incentive-levels-list'],
     ['/prison-incentive-levels/view/STD', 'prison-incentive-levels-detail'],
-  ])('should be accessible with necessary role', (url: string, expectedPage: string) => {
+  ])('should be accessible with necessary role: %s', (url: string, expectedPage: string) => {
     return request(app)
       .get(url)
       .set('authorization', `bearer ${tokenWithNecessaryRole}`)
@@ -142,7 +145,8 @@ describe('Prison incentive level management', () => {
       incentivesApi.getIncentiveLevels.mockResolvedValue(
         sampleIncentiveLevels.filter(incentiveLevel =>
           samplePrisonIncentiveLevels.some(
-            prisonIncentiveLevel => incentiveLevel.code === prisonIncentiveLevel.levelCode,
+            prisonIncentiveLevel =>
+              prisonIncentiveLevel.active && incentiveLevel.code === prisonIncentiveLevel.levelCode,
           ),
         ),
       )
@@ -210,6 +214,84 @@ describe('Prison incentive level management', () => {
             '0 per 4 weeks',
           ])
         })
+    })
+  })
+
+  describe('deactivating a level', () => {
+    it('should 404 if level is required globally', () => {
+      return request(app)
+        .get('/prison-incentive-levels/remove/STD')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(404)
+    })
+
+    it('should 404 if level is already inactive', () => {
+      incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[5])
+      incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[3])
+
+      return request(app)
+        .get('/prison-incentive-levels/remove/ENT')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(404)
+    })
+
+    describe('when deactivation is allowed', () => {
+      beforeEach(() => {
+        // pretend that ENH is not globally required
+        incentivesApi.getIncentiveLevel.mockResolvedValue({ ...sampleIncentiveLevels[2], required: false })
+        incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[2])
+      })
+
+      it('should show form to deactivate level', () => {
+        return request(app)
+          .get('/prison-incentive-levels/remove/ENH')
+          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .expect(200)
+          .expect(res => {
+            expect(res.text).toContain('data-qa="prison-incentive-levels-deactivate"')
+            expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+          })
+      })
+
+      it('should redirect to list of levels if deactivation is cancelled', () => {
+        return request(app)
+          .post('/prison-incentive-levels/remove/ENH')
+          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .send({ formId: 'prisonIncentiveLevelDeactivateForm', confirmation: 'no' })
+          .expect(res => {
+            expect(res.redirect).toBeTruthy()
+            expect(res.headers.location).toBe('/prison-incentive-levels')
+            expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+          })
+      })
+
+      it('should show an error if confirmation not provided', () => {
+        return request(app)
+          .post('/prison-incentive-levels/remove/ENH')
+          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .send({ formId: 'prisonIncentiveLevelDeactivateForm' })
+          .expect(res => {
+            expect(res.text).toContain('Please select yes or no')
+            expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+          })
+      })
+
+      it('should deactivate level if confirmed', () => {
+        incentivesApi.updatePrisonIncentiveLevel.mockResolvedValue({
+          ...samplePrisonIncentiveLevels[2],
+          active: false,
+        })
+
+        return request(app)
+          .post('/prison-incentive-levels/remove/ENH')
+          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .send({ formId: 'prisonIncentiveLevelDeactivateForm', confirmation: 'yes' })
+          .expect(res => {
+            expect(res.redirect).toBeTruthy()
+            expect(res.headers.location).toBe('/prison-incentive-levels')
+            expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'ENH', { active: false })
+          })
+      })
     })
   })
 })

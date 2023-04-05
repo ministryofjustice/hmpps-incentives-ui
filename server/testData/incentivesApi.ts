@@ -6,6 +6,7 @@ export const sampleIncentiveLevels: IncentiveLevel[] = [
   { code: 'ENH', name: 'Enhanced', description: '', active: true, required: true },
   { code: 'EN2', name: 'Enhanced 2', description: '', active: true, required: false },
   { code: 'EN3', name: 'Enhanced 3', description: '', active: true, required: false },
+  { code: 'ENT', name: 'Entry', description: '', active: false, required: false },
 ]
 
 export const samplePrisonIncentiveLevels: PrisonIncentiveLevel[] = [
@@ -53,6 +54,21 @@ export const samplePrisonIncentiveLevels: PrisonIncentiveLevel[] = [
 
     visitOrders: 1,
     privilegedVisitOrders: 3,
+  },
+  {
+    prisonId: 'MDI',
+    levelCode: 'ENT',
+    levelName: 'Entry',
+    active: false,
+    defaultOnAdmission: false,
+
+    remandTransferLimitInPence: 33_50,
+    remandSpendLimitInPence: 335_00,
+    convictedTransferLimitInPence: 12_60,
+    convictedSpendLimitInPence: 126_00,
+
+    visitOrders: 1,
+    privilegedVisitOrders: 1,
   },
 ]
 

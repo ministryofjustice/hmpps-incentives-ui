@@ -37,7 +37,7 @@
         {% set actions %}
           <a href="/prison-incentive-levels/view/{{ prisonIncentiveLevel.levelCode }}">View settings</a>
           {% if not prisonIncentiveLevel.levelRequired %}
-            <a href="/prison-incentive-levels/deactivate/{{ prisonIncentiveLevel.levelCode }}">Remove level</a>
+            <a href="/prison-incentive-levels/remove/{{ prisonIncentiveLevel.levelCode }}" class="govuk-!-margin-left-4">Remove level</a>
           {% endif %}
         {% endset %}
 

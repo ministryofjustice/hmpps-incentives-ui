@@ -1,27 +1,21 @@
 {% extends "../partials/layout.njk" %}
 
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-{% set pageTitle = applicationName + " – " + prisonIncentiveLevel.levelName + " level in " + prisonName %}
+{% set pageTitle = applicationName + " – Change settings for " + prisonIncentiveLevel.levelName %}
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-one-half">
 
       {% include "../partials/messages.njk" %}
       {% include "../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-form">
-        {{ prisonIncentiveLevel.levelName }} level in {{ prisonName }}
+        Change settings for {{ prisonIncentiveLevel.levelName }}
       </h1>
-
-      {{ govukBackLink({
-        text: "Back",
-        href: "/prison-incentive-levels/view/" + prisonIncentiveLevel.levelCode
-      }) }}
 
       <form id="form-{{ form.formId }}" method="post" novalidate>
 
@@ -131,10 +125,10 @@
           }) }}
 
           {{ govukButton({
-            text: "Disable this level",
-            classes: "govuk-button--warning",
+            text: "Cancel",
+            classes: "govuk-button--secondary",
             element: "a",
-            href: "/prison-incentive-levels/deactivate/" + prisonIncentiveLevel.levelCode
+            href: "/prison-incentive-levels/view/" + prisonIncentiveLevel.levelCode
           }) }}
         </div>
 

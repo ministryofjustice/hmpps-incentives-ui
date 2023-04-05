@@ -9,3 +9,9 @@
     }
   }
 }
+
+.app-incentive-levels--two-column-table {
+  .govuk-table__cell {
+    @extend .govuk-\!-width-one-half;
+  }
+}

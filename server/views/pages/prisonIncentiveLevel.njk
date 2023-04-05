@@ -1,109 +1,99 @@
 {% extends "../partials/layout.njk" %}
 
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
-{% set pageTitle = applicationName + " – " + prisonIncentiveLevel.levelName + " level in " + prisonName %}
+{% set pageTitle = applicationName + " – View settings for " + prisonIncentiveLevel.levelName %}
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-one-half">
 
       {% include "../partials/messages.njk" %}
 
       <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-detail">
-        {{ prisonIncentiveLevel.levelName }} level in {{ prisonName }}
+        View settings for {{ prisonIncentiveLevel.levelName }}
       </h1>
 
-      {{ govukBackLink({
-        text: "Back",
-        href: "/prison-incentive-levels"
-      }) }}
-
-      {{ govukSummaryList({
-        card: {
-          title: {
-            text: "Spend limits"
-          }
-        },
+      {{ govukTable({
+        caption: "Default incentive level",
+        captionClasses: "govuk-table__caption--m",
+        classes: "app-incentive-levels--two-column-table",
         rows: [
-          {
-            key: { text: "Remand transfer limit" },
-            value: { text: prisonIncentiveLevel.remandTransferLimitInPence | currencyFromPence }
-          },
-          {
-            key: { text: "Remand spend limit" },
-            value: { text: prisonIncentiveLevel.remandSpendLimitInPence | currencyFromPence }
-          },
-          {
-            key: { text: "Convicted transfer limit" },
-            value: { text: prisonIncentiveLevel.convictedTransferLimitInPence | currencyFromPence }
-          },
-          {
-            key: { text: "Convicted spend limit" },
-            value: { text: prisonIncentiveLevel.convictedSpendLimitInPence | currencyFromPence }
-          }
+          [
+            { text: "Default for new prisoners" },
+            { text: "Yes" if prisonIncentiveLevel.defaultOnAdmission else "No" }
+          ]
         ]
       }) }}
 
-      {{ govukSummaryList({
-        card: {
-          title: {
-            text: "Visit orders"
-          }
-        },
+      <h2 class="govuk-heading-l govuk-!-margin-top-8">
+        Money
+      </h2>
+      {{ govukTable({
+        caption: "Transfer limits from private cash",
+        captionClasses: "govuk-table__caption--m",
+        classes: "app-incentive-levels--two-column-table",
         rows: [
-          {
-            key: { text: "Visits per fortnight" },
-            value: { text: prisonIncentiveLevel.visitOrders }
-          },
-          {
-            key: { text: "Privileged visits per 4 weeks" },
-            value: { text: prisonIncentiveLevel.privilegedVisitOrders }
-          }
+          [
+            { text: "Remand prisoners" },
+            { text: prisonIncentiveLevel.remandTransferLimitInPence | currencyFromPence + " per week" }
+          ],
+          [
+            { text: "Convicted prisoners" },
+            { text: prisonIncentiveLevel.convictedTransferLimitInPence | currencyFromPence + " per week" }
+          ]
+        ]
+      }) }}
+      {{ govukTable({
+        caption: "Maximum allowed in spends account",
+        captionClasses: "govuk-table__caption--m",
+        classes: "app-incentive-levels--two-column-table",
+        rows: [
+          [
+            { text: "Remand prisoners" },
+            { text: prisonIncentiveLevel.remandSpendLimitInPence | currencyFromPence }
+          ],
+          [
+            { text: "Convicted prisoners" },
+            { text: prisonIncentiveLevel.convictedSpendLimitInPence | currencyFromPence }
+          ]
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-l govuk-!-margin-top-8">
+        Visits
+      </h2>
+      {{ govukTable({
+        caption: "Visit limits for convicted prisoners",
+        captionClasses: "govuk-table__caption--m",
+        classes: "app-incentive-levels--two-column-table",
+        rows: [
+          [
+            { text: "Visits" },
+            { text: prisonIncentiveLevel.visitOrders + " per 2 weeks" }
+          ],
+          [
+            { text: "Privileged visits" },
+            { text: prisonIncentiveLevel.privilegedVisitOrders + " per 4 weeks" }
+          ]
         ]
       }) }}
 
       <div class="govuk-button-group">
         {{ govukButton({
-          text: "Edit details",
+          text: "Change incentive level settings",
           element: "a",
           href: "/prison-incentive-levels/edit/" + prisonIncentiveLevel.levelCode
         }) }}
 
-        {% if incentiveLevel.required %}
-
-          <p>
-            This level is required in all prisons and cannot be disabled.
-          </p>
-
-        {% else %}
-
-          {{ govukButton({
-            text: "Disable this level",
-            classes: "govuk-button--warning",
-            element: "a",
-            href: "/prison-incentive-levels/deactivate/" + prisonIncentiveLevel.levelCode
-          }) }}
-
-        {% endif %}
-      </div>
-
-      {% if prisonIncentiveLevel.levelCode == defaultPrisonIncentiveLevel.levelCode %}
-        <p>
-          This level is the default for admissions in {{ prisonName }}.
-        </p>
-      {% else %}
-        <p>
-          The default level for admissions in {{ prisonName }} is {{ defaultPrisonIncentiveLevel.levelName }}.
-        </p>
         {{ govukButton({
-          text: "Change the default level to " + prisonIncentiveLevel.levelName,
+          text: "Return to incentive level settings",
+          classes: "govuk-button--secondary",
           element: "a",
-          href: "/prison-incentive-levels/set-default-for-admission/" + prisonIncentiveLevel.levelCode
+          href: "/prison-incentive-levels"
         }) }}
-      {% endif %}
+      </div>
 
     </div>
   </div>

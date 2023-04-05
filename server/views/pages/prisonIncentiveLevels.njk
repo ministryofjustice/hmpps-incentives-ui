@@ -1,82 +1,70 @@
 {% extends "../partials/layout.njk" %}
 
-{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
-{% set pageTitle = applicationName + " – Incentive levels in " + prisonName %}
+{% set pageTitle = applicationName + " – Incentive level settings" %}
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-one-half">
 
       {% include "../partials/messages.njk" %}
 
       <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-list">
-        Incentive levels in {{ prisonName }}
+        Incentive level settings
       </h1>
+      <p>
+        Use this page to edit the incentive levels that apply across your establishment.
+      </p>
+      <p>
+        Select View settings to check and edit spends, transfer and visit limits for each level.
+        You can also set the default level for new prisoners.
+      </p>
 
       {% set rows = [] %}
 
       {% for prisonIncentiveLevel in prisonIncentiveLevels %}
-        {% set nameHtml %}
-          {{ prisonIncentiveLevel.levelName }}
+        {% set tags %}
           {% if prisonIncentiveLevel.defaultOnAdmission %}
             {{ govukTag({
-              text: "Default for admissions"
+              html: "Default <span class='govuk-visually-hidden'>level for new prisoners</span>"
             }) }}
           {% endif %}
         {% endset %}
 
-        {% set rows = (rows.push({
-          key: { text: "Level" },
-          value: { html: nameHtml },
-          actions: {
-            items: [
-              {
-                href: "/prison-incentive-levels/view/" + prisonIncentiveLevel.levelCode,
-                text: "View",
-                visuallyHiddenText: "level"
-              }
-            ]
-          }
-        }), rows) %}
+        {% set actions %}
+          <a href="/prison-incentive-levels/view/{{ prisonIncentiveLevel.levelCode }}">View settings</a>
+          {% if not prisonIncentiveLevel.levelRequired %}
+            <a href="/prison-incentive-levels/deactivate/{{ prisonIncentiveLevel.levelCode }}">Remove level</a>
+          {% endif %}
+        {% endset %}
+
+        {% set rows = (rows.push([
+          { text: prisonIncentiveLevel.levelName },
+          { html: tags },
+          { html: actions }
+        ]), rows) %}
       {% endfor %}
 
-      {{ govukSummaryList({
-        card: {
-          title: {
-            text: "Levels in use"
-          }
-        },
+      {{ govukTable({
+        caption: "Incentive levels at your establishment",
+        captionClasses: "govuk-table__caption--m",
+        classes: "govuk-!-margin-top-8",
+        attributes: { "data-qa": "prison-incentive-levels-table" },
+        firstCellIsHeader: true,
         rows: rows
       }) }}
 
-      {% set rows = [] %}
-
-      {% for inactiveIncentiveLevel in inactiveIncentiveLevels %}
-        {% set rows = (rows.push({
-          key: { text: "Level" },
-          value: { text: inactiveIncentiveLevel.name },
-          actions: {
-            items: [
-              {
-                href: "/prison-incentive-levels/add/" + inactiveIncentiveLevel.code,
-                text: "Add this level"
-              }
-            ]
-          }
-        }), rows) %}
-      {% endfor %}
-
-      {% if rows | length > 0 %}
-        {{ govukSummaryList({
-          card: {
-            title: {
-              text: "Available levels"
-            }
-          },
-          rows: rows
-        }) }}
+      {% if canAddLevel %}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Add a new incentive level",
+            element: "a",
+            href: "/prison-incentive-levels/add/"
+          }) }}
+        </div>
       {% endif %}
 
     </div>

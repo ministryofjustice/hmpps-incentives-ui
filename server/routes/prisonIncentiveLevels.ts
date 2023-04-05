@@ -3,7 +3,7 @@ import { BadRequest } from 'http-errors'
 
 import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { IncentivesApi } from '../data/incentivesApi'
+import { IncentivesApi, type PrisonIncentiveLevel } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
 import PrisonIncentiveLevelForm from './forms/prisonIncentiveLevelForm'
 import { penceAmountToInputString, inputStringToPenceAmount } from '../utils/utils'
@@ -22,13 +22,20 @@ export default function routes(router: Router): Router {
       incentivesApi.getPrisonIncentiveLevels(prisonId),
     ])
     const activeLevelCodes = new Set(prisonIncentiveLevels.map(prisonIncentiveLevel => prisonIncentiveLevel.levelCode))
-    const inactiveIncentiveLevels = incentiveLevels.filter(incentiveLevel => !activeLevelCodes.has(incentiveLevel.code))
+    const canAddLevel = incentiveLevels.some(incentiveLevel => !activeLevelCodes.has(incentiveLevel.code))
+    const requiredLevelCodes = new Set(
+      incentiveLevels.filter(incentiveLevel => incentiveLevel.required).map(incentiveLevel => incentiveLevel.code),
+    )
+    const prisonIncentiveLevelsWithRequiredFlag: (PrisonIncentiveLevel & { levelRequired: boolean })[] =
+      prisonIncentiveLevels.map(prisonIncentiveLevel => {
+        return { ...prisonIncentiveLevel, levelRequired: requiredLevelCodes.has(prisonIncentiveLevel.levelCode) }
+      })
 
-    res.locals.breadcrumbs.addItems({ text: `Manage levels in ${prisonName}` })
+    res.locals.breadcrumbs.addItems({ text: 'Incentive level settings' })
     return res.render('pages/prisonIncentiveLevels.njk', {
       messages: req.flash(),
-      prisonIncentiveLevels,
-      inactiveIncentiveLevels,
+      prisonIncentiveLevels: prisonIncentiveLevelsWithRequiredFlag,
+      canAddLevel,
       prisonName,
     })
   })
@@ -46,8 +53,8 @@ export default function routes(router: Router): Router {
     const defaultPrisonIncentiveLevel = prisonIncentiveLevels.find(level => level.defaultOnAdmission)
 
     res.locals.breadcrumbs.addItems(
-      { text: `Manage levels in ${prisonName}`, href: '/prison-incentive-levels' },
-      { text: prisonIncentiveLevel.levelName },
+      { text: 'Incentive level settings', href: '/prison-incentive-levels' },
+      { text: `View settings for ${prisonIncentiveLevel.levelName}` },
     )
     return res.render('pages/prisonIncentiveLevel.njk', {
       messages: req.flash(),
@@ -199,8 +206,8 @@ export default function routes(router: Router): Router {
       }
 
       res.locals.breadcrumbs.addItems(
-        { text: `Manage levels in ${prisonName}`, href: '/prison-incentive-levels' },
-        { text: prisonIncentiveLevel.levelName },
+        { text: 'Incentive level settings', href: '/prison-incentive-levels' },
+        { text: `Change settings for ${prisonIncentiveLevel.levelName}` },
       )
       return res.render('pages/prisonIncentiveLevelForm.njk', {
         messages: req.flash(),

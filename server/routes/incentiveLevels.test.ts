@@ -14,18 +14,15 @@ jest.mock('../data/incentivesApi', () => {
   return { __esModule: true, ...realModule, IncentivesApi: mockedModule.IncentivesApi }
 })
 
-let incentivesApi: jest.Mocked<IncentivesApi>
-
-beforeAll(() => {
-  incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
-  incentivesApi.getIncentiveLevels.mockResolvedValue(sampleIncentiveLevels)
-  incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[1])
-})
-
 let app: Express
+let incentivesApi: jest.Mocked<IncentivesApi>
 
 beforeEach(() => {
   app = appWithAllRoutes({})
+
+  incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
+  incentivesApi.getIncentiveLevels.mockResolvedValue(sampleIncentiveLevels)
+  incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[1])
 })
 
 const tokenWithMissingRole = createUserToken([])

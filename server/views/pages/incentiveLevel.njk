@@ -8,7 +8,7 @@
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-one-half">
 
       {% include "../partials/messages.njk" %}
 
@@ -38,6 +38,10 @@
           {
             key: { text: "Name" },
             value: { text: incentiveLevel.name }
+          },
+          {
+            key: { text: "Description" },
+            value: { text: incentiveLevel.description }
           },
           {
             key: { text: "Availability" },

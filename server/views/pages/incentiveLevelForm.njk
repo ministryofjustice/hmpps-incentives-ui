@@ -9,7 +9,7 @@
 
 {% block content %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-one-half">
 
       {% include "../partials/messages.njk" %}
       {% include "../partials/formErrorSummary.njk" %}
@@ -49,6 +49,18 @@
         {{ govukInput({
           label: { text: "Name" },
           classes: "govuk-input--width-10",
+          id: form.formId + "-" + fieldId,
+          name: fieldId,
+          value: field.value,
+          spellcheck: true,
+          errorMessage: { text: field.error } if field.error else undefined
+        }) }}
+
+        {% set fieldId = "description" %}
+        {% set field = form.getField(fieldId) %}
+        {{ govukInput({
+          label: { text: "Description" },
+          classes: "govuk-!-width-two-thirds",
           id: form.formId + "-" + fieldId,
           name: fieldId,
           value: field.value,

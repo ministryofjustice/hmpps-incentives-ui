@@ -15,7 +15,6 @@ export default (on: (string, Record) => void): void => {
     ...tokenVerification,
 
     stubIncentivesApiPing: incentivesApi.stubPing,
-    stubIncentivesApiGetLocationSummary: incentivesApi.stubGetLocationSummary,
 
     stubNomisUserRolesApiPing: nomisUserRolesApi.stubPing,
     stubNomisUserRolesApiUserCaseloads: nomisUserRolesApi.stubGetUserCaseloads,

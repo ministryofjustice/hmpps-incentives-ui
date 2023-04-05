@@ -10,7 +10,6 @@ context('Location selection', () => {
     cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubPrisonApiImages')
     cy.task('stubPrisonApiLocations')
-    cy.task('stubIncentivesApiGetLocationSummary')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)

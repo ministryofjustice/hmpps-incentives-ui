@@ -28,38 +28,6 @@ export interface PrisonIncentiveLevel {
 
 export type PrisonIncentiveLevelUpdate = Omit<Partial<PrisonIncentiveLevel>, 'prisonId' | 'levelCode' | 'levelName'>
 
-interface IncentivesPrisonerSummary {
-  prisonerNumber: string
-  bookingId: number
-  firstName: string
-  lastName: string
-  daysOnLevel: number
-  daysSinceLastReview: number
-  positiveBehaviours: number
-  incentiveEncouragements: number
-  negativeBehaviours: number
-  incentiveWarnings: number
-  provenAdjudications: number
-}
-
-interface IncentivesLevelSummary {
-  level: string
-  levelDescription: string
-  numberAtThisLevel: number
-  prisonerBehaviours: Array<IncentivesPrisonerSummary>
-}
-
-export interface IncentivesLocationSummary {
-  prisonId: string
-  locationId: string
-  locationDescription: string
-  totalPositiveBehaviours: number
-  totalNegativeBehaviours: number
-  totalIncentiveEncouragements: number
-  totalIncentiveWarnings: number
-  incentiveLevelSummary: Array<IncentivesLevelSummary>
-}
-
 export interface Level {
   iepLevel: string
   iepDescription: string
@@ -178,12 +146,9 @@ export class IncentivesApi extends RestClient {
     })
   }
 
-  getLocationSummary(agencyId: string, locationPrefix: string): Promise<IncentivesLocationSummary> {
-    return this.get<IncentivesLocationSummary>({
-      path: `/incentives-summary/prison/${agencyId}/location/${locationPrefix}?sortBy=NAME&sortDirection=ASC`,
-    })
-  }
-
+  /**
+   * @deprecated use getPrisonIncentiveLevels once api switches over
+   */
   getAvailableLevels(agencyId: string): Promise<Level[]> {
     return this.get<Level[]>({ path: `/iep/levels/${agencyId}` })
   }

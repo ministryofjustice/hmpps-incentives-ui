@@ -25,13 +25,13 @@ context('SignIn', () => {
   it('User name visible in header', () => {
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
-    homePage.headerUserName().should('contain.text', 'J. Smith')
+    homePage.headerUserName.should('contain.text', 'J. Smith')
   })
 
   it('User can log out', () => {
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
-    homePage.signOut().click()
+    homePage.signOut.click()
     Page.verifyOnPage(AuthSignInPage)
   })
 
@@ -39,8 +39,8 @@ context('SignIn', () => {
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
 
-    homePage.manageDetails().get('a').invoke('removeAttr', 'target')
-    homePage.manageDetails().click()
+    homePage.manageDetails.get('a').invoke('removeAttr', 'target')
+    homePage.manageDetails.click()
     Page.verifyOnPage(AuthManageDetailsPage)
   })
 
@@ -77,6 +77,6 @@ context('SignIn', () => {
     cy.task('stubAuthUser', 'bobby brown')
     cy.signIn()
 
-    indexPage.headerUserName().contains('B. Brown')
+    indexPage.headerUserName.contains('B. Brown')
   })
 })

@@ -8,7 +8,7 @@ import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 import PgdRegionSelection from '../../pages/analytics/pgdRegionSelection'
-import { ChartId } from '../../../server/routes/analyticsChartTypes'
+import type { ChartId } from '../../../server/routes/analyticsChartTypes'
 
 context('Analytics section > Incentive levels page', () => {
   beforeEach(() => {

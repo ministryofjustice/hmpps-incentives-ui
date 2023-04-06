@@ -1,22 +1,10 @@
-import jwt from 'jsonwebtoken'
 import { Response } from 'superagent'
 
+import type { UserRole } from '../../server/data/hmppsAuthClient'
+import createUserToken from '../../server/routes/testutils/createUserToken'
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 import nomisUserRolesApi from './nomisUserRolesApi'
-
-const createToken = () => {
-  const payload = {
-    user_name: 'USER1',
-    scope: ['read'],
-    auth_source: 'nomis',
-    authorities: [],
-    jti: '83b50a10-cca6-41db-985f-e87efb303ddb',
-    client_id: 'clientid',
-  }
-
-  return jwt.sign(payload, 'secret', { expiresIn: '1h' })
-}
 
 const getSignInUrl = (): Promise<string> =>
   getMatchingRequests({
@@ -109,7 +97,7 @@ const token = () =>
         Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
-        access_token: createToken(),
+        access_token: createUserToken([]),
         token_type: 'bearer',
         user_name: 'USER1',
         expires_in: 599,
@@ -140,7 +128,7 @@ const stubUser = (name: string) =>
     },
   })
 
-const stubUserRoles = () =>
+const stubUserRoles = (roles: UserRole[] = []) =>
   stubFor({
     request: {
       method: 'GET',
@@ -151,7 +139,7 @@ const stubUserRoles = () =>
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      jsonBody: [{ roleCode: 'SOME_USER_ROLE' }],
+      jsonBody: roles,
     },
   })
 

@@ -9,7 +9,7 @@ import HomePage from '../../pages/home'
 import AnalyticsBehaviourEntries from '../../pages/analytics/behaviourEntries'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 import PgdRegionSelection from '../../pages/analytics/pgdRegionSelection'
-import { ChartId } from '../../../server/routes/analyticsChartTypes'
+import type { ChartId } from '../../../server/routes/analyticsChartTypes'
 
 context('Analytics section > Behaviour entries page', () => {
   beforeEach(() => {

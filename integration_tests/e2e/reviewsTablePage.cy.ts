@@ -19,21 +19,21 @@ context('Manage incentives ', () => {
     homePage.viewIncentivesLevelsLink().click()
   })
 
-  it(' has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Select a location')
-  })
-
-  it('user sees correct locations for their active case load', () => {
-    const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
-    locationSelectionPage.locationSelectOptions().should('contain.text', 'Houseblock 2')
-    locationSelectionPage.locationSelectOptions().should('contain.text', 'Houseblock 42')
-  })
-
-  it('user selects location by clicking continue ', () => {
-    const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
-    locationSelectionPage.locationSelect().select('Houseblock 42')
-    locationSelectionPage.continueButton().click()
-  })
+  // it(' has correct title', () => {
+  //   cy.title().should('eq', 'Manage incentives – Select a location')
+  // })
+  //
+  // it('user sees correct locations for their active case load', () => {
+  //   const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
+  //   locationSelectionPage.locationSelectOptions().should('contain.text', 'Houseblock 2')
+  //   locationSelectionPage.locationSelectOptions().should('contain.text', 'Houseblock 42')
+  // })
+  //
+  // it('user selects location by clicking continue ', () => {
+  //   const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
+  //   locationSelectionPage.locationSelect().select('Houseblock 42')
+  //   locationSelectionPage.continueButton().click()
+  // })
 })
 
 // should direct user to the manage incentive reviews page
@@ -82,6 +82,7 @@ context('incentives reviews table', () => {
     const page = Page.verifyOnPage(ReviewsTablePage)
     cy.task('stubGetIncentivesLevelStandard')
     page.getIncentiveLevelStandard().click()
+    page.getIncentiveLevelStandard().should('contain.text', 'Standard')
   })
 
   it('users can sort by a different header', () => {

@@ -5,7 +5,7 @@ import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, type IncentiveLevel, type PrisonIncentiveLevel } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
-import PrisonIncentiveLevelCreateForm from './forms/prisonIncentiveLevelCreateForm'
+import PrisonIncentiveLevelAddForm from './forms/prisonIncentiveLevelAddForm'
 import PrisonIncentiveLevelDeactivateForm from './forms/prisonIncentiveLevelDeactivateForm'
 import PrisonIncentiveLevelEditForm from './forms/prisonIncentiveLevelEditForm'
 import { penceAmountToInputString, inputStringToPenceAmount } from '../utils/utils'
@@ -265,7 +265,7 @@ export default function routes(router: Router): Router {
     }),
   )
 
-  const createFormId = 'prisonIncentiveLevelCreateForm' as const
+  const addFormId = 'prisonIncentiveLevelAddForm' as const
   router.all(
     '/add',
     requireGetOrPost,
@@ -289,16 +289,16 @@ export default function routes(router: Router): Router {
       }
       res.locals.availableUnusedIncentiveLevels = availableUnusedIncentiveLevels
 
-      const form = new PrisonIncentiveLevelCreateForm(createFormId, availableUnusedLevelCodes)
+      const form = new PrisonIncentiveLevelAddForm(addFormId, availableUnusedLevelCodes)
       res.locals.forms = res.locals.forms || {}
-      res.locals.forms[createFormId] = form
+      res.locals.forms[addFormId] = form
 
       if (req.method !== 'POST') {
         next()
         return
       }
-      if (!req.body.formId || req.body.formId !== createFormId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${createFormId} is allowed`)
+      if (!req.body.formId || req.body.formId !== addFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${addFormId} is allowed`)
         next(new BadRequest())
         return
       }
@@ -344,14 +344,14 @@ export default function routes(router: Router): Router {
     }),
     asyncMiddleware(async (req, res) => {
       const { name: prisonName } = res.locals.user.activeCaseload
-      const form: PrisonIncentiveLevelCreateForm = res.locals.forms[createFormId]
+      const form: PrisonIncentiveLevelAddForm = res.locals.forms[addFormId]
       const availableUnusedIncentiveLevels = res.locals.availableUnusedIncentiveLevels as IncentiveLevel[]
 
       res.locals.breadcrumbs.addItems(
         { text: 'Incentive level settings', href: '/prison-incentive-levels' },
         { text: 'Add a new incentive level' },
       )
-      res.render('pages/prisonIncentiveLevelCreateForm.njk', {
+      res.render('pages/prisonIncentiveLevelAddForm.njk', {
         messages: req.flash(),
         form,
         prisonName,

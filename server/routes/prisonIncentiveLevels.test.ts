@@ -7,7 +7,7 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../testData/incentivesApi'
 import { IncentivesApi } from '../data/incentivesApi'
-import type { PrisonIncentiveLevelCreateData } from './forms/prisonIncentiveLevelCreateForm'
+import type { PrisonIncentiveLevelAddData } from './forms/prisonIncentiveLevelAddForm'
 import type { PrisonIncentiveLevelDeactivateData } from './forms/prisonIncentiveLevelDeactivateForm'
 import type { PrisonIncentiveLevelEditData } from './forms/prisonIncentiveLevelEditForm'
 
@@ -605,8 +605,8 @@ describe('Prison incentive level management', () => {
         ),
       )
 
-      const validForm: PrisonIncentiveLevelCreateData = {
-        formId: 'prisonIncentiveLevelCreateForm',
+      const validForm: PrisonIncentiveLevelAddData = {
+        formId: 'prisonIncentiveLevelAddForm',
 
         levelCode: 'STD',
         defaultOnAdmission: 'yes',
@@ -637,7 +637,7 @@ describe('Prison incentive level management', () => {
           .set('authorization', `bearer ${tokenWithNecessaryRole}`)
           .expect(200)
           .expect(res => {
-            expect(res.text).toContain('data-qa="prison-incentive-levels-create"')
+            expect(res.text).toContain('data-qa="prison-incentive-levels-add"')
             expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
           })
       })
@@ -742,7 +742,7 @@ describe('Prison incentive level management', () => {
         return request(app)
           .post('/prison-incentive-levels/add')
           .set('authorization', `bearer ${tokenWithNecessaryRole}`)
-          .send({ formId: 'prisonIncentiveLevelCreateForm', ...form })
+          .send({ formId: 'prisonIncentiveLevelAddForm', ...form })
           .expect(res => {
             const $body = $(res.text)
 
@@ -816,7 +816,7 @@ describe('Prison incentive level management', () => {
         return request(app)
           .post('/prison-incentive-levels/add')
           .set('authorization', `bearer ${tokenWithNecessaryRole}`)
-          .send({ formId: 'prisonIncentiveLevelCreateForm', ...form })
+          .send({ formId: 'prisonIncentiveLevelAddForm', ...form })
           .expect(res => {
             expect(res.redirect).toBeTruthy()
             expect(res.headers.location).toBe('/prison-incentive-levels/view/EN2')

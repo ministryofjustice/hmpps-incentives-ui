@@ -1,10 +1,10 @@
 import PrisonIncentiveLevelEditForm, { type PrisonIncentiveLevelEditData } from './prisonIncentiveLevelEditForm'
 
-export interface PrisonIncentiveLevelCreateData extends PrisonIncentiveLevelEditData {
+export interface PrisonIncentiveLevelAddData extends PrisonIncentiveLevelEditData {
   levelCode: string
 }
 
-export default class PrisonIncentiveLevelCreateForm extends PrisonIncentiveLevelEditForm<PrisonIncentiveLevelCreateData> {
+export default class PrisonIncentiveLevelAddForm extends PrisonIncentiveLevelEditForm<PrisonIncentiveLevelAddData> {
   constructor(formId: string, private readonly validLevelCodes: string[]) {
     super(formId)
   }

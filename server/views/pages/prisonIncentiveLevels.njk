@@ -17,7 +17,7 @@
 
       {% for prisonIncentiveLevel in prisonIncentiveLevels %}
         {% set nameHtml %}
-          {{ prisonIncentiveLevel.levelDescription }}
+          {{ prisonIncentiveLevel.levelName }}
           {% if prisonIncentiveLevel.defaultOnAdmission %}
             {{ govukTag({
               text: "Default for admissions"
@@ -54,7 +54,7 @@
       {% for inactiveIncentiveLevel in inactiveIncentiveLevels %}
         {% set rows = (rows.push({
           key: { text: "Level" },
-          value: { text: inactiveIncentiveLevel.description },
+          value: { text: inactiveIncentiveLevel.name },
           actions: {
             items: [
               {

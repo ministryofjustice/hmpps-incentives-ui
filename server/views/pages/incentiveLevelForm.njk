@@ -5,7 +5,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " – " + incentiveLevel.description + " level" %}
+{% set pageTitle = applicationName + " – " + incentiveLevel.name + " level" %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -16,7 +16,7 @@
 
       <h1 class="govuk-heading-xl">
         {% if incentiveLevel %}
-          {{ incentiveLevel.description }} level
+          {{ incentiveLevel.name }} level
         {% else %}
           Add new level
         {% endif %}
@@ -44,10 +44,10 @@
           }) }}
         {% endif %}
 
-        {% set fieldId = "description" %}
+        {% set fieldId = "name" %}
         {% set field = form.getField(fieldId) %}
         {{ govukInput({
-          label: { text: "Description" },
+          label: { text: "Name" },
           classes: "govuk-input--width-10",
           id: form.formId + "-" + fieldId,
           name: fieldId,

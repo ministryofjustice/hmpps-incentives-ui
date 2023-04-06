@@ -1,9 +1,6 @@
 {% extends "../partials/layout.njk" %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
-{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set pageTitle = applicationName + " – Change settings for " + prisonIncentiveLevel.levelName %}
 
@@ -20,135 +17,12 @@
 
       <form id="form-{{ form.formId }}" method="post" novalidate>
 
-        {{ govukCheckboxes({
-          name: "defaultOnAdmission",
-          fieldset: {
-            legend: {
-              text: "Default incentive level",
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: "yes",
-              text: "Make this the default level for new prisoners in your establishment",
-              checked: prisonIncentiveLevel.defaultOnAdmission
-            }
-          ]
-        }) }}
-
-        <h2 class="govuk-heading-l govuk-!-margin-top-8">
-          Money
-        </h2>
-
-        {% call govukFieldset({
-          legend: {
-            text: "Transfer limit from private cash, in pounds per week",
-            classes: "govuk-fieldset__legend--m"
-          }
-        }) %}
-          {% set fieldId = "remandTransferLimit" %}
-          {% set field = form.getField(fieldId) %}
-          {{ govukInput({
-            label: { text: "Remand prisoners" },
-            prefix: { text: "£" },
-            classes: "govuk-input--width-5",
-            id: form.formId + "-" + fieldId,
-            name: fieldId,
-            value: field.value,
-            spellcheck: false,
-            errorMessage: { text: field.error } if field.error else undefined
-          }) }}
-
-          {% set fieldId = "convictedTransferLimit" %}
-          {% set field = form.getField(fieldId) %}
-          {{ govukInput({
-            label: { text: "Convicted prisoners" },
-            prefix: { text: "£" },
-            classes: "govuk-input--width-5",
-            id: form.formId + "-" + fieldId,
-            name: fieldId,
-            value: field.value,
-            spellcheck: false,
-            errorMessage: { text: field.error } if field.error else undefined
-          }) }}
-        {% endcall %}
-
-        {% call govukFieldset({
-          legend: {
-            text: "Maximum allowed in spends account, in pounds",
-            classes: "govuk-fieldset__legend--m"
-          }
-        }) %}
-          {% set fieldId = "remandSpendLimit" %}
-          {% set field = form.getField(fieldId) %}
-          {{ govukInput({
-            label: { text: "Remand prisoners" },
-            prefix: { text: "£" },
-            classes: "govuk-input--width-5",
-            id: form.formId + "-" + fieldId,
-            name: fieldId,
-            value: field.value,
-            spellcheck: false,
-            errorMessage: { text: field.error } if field.error else undefined
-          }) }}
-
-          {% set fieldId = "convictedSpendLimit" %}
-          {% set field = form.getField(fieldId) %}
-          {{ govukInput({
-            label: { text: "Convicted prisoners" },
-            prefix: { text: "£" },
-            classes: "govuk-input--width-5",
-            id: form.formId + "-" + fieldId,
-            name: fieldId,
-            value: field.value,
-            spellcheck: false,
-            errorMessage: { text: field.error } if field.error else undefined
-          }) }}
-
-        {% endcall %}
-
-        <h2 class="govuk-heading-l govuk-!-margin-top-8">
-          Visits
-        </h2>
-
-        {% call govukFieldset({
-          legend: {
-            text: "Visit limits for convicted prisoners",
-            classes: "govuk-fieldset__legend--m"
-          }
-        }) %}
-          {% set fieldId = "visitOrders" %}
-          {% set field = form.getField(fieldId) %}
-          {{ govukInput({
-            label: { text: "Visits per 2 weeks" },
-            classes: "govuk-input--width-3",
-            id: form.formId + "-" + fieldId,
-            name: fieldId,
-            value: field.value,
-            inputmode: "numeric",
-            spellcheck: false,
-            errorMessage: { text: field.error } if field.error else undefined
-          }) }}
-
-          {% set fieldId = "privilegedVisitOrders" %}
-          {% set field = form.getField(fieldId) %}
-          {{ govukInput({
-            label: { text: "Privileged visits per 4 weeks" },
-            classes: "govuk-input--width-3",
-            id: form.formId + "-" + fieldId,
-            name: fieldId,
-            value: field.value,
-            inputmode: "numeric",
-            spellcheck: false,
-            errorMessage: { text: field.error } if field.error else undefined
-          }) }}
-        {% endcall %}
+        {% include "../partials/prisonIncentiveLevelEditPartial.njk" %}
 
         <input type="hidden" name="formId" value="{{ form.formId }}" />
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-        <div class="govuk-button-group">
+        <div class="govuk-button-group govuk-!-margin-top-6">
           {{ govukButton({
             text: "Save",
             preventDoubleClick: true

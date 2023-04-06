@@ -1,0 +1,67 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " – Add a new incentive level" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+
+      {% include "../partials/messages.njk" %}
+      {% include "../partials/formErrorSummary.njk" %}
+
+      <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-create">
+        Add a new incentive level
+      </h1>
+
+      <form id="form-{{ form.formId }}" method="post" novalidate>
+
+        {% set levelChoices = [] %}
+        {% for incentiveLevel in availableUnusedIncentiveLevels %}
+          {% set levelChoices = (levelChoices.push({
+            text: incentiveLevel.name,
+            hint: {
+              text: incentiveLevel.description if incentiveLevel.description else undefined
+            },
+            value: incentiveLevel.code
+          }), levelChoices) %}
+        {% endfor %}
+
+        {{ govukRadios({
+          name: "levelCode",
+          classes: "govuk-!-margin-bottom-6",
+          fieldset: {
+            legend: {
+              text: "Select an incentive level",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: levelChoices
+        }) }}
+
+        {% include "../partials/prisonIncentiveLevelEditPartial.njk" %}
+
+        <input type="hidden" name="formId" value="{{ form.formId }}" />
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        <div class="govuk-button-group govuk-!-margin-top-6">
+          {{ govukButton({
+            text: "Save",
+            preventDoubleClick: true
+          }) }}
+
+          {{ govukButton({
+            text: "Cancel",
+            classes: "govuk-button--secondary",
+            element: "a",
+            href: "/prison-incentive-levels"
+          }) }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

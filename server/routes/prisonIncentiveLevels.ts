@@ -3,8 +3,9 @@ import { BadRequest, NotFound } from 'http-errors'
 
 import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { IncentivesApi, type PrisonIncentiveLevel } from '../data/incentivesApi'
+import { IncentivesApi, type IncentiveLevel, type PrisonIncentiveLevel } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
+import PrisonIncentiveLevelCreateForm from './forms/prisonIncentiveLevelCreateForm'
 import PrisonIncentiveLevelDeactivateForm from './forms/prisonIncentiveLevelDeactivateForm'
 import PrisonIncentiveLevelEditForm from './forms/prisonIncentiveLevelEditForm'
 import { penceAmountToInputString, inputStringToPenceAmount } from '../utils/utils'
@@ -260,6 +261,101 @@ export default function routes(router: Router): Router {
         form,
         prisonIncentiveLevel,
         prisonName,
+      })
+    }),
+  )
+
+  const createFormId = 'prisonIncentiveLevelCreateForm' as const
+  router.all(
+    '/add',
+    requireGetOrPost,
+    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+      const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
+
+      const [incentiveLevels, prisonIncentiveLevels] = await Promise.all([
+        incentivesApi.getIncentiveLevels(),
+        incentivesApi.getPrisonIncentiveLevels(prisonId),
+      ])
+      const activeLevelCodes = new Set(
+        prisonIncentiveLevels.map(prisonIncentiveLevel => prisonIncentiveLevel.levelCode),
+      )
+      const availableUnusedIncentiveLevels = incentiveLevels.filter(
+        incentiveLevel => !activeLevelCodes.has(incentiveLevel.code),
+      )
+      const availableUnusedLevelCodes = availableUnusedIncentiveLevels.map(incentiveLevel => incentiveLevel.code)
+      if (availableUnusedLevelCodes.length === 0) {
+        throw NotFound('All available levels are active')
+      }
+      res.locals.availableUnusedIncentiveLevels = availableUnusedIncentiveLevels
+
+      const form = new PrisonIncentiveLevelCreateForm(createFormId, availableUnusedLevelCodes)
+      res.locals.forms = res.locals.forms || {}
+      res.locals.forms[createFormId] = form
+
+      if (req.method !== 'POST') {
+        next()
+        return
+      }
+      if (!req.body.formId || req.body.formId !== createFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${createFormId} is allowed`)
+        next(new BadRequest())
+        return
+      }
+
+      form.submit(req.body)
+      if (form.hasErrors) {
+        logger.warn(`Form ${form.formId} submitted with errors`)
+        next()
+        return
+      }
+
+      const levelCode = form.getField('levelCode').value
+
+      const defaultOnAdmission = form.getField('defaultOnAdmission').value === 'yes'
+
+      const remandTransferLimitInPence = inputStringToPenceAmount(form.getField('remandTransferLimit').value)
+      const remandSpendLimitInPence = inputStringToPenceAmount(form.getField('remandSpendLimit').value)
+      const convictedTransferLimitInPence = inputStringToPenceAmount(form.getField('convictedTransferLimit').value)
+      const convictedSpendLimitInPence = inputStringToPenceAmount(form.getField('convictedSpendLimit').value)
+
+      const visitOrders = parseInt(form.getField('visitOrders').value, 10)
+      const privilegedVisitOrders = parseInt(form.getField('privilegedVisitOrders').value, 10)
+
+      try {
+        const updatedPrisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
+          defaultOnAdmission,
+          remandTransferLimitInPence,
+          remandSpendLimitInPence,
+          convictedTransferLimitInPence,
+          convictedSpendLimitInPence,
+          visitOrders,
+          privilegedVisitOrders,
+        })
+        const message = `Incentive level information for ${updatedPrisonIncentiveLevel.levelName} at ${prisonName} was added.`
+        req.flash('success', message)
+        logger.info(message)
+        res.redirect(`/prison-incentive-levels/view/${levelCode}`)
+      } catch (error) {
+        logger.error('Failed to update prison incentive level', error)
+        // TODO: handle errors
+        res.redirect('/prison-incentive-levels')
+      }
+    }),
+    asyncMiddleware(async (req, res) => {
+      const { name: prisonName } = res.locals.user.activeCaseload
+      const form: PrisonIncentiveLevelCreateForm = res.locals.forms[createFormId]
+      const availableUnusedIncentiveLevels = res.locals.availableUnusedIncentiveLevels as IncentiveLevel[]
+
+      res.locals.breadcrumbs.addItems(
+        { text: 'Incentive level settings', href: '/prison-incentive-levels' },
+        { text: 'Add a new incentive level' },
+      )
+      res.render('pages/prisonIncentiveLevelCreateForm.njk', {
+        messages: req.flash(),
+        form,
+        prisonName,
+        availableUnusedIncentiveLevels,
       })
     }),
   )

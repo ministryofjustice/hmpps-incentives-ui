@@ -10,10 +10,10 @@ export default class PrisonIncentiveLevelAddForm extends PrisonIncentiveLevelEdi
   }
 
   protected validate(): void {
-    super.validate()
-
     if (!this.validLevelCodes.includes(this.data.levelCode)) {
       this.addError('levelCode', 'Please select a level to add')
     }
+
+    super.validate()
   }
 }

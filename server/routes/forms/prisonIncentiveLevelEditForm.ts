@@ -24,11 +24,12 @@ export default class PrisonIncentiveLevelEditForm<
     if (!currencyInputRE.test(this.data.remandTransferLimit)) {
       this.addError('remandTransferLimit', 'Remand transfer limit must be in pounds and pence')
     }
-    if (!currencyInputRE.test(this.data.remandSpendLimit)) {
-      this.addError('remandSpendLimit', 'Remand spend limit must be in pounds and pence')
-    }
     if (!currencyInputRE.test(this.data.convictedTransferLimit)) {
       this.addError('convictedTransferLimit', 'Convicted transfer limit must be in pounds and pence')
+    }
+
+    if (!currencyInputRE.test(this.data.remandSpendLimit)) {
+      this.addError('remandSpendLimit', 'Remand spend limit must be in pounds and pence')
     }
     if (!currencyInputRE.test(this.data.convictedSpendLimit)) {
       this.addError('convictedSpendLimit', 'Convicted spend limit must be in pounds and pence')

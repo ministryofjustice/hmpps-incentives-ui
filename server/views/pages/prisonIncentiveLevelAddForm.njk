@@ -29,8 +29,11 @@
           }), levelChoices) %}
         {% endfor %}
 
+        {% set fieldId = "levelCode" %}
+        {% set field = form.getField(fieldId) %}
         {{ govukRadios({
-          name: "levelCode",
+          attributes: { id: form.formId + "-" + fieldId },
+          name: fieldId,
           classes: "govuk-!-margin-bottom-6",
           fieldset: {
             legend: {
@@ -38,7 +41,8 @@
               classes: "govuk-fieldset__legend--m"
             }
           },
-          items: levelChoices
+          items: levelChoices,
+          errorMessage: { text: field.error } if field.error else undefined
         }) }}
 
         {% include "../partials/prisonIncentiveLevelEditPartial.njk" %}

@@ -324,6 +324,7 @@ export default function routes(router: Router): Router {
 
       try {
         const updatedPrisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
+          active: true,
           defaultOnAdmission,
           remandTransferLimitInPence,
           remandSpendLimitInPence,

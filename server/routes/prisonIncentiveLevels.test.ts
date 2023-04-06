@@ -770,6 +770,7 @@ describe('Prison incentive level management', () => {
             privilegedVisitOrders: '3',
           },
           {
+            active: true,
             defaultOnAdmission: true,
 
             remandTransferLimitInPence: 66_00,
@@ -795,6 +796,7 @@ describe('Prison incentive level management', () => {
             privilegedVisitOrders: '3',
           },
           {
+            active: true,
             defaultOnAdmission: false,
 
             remandTransferLimitInPence: 66_00,

@@ -4,7 +4,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set pageTitle = applicationName + " – " + incentiveLevel.description + " level" %}
+{% set pageTitle = applicationName + " – " + incentiveLevel.name + " level" %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -12,7 +12,7 @@
 
       {% include "../partials/messages.njk" %}
 
-      <h1 class="govuk-heading-xl">{{ incentiveLevel.description }} level</h1>
+      <h1 class="govuk-heading-xl">{{ incentiveLevel.name }} level</h1>
 
       {{ govukBackLink({
         text: "Back",
@@ -34,8 +34,8 @@
             value: { text: incentiveLevel.code }
           },
           {
-            key: { text: "Description" },
-            value: { text: incentiveLevel.description }
+            key: { text: "Name" },
+            value: { text: incentiveLevel.name }
           },
           {
             key: { text: "Availability" },

@@ -54,35 +54,35 @@ context('incentives reviews table', () => {
     locationSelectionPage.continueButton().click()
   })
 
-  // it('has correct title', () => {
-  //   cy.title().should('eq', 'Manage incentives – Manage incentive reviews')
-  // })
-  //
-  // it('has feedback banner', () => {
-  //   cy.get('.app-feedback-banner').contains('help us to improve it')
-  //   cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/table-feedback')
-  // })
-  //
-  // it('users will see selected location or select alternative ', () => {
-  //   cy.get('.govuk-main-wrapper').contains('Houseblock 1' || 'Select another location')
-  // })
-  //
-  // it('has reviews table ', () => {
-  //   const page = Page.verifyOnPage(ReviewsTablePage)
-  //   page
-  //     .getReviewsTable()
-  //     .first()
-  //     .then(totalsRow => {
-  //       const rowTitles = totalsRow.find('td:first-child').text()
-  //       expect(rowTitles).to.contain('\n ')
-  //     })
-  // })
-  //
-  // it('users can visit standard tab', () => {
-  //   const page = Page.verifyOnPage(ReviewsTablePage)
-  //   cy.task('stubGetIncentivesLevelStandard')
-  //   page.getIncentiveLevelStandard().click()
-  // })
+  it('has correct title', () => {
+    cy.title().should('eq', 'Manage incentives – Manage incentive reviews')
+  })
+
+  it('has feedback banner', () => {
+    cy.get('.app-feedback-banner').contains('help us to improve it')
+    cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/table-feedback')
+  })
+
+  it('users will see selected location or select alternative ', () => {
+    cy.get('.govuk-main-wrapper').contains('Houseblock 1' || 'Select another location')
+  })
+
+  it('has reviews table ', () => {
+    const page = Page.verifyOnPage(ReviewsTablePage)
+    page
+      .getReviewsTable()
+      .first()
+      .then(totalsRow => {
+        const rowTitles = totalsRow.find('td:first-child').text()
+        expect(rowTitles).to.contain('\n ')
+      })
+  })
+
+  it('users can visit standard tab', () => {
+    const page = Page.verifyOnPage(ReviewsTablePage)
+    cy.task('stubGetIncentivesLevelStandard')
+    page.getIncentiveLevelStandard().click()
+  })
 
   it('users can sort by a different header', () => {
     const page = Page.verifyOnPage(ReviewsTablePage)

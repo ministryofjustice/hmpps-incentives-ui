@@ -4,7 +4,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set pageTitle = applicationName + " – " + prisonIncentiveLevel.levelDescription + " level in " + prisonName %}
+{% set pageTitle = applicationName + " – " + prisonIncentiveLevel.levelName + " level in " + prisonName %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -12,7 +12,7 @@
 
       {% include "../partials/messages.njk" %}
 
-      <h1 class="govuk-heading-xl">{{ prisonIncentiveLevel.levelDescription }} level in {{ prisonName }}</h1>
+      <h1 class="govuk-heading-xl">{{ prisonIncentiveLevel.levelName }} level in {{ prisonName }}</h1>
 
       {{ govukBackLink({
         text: "Back",
@@ -95,10 +95,10 @@
           </p>
         {% else %}
           <p>
-            The default level for admissions in {{ prisonName }} is {{ defaultPrisonIncentiveLevel.levelDescription }}.
+            The default level for admissions in {{ prisonName }} is {{ defaultPrisonIncentiveLevel.levelName }}.
           </p>
           {{ govukButton({
-            text: "Change the default level to " + prisonIncentiveLevel.levelDescription,
+            text: "Change the default level to " + prisonIncentiveLevel.levelName,
             element: "a",
             href: "/prison-incentive-levels/set-default-for-admission/" + prisonIncentiveLevel.levelCode
           }) }}

@@ -3,7 +3,7 @@ import RestClient from './restClient'
 
 export interface IncentiveLevel {
   code: string
-  description: string
+  name: string
   active: boolean
   required: boolean
 }
@@ -13,7 +13,7 @@ export type IncentiveLevelUpdate = Omit<Partial<IncentiveLevel>, 'code'>
 export interface PrisonIncentiveLevel {
   prisonId: string
   levelCode: string
-  levelDescription: string
+  levelName: string
   active: boolean
   defaultOnAdmission: boolean
 
@@ -26,42 +26,7 @@ export interface PrisonIncentiveLevel {
   privilegedVisitOrders: number
 }
 
-export type PrisonIncentiveLevelUpdate = Omit<
-  Partial<PrisonIncentiveLevel>,
-  'prisonId' | 'levelCode' | 'levelDescription'
->
-
-interface IncentivesPrisonerSummary {
-  prisonerNumber: string
-  bookingId: number
-  firstName: string
-  lastName: string
-  daysOnLevel: number
-  daysSinceLastReview: number
-  positiveBehaviours: number
-  incentiveEncouragements: number
-  negativeBehaviours: number
-  incentiveWarnings: number
-  provenAdjudications: number
-}
-
-interface IncentivesLevelSummary {
-  level: string
-  levelDescription: string
-  numberAtThisLevel: number
-  prisonerBehaviours: Array<IncentivesPrisonerSummary>
-}
-
-export interface IncentivesLocationSummary {
-  prisonId: string
-  locationId: string
-  locationDescription: string
-  totalPositiveBehaviours: number
-  totalNegativeBehaviours: number
-  totalIncentiveEncouragements: number
-  totalIncentiveWarnings: number
-  incentiveLevelSummary: Array<IncentivesLevelSummary>
-}
+export type PrisonIncentiveLevelUpdate = Omit<Partial<PrisonIncentiveLevel>, 'prisonId' | 'levelCode' | 'levelName'>
 
 export interface Level {
   iepLevel: string
@@ -181,12 +146,9 @@ export class IncentivesApi extends RestClient {
     })
   }
 
-  getLocationSummary(agencyId: string, locationPrefix: string): Promise<IncentivesLocationSummary> {
-    return this.get<IncentivesLocationSummary>({
-      path: `/incentives-summary/prison/${agencyId}/location/${locationPrefix}?sortBy=NAME&sortDirection=ASC`,
-    })
-  }
-
+  /**
+   * @deprecated use getPrisonIncentiveLevels once api switches over
+   */
   getAvailableLevels(agencyId: string): Promise<Level[]> {
     return this.get<Level[]>({ path: `/iep/levels/${agencyId}` })
   }

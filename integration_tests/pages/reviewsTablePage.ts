@@ -1,4 +1,4 @@
-import Page, { PageElement } from './page'
+import Page, { type PageElement } from './page'
 
 export default class ReviewsTablePage extends Page {
   constructor() {

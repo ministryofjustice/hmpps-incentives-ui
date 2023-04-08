@@ -84,7 +84,7 @@ const manageDetails = () =>
     },
   })
 
-const token = () =>
+const token = (roles: UserRole[] = []) =>
   stubFor({
     request: {
       method: 'POST',
@@ -97,11 +97,11 @@ const token = () =>
         Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
-        access_token: createUserToken([]),
+        access_token: createUserToken(roles.map(role => role.roleCode)),
         token_type: 'bearer',
         user_name: 'USER1',
         expires_in: 599,
-        scope: 'read',
+        scope: 'read,write',
         internalUser: true,
       },
     },
@@ -146,8 +146,27 @@ const stubUserRoles = (roles: UserRole[] = []) =>
 export default {
   getSignInUrl,
   stubAuthPing: ping,
-  stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
-  stubAuthUser: (name = 'john smith'): Promise<[Response, Response, Response]> =>
-    Promise.all([stubUser(name), stubUserRoles(), nomisUserRolesApi.stubGetUserCaseloads()]),
+  stubSignIn: (
+    {
+      roles = [],
+    }: {
+      roles: UserRole[]
+    } = {
+      roles: [],
+    },
+  ): Promise<[Response, Response, Response, Response, Response, Response]> =>
+    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
+  stubAuthUser: (
+    {
+      name = 'john smith',
+      roles = [],
+    }: {
+      name: string
+      roles: UserRole[]
+    } = {
+      name: 'john smith',
+      roles: [],
+    },
+  ): Promise<[Response, Response, Response]> =>
+    Promise.all([stubUser(name), stubUserRoles(roles), nomisUserRolesApi.stubGetUserCaseloads()]),
 }

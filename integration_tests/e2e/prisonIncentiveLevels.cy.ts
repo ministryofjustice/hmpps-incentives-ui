@@ -1,7 +1,10 @@
 import Page from '../pages/page'
 import type { UserRole } from '../../server/data/hmppsAuthClient'
+import type { PrisonIncentiveLevel } from '../../server/data/incentivesApi'
+import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../../server/testData/incentivesApi'
 import HomePage from '../pages/home'
 import PrisonIncentiveLevelPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevel'
+import PrisonIncentiveLevelAddFormPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevelAddForm'
 import PrisonIncentiveLevelsPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevels'
 
 context('Prison incentive level management', () => {
@@ -44,5 +47,45 @@ context('Prison incentive level management', () => {
 
     detailPage.returnLink.click()
     Page.verifyOnPage(PrisonIncentiveLevelsPage)
+  })
+
+  it('should allow adding a new level', () => {
+    const enhanced3: PrisonIncentiveLevel = {
+      ...samplePrisonIncentiveLevels[2],
+      levelCode: 'EN3',
+      levelName: 'Enhanced 3',
+    }
+    cy.task('stubPatchPrisonIncentiveLevel', { prisonIncentiveLevel: enhanced3 })
+    cy.task('stubPrisonIncentiveLevel', { prisonIncentiveLevel: enhanced3 })
+    cy.task('stubIncentiveLevel', { incentiveLevel: sampleIncentiveLevels[4] })
+
+    const listPage = Page.verifyOnPage(PrisonIncentiveLevelsPage)
+    listPage.addLink.click()
+
+    const addPage = Page.verifyOnPage(PrisonIncentiveLevelAddFormPage)
+    addPage.checkLastBreadcrumb()
+
+    addPage.form.submit() // empty form
+    Page.verifyOnPage(PrisonIncentiveLevelAddFormPage)
+    addPage.errorSummaryTitle.should('contain.text', 'There is a problem')
+
+    addPage.levelCodeRadios.then($radios => {
+      const levelNames = $radios.map((_index, div) => div.textContent.trim()).toArray()
+      expect(levelNames).to.deep.equal(['Enhanced 2', 'Enhanced 3'])
+    })
+
+    addPage.levelCodeRadios.eq(1).find('label').click()
+    addPage.getInputField('remandTransferLimit').type('66.00')
+    addPage.getInputField('convictedTransferLimit').type('44')
+    addPage.getInputField('remandSpendLimit').type('660.00')
+    addPage.getInputField('convictedSpendLimit').type('440')
+    addPage.getInputField('visitOrders').type('1')
+    addPage.getInputField('privilegedVisitOrders').type('3')
+    addPage.form.submit() // form should now be valid
+
+    const detailPage = Page.verifyOnPage(PrisonIncentiveLevelPage, 'Enhanced 3')
+    detailPage.messages.should('contain.text', 'Enhanced 3')
+    detailPage.messages.should('contain.text', 'added')
+    detailPage.contentsOfTables.its(0).its('Default for new prisoners').should('eq', 'No')
   })
 })

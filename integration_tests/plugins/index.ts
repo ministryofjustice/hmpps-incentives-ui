@@ -24,6 +24,7 @@ export default (on: (string, Record) => void): void => {
     stubIncentiveLevel: incentivesApi.stubIncentiveLevel,
     stubPrisonIncentiveLevels: incentivesApi.stubPrisonIncentiveLevels,
     stubPrisonIncentiveLevel: incentivesApi.stubPrisonIncentiveLevel,
+    stubPatchPrisonIncentiveLevel: incentivesApi.stubPatchPrisonIncentiveLevel,
 
     stubNomisUserRolesApiPing: nomisUserRolesApi.stubPing,
     stubNomisUserRolesApiUserCaseloads: nomisUserRolesApi.stubGetUserCaseloads,

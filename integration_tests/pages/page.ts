@@ -25,6 +25,10 @@ export default abstract class Page {
     return cy.get('[data-qa=manageDetails]')
   }
 
+  get breadcrumbs(): PageElement<HTMLDivElement> {
+    return cy.get('.govuk-breadcrumbs')
+  }
+
   get messages(): PageElement<HTMLDivElement> {
     return cy.get('.moj-banner')
   }

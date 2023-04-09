@@ -115,7 +115,7 @@ export default function routes(router: Router): Router {
           req.flash('success', message)
         } catch (error) {
           logger.error('Failed to deactivate prison incentive level', error)
-          // TODO: handle errors
+          req.flash('warning', `Incentive level was not removed! ${error?.userMessage || ''}`)
         }
       }
 
@@ -212,7 +212,7 @@ export default function routes(router: Router): Router {
         logger.info(message)
       } catch (error) {
         logger.error('Failed to update prison incentive level', error)
-        // TODO: handle errors
+        req.flash('warning', `Incentive level settings were not saved! ${error?.userMessage || ''}`)
       }
 
       res.redirect(`/prison-incentive-levels/view/${levelCode}`)
@@ -339,7 +339,7 @@ export default function routes(router: Router): Router {
         res.redirect(`/prison-incentive-levels/view/${levelCode}`)
       } catch (error) {
         logger.error('Failed to update prison incentive level', error)
-        // TODO: handle errors
+        req.flash('warning', `Incentive level was not added! ${error?.userMessage || ''}`)
         res.redirect('/prison-incentive-levels')
       }
     }),

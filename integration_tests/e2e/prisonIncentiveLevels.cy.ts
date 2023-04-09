@@ -5,6 +5,7 @@ import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../../server
 import HomePage from '../pages/home'
 import PrisonIncentiveLevelPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevel'
 import PrisonIncentiveLevelAddFormPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevelAddForm'
+import PrisonIncentiveLevelEditFormPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevelEditForm'
 import PrisonIncentiveLevelDeactivateFormPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevelDeactivateForm'
 import PrisonIncentiveLevelsPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevels'
 
@@ -89,8 +90,7 @@ context('Prison incentive level management', () => {
     addPage.form.submit() // form should now be valid
 
     const detailPage = Page.verifyOnPage(PrisonIncentiveLevelPage, 'Enhanced 3')
-    detailPage.messages.should('contain.text', 'Enhanced 3')
-    detailPage.messages.should('contain.text', 'added')
+    detailPage.messages.should('contain.text', 'Enhanced 3').should('contain.text', 'added')
     detailPage.contentsOfTables.its(0).its('Default for new prisoners').should('eq', 'No')
   })
 
@@ -137,5 +137,38 @@ context('Prison incentive level management', () => {
 
     listPage = Page.verifyOnPage(PrisonIncentiveLevelsPage)
     listPage.messages.should('contain.text', 'Enhanced 2').should('contain.text', 'no longer available')
+  })
+
+  it('should allow editing an existing level', () => {
+    cy.task('stubPatchPrisonIncentiveLevel', { prisonIncentiveLevel: samplePrisonIncentiveLevels[0] })
+    cy.task('stubPrisonIncentiveLevel', { prisonIncentiveLevel: samplePrisonIncentiveLevels[0] })
+    cy.task('stubIncentiveLevel', { incentiveLevel: sampleIncentiveLevels[0] })
+
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.managePrisonIncentiveLevelsLink().click()
+    const listPage = Page.verifyOnPage(PrisonIncentiveLevelsPage)
+    listPage.findTableLink(0, 'View settings').click()
+
+    let detailPage = Page.verifyOnPage(PrisonIncentiveLevelPage, 'Basic')
+    detailPage.changeLink.click()
+
+    const editPage = Page.verifyOnPage(PrisonIncentiveLevelEditFormPage, 'Basic')
+    editPage.checkLastBreadcrumb()
+
+    editPage.getInputField('convictedTransferLimit').clear()
+    editPage.form.submit() // 1 invalid field
+    Page.verifyOnPage(PrisonIncentiveLevelEditFormPage, 'Basic')
+    editPage.errorSummaryTitle.should('contain.text', 'There is a problem')
+    editPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(1)
+      expect($lis[0]).to.contain('Convicted transfer limit must be in pounds and pence')
+    })
+
+    editPage.getInputField('convictedTransferLimit').type('5.80')
+    editPage.getInputField('privilegedVisitOrders').clear().type('1')
+    editPage.form.submit() // form should now be valid
+
+    detailPage = Page.verifyOnPage(PrisonIncentiveLevelPage, 'Basic')
+    detailPage.messages.should('contain.text', 'Basic').should('contain.text', 'saved')
   })
 })

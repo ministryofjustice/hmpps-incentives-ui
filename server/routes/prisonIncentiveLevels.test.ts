@@ -283,6 +283,38 @@ describe('Prison incentive level management', () => {
         })
     })
 
+    it('should indicate bad request if level is default for admissions', () => {
+      incentivesApi.getIncentiveLevel.mockResolvedValue({ ...sampleIncentiveLevels[1], required: false })
+      incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[1])
+
+      return request(app)
+        .get('/prison-incentive-levels/remove/STD')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(400)
+        .expect(() => {
+          expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+        })
+    })
+
+    it('should indicate bad request if level is default for admissions (POST)', () => {
+      incentivesApi.getIncentiveLevel.mockResolvedValue({ ...sampleIncentiveLevels[1], required: false })
+      incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[1])
+
+      const validForm: PrisonIncentiveLevelDeactivateData = {
+        formId: 'prisonIncentiveLevelDeactivateForm',
+        confirmation: 'yes',
+      }
+
+      return request(app)
+        .post('/prison-incentive-levels/remove/STD')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
+        .expect(400)
+        .expect(() => {
+          expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+        })
+    })
+
     describe('when deactivation is allowed', () => {
       beforeEach(() => {
         // pretend that ENH is not globally required

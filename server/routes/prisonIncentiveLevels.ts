@@ -102,6 +102,9 @@ export default function routes(router: Router): Router {
         if (!prisonIncentiveLevel.active) {
           throw BadRequest('Prison incentive level is already inactive')
         }
+        if (prisonIncentiveLevel.defaultOnAdmission) {
+          throw BadRequest('Default prison incentive level cannot be deactivated')
+        }
         if (incentiveLevel.required) {
           throw BadRequest('Incentive level is required globally')
         }
@@ -134,6 +137,9 @@ export default function routes(router: Router): Router {
       ])
       if (!prisonIncentiveLevel.active) {
         throw BadRequest('Prison incentive level is already inactive')
+      }
+      if (prisonIncentiveLevel.defaultOnAdmission) {
+        throw BadRequest('Default prison incentive level cannot be deactivated')
       }
       if (incentiveLevel.required) {
         throw BadRequest('Incentive level is required globally')

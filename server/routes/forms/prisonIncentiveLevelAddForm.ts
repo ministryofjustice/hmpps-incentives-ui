@@ -5,8 +5,12 @@ export interface PrisonIncentiveLevelAddData extends PrisonIncentiveLevelEditDat
 }
 
 export default class PrisonIncentiveLevelAddForm extends PrisonIncentiveLevelEditForm<PrisonIncentiveLevelAddData> {
-  constructor(formId: string, private readonly validLevelCodes: string[]) {
-    super(formId)
+  protected mustBeDefaultOnAdmissionError =
+    'The first level added must be the default level for new prisoners. ' +
+    'You can change this later when adding other levels.'
+
+  constructor(formId: string, private readonly validLevelCodes: string[], mustBeDefaultOnAdmission: boolean) {
+    super(formId, mustBeDefaultOnAdmission)
   }
 
   protected validate(): void {

@@ -157,7 +157,16 @@ export default function routes(router: Router): Router {
     '/edit/:levelCode',
     requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-      const form = new PrisonIncentiveLevelEditForm(editFormId)
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+      const { levelCode } = req.params as { levelCode?: string }
+      const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
+
+      const prisonIncentiveLevel = await incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode)
+      if (!prisonIncentiveLevel.active) {
+        throw NotFound('Prison incentive level is inactive')
+      }
+
+      const form = new PrisonIncentiveLevelEditForm(editFormId, prisonIncentiveLevel.defaultOnAdmission)
       res.locals.forms = res.locals.forms || {}
       res.locals.forms[editFormId] = form
 
@@ -176,15 +185,6 @@ export default function routes(router: Router): Router {
         logger.warn(`Form ${form.formId} submitted with errors`)
         next()
         return
-      }
-
-      const incentivesApi = new IncentivesApi(res.locals.user.token)
-      const { levelCode } = req.params as { levelCode?: string }
-      const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
-
-      const prisonIncentiveLevel = await incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode)
-      if (!prisonIncentiveLevel.active) {
-        throw NotFound('Prison incentive level is inactive')
       }
 
       const defaultOnAdmission = form.getField('defaultOnAdmission').value === 'yes'
@@ -277,6 +277,7 @@ export default function routes(router: Router): Router {
         incentivesApi.getIncentiveLevels(),
         incentivesApi.getPrisonIncentiveLevels(prisonId),
       ])
+      const mustBeDefaultOnAdmission = prisonIncentiveLevels.length === 0
       const activeLevelCodes = new Set(
         prisonIncentiveLevels.map(prisonIncentiveLevel => prisonIncentiveLevel.levelCode),
       )
@@ -288,8 +289,9 @@ export default function routes(router: Router): Router {
         throw NotFound('All available levels are active')
       }
       res.locals.availableUnusedIncentiveLevels = availableUnusedIncentiveLevels
+      res.locals.mustBeDefaultOnAdmission = mustBeDefaultOnAdmission
 
-      const form = new PrisonIncentiveLevelAddForm(addFormId, availableUnusedLevelCodes)
+      const form = new PrisonIncentiveLevelAddForm(addFormId, availableUnusedLevelCodes, mustBeDefaultOnAdmission)
       res.locals.forms = res.locals.forms || {}
       res.locals.forms[addFormId] = form
 
@@ -347,6 +349,7 @@ export default function routes(router: Router): Router {
       const { name: prisonName } = res.locals.user.activeCaseload
       const form: PrisonIncentiveLevelAddForm = res.locals.forms[addFormId]
       const availableUnusedIncentiveLevels = res.locals.availableUnusedIncentiveLevels as IncentiveLevel[]
+      const mustBeDefaultOnAdmission = res.locals.mustBeDefaultOnAdmission as boolean
 
       res.locals.breadcrumbs.addItems(
         { text: 'Incentive level settings', href: '/prison-incentive-levels' },
@@ -357,6 +360,7 @@ export default function routes(router: Router): Router {
         form,
         prisonName,
         availableUnusedIncentiveLevels,
+        mustBeDefaultOnAdmission,
       })
     }),
   )

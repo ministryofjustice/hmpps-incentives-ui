@@ -2,8 +2,16 @@
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
+{% set fieldId = "defaultOnAdmission" %}
+{% set field = form.getField(fieldId) %}
+{% if form.submitted %}
+  {% set defaultOnAdmission = field.value == "yes" %}
+{% else %}
+  {% set defaultOnAdmission = mustBeDefaultOnAdmission or prisonIncentiveLevel.defaultOnAdmission if prisonIncentiveLevel else false %}
+{% endif %}
 {{ govukCheckboxes({
-  name: "defaultOnAdmission",
+  attributes: { id: form.formId + "-" + fieldId },
+  name: fieldId,
   fieldset: {
     legend: {
       text: "Default incentive level",
@@ -14,9 +22,10 @@
     {
       value: "yes",
       text: "Make this the default level for new prisoners in your establishment",
-      checked: prisonIncentiveLevel.defaultOnAdmission if prisonIncentiveLevel else false
+      checked: defaultOnAdmission
     }
-  ]
+  ],
+  errorMessage: { text: field.error } if field.error else undefined
 }) }}
 
 <h2 class="govuk-heading-l govuk-!-margin-top-8">

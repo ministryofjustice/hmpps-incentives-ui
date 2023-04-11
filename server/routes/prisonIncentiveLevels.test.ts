@@ -352,7 +352,7 @@ describe('Prison incentive level management', () => {
           .set('authorization', `bearer ${tokenWithNecessaryRole}`)
           .send({ formId: 'prisonIncentiveLevelDeactivateForm' })
           .expect(res => {
-            expect(res.text).toContain('Please select yes or no')
+            expect(res.text).toContain('Select yes or no')
             expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
           })
       })
@@ -516,7 +516,7 @@ describe('Prison incentive level management', () => {
             visitOrders: '1',
             privilegedVisitOrders: '1',
           },
-          'Remand transfer limit must be in pounds and pence',
+          'Transfer limit for remand prisoners must be in pounds and pence',
         ],
         [
           'empty number field',
@@ -823,7 +823,7 @@ describe('Prison incentive level management', () => {
             visitOrders: '1',
             privilegedVisitOrders: '1',
           },
-          'Please select a level to add',
+          'Select a level to add',
         ],
         [
           'unavailable level chosen',
@@ -839,7 +839,7 @@ describe('Prison incentive level management', () => {
             visitOrders: '1',
             privilegedVisitOrders: '1',
           },
-          'Please select a level to add',
+          'Select a level to add',
         ],
         [
           'mistyped amount',
@@ -855,7 +855,7 @@ describe('Prison incentive level management', () => {
             visitOrders: '1',
             privilegedVisitOrders: '1',
           },
-          'Remand spend limit must be in pounds and pence',
+          'Spend limit for remand prisoners must be in pounds and pence',
         ],
         [
           'mistyped number',

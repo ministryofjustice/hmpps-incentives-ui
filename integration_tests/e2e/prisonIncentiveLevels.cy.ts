@@ -158,7 +158,7 @@ context('Prison incentive level management', () => {
     editPage.errorSummaryTitle.should('contain.text', 'There is a problem')
     editPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
-      expect($lis[0]).to.contain('Convicted transfer limit must be in pounds and pence')
+      expect($lis[0]).to.contain('Transfer limit for convicted prisoners must be in pounds and pence')
     })
 
     editPage.getInputField('convictedTransferLimit').type('5.80')

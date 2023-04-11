@@ -48,7 +48,7 @@ export default {
       },
     })
   },
-  stubGetReviews: (): SuperAgentRequest => {
+  stubGetIncentivesLevelBasic: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -59,7 +59,7 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
-          locationDescription: 'Houseblock 1',
+          locationDescription: 'Houseblock 42',
           overdueCount: 1,
           reviewCount: 1,
           levels: [
@@ -89,7 +89,7 @@ export default {
               levelCode: 'BAS',
               prisonerNumber: 'G6123VU',
               bookingId: 100000,
-              nextReviewDate: new Date(2022, 6, 12),
+              nextReviewDate: '2022-06-12',
               daysSinceLastReview: 37,
               positiveBehaviours: 3,
               negativeBehaviours: 2,
@@ -142,7 +142,7 @@ export default {
               levelCode: 'STD',
               prisonerNumber: 'G5992UH',
               bookingId: 100001,
-              nextReviewDate: new Date(2023, 9, 10),
+              nextReviewDate: '2023-09-10',
               daysSinceLastReview: null,
               positiveBehaviours: 2,
               negativeBehaviours: 0,
@@ -195,7 +195,7 @@ export default {
               levelCode: 'BAS',
               prisonerNumber: 'G6123VU',
               bookingId: 100000,
-              nextReviewDate: new Date(2022, 6, 12),
+              nextReviewDate: '2022-06-12',
               daysSinceLastReview: 37,
               positiveBehaviours: 3,
               negativeBehaviours: 2,
@@ -208,7 +208,7 @@ export default {
               levelCode: 'BAS',
               prisonerNumber: 'G5999UH',
               bookingId: 100001,
-              nextReviewDate: new Date(2023, 9, 10),
+              nextReviewDate: '2023-09-10',
               daysSinceLastReview: 1,
               positiveBehaviours: 0,
               negativeBehaviours: 0,

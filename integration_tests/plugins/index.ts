@@ -16,7 +16,7 @@ export default (on: (string, Record) => void): void => {
 
     stubIncentivesApiPing: incentivesApi.stubPing,
     stubGetAvailableLevels: incentivesApi.stubGetAvailableLevels,
-    stubGetReviews: incentivesApi.stubGetReviews,
+    stubGetIncentivesLevelBasic: incentivesApi.stubGetIncentivesLevelBasic,
     stubGetIncentivesLevelStandard: incentivesApi.stubGetIncentivesLevelStandard,
     stubGetIncentivesSorted: incentivesApi.stubGetIncentivesSorted,
 

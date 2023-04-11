@@ -3,7 +3,7 @@ import HomePage from '../pages/home'
 import LocationSelectionPage from '../pages/locationSelection'
 import ReviewsTablePage from '../pages/reviewsTablePage'
 
-context('Manage incentives ', () => {
+context('Manage incentives (select a location)', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
@@ -12,7 +12,7 @@ context('Manage incentives ', () => {
     cy.task('stubGetAvailableLevels')
     cy.task('stubPrisonApiImages')
     cy.task('stubPrisonApiLocations')
-    cy.task('stubGetReviews')
+    cy.task('stubGetIncentivesLevelBasic')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
@@ -33,11 +33,12 @@ context('Manage incentives ', () => {
     const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
     locationSelectionPage.locationSelect().select('Houseblock 42')
     locationSelectionPage.continueButton().click()
+    cy.title().should('contain', 'Manage incentive reviews')
   })
 })
 
 // should direct user to the manage incentive reviews page
-context('incentives reviews table', () => {
+context('Manage incentive reviews', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
@@ -45,7 +46,7 @@ context('incentives reviews table', () => {
     cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubGetAvailableLevels')
     cy.task('stubPrisonApiLocations')
-    cy.task('stubGetReviews')
+    cy.task('stubGetIncentivesLevelBasic')
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
     homePage.viewIncentivesLevelsLink().click()
@@ -64,7 +65,10 @@ context('incentives reviews table', () => {
   })
 
   it('users will see selected location or select alternative ', () => {
-    cy.get('.govuk-main-wrapper').contains('Houseblock 1' || 'Select another location')
+    // cy.get('.govuk-main-wrapper').contains((text) => {
+    //   return text.includes('Houseblock 42') || text.includes('Select another location');
+    // })
+    cy.get('.govuk-main-wrapper').contains('Houseblock 42')
   })
 
   it('has reviews table ', () => {
@@ -72,10 +76,11 @@ context('incentives reviews table', () => {
     page
       .getReviewsTable()
       .first()
-      .then(totalsRow => {
-        const rowTitles = totalsRow.find('td:first-child').text()
+      .then(table => {
+        const rowTitles = table.find('td:first-child').text()
         expect(rowTitles).to.contain('\n ')
       })
+    page.getPrisonerName().should('contain.text', 'Saunders, John')
   })
 
   it('users can visit standard tab', () => {
@@ -88,6 +93,7 @@ context('incentives reviews table', () => {
   it('users can sort by a different header', () => {
     const page = Page.verifyOnPage(ReviewsTablePage)
     cy.task('stubGetIncentivesSorted')
-    page.getIncentivesSortedByLastReview().click()
+    page.getIncentivesSortedByLastReview().find('a').click()
+    page.getIncentivesSortedByLastReview().should('have.attr', 'aria-sort', 'ascending')
   })
 })

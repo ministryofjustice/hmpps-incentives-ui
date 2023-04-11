@@ -5,15 +5,19 @@ export default class ReviewsTablePage extends Page {
     super(`Manage incentive reviews`)
   }
 
-  getReviewsTable(): PageElement<HTMLTableRowElement> {
+  getReviewsTable(): PageElement<HTMLTableElement> {
     return cy.get('.govuk-table')
   }
 
-  getIncentiveLevelStandard(): PageElement<HTMLTableRowElement> {
+  getIncentiveLevelStandard(): PageElement<HTMLAnchorElement> {
     return cy.get('a[data-ga-action="Standard"]')
   }
 
-  getIncentivesSortedByLastReview(): PageElement<HTMLTableRowElement> {
+  getIncentivesSortedByLastReview(): PageElement<HTMLTableCellElement> {
     return cy.get('th[data-ga-action="by DAYS_SINCE_LAST_REVIEW"]')
+  }
+
+  getPrisonerName(): PageElement<HTMLTableCellElement> {
+    return cy.get('a[data-ga-action="prisoner name"]')
   }
 }

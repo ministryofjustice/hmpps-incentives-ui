@@ -1,0 +1,43 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " – Change settings for " + prisonIncentiveLevel.levelName %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+
+      {% include "../partials/messages.njk" %}
+      {% include "../partials/formErrorSummary.njk" %}
+
+      <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-edit">
+        Change settings for {{ prisonIncentiveLevel.levelName }}
+      </h1>
+
+      <form id="form-{{ form.formId }}" method="post" novalidate>
+
+        {% include "../partials/prisonIncentiveLevelEditPartial.njk" %}
+
+        <input type="hidden" name="formId" value="{{ form.formId }}" />
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        <div class="govuk-button-group govuk-!-margin-top-6">
+          {{ govukButton({
+            text: "Save",
+            preventDoubleClick: true
+          }) }}
+
+          {{ govukButton({
+            text: "Cancel",
+            classes: "govuk-button--secondary",
+            element: "a",
+            href: "/prison-incentive-levels/view/" + prisonIncentiveLevel.levelCode
+          }) }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

@@ -1,7 +1,7 @@
 import AboutPageFeedbackForm, { type AboutPageFeedbackData } from './aboutPageFeedbackForm'
 
 describe('AboutPageFeedbackForm', () => {
-  const formId = 'test-form-1'
+  const formId = 'test-form-1' as const
 
   const unsubmittedForm = () => new AboutPageFeedbackForm(formId)
   const submittedForm = (data: Partial<AboutPageFeedbackData>) => {

@@ -3,6 +3,7 @@ import request from 'supertest'
 
 import config from '../config'
 import { appWithAllRoutes } from './testutils/appSetup'
+import createUserToken from './testutils/createUserToken'
 import { mockSdkS3ClientResponse } from '../testData/s3Bucket'
 import type { AboutPageFeedbackData } from './forms/aboutPageFeedbackForm'
 import ZendeskClient from '../data/zendeskClient'
@@ -47,18 +48,16 @@ beforeEach(() => {
 })
 
 describe('Home page', () => {
-  describe('has a manage incentive reviews tile', () => {
-    it('incentive information tile does mention overdue reviews', () => {
-      return request(app)
-        .get('/')
-        .expect(res => {
-          expect(res.text).toContain('Manage incentive reviews')
-          expect(res.text).toContain(
-            'See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location',
-          )
-          expect(res.text).toContain('overdue reviews')
-        })
-    })
+  it('has a manage incentive reviews tile', () => {
+    return request(app)
+      .get('/')
+      .expect(res => {
+        expect(res.text).toContain('Manage incentive reviews')
+        expect(res.text).toContain(
+          'See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location',
+        )
+        expect(res.text).toContain('overdue reviews')
+      })
   })
 
   it('has a tile linking to About page', () => {
@@ -67,6 +66,39 @@ describe('Home page', () => {
       .expect(res => {
         expect(res.text).toContain('Information on how we collect, group and analyse data')
       })
+  })
+
+  describe('admin section', () => {
+    it('does not show if user does not have appropriate role', () => {
+      return request(app)
+        .get('/')
+        .set('Authorization', `Bearer ${createUserToken([])}`)
+        .expect(res => {
+          expect(res.text).not.toContain('data-qa="admin-section"')
+        })
+    })
+
+    it('shows tile to manage incentive levels if user has appropriate role', () => {
+      return request(app)
+        .get('/')
+        .set('Authorization', `Bearer ${createUserToken(['ROLE_MAINTAIN_INCENTIVE_LEVELS'])}`)
+        .expect(res => {
+          expect(res.text).toContain('data-qa="admin-section"')
+          expect(res.text).toContain('data-test="manage-incentive-levels"')
+          expect(res.text).not.toContain('data-test="manage-prison-incentive-levels"')
+        })
+    })
+
+    it('shows tile to manage prison incentive levels if user has appropriate role', () => {
+      return request(app)
+        .get('/')
+        .set('Authorization', `Bearer ${createUserToken(['ROLE_MAINTAIN_PRISON_IEP_LEVELS'])}`)
+        .expect(res => {
+          expect(res.text).toContain('data-qa="admin-section"')
+          expect(res.text).not.toContain('data-test="manage-incentive-levels"')
+          expect(res.text).toContain('data-test="manage-prison-incentive-levels"')
+        })
+    })
   })
 })
 

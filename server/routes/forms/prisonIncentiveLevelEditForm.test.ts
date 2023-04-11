@@ -1,9 +1,9 @@
-import PrisonIncentiveLevelForm, { type PrisonIncentiveLevelData } from './prisonIncentiveLevelForm'
+import PrisonIncentiveLevelEditForm, { type PrisonIncentiveLevelEditData } from './prisonIncentiveLevelEditForm'
 
-describe('PrisonIncentiveLevelForm', () => {
-  const formId = 'test-form-1'
+describe('PrisonIncentiveLevelEditForm', () => {
+  const formId = 'test-form-1' as const
 
-  const validData: Partial<PrisonIncentiveLevelData>[] = [
+  const validData: Partial<PrisonIncentiveLevelEditData>[] = [
     {
       remandTransferLimit: '60.50',
       remandSpendLimit: '605.00',
@@ -23,8 +23,8 @@ describe('PrisonIncentiveLevelForm', () => {
       privilegedVisitOrders: '0',
     },
   ]
-  it.each(validData)('with valid data', (testCase: Partial<PrisonIncentiveLevelData>) => {
-    const form = new PrisonIncentiveLevelForm(formId)
+  it.each(validData)('with valid data', (testCase: Partial<PrisonIncentiveLevelEditData>) => {
+    const form = new PrisonIncentiveLevelEditForm(formId)
     form.submit({ formId, ...testCase })
     expect(form.hasErrors).toBeFalsy()
   })
@@ -51,14 +51,28 @@ describe('PrisonIncentiveLevelForm', () => {
         privilegedVisitOrders: '0',
       },
     ],
+    [
+      'invalid defaultOnAdmission',
+      {
+        defaultOnAdmission: 'true',
+
+        remandTransferLimit: '60.50',
+        remandSpendLimit: '605.00',
+        convictedTransferLimit: '30.90',
+        convictedSpendLimit: '309.00',
+
+        visitOrders: '1',
+        privilegedVisitOrders: '1',
+      },
+    ],
   ]
   it.each(invalidData)('with invalid data: %s', (_, testCase: unknown) => {
-    const form = new PrisonIncentiveLevelForm(formId)
-    form.submit({ formId, ...(testCase as Partial<PrisonIncentiveLevelData>) })
+    const form = new PrisonIncentiveLevelEditForm(formId)
+    form.submit({ formId, ...(testCase as Partial<PrisonIncentiveLevelEditData>) })
     expect(form.hasErrors).toBeTruthy()
   })
 
-  const currencyFields: (keyof PrisonIncentiveLevelData)[] = [
+  const currencyFields: (keyof PrisonIncentiveLevelEditData)[] = [
     'remandTransferLimit',
     'remandSpendLimit',
     'convictedTransferLimit',
@@ -66,12 +80,12 @@ describe('PrisonIncentiveLevelForm', () => {
     'visitOrders',
     'privilegedVisitOrders',
   ]
-  describe.each(currencyFields)('with invalid %s field', (amountFiend: keyof PrisonIncentiveLevelData) => {
-    const form = new PrisonIncentiveLevelForm(formId)
+  describe.each(currencyFields)('with invalid %s field', (amountFiend: keyof PrisonIncentiveLevelEditData) => {
+    const form = new PrisonIncentiveLevelEditForm(formId)
 
     it.each(['', 'one', '£1.00', '1.1', '-1', '1.000'])('having value %s', (value: string) => {
       // valid data
-      const data: PrisonIncentiveLevelData = {
+      const data: PrisonIncentiveLevelEditData = {
         formId,
         remandTransferLimit: '60.50',
         remandSpendLimit: '605',
@@ -82,6 +96,8 @@ describe('PrisonIncentiveLevelForm', () => {
         privilegedVisitOrders: '0',
       }
       // make 1 field invalid
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       data[amountFiend] = value
       form.submit(data)
       expect(form.hasErrors).toBeTruthy()

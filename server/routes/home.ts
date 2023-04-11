@@ -1,5 +1,6 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
 import { BadRequest } from 'http-errors'
+import jwtDecode from 'jwt-decode'
 
 import config from '../config'
 import logger from '../../logger'
@@ -10,9 +11,20 @@ import AnalyticsService from '../services/analyticsService'
 import { type CaseEntriesTable, TableType } from '../services/analyticsServiceTypes'
 import AnalyticsView from '../services/analyticsView'
 import { National } from '../services/pgdRegionService'
-import AboutPageFeedbackForm from './forms/aboutPageFeedbackForm'
 import { cache } from './analyticsRouter'
+import { manageIncentiveLevelsRole } from './incentiveLevels'
+import { managePrisonIncentiveLevelsRole } from './prisonIncentiveLevels'
 import { requireGetOrPost } from './forms/forms'
+import AboutPageFeedbackForm from './forms/aboutPageFeedbackForm'
+
+const getUserRoles = (res: Response): string[] => {
+  try {
+    const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
+    return roles
+  } catch (e) {
+    return []
+  }
+}
 
 export default function routes(router: Router): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
@@ -20,7 +32,11 @@ export default function routes(router: Router): Router {
   get('/', (req, res) => {
     res.locals.breadcrumbs.lastItem.href = undefined
 
-    res.render('pages/home.njk')
+    const userRoles = getUserRoles(res)
+    const canManageIncentiveLevels = userRoles.includes(manageIncentiveLevelsRole)
+    const canManagePrisonIncentiveLevels = userRoles.includes(managePrisonIncentiveLevelsRole)
+
+    res.render('pages/home.njk', { canManageIncentiveLevels, canManagePrisonIncentiveLevels })
   })
 
   get('/about-national-policy', (req, res) => {

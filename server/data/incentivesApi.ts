@@ -4,6 +4,7 @@ import RestClient from './restClient'
 export interface IncentiveLevel {
   code: string
   name: string
+  description: string
   active: boolean
   required: boolean
 }
@@ -28,6 +29,9 @@ export interface PrisonIncentiveLevel {
 
 export type PrisonIncentiveLevelUpdate = Omit<Partial<PrisonIncentiveLevel>, 'prisonId' | 'levelCode' | 'levelName'>
 
+/**
+ * @deprecated use IncentiveLevel once api switches over
+ */
 export interface Level {
   iepLevel: string
   iepDescription: string

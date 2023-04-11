@@ -1,7 +1,7 @@
 import ChartFeedbackForm, { type ChartFeedbackData } from './chartFeedbackForm'
 
 describe('ChartFeedbackForm', () => {
-  const formId = 'test-form-1'
+  const formId = 'test-form-1' as const
 
   const unsubmittedForm = () => new ChartFeedbackForm(formId)
   const submittedForm = (data: Partial<ChartFeedbackData>) => {

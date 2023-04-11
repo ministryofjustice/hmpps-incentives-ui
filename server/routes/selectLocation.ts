@@ -17,7 +17,7 @@ export default function routes(router: Router): Router {
       text: location.userDescription || location.description,
     }))
 
-    return res.render('pages/changeLocation.njk', {
+    res.render('pages/changeLocation.njk', {
       title: 'View by residential location',
       options,
       backUrl: '/',

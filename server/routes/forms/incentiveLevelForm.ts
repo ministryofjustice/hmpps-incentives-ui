@@ -3,6 +3,7 @@ import Form, { type BaseFormData } from './forms'
 export interface IncentiveLevelData extends BaseFormData {
   code?: string
   name: string
+  description: string
   availability: 'required' | 'active' | 'inactive'
 }
 

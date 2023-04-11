@@ -88,7 +88,7 @@ describe('Prison incentive level management', () => {
         })
     })
 
-    it('should lable the default level for new prisoners', () => {
+    it('should label the default level for new prisoners', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
       return request(app)
@@ -127,8 +127,9 @@ describe('Prison incentive level management', () => {
           const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
           const linkTexts = $tableRows
             .map((_index, tr) => {
-              const linkCell = $(tr).find('td')[1]
-              return linkCell.textContent
+              const $cells = $(tr).find('td')
+              expect($cells).toHaveLength(3)
+              return $cells[2].textContent
             })
             .toArray()
           expect(linkTexts).toHaveLength(3)

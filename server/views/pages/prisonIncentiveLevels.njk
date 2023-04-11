@@ -26,26 +26,38 @@
       {% set rows = [] %}
 
       {% for prisonIncentiveLevel in prisonIncentiveLevels %}
-        {% set tags %}
+        {% set tags -%}
           {% if prisonIncentiveLevel.defaultOnAdmission %}
-            {{ govukTag({
-              html: "Default <span class='govuk-visually-hidden'>level for new prisoners</span>"
-            }) }}
+            {% set tagHtml %}
+              Default <span class="govuk-visually-hidden">level for new prisoners</span>
+            {% endset %}
+            {{ govukTag({ html: tagHtml }) }}
           {% endif %}
-        {% endset %}
+        {%- endset %}
 
-        {% set actions %}
+        {% set viewAction -%}
           <a href="/prison-incentive-levels/view/{{ prisonIncentiveLevel.levelCode }}">View settings</a>
-          {% if not prisonIncentiveLevel.levelRequired and not prisonIncentiveLevel.defaultOnAdmission %}
-            <a href="/prison-incentive-levels/remove/{{ prisonIncentiveLevel.levelCode }}" class="govuk-!-margin-left-4">Remove level</a>
-          {% endif %}
-        {% endset %}
+        {%- endset %}
 
-        {% set rows = (rows.push([
+        {% set removeAction -%}
+          {% if not prisonIncentiveLevel.levelRequired and not prisonIncentiveLevel.defaultOnAdmission %}
+            <a href="/prison-incentive-levels/remove/{{ prisonIncentiveLevel.levelCode }}">Remove level</a>
+          {% endif %}
+        {%- endset %}
+
+        {% set row = [
           { text: prisonIncentiveLevel.levelName },
           { html: tags },
-          { html: actions }
-        ]), rows) %}
+          { html: viewAction, classes: "govuk-!-text-align-right" }
+        ] %}
+
+        {% if canRemoveLevel %}
+          {% set row = (row.push(
+            { html: removeAction, classes: "govuk-!-text-align-right" }
+          ), row) %}
+        {% endif %}
+
+        {% set rows = (rows.push(row), rows) %}
       {% endfor %}
 
       {{ govukTable({

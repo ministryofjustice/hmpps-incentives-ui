@@ -32,12 +32,16 @@ export default function routes(router: Router): Router {
       prisonIncentiveLevels.map(prisonIncentiveLevel => {
         return { ...prisonIncentiveLevel, levelRequired: requiredLevelCodes.has(prisonIncentiveLevel.levelCode) }
       })
+    const canRemoveLevel = prisonIncentiveLevelsWithRequiredFlag.some(
+      prisonIncentiveLevel => !prisonIncentiveLevel.levelRequired && !prisonIncentiveLevel.defaultOnAdmission,
+    )
 
     res.locals.breadcrumbs.addItems({ text: 'Incentive level settings' })
     res.render('pages/prisonIncentiveLevels.njk', {
       messages: req.flash(),
       prisonIncentiveLevels: prisonIncentiveLevelsWithRequiredFlag,
       canAddLevel,
+      canRemoveLevel,
       prisonName,
     })
   })

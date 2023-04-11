@@ -30,10 +30,7 @@ context('Prison incentive level management', () => {
     const listPage = Page.verifyOnPage(PrisonIncentiveLevelsPage)
     listPage.checkLastBreadcrumb()
     listPage.contentsOfTable.should('have.all.key', 'Basic', 'Standard', 'Enhanced')
-    listPage.contentsOfTable
-      .its('Standard')
-      .then(([tags, _links]) => tags)
-      .should('contain', 'Default')
+    listPage.contentsOfTable.its('Standard').its('tags').should('contain', 'Default')
 
     listPage.findTableLink(1, 'View settings').click()
 

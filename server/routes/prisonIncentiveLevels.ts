@@ -100,10 +100,10 @@ export default function routes(router: Router): Router {
           incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode),
         ])
         if (!prisonIncentiveLevel.active) {
-          throw NotFound('Prison incentive level is already inactive')
+          throw BadRequest('Prison incentive level is already inactive')
         }
         if (incentiveLevel.required) {
-          throw NotFound('Incentive level is required globally')
+          throw BadRequest('Incentive level is required globally')
         }
 
         try {
@@ -133,10 +133,10 @@ export default function routes(router: Router): Router {
         incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode),
       ])
       if (!prisonIncentiveLevel.active) {
-        throw NotFound('Prison incentive level is already inactive')
+        throw BadRequest('Prison incentive level is already inactive')
       }
       if (incentiveLevel.required) {
-        throw NotFound('Incentive level is required globally')
+        throw BadRequest('Incentive level is required globally')
       }
 
       res.locals.breadcrumbs.addItems(

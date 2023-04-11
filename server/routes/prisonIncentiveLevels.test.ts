@@ -225,17 +225,17 @@ describe('Prison incentive level management', () => {
   })
 
   describe('deactivating a level', () => {
-    it('should 404 if level is required globally', () => {
+    it('should indicate bad request if level is required globally', () => {
       return request(app)
         .get('/prison-incentive-levels/remove/STD')
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
-        .expect(404)
+        .expect(400)
         .expect(() => {
           expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
         })
     })
 
-    it('should 404 if level is required globally (POST)', () => {
+    it('should indicate bad request if level is required globally (POST)', () => {
       const validForm: PrisonIncentiveLevelDeactivateData = {
         formId: 'prisonIncentiveLevelDeactivateForm',
         confirmation: 'yes',
@@ -245,26 +245,26 @@ describe('Prison incentive level management', () => {
         .post('/prison-incentive-levels/remove/STD')
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
-        .expect(404)
+        .expect(400)
         .expect(() => {
           expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
         })
     })
 
-    it('should 404 if level is already inactive', () => {
+    it('should indicate bad request if level is already inactive', () => {
       incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[5])
       incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[3])
 
       return request(app)
         .get('/prison-incentive-levels/remove/ENT')
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
-        .expect(404)
+        .expect(400)
         .expect(() => {
           expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
         })
     })
 
-    it('should 404 if level is already inactive', () => {
+    it('should indicate bad request if level is already inactive (POST)', () => {
       incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[5])
       incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[3])
 
@@ -277,7 +277,7 @@ describe('Prison incentive level management', () => {
         .post('/prison-incentive-levels/remove/ENT')
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
-        .expect(404)
+        .expect(400)
         .expect(() => {
           expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
         })

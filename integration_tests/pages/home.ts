@@ -15,6 +15,11 @@ export default class HomePage extends Page {
 
   aboutAnalyticsPageLink = (): PageElement<HTMLAnchorElement> => cy.get('[data-test="about-data"] a')
 
+  manageIncentiveLevelsLink = (): PageElement<HTMLAnchorElement> => cy.get('[data-test="manage-incentive-levels"] a')
+
+  managePrisonIncentiveLevelsLink = (): PageElement<HTMLAnchorElement> =>
+    cy.get('[data-test="manage-prison-incentive-levels"] a')
+
   get cards(): PageElement<HTMLDivElement> {
     return cy.get('.card')
   }

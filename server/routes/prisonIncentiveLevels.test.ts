@@ -88,7 +88,7 @@ describe('Prison incentive level management', () => {
         })
     })
 
-    it('should lable the default level for new prisoners', () => {
+    it('should label the default level for new prisoners', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
       return request(app)
@@ -127,8 +127,9 @@ describe('Prison incentive level management', () => {
           const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
           const linkTexts = $tableRows
             .map((_index, tr) => {
-              const linkCell = $(tr).find('td')[1]
-              return linkCell.textContent
+              const $cells = $(tr).find('td')
+              expect($cells).toHaveLength(3)
+              return $cells[2].textContent
             })
             .toArray()
           expect(linkTexts).toHaveLength(3)
@@ -283,6 +284,38 @@ describe('Prison incentive level management', () => {
         })
     })
 
+    it('should indicate bad request if level is default for admissions', () => {
+      incentivesApi.getIncentiveLevel.mockResolvedValue({ ...sampleIncentiveLevels[1], required: false })
+      incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[1])
+
+      return request(app)
+        .get('/prison-incentive-levels/remove/STD')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(400)
+        .expect(() => {
+          expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+        })
+    })
+
+    it('should indicate bad request if level is default for admissions (POST)', () => {
+      incentivesApi.getIncentiveLevel.mockResolvedValue({ ...sampleIncentiveLevels[1], required: false })
+      incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[1])
+
+      const validForm: PrisonIncentiveLevelDeactivateData = {
+        formId: 'prisonIncentiveLevelDeactivateForm',
+        confirmation: 'yes',
+      }
+
+      return request(app)
+        .post('/prison-incentive-levels/remove/STD')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
+        .expect(400)
+        .expect(() => {
+          expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+        })
+    })
+
     describe('when deactivation is allowed', () => {
       beforeEach(() => {
         // pretend that ENH is not globally required
@@ -319,8 +352,28 @@ describe('Prison incentive level management', () => {
           .set('authorization', `bearer ${tokenWithNecessaryRole}`)
           .send({ formId: 'prisonIncentiveLevelDeactivateForm' })
           .expect(res => {
-            expect(res.text).toContain('Please select yes or no')
+            expect(res.text).toContain('Select yes or no')
             expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+          })
+      })
+
+      it('should show error message returned by api', () => {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue({
+          status: 400,
+          userMessage: 'Validation failure: A level must be active if it is required',
+          developerMessage: 'A level must be active if it is required',
+        })
+
+        return request(app)
+          .post('/prison-incentive-levels/remove/EN2')
+          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .send({ formId: 'prisonIncentiveLevelDeactivateForm', confirmation: 'yes' })
+          .redirects(1)
+          .expect(res => {
+            expect(res.text).toContain('Incentive level was not removed!')
+            expect(res.text).toContain('A level must be active if it is required')
+
+            expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalled()
           })
       })
 
@@ -463,7 +516,7 @@ describe('Prison incentive level management', () => {
             visitOrders: '1',
             privilegedVisitOrders: '1',
           },
-          'Remand transfer limit must be in pounds and pence',
+          'Transfer limit for remand prisoners must be in pounds and pence',
         ],
         [
           'empty number field',
@@ -479,6 +532,19 @@ describe('Prison incentive level management', () => {
             privilegedVisitOrders: '1',
           },
           'Visits per 2 weeks must be a number',
+        ],
+        [
+          'level must remain the default',
+          {
+            remandTransferLimit: '60.50',
+            remandSpendLimit: '605',
+            convictedTransferLimit: '19.80',
+            convictedSpendLimit: '198',
+
+            visitOrders: '1',
+            privilegedVisitOrders: '1',
+          },
+          'There must be a default level for new prisoners',
         ],
       ])('should show errors for mistakes in form: %s', (_scenario, form, errorMessage) => {
         const $ = jquery(new JSDOM().window) as unknown as typeof jquery
@@ -498,9 +564,45 @@ describe('Prison incentive level management', () => {
           })
       })
 
+      it('should show error message returned by api', () => {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue({
+          status: 400,
+          userMessage: 'Validation failure: There must be an active default level for admission in a prison',
+          developerMessage: 'There must be an active default level for admission in a prison',
+        })
+
+        const validForm: PrisonIncentiveLevelEditData = {
+          formId: 'prisonIncentiveLevelEditForm',
+
+          defaultOnAdmission: 'yes',
+
+          remandTransferLimit: '60.50',
+          remandSpendLimit: '605',
+          convictedTransferLimit: '19.80',
+          convictedSpendLimit: '198',
+
+          visitOrders: '1',
+          privilegedVisitOrders: '1',
+        }
+
+        return request(app)
+          .post('/prison-incentive-levels/edit/STD')
+          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .send(validForm)
+          .redirects(1)
+          .expect(res => {
+            expect(res.text).toContain('Incentive level settings were not saved!')
+            expect(res.text).toContain('There must be an active default level for admission in a prison')
+
+            expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalled()
+          })
+      })
+
       it.each([
         [
-          'checking default',
+          'leaving level as default',
+          'STD',
+          1,
           {
             defaultOnAdmission: 'yes',
 
@@ -525,7 +627,9 @@ describe('Prison incentive level management', () => {
           },
         ],
         [
-          'unchecking default',
+          'leaving level as non-default',
+          'BAS',
+          0,
           {
             remandTransferLimit: '60.50',
             remandSpendLimit: '605.00',
@@ -547,23 +651,56 @@ describe('Prison incentive level management', () => {
             privilegedVisitOrders: 2,
           },
         ],
-      ])('should save changes if there were no mistakes: %s', (_scenario, form, expectedUpdate) => {
-        incentivesApi.updatePrisonIncentiveLevel.mockResolvedValue({
-          ...samplePrisonIncentiveLevels[1],
-          ...expectedUpdate,
-        })
+        [
+          'making level newly the default',
+          'ENH',
+          2,
+          {
+            defaultOnAdmission: 'yes',
 
-        return request(app)
-          .post('/prison-incentive-levels/edit/STD')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
-          .send({ formId: 'prisonIncentiveLevelEditForm', ...form })
-          .expect(res => {
-            expect(res.redirect).toBeTruthy()
-            expect(res.headers.location).toBe('/prison-incentive-levels/view/STD')
+            remandTransferLimit: '60.50',
+            remandSpendLimit: '605.00',
+            convictedTransferLimit: '19.80',
+            convictedSpendLimit: '198.00',
 
-            expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'STD', expectedUpdate)
+            visitOrders: '1',
+            privilegedVisitOrders: '2',
+          },
+          {
+            defaultOnAdmission: true,
+
+            remandTransferLimitInPence: 60_50,
+            remandSpendLimitInPence: 605_00,
+            convictedTransferLimitInPence: 19_80,
+            convictedSpendLimitInPence: 198_00,
+
+            visitOrders: 1,
+            privilegedVisitOrders: 2,
+          },
+        ],
+      ])(
+        'should save changes if there were no mistakes: %s',
+        (_scenario, levelCode, sampleIndex, form, expectedUpdate) => {
+          const prisonIncentiveLevelBeforeEdits = samplePrisonIncentiveLevels[sampleIndex]
+          incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(prisonIncentiveLevelBeforeEdits)
+          incentivesApi.updatePrisonIncentiveLevel.mockResolvedValue({
+            ...prisonIncentiveLevelBeforeEdits,
+            ...expectedUpdate,
+            levelCode,
           })
-      })
+
+          return request(app)
+            .post(`/prison-incentive-levels/edit/${levelCode}`)
+            .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+            .send({ formId: 'prisonIncentiveLevelEditForm', ...form })
+            .expect(res => {
+              expect(res.redirect).toBeTruthy()
+              expect(res.headers.location).toBe(`/prison-incentive-levels/view/${levelCode}`)
+
+              expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', levelCode, expectedUpdate)
+            })
+        },
+      )
     })
   })
 
@@ -686,7 +823,7 @@ describe('Prison incentive level management', () => {
             visitOrders: '1',
             privilegedVisitOrders: '1',
           },
-          'Please select a level to add',
+          'Select a level to add',
         ],
         [
           'unavailable level chosen',
@@ -702,7 +839,7 @@ describe('Prison incentive level management', () => {
             visitOrders: '1',
             privilegedVisitOrders: '1',
           },
-          'Please select a level to add',
+          'Select a level to add',
         ],
         [
           'mistyped amount',
@@ -718,7 +855,7 @@ describe('Prison incentive level management', () => {
             visitOrders: '1',
             privilegedVisitOrders: '1',
           },
-          'Remand spend limit must be in pounds and pence',
+          'Spend limit for remand prisoners must be in pounds and pence',
         ],
         [
           'mistyped number',
@@ -751,6 +888,73 @@ describe('Prison incentive level management', () => {
             expect(errorSummary.text()).toContain(errorMessage)
 
             expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+          })
+      })
+
+      it('should show error message if first level added is not made the default for admission', () => {
+        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+        incentivesApi.getPrisonIncentiveLevels.mockResolvedValue([])
+
+        const validForm: PrisonIncentiveLevelAddData = {
+          formId: 'prisonIncentiveLevelAddForm',
+
+          levelCode: 'EN2',
+
+          remandTransferLimit: '66',
+          remandSpendLimit: '660',
+          convictedTransferLimit: '44',
+          convictedSpendLimit: '440',
+
+          visitOrders: '1',
+          privilegedVisitOrders: '3',
+        }
+
+        return request(app)
+          .post('/prison-incentive-levels/add')
+          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .send(validForm)
+          .expect(res => {
+            const $body = $(res.text)
+
+            const errorSummary = $body.find('.govuk-error-summary')
+            expect(errorSummary.length).toEqual(1)
+            expect(errorSummary.text()).toContain('The first level added must be the default level for new prisoners')
+
+            expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+          })
+      })
+
+      it('should show error message returned by api', () => {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue({
+          status: 400,
+          userMessage: 'Validation failure: There must be an active default level for admission in a prison',
+          developerMessage: 'There must be an active default level for admission in a prison',
+        })
+
+        const validForm: PrisonIncentiveLevelAddData = {
+          formId: 'prisonIncentiveLevelAddForm',
+
+          levelCode: 'EN2',
+
+          remandTransferLimit: '66',
+          remandSpendLimit: '660',
+          convictedTransferLimit: '44',
+          convictedSpendLimit: '440',
+
+          visitOrders: '1',
+          privilegedVisitOrders: '3',
+        }
+
+        return request(app)
+          .post('/prison-incentive-levels/add')
+          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .send(validForm)
+          .redirects(1)
+          .expect(res => {
+            expect(res.text).toContain('Incentive level was not added!')
+            expect(res.text).toContain('There must be an active default level for admission in a prison')
+
+            expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalled()
           })
       })
 

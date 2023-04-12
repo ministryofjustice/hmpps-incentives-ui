@@ -7,7 +7,7 @@ export interface PrisonIncentiveLevelDeactivateData extends BaseFormData {
 export default class PrisonIncentiveLevelDeactivateForm extends Form<PrisonIncentiveLevelDeactivateData> {
   protected validate(): void {
     if (!['yes', 'no'].includes(this.data.confirmation)) {
-      this.addError('confirmation', 'Please select yes or no')
+      this.addError('confirmation', 'Select yes or no')
     }
   }
 }

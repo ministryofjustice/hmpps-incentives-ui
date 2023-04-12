@@ -17,16 +17,22 @@ describe('PrisonIncentiveLevelAddForm', () => {
   }
 
   it.each(validLevelCodes)('with valid data: %s', (levelCode: string) => {
-    const form = new PrisonIncentiveLevelAddForm(formId, validLevelCodes)
+    const form = new PrisonIncentiveLevelAddForm(formId, validLevelCodes, false)
     form.submit({ ...validBaseData, levelCode })
     expect(form.hasErrors).toBeFalsy()
   })
 
   it.each([undefined, null, '', 'EN2', 'bas'])('with invalid data: %s', (levelCode: unknown) => {
-    const form = new PrisonIncentiveLevelAddForm(formId, validLevelCodes)
+    const form = new PrisonIncentiveLevelAddForm(formId, validLevelCodes, false)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     form.submit({ ...validBaseData, levelCode })
+    expect(form.hasErrors).toBeTruthy()
+  })
+
+  it('when defaultOnAdmission is required but not checked', () => {
+    const form = new PrisonIncentiveLevelAddForm(formId, validLevelCodes, true)
+    form.submit({ ...validBaseData, levelCode: 'STD' })
     expect(form.hasErrors).toBeTruthy()
   })
 })

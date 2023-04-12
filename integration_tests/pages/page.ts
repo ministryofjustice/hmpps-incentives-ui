@@ -1,8 +1,8 @@
 export type PageElement<TElement = HTMLElement> = Cypress.Chainable<JQuery<TElement>>
 
 export default abstract class Page {
-  static verifyOnPage<T extends Page>(constructor: new () => T): T {
-    return new constructor()
+  static verifyOnPage<T extends Page>(constructor: new (...args: unknown[]) => T, ...args: unknown[]): T {
+    return new constructor(...args)
   }
 
   constructor(private readonly title: string) {
@@ -13,11 +13,21 @@ export default abstract class Page {
     cy.get('h1').contains(this.title)
   }
 
-  headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
+  get headerUserName(): PageElement<HTMLSpanElement> {
+    return cy.get('[data-qa=header-user-name]')
+  }
 
-  signOut = (): PageElement => cy.get('[data-qa=signOut]')
+  get signOut(): PageElement<HTMLAnchorElement> {
+    return cy.get('[data-qa=signOut]')
+  }
 
-  manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
+  get manageDetails(): PageElement<HTMLAnchorElement> {
+    return cy.get('[data-qa=manageDetails]')
+  }
+
+  get breadcrumbs(): PageElement<HTMLDivElement> {
+    return cy.get('.govuk-breadcrumbs')
+  }
 
   get messages(): PageElement<HTMLDivElement> {
     return cy.get('.moj-banner')

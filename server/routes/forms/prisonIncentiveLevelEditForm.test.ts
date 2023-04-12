@@ -24,7 +24,7 @@ describe('PrisonIncentiveLevelEditForm', () => {
     },
   ]
   it.each(validData)('with valid data', (testCase: Partial<PrisonIncentiveLevelEditData>) => {
-    const form = new PrisonIncentiveLevelEditForm(formId)
+    const form = new PrisonIncentiveLevelEditForm(formId, false)
     form.submit({ formId, ...testCase })
     expect(form.hasErrors).toBeFalsy()
   })
@@ -67,7 +67,7 @@ describe('PrisonIncentiveLevelEditForm', () => {
     ],
   ]
   it.each(invalidData)('with invalid data: %s', (_, testCase: unknown) => {
-    const form = new PrisonIncentiveLevelEditForm(formId)
+    const form = new PrisonIncentiveLevelEditForm(formId, false)
     form.submit({ formId, ...(testCase as Partial<PrisonIncentiveLevelEditData>) })
     expect(form.hasErrors).toBeTruthy()
   })
@@ -81,7 +81,7 @@ describe('PrisonIncentiveLevelEditForm', () => {
     'privilegedVisitOrders',
   ]
   describe.each(currencyFields)('with invalid %s field', (amountFiend: keyof PrisonIncentiveLevelEditData) => {
-    const form = new PrisonIncentiveLevelEditForm(formId)
+    const form = new PrisonIncentiveLevelEditForm(formId, false)
 
     it.each(['', 'one', '£1.00', '1.1', '-1', '1.000'])('having value %s', (value: string) => {
       // valid data
@@ -102,5 +102,21 @@ describe('PrisonIncentiveLevelEditForm', () => {
       form.submit(data)
       expect(form.hasErrors).toBeTruthy()
     })
+  })
+
+  it('when defaultOnAdmission is required but unchecked', () => {
+    const form = new PrisonIncentiveLevelEditForm(formId, true)
+    const data: PrisonIncentiveLevelEditData = {
+      formId,
+      remandTransferLimit: '60.50',
+      remandSpendLimit: '605.00',
+      convictedTransferLimit: '30.90',
+      convictedSpendLimit: '309.00',
+
+      visitOrders: '1',
+      privilegedVisitOrders: '1',
+    }
+    form.submit(data)
+    expect(form.hasErrors).toBeTruthy()
   })
 })

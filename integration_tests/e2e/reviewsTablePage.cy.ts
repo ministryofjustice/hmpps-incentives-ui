@@ -19,7 +19,7 @@ context('Manage incentives (select a location)', () => {
     homePage.viewIncentivesLevelsLink().click()
   })
 
-  it(' has correct title', () => {
+  it('has correct title', () => {
     cy.title().should('eq', 'Manage incentives – Select a location')
   })
 
@@ -29,7 +29,7 @@ context('Manage incentives (select a location)', () => {
     locationSelectionPage.locationSelectOptions().should('contain.text', 'Houseblock 42')
   })
 
-  it('user selects location by clicking continue ', () => {
+  it('user selects location by clicking continue', () => {
     const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
     locationSelectionPage.locationSelect().select('Houseblock 42')
     locationSelectionPage.continueButton().click()
@@ -64,21 +64,18 @@ context('Manage incentive reviews', () => {
     cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/table-feedback')
   })
 
-  it('users will see selected location or select alternative ', () => {
-    // cy.get('.govuk-main-wrapper').contains((text) => {
-    //   return text.includes('Houseblock 42') || text.includes('Select another location');
-    // })
+  it('users will see selected location or select alternative', () => {
     cy.get('.govuk-main-wrapper').contains('Houseblock 42')
   })
 
-  it('has reviews table ', () => {
+  it('has reviews table', () => {
     const page = Page.verifyOnPage(ReviewsTablePage)
     page
       .getReviewsTable()
       .first()
       .then(table => {
         const rowTitles = table.find('td:first-child').text()
-        expect(rowTitles).to.contain('\n ')
+        expect(rowTitles).to.contain('\n')
       })
     page.getPrisonerName().should('contain.text', 'Saunders, John')
   })

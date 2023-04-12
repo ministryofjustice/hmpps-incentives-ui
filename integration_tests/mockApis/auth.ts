@@ -1,22 +1,10 @@
-import jwt from 'jsonwebtoken'
 import { Response } from 'superagent'
 
+import type { UserRole } from '../../server/data/hmppsAuthClient'
+import createUserToken from '../../server/routes/testutils/createUserToken'
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 import nomisUserRolesApi from './nomisUserRolesApi'
-
-const createToken = () => {
-  const payload = {
-    user_name: 'USER1',
-    scope: ['read'],
-    auth_source: 'nomis',
-    authorities: [],
-    jti: '83b50a10-cca6-41db-985f-e87efb303ddb',
-    client_id: 'clientid',
-  }
-
-  return jwt.sign(payload, 'secret', { expiresIn: '1h' })
-}
 
 const getSignInUrl = (): Promise<string> =>
   getMatchingRequests({
@@ -96,7 +84,7 @@ const manageDetails = () =>
     },
   })
 
-const token = () =>
+const token = (roles: UserRole[] = []) =>
   stubFor({
     request: {
       method: 'POST',
@@ -109,11 +97,11 @@ const token = () =>
         Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
-        access_token: createToken(),
+        access_token: createUserToken(roles.map(role => role.roleCode)),
         token_type: 'bearer',
         user_name: 'USER1',
         expires_in: 599,
-        scope: 'read',
+        scope: 'read,write',
         internalUser: true,
       },
     },
@@ -140,7 +128,7 @@ const stubUser = (name: string) =>
     },
   })
 
-const stubUserRoles = () =>
+const stubUserRoles = (roles: UserRole[] = []) =>
   stubFor({
     request: {
       method: 'GET',
@@ -151,15 +139,34 @@ const stubUserRoles = () =>
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      jsonBody: [{ roleCode: 'SOME_USER_ROLE' }],
+      jsonBody: roles,
     },
   })
 
 export default {
   getSignInUrl,
   stubAuthPing: ping,
-  stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
-  stubAuthUser: (name = 'john smith'): Promise<[Response, Response, Response]> =>
-    Promise.all([stubUser(name), stubUserRoles(), nomisUserRolesApi.stubGetUserCaseloads()]),
+  stubSignIn: (
+    {
+      roles = [],
+    }: {
+      roles: UserRole[]
+    } = {
+      roles: [],
+    },
+  ): Promise<[Response, Response, Response, Response, Response, Response]> =>
+    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
+  stubAuthUser: (
+    {
+      name = 'john smith',
+      roles = [],
+    }: {
+      name: string
+      roles: UserRole[]
+    } = {
+      name: 'john smith',
+      roles: [],
+    },
+  ): Promise<[Response, Response, Response]> =>
+    Promise.all([stubUser(name), stubUserRoles(roles), nomisUserRolesApi.stubGetUserCaseloads()]),
 }

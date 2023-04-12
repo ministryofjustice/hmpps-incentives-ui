@@ -1,6 +1,8 @@
 import { SuperAgentRequest } from 'superagent'
 
 import { stubFor } from './wiremock'
+import type { IncentiveLevel, PrisonIncentiveLevel } from '../../server/data/incentivesApi'
+import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../../server/testData/incentivesApi'
 
 export default {
   stubPing: (): SuperAgentRequest => {
@@ -16,6 +18,117 @@ export default {
       },
     })
   },
+
+  stubIncentiveLevels: (
+    options: { inactive: boolean } | { incentiveLevels: IncentiveLevel[] } = {
+      inactive: false,
+    },
+  ): SuperAgentRequest => {
+    let incentiveLevels: IncentiveLevel[]
+    if ('incentiveLevels' in options) {
+      incentiveLevels = options.incentiveLevels
+    } else {
+      incentiveLevels = options.inactive
+        ? sampleIncentiveLevels
+        : sampleIncentiveLevels.filter(incentiveLevel => incentiveLevel.active)
+    }
+
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/incentivesApi/incentive/levels',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: incentiveLevels,
+      },
+    })
+  },
+
+  stubIncentiveLevel: (
+    options: { incentiveLevel: IncentiveLevel } = { incentiveLevel: sampleIncentiveLevels[1] },
+  ): SuperAgentRequest => {
+    const { incentiveLevel } = options
+
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/incentivesApi/incentive/levels/${incentiveLevel.code}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: incentiveLevel,
+      },
+    })
+  },
+
+  stubPrisonIncentiveLevels: (
+    options: { prisonId: string } & ({ inactive: boolean } | { prisonIncentiveLevels: PrisonIncentiveLevel[] }) = {
+      prisonId: 'MDI',
+      inactive: false,
+    },
+  ): SuperAgentRequest => {
+    let prisonIncentiveLevels: PrisonIncentiveLevel[]
+    if ('prisonIncentiveLevels' in options) {
+      prisonIncentiveLevels = options.prisonIncentiveLevels
+    } else {
+      prisonIncentiveLevels = options.inactive
+        ? samplePrisonIncentiveLevels
+        : samplePrisonIncentiveLevels.filter(incentiveLevel => incentiveLevel.active)
+    }
+
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/incentivesApi/incentive/prison-levels/${options.prisonId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: prisonIncentiveLevels,
+      },
+    })
+  },
+
+  stubPrisonIncentiveLevel: (
+    options: { prisonIncentiveLevel: PrisonIncentiveLevel } = { prisonIncentiveLevel: samplePrisonIncentiveLevels[1] },
+  ): SuperAgentRequest => {
+    const { prisonIncentiveLevel } = options
+
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/incentivesApi/incentive/prison-levels/${prisonIncentiveLevel.prisonId}/level/${prisonIncentiveLevel.levelCode}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: prisonIncentiveLevel,
+      },
+    })
+  },
+
+  stubPatchPrisonIncentiveLevel: (options: { prisonIncentiveLevel: PrisonIncentiveLevel }): SuperAgentRequest => {
+    const { prisonIncentiveLevel } = options
+
+    return stubFor({
+      request: {
+        method: 'PATCH',
+        urlPattern: `/incentivesApi/incentive/prison-levels/${prisonIncentiveLevel.prisonId}/level/${prisonIncentiveLevel.levelCode}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: prisonIncentiveLevel,
+      },
+    })
+  },
+
+  /**
+   * @deprecated use stubIncentiveLevels once api switches over
+   */
   stubGetAvailableLevels: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -48,6 +161,7 @@ export default {
       },
     })
   },
+
   stubGetIncentivesLevelBasic: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -101,6 +215,7 @@ export default {
       },
     })
   },
+
   stubGetIncentivesLevelStandard: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -154,6 +269,7 @@ export default {
       },
     })
   },
+
   stubGetIncentivesSorted: (): SuperAgentRequest => {
     return stubFor({
       request: {

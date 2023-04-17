@@ -123,7 +123,6 @@ export default function routes(router: Router): Router {
         try {
           const updatedIncentiveLevel = await incentivesApi.updateIncentiveLevel(levelCode, {
             name: form.getField('name').value,
-            description: form.getField('description').value || '',
             active,
             required,
           })
@@ -138,7 +137,6 @@ export default function routes(router: Router): Router {
           const createdIncentiveLevel = await incentivesApi.createIncentiveLevel({
             code: form.getField('code').value,
             name: form.getField('name').value,
-            description: form.getField('description').value || '',
             active,
             required,
           })

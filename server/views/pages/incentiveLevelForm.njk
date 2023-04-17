@@ -56,18 +56,6 @@
           errorMessage: { text: field.error } if field.error else undefined
         }) }}
 
-        {% set fieldId = "description" %}
-        {% set field = form.getField(fieldId) %}
-        {{ govukInput({
-          label: { text: "Description" },
-          classes: "govuk-!-width-two-thirds",
-          id: form.formId + "-" + fieldId,
-          name: fieldId,
-          value: field.value,
-          spellcheck: true,
-          errorMessage: { text: field.error } if field.error else undefined
-        }) }}
-
         {% set fieldId = "availability" %}
         {% set field = form.getField(fieldId) %}
         {{ govukRadios({

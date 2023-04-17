@@ -22,9 +22,6 @@
         {% for incentiveLevel in availableUnusedIncentiveLevels %}
           {% set levelChoices = (levelChoices.push({
             text: incentiveLevel.name,
-            hint: {
-              text: incentiveLevel.description if incentiveLevel.description else undefined
-            },
             value: incentiveLevel.code
           }), levelChoices) %}
         {% endfor %}

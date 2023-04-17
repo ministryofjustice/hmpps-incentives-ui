@@ -4,7 +4,6 @@ import RestClient from './restClient'
 export interface IncentiveLevel {
   code: string
   name: string
-  description: string
   active: boolean
   required: boolean
 }

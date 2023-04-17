@@ -1,12 +1,12 @@
 import type { IncentivesReviewsResponse, IncentiveLevel, PrisonIncentiveLevel } from '../data/incentivesApi'
 
 export const sampleIncentiveLevels: IncentiveLevel[] = [
-  { code: 'BAS', name: 'Basic', description: '', active: true, required: true },
-  { code: 'STD', name: 'Standard', description: '', active: true, required: true },
-  { code: 'ENH', name: 'Enhanced', description: '', active: true, required: true },
-  { code: 'EN2', name: 'Enhanced 2', description: '', active: true, required: false },
-  { code: 'EN3', name: 'Enhanced 3', description: '', active: true, required: false },
-  { code: 'ENT', name: 'Entry', description: '', active: false, required: false },
+  { code: 'BAS', name: 'Basic', active: true, required: true },
+  { code: 'STD', name: 'Standard', active: true, required: true },
+  { code: 'ENH', name: 'Enhanced', active: true, required: true },
+  { code: 'EN2', name: 'Enhanced 2', active: true, required: false },
+  { code: 'EN3', name: 'Enhanced 3', active: true, required: false },
+  { code: 'ENT', name: 'Entry', active: false, required: false },
 ]
 
 export const samplePrisonIncentiveLevels: PrisonIncentiveLevel[] = [

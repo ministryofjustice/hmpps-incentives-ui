@@ -52,25 +52,6 @@
           element: "a",
           href: "/incentive-levels/edit/" + incentiveLevel.code
         }) }}
-
-        {% if not incentiveLevel.active %}
-
-          {{ govukButton({
-            text: "Allow prisons to use this level",
-            element: "a",
-            href: "/incentive-levels/activate/" + incentiveLevel.code
-          }) }}
-
-        {% elif not incentiveLevel.required %}
-
-          {{ govukButton({
-            text: "Disable this level",
-            classes: "govuk-button--warning",
-            element: "a",
-            href: "/incentive-levels/deactivate/" + incentiveLevel.code
-          }) }}
-
-        {% endif %}
       </div>
 
     </div>

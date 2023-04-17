@@ -29,32 +29,14 @@
           {% endif %}
         {% endset %}
 
-        {% set actions = [] %}
-        {% if not loop.first %}
-          {%  set actions = (actions.push({
-            href: "/incentive-levels/move-up/" + incentiveLevel.code,
-            text: "▲",
-            visuallyHiddenText: "Move level up"
-          }), actions) %}
-        {% endif %}
-        {% if not loop.last %}
-          {%  set actions = (actions.push({
-            href: "/incentive-levels/move-down/" + incentiveLevel.code,
-            text: "▼",
-            visuallyHiddenText: "Move level down"
-          }), actions) %}
-        {% endif %}
-        {%  set actions = (actions.push({
-          href: "/incentive-levels/view/" + incentiveLevel.code,
-          text: "View",
-          visuallyHiddenText: "level details"
-        }), actions) %}
-
         {% set rows = (rows.push({
-          classes: "app-incentive-levels-list",
           key: { text: "Level" },
           value: { html: nameHtml },
-          actions: { items: actions }
+          actions: { items: [{
+            href: "/incentive-levels/view/" + incentiveLevel.code,
+            text: "View",
+            visuallyHiddenText: "level details"
+          }] }
         }), rows) %}
       {% endfor %}
 

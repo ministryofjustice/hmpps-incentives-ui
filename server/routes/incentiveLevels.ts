@@ -1,9 +1,9 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
-import { BadRequest, NotFound } from 'http-errors'
+import { BadRequest } from 'http-errors'
 
 import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { IncentivesApi, IncentiveLevel } from '../data/incentivesApi'
+import { IncentivesApi, type IncentiveLevel } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
 import IncentiveLevelForm from './forms/incentiveLevelForm'
 
@@ -33,51 +33,6 @@ export default function routes(router: Router): Router {
     )
     res.render('pages/incentiveLevel.njk', { messages: req.flash(), incentiveLevel })
   })
-
-  const activateDeactivate: { (active: boolean): RequestHandler } = active => async (req, res) => {
-    const incentivesApi = new IncentivesApi(res.locals.user.token)
-
-    const { levelCode } = req.params
-    const incentiveLevel = await incentivesApi.updateIncentiveLevel(levelCode, { active })
-    // TODO: handle errors
-    const message = active ? `${incentiveLevel.name} is now active` : `${incentiveLevel.name} is no longer active`
-    logger.info(message)
-    req.flash('success', message)
-
-    res.redirect(active ? `/incentive-levels/view/${levelCode}` : '/incentive-levels')
-  }
-
-  router.get('/activate/:levelCode', asyncMiddleware(activateDeactivate(true)))
-  router.get('/deactivate/:levelCode', asyncMiddleware(activateDeactivate(false)))
-
-  const moveLevel: { (move: 'up' | 'down'): RequestHandler } = move => async (req, res) => {
-    const incentivesApi = new IncentivesApi(res.locals.user.token)
-
-    const { levelCode } = req.params
-    const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
-    const previousIndex = incentiveLevels.findIndex(incentiveLevel => incentiveLevel.code === levelCode)
-    if (typeof previousIndex !== 'number' || previousIndex < 0) {
-      throw new NotFound()
-    }
-    if ((previousIndex === 0 && move === 'up') || (previousIndex === incentiveLevels.length - 1 && move === 'down')) {
-      throw new BadRequest()
-    }
-    const newIndex = move === 'up' ? previousIndex - 1 : previousIndex + 1
-    const level1 = incentiveLevels[previousIndex]
-    const level2 = incentiveLevels[newIndex]
-    incentiveLevels[newIndex] = level1
-    incentiveLevels[previousIndex] = level2
-    await incentivesApi.setIncentiveLevelOrder(incentiveLevels.map(incentiveLevel => incentiveLevel.code))
-    const message = 'Incentive levels reordered'
-    logger.info(message)
-    req.flash('success', message)
-
-    res.redirect('/incentive-levels')
-  }
-
-  // NB: move direction refers to a visual represenation where levels are presented in a list top-to-bottom
-  router.get('/move-up/:levelCode', asyncMiddleware(moveLevel('up')))
-  router.get('/move-down/:levelCode', asyncMiddleware(moveLevel('down')))
 
   const formId = 'incentiveLevel' as const
   router.all(

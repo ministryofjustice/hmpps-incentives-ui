@@ -15,6 +15,10 @@
       "stabilityDays": 3
     },
     {
+      "matchDepNames": ["node"],
+      "allowedVersions": "^18"
+    },
+    {
       "matchPackageNames": ["typescript", "govuk-frontend"],
       "rangeStrategy": "bump",
       "stabilityDays": 0

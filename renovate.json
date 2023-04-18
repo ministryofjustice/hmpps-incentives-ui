@@ -14,10 +14,7 @@
       "groupSlug": "all-npm-minor-patch",
       "stabilityDays": 3
     },
-    {
-      "matchDepNames": ["node"],
-      "allowedVersions": "^18"
-    },
+
     {
       "matchPackageNames": ["typescript", "govuk-frontend"],
       "rangeStrategy": "bump",
@@ -45,6 +42,23 @@
       "allowedVersions": "7.0"
     }
   ],
+  "node": {
+    "packageRules": [
+      {
+        "allowedVersions": "^18",
+        "matchDepTypes": ["engines"]
+      }
+    ]
+  },
+  "npm": {
+    "packageRules": [
+      {
+        "matchDepTypes": ["engines"],
+        "allowedVersions": "^9"
+
+      }
+    ]
+  },
   "vulnerabilityAlerts": {
     "stabilityDays": 0
   }

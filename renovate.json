@@ -19,10 +19,6 @@
       "allowedVersions": "^18"
     },
     {
-      "matchDepNames": ["npm"],
-      "allowedVersions": "^9"
-    },
-    {
       "matchPackageNames": ["typescript", "govuk-frontend"],
       "rangeStrategy": "bump",
       "stabilityDays": 0
@@ -41,7 +37,7 @@
     {
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/node"],
-      "allowedVersions": "18.15-browsers"
+      "allowedVersions": "18.16-browsers"
     },
     {
       "matchDatasources": ["orb"],

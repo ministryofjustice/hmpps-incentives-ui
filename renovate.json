@@ -14,7 +14,6 @@
       "groupSlug": "all-npm-minor-patch",
       "stabilityDays": 3
     },
-
     {
       "matchDepNames": ["node"],
       "allowedVersions": "^18"
@@ -53,8 +52,8 @@
   "node": {
     "packageRules": [
       {
-        "allowedVersions": "^18.0.0",
-        "matchDepTypes": ["engines"]
+        "matchDepTypes": ["engines"],
+        "allowedVersions": "^18.0.0"
       }
     ]
   },

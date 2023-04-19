@@ -45,7 +45,7 @@
   "node": {
     "packageRules": [
       {
-        "allowedVersions": "^18",
+        "allowedVersions": "^18.0.0",
         "matchDepTypes": ["engines"]
       }
     ]
@@ -54,7 +54,7 @@
     "packageRules": [
       {
         "matchDepTypes": ["engines"],
-        "allowedVersions": "^9"
+        "allowedVersions": "^9.0.0"
 
       }
     ]

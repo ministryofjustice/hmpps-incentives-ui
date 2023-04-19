@@ -16,6 +16,14 @@
     },
 
     {
+      "matchDepNames": ["node"],
+      "allowedVersions": "^18"
+    },
+    {
+      "matchDepNames": ["npm"],
+      "allowedVersions": "^9"
+    },
+    {
       "matchPackageNames": ["typescript", "govuk-frontend"],
       "rangeStrategy": "bump",
       "stabilityDays": 0
@@ -55,7 +63,6 @@
       {
         "matchDepTypes": ["engines"],
         "allowedVersions": "^9.0.0"
-
       }
     ]
   },

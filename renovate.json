@@ -14,7 +14,6 @@
       "groupSlug": "all-npm-minor-patch",
       "stabilityDays": 3
     },
-
     {
       "matchDepNames": ["node"],
       "allowedVersions": "^18"
@@ -42,7 +41,7 @@
     {
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/node"],
-      "allowedVersions": "18.15-browsers"
+      "allowedVersions": "18.16-browsers"
     },
     {
       "matchDatasources": ["orb"],
@@ -53,8 +52,8 @@
   "node": {
     "packageRules": [
       {
-        "allowedVersions": "^18.0.0",
-        "matchDepTypes": ["engines"]
+        "matchDepTypes": ["engines"],
+        "allowedVersions": "^18.0.0"
       }
     ]
   },

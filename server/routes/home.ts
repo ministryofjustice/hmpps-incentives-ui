@@ -33,9 +33,12 @@ export default function routes(router: Router): Router {
     res.locals.breadcrumbs.lastItem.href = undefined
 
     const userRoles = getUserRoles(res)
-    const canManageIncentiveLevels = userRoles.includes(manageIncentiveLevelsRole)
-    const canManagePrisonIncentiveLevels = userRoles.includes(managePrisonIncentiveLevelsRole)
-
+    let canManageIncentiveLevels = false
+    let canManagePrisonIncentiveLevels = false
+    if (['local', 'dev'].includes(config.environment)) {
+      canManageIncentiveLevels = userRoles.includes(manageIncentiveLevelsRole)
+      canManagePrisonIncentiveLevels = userRoles.includes(managePrisonIncentiveLevelsRole)
+    }
     res.render('pages/home.njk', { canManageIncentiveLevels, canManagePrisonIncentiveLevels })
   })
 

@@ -3,7 +3,7 @@ import { EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contract
 import applicationVersion from '../applicationVersion'
 
 export type ContextObject = {
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [name: string]: any
 }
 

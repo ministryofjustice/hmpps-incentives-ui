@@ -1,17 +1,17 @@
 import type { ResponseError } from 'superagent'
 
-interface SanitisedError {
+export interface SanitisedError<Data = unknown> {
   text?: string
   status?: number
   headers?: unknown
-  data?: unknown
+  data?: Data
   stack: string
   message: string
 }
 
 export type UnsanitisedError = ResponseError
 
-export default function sanitise(error: UnsanitisedError): SanitisedError {
+export default function sanitise<Data = unknown>(error: UnsanitisedError): SanitisedError<Data> {
   if (error.response) {
     return {
       text: error.response.text,

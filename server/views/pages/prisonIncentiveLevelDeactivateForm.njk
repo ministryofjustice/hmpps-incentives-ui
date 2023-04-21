@@ -3,7 +3,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " – Are you sure you want to remove " + prisonIncentiveLevel.levelName + "?" %}
+{% set pageTitle = applicationName + " – Remove an incentive level" %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -13,24 +13,32 @@
       {% include "../partials/formErrorSummary.njk" %}
 
       <h1 class="govuk-heading-xl" data-qa="prison-incentive-levels-deactivate">
-        Are you sure you want to remove {{ prisonIncentiveLevel.levelName }}?
+        Remove an incentive level
       </h1>
       <p>
-        This incentive level will no longer be available for use in your establishment.
-        Removal will not affect prisoners who are already on this level.
+        Removing an incentive level makes it unavailable for use in your establishment.
+      </p>
+      <p>
+        You should first check if there are any prisoners on this level.
+      </p>
+      <p>
+        Staff must review these prisoners and place them on an alternative level before this level can be removed.
       </p>
 
       <form id="form-{{ form.formId }}" method="post" novalidate>
 
         {% set fieldId = "confirmation" %}
         {% set field = form.getField(fieldId) %}
+        {% set fieldLabel %}
+          Do you want to remove {{ prisonIncentiveLevel.levelName }}?
+        {% endset %}
         {{ govukRadios({
           attributes: { id: form.formId + "-" + fieldId },
           name: fieldId,
           fieldset: {
             legend: {
-              text: "Remove this level?",
-              classes: "govuk-visually-hidden"
+              html: fieldLabel,
+              classes: "govuk-fieldset__legend--m"
             }
           },
           items: [

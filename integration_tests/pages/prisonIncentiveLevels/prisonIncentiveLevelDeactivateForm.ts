@@ -1,12 +1,12 @@
 import Page, { type PageElement } from '../page'
 
 export default class PrisonIncentiveLevelDeactivateFormPage extends Page {
-  constructor(private readonly levelName: string = 'Standard') {
-    super(`Are you sure you want to remove ${levelName}?`)
+  constructor() {
+    super('Remove an incentive level')
   }
 
   checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', `Are you sure you want to remove ${this.levelName}?`)
+    this.breadcrumbs.last().should('contain.text', 'Remove an incentive level')
   }
 
   get form(): PageElement<HTMLFormElement> {

@@ -113,11 +113,11 @@ context('Prison incentive level management', () => {
 
     listPage.findTableLink(3, 'Remove level').click()
 
-    let deactivatePage = Page.verifyOnPage(PrisonIncentiveLevelDeactivateFormPage, 'Enhanced 2')
+    let deactivatePage = Page.verifyOnPage(PrisonIncentiveLevelDeactivateFormPage)
     deactivatePage.checkLastBreadcrumb()
 
     deactivatePage.form.submit() // empty form
-    Page.verifyOnPage(PrisonIncentiveLevelDeactivateFormPage, 'Enhanced 2')
+    Page.verifyOnPage(PrisonIncentiveLevelDeactivateFormPage)
     deactivatePage.errorSummaryTitle.should('contain.text', 'There is a problem')
 
     deactivatePage.confirmationRadios.eq(1).find('label').click()
@@ -128,7 +128,7 @@ context('Prison incentive level management', () => {
 
     listPage.findTableLink(3, 'Remove level').click()
 
-    deactivatePage = Page.verifyOnPage(PrisonIncentiveLevelDeactivateFormPage, 'Enhanced 2')
+    deactivatePage = Page.verifyOnPage(PrisonIncentiveLevelDeactivateFormPage)
     deactivatePage.confirmationRadios.eq(0).find('label').click()
     deactivatePage.form.submit() // form should now be valid
 

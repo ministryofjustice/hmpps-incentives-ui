@@ -8,7 +8,7 @@ export default class PrisonIncentiveLevelsPage extends Page {
   }
 
   checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', 'Incentive level settings')
+    this.breadcrumbs.last().should('contain.text', this.title)
   }
 
   get table(): PageElement<HTMLTableElement> {

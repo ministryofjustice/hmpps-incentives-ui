@@ -4,7 +4,7 @@
   {% for message in messages %}
     {{ mojBanner({
       type: messageType,
-      text: message
+      html: message | escape | nl2br
     }) }}
   {% endfor %}
 {% endfor %}

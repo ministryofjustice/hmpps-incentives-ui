@@ -6,7 +6,7 @@ export default class PrisonIncentiveLevelEditFormPage extends Page {
   }
 
   checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', `Change settings for ${this.levelName}`)
+    this.breadcrumbs.last().should('contain.text', this.title)
   }
 
   get form(): PageElement<HTMLFormElement> {

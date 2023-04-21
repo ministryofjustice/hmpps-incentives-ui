@@ -2,8 +2,15 @@ import type { NextFunction, Request, RequestHandler, Response, Router } from 'ex
 import { BadRequest, NotFound } from 'http-errors'
 
 import logger from '../../logger'
+import type { SanitisedError } from '../sanitisedError'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { IncentivesApi, type IncentiveLevel, type PrisonIncentiveLevel } from '../data/incentivesApi'
+import {
+  ErrorCode,
+  ErrorResponse,
+  IncentivesApi,
+  type IncentiveLevel,
+  type PrisonIncentiveLevel,
+} from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
 import PrisonIncentiveLevelAddForm from './forms/prisonIncentiveLevelAddForm'
 import PrisonIncentiveLevelDeactivateForm from './forms/prisonIncentiveLevelDeactivateForm'
@@ -122,7 +129,21 @@ export default function routes(router: Router): Router {
           req.flash('success', message)
         } catch (error) {
           logger.error('Failed to deactivate prison incentive level', error)
-          req.flash('warning', `Incentive level was not removed! ${error?.userMessage || ''}`)
+          let message = 'Incentive level was not removed!'
+          const errorResponse = (error as SanitisedError<ErrorResponse>).data
+          if (ErrorResponse.isErrorResponse(errorResponse)) {
+            if (errorResponse.errorCode === ErrorCode.PrisonIncentiveLevelActiveIfPrisonersExist) {
+              message =
+                `${incentiveLevel.name} cannot be removed because there are prisoners currently on it.\n\n` +
+                'Staff must review these prisoners and place them on an alternative level.'
+            } else {
+              const userMessage = errorResponse.userMessage?.trim() || ''
+              if (userMessage.length > 0) {
+                message = `${message}\n\n${userMessage}`
+              }
+            }
+          }
+          req.flash('warning', message)
         }
       }
 
@@ -151,7 +172,7 @@ export default function routes(router: Router): Router {
 
       res.locals.breadcrumbs.addItems(
         { text: 'Incentive level settings', href: '/prison-incentive-levels' },
-        { text: `Are you sure you want to remove ${prisonIncentiveLevel.levelName}?` },
+        { text: 'Remove an incentive level' },
       )
       res.render('pages/prisonIncentiveLevelDeactivateForm.njk', {
         messages: req.flash(),
@@ -222,7 +243,15 @@ export default function routes(router: Router): Router {
         logger.info(message)
       } catch (error) {
         logger.error('Failed to update prison incentive level', error)
-        req.flash('warning', `Incentive level settings were not saved! ${error?.userMessage || ''}`)
+        let message = 'Incentive level settings were not saved!'
+        const errorResponse = (error as SanitisedError<ErrorResponse>).data
+        if (ErrorResponse.isErrorResponse(errorResponse)) {
+          const userMessage = errorResponse.userMessage?.trim() || ''
+          if (userMessage.length > 0) {
+            message = `${message}\n\n${userMessage}`
+          }
+        }
+        req.flash('warning', message)
       }
 
       res.redirect(`/prison-incentive-levels/view/${levelCode}`)
@@ -351,7 +380,15 @@ export default function routes(router: Router): Router {
         res.redirect(`/prison-incentive-levels/view/${levelCode}`)
       } catch (error) {
         logger.error('Failed to update prison incentive level', error)
-        req.flash('warning', `Incentive level was not added! ${error?.userMessage || ''}`)
+        let message = 'Incentive level was not added!'
+        const errorResponse = (error as SanitisedError<ErrorResponse>).data
+        if (ErrorResponse.isErrorResponse(errorResponse)) {
+          const userMessage = errorResponse.userMessage?.trim() || ''
+          if (userMessage.length > 0) {
+            message = `${message}\n\n${userMessage}`
+          }
+        }
+        req.flash('warning', message)
         res.redirect('/prison-incentive-levels')
       }
     }),

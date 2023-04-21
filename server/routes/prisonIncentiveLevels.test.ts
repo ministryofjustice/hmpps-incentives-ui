@@ -5,8 +5,9 @@ import request from 'supertest'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
+import type { SanitisedError } from '../sanitisedError'
 import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../testData/incentivesApi'
-import { IncentivesApi } from '../data/incentivesApi'
+import { IncentivesApi, type ErrorResponse } from '../data/incentivesApi'
 import type { PrisonIncentiveLevelAddData } from './forms/prisonIncentiveLevelAddForm'
 import type { PrisonIncentiveLevelDeactivateData } from './forms/prisonIncentiveLevelDeactivateForm'
 import type { PrisonIncentiveLevelEditData } from './forms/prisonIncentiveLevelEditForm'
@@ -358,20 +359,54 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show error message returned by api', () => {
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue({
+        const error: SanitisedError<ErrorResponse> = {
           status: 400,
-          userMessage: 'Validation failure: A level must be active if it is required',
-          developerMessage: 'A level must be active if it is required',
-        })
+          message: 'Bad Request',
+          stack: 'Error: Bad Request',
+          data: {
+            status: 400,
+            userMessage: 'Validation failure: A level must be active if it is required',
+            developerMessage: 'A level must be active if it is required',
+          },
+        }
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
 
         return request(app)
-          .post('/prison-incentive-levels/remove/EN2')
+          .post('/prison-incentive-levels/remove/ENH')
           .set('authorization', `bearer ${tokenWithNecessaryRole}`)
           .send({ formId: 'prisonIncentiveLevelDeactivateForm', confirmation: 'yes' })
           .redirects(1)
           .expect(res => {
             expect(res.text).toContain('Incentive level was not removed!')
             expect(res.text).toContain('A level must be active if it is required')
+
+            expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalled()
+          })
+      })
+
+      it('should show specific error message if there are prisoners on the level', () => {
+        const error: SanitisedError<ErrorResponse> = {
+          status: 400,
+          message: 'Bad Request',
+          stack: 'Error: Bad Request',
+          data: {
+            status: 400,
+            errorCode: 202,
+            userMessage: 'Validation failure: A level must remain active if there are prisoners on it currently',
+            developerMessage: 'A level must remain active if there are prisoners on it currently',
+          },
+        }
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
+
+        return request(app)
+          .post('/prison-incentive-levels/remove/ENH')
+          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .send({ formId: 'prisonIncentiveLevelDeactivateForm', confirmation: 'yes' })
+          .redirects(1)
+          .expect(res => {
+            expect(res.text).toContain('Enhanced cannot be removed because there are prisoners currently on it')
+            expect(res.text).not.toContain('Incentive level was not removed!')
+            expect(res.text).not.toContain('A level must remain active if there are prisoners on it currently')
 
             expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalled()
           })
@@ -565,11 +600,17 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show error message returned by api', () => {
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue({
+        const error: SanitisedError<ErrorResponse> = {
           status: 400,
-          userMessage: 'Validation failure: There must be an active default level for admission in a prison',
-          developerMessage: 'There must be an active default level for admission in a prison',
-        })
+          message: 'Bad Request',
+          stack: 'Error: Bad Request',
+          data: {
+            status: 400,
+            userMessage: 'Validation failure: There must be an active default level for admission in a prison',
+            developerMessage: 'There must be an active default level for admission in a prison',
+          },
+        }
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
 
         const validForm: PrisonIncentiveLevelEditData = {
           formId: 'prisonIncentiveLevelEditForm',
@@ -925,11 +966,17 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show error message returned by api', () => {
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue({
+        const error: SanitisedError<ErrorResponse> = {
           status: 400,
-          userMessage: 'Validation failure: There must be an active default level for admission in a prison',
-          developerMessage: 'There must be an active default level for admission in a prison',
-        })
+          message: 'Bad Request',
+          stack: 'Error: Bad Request',
+          data: {
+            status: 400,
+            userMessage: 'Validation failure: There must be an active default level for admission in a prison',
+            developerMessage: 'There must be an active default level for admission in a prison',
+          },
+        }
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
 
         const validForm: PrisonIncentiveLevelAddData = {
           formId: 'prisonIncentiveLevelAddForm',

@@ -6,7 +6,7 @@ export default class PrisonIncentiveLevelPage extends Page {
   }
 
   checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', `View settings for ${this.levelName}`)
+    this.breadcrumbs.last().should('contain.text', this.title)
   }
 
   get tables(): PageElement<HTMLTableElement> {

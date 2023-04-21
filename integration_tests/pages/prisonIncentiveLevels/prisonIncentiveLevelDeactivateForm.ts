@@ -6,7 +6,7 @@ export default class PrisonIncentiveLevelDeactivateFormPage extends Page {
   }
 
   checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', 'Remove an incentive level')
+    this.breadcrumbs.last().should('contain.text', this.title)
   }
 
   get form(): PageElement<HTMLFormElement> {

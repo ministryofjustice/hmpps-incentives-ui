@@ -1,5 +1,44 @@
+// eslint-disable-next-line max-classes-per-file
 import config from '../config'
 import RestClient from './restClient'
+
+/**
+ * Structure representing an error response from the incentives api
+ */
+export class ErrorResponse {
+  status: number
+
+  errorCode?: ErrorCode
+
+  userMessage?: string
+
+  developerMessage?: string
+
+  moreInfo?: string
+
+  static isErrorResponse(obj: object): obj is ErrorResponse {
+    // TODO: would be nice to make userMessage & developerMessage non-nullable in the api
+    return obj && 'status' in obj && typeof obj.status === 'number'
+  }
+}
+
+/**
+ * Unique codes to discriminate errors returned from the incentives api.
+ * Defined in uk.gov.justice.digital.hmpps.incentivesapi.config.ErrorResponse enumeration
+ * https://github.com/ministryofjustice/hmpps-incentives-api/blob/a82fbcb02cd146e52e3a498d0affd4832740d916/src/main/kotlin/uk/gov/justice/digital/hmpps/incentivesapi/config/HmppsIncentivesApiExceptionHandler.kt#L265-L276
+ */
+export enum ErrorCode {
+  IncentiveLevelActiveIfRequired = 100,
+  IncentiveLevelActiveIfActiveInPrison = 101,
+  IncentiveLevelCodeNotUnique = 102,
+  IncentiveLevelReorderNeedsFullSet = 103,
+
+  PrisonIncentiveLevelActiveIfRequired = 200,
+  PrisonIncentiveLevelActiveIfDefault = 201,
+  PrisonIncentiveLevelActiveIfPrisonersExist = 202,
+  PrisonIncentiveLevelNotGloballyActive = 203,
+  PrisonIncentiveLevelDefaultRequired = 204,
+}
 
 export interface IncentiveLevel {
   code: string
@@ -107,6 +146,9 @@ export class IncentivesApi extends RestClient {
     return this.get({ path: `/incentive/levels/${encodeURIComponent(code)}` })
   }
 
+  /**
+   * @throws SanitisedError<ErrorResponse>
+   */
   createIncentiveLevel(data: IncentiveLevel): Promise<IncentiveLevel> {
     return this.post({
       path: '/incentive/levels',
@@ -114,6 +156,9 @@ export class IncentivesApi extends RestClient {
     })
   }
 
+  /**
+   * @throws SanitisedError<ErrorResponse>
+   */
   updateIncentiveLevel(levelCode: string, data: IncentiveLevelUpdate): Promise<IncentiveLevel> {
     return this.patch({
       path: `/incentive/levels/${encodeURIComponent(levelCode)}`,
@@ -121,6 +166,9 @@ export class IncentivesApi extends RestClient {
     })
   }
 
+  /**
+   * @throws SanitisedError<ErrorResponse>
+   */
   setIncentiveLevelOrder(levelCodes: string[]): Promise<IncentiveLevel[]> {
     return this.patch({
       path: `/incentive/level-order`,
@@ -138,6 +186,9 @@ export class IncentivesApi extends RestClient {
     })
   }
 
+  /**
+   * @throws SanitisedError<ErrorResponse>
+   */
   updatePrisonIncentiveLevel(
     prisonId: string,
     levelCode: string,

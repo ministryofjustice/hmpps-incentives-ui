@@ -16,7 +16,7 @@ export interface PrisonIncentiveLevelEditData extends BaseFormData {
 export default class PrisonIncentiveLevelEditForm<
   Data extends PrisonIncentiveLevelEditData = PrisonIncentiveLevelEditData,
 > extends Form<Data> {
-  protected readonly mustBeDefaultOnAdmissionError =
+  protected readonly mustBeDefaultOnAdmissionError: string =
     'There must be a default level for new prisoners. Go back to Incentive level settings and select a default level.'
 
   constructor(formId: string, protected readonly mustBeDefaultOnAdmission: boolean) {

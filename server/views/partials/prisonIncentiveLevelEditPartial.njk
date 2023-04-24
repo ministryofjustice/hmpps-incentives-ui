@@ -112,7 +112,7 @@
   {% set fieldId = "visitOrders" %}
   {% set field = form.getField(fieldId) %}
   {{ govukInput({
-    label: { text: "Visits per 2 weeks" },
+    label: { text: "Visits (VO)" },
     classes: "govuk-input--width-3",
     id: form.formId + "-" + fieldId,
     name: fieldId,
@@ -125,7 +125,7 @@
   {% set fieldId = "privilegedVisitOrders" %}
   {% set field = form.getField(fieldId) %}
   {{ govukInput({
-    label: { text: "Privileged visits per 4 weeks" },
+    label: { text: "Privileged visits (PVO)" },
     classes: "govuk-input--width-3",
     id: form.formId + "-" + fieldId,
     name: fieldId,

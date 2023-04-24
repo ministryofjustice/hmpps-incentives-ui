@@ -185,15 +185,7 @@ describe('Prison incentive level management', () => {
               return valueCell.textContent.trim()
             })
             .toArray()
-          expect(values).toEqual([
-            'Yes',
-            '£60.50 per week',
-            '£19.80 per week',
-            '£605',
-            '£198',
-            '1 per 2 weeks',
-            '2 per 4 weeks',
-          ])
+          expect(values).toEqual(['Yes', '£60.50 per week', '£19.80 per week', '£605', '£198', '1', '2'])
         })
     })
 
@@ -213,15 +205,7 @@ describe('Prison incentive level management', () => {
               return valueCell.textContent.trim()
             })
             .toArray()
-          expect(values).toEqual([
-            'No',
-            '£27.50 per week',
-            '£5.50 per week',
-            '£275',
-            '£55',
-            '1 per 2 weeks',
-            '0 per 4 weeks',
-          ])
+          expect(values).toEqual(['No', '£27.50 per week', '£5.50 per week', '£275', '£55', '1', '0'])
         })
     })
   })
@@ -566,7 +550,7 @@ describe('Prison incentive level management', () => {
             visitOrders: '',
             privilegedVisitOrders: '1',
           },
-          'Visits per 2 weeks must be a number',
+          'Visit orders must be a number',
         ],
         [
           'level must remain the default',
@@ -912,7 +896,7 @@ describe('Prison incentive level management', () => {
             visitOrders: '1',
             privilegedVisitOrders: 'one',
           },
-          'Privileged visits per 4 weeks must be a number',
+          'Privileged visit orders must be a number',
         ],
       ])('should show errors for mistakes in form: %s', (_scenario, form, errorMessage) => {
         const $ = jquery(new JSDOM().window) as unknown as typeof jquery

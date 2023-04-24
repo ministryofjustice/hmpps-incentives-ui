@@ -42,7 +42,7 @@ context('Prison incentive level management', () => {
         { 'Default for new prisoners': 'Yes' },
         { 'Remand prisoners': '£60.50 per week', 'Convicted prisoners': '£19.80 per week' },
         { 'Remand prisoners': '£605', 'Convicted prisoners': '£198' },
-        { Visits: '1', 'Privileged visits (PVO)': '2' },
+        { 'Visits (VO)': '1', 'Privileged visits (PVO)': '2' },
       ])
 
     detailPage.returnLink.click()

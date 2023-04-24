@@ -959,7 +959,9 @@ describe('Prison incentive level management', () => {
 
             const errorSummary = $body.find('.govuk-error-summary')
             expect(errorSummary.length).toEqual(1)
-            expect(errorSummary.text()).toContain('The first level added must be the default level for new prisoners')
+            expect(errorSummary.text()).toContain(
+              'The first level you add must be the default level for new prisoners.',
+            )
 
             expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
           })

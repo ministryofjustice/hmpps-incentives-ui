@@ -37,15 +37,17 @@
   <p>Review dates are calculated according to national incentives policy.</p>
   <p>Your local policy may require more frequent reviews.</p>
 
-  <ul class="govuk-tabs__list govuk-!-margin-top-7">
-    {% for level in levels %}
-      <li class="govuk-tabs__list-item {% if level.levelCode == selectedLevelCode %}govuk-tabs__list-item--selected{% endif %}">
-        <a class="govuk-tabs__tab" href="?level={{ level.levelCode }}&amp;sort={{ sort }}&amp;order={{ order }}" data-ga-category="Reviews table > Clicked on incentive level tab" data-ga-action="{{ level.levelName }}">
-          {{ level.levelName }} ({{ level.reviewCount }})
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
+  <nav>
+    <ul class="govuk-tabs__list govuk-!-margin-top-7">
+      {% for level in levels %}
+        <li class="govuk-tabs__list-item {% if level.levelCode == selectedLevelCode %}govuk-tabs__list-item--selected{% endif %}">
+          <a class="govuk-tabs__tab" href="?level={{ level.levelCode }}&amp;sort={{ sort }}&amp;order={{ order }}" data-ga-category="Reviews table > Clicked on incentive level tab" data-ga-action="{{ level.levelName }}">
+            {{ level.levelName }} ({{ level.reviewCount }})
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
 
   {% set tableRows = [] %}
   {% for review in reviews %}
@@ -118,8 +120,13 @@
     </p>
   {%- endset %}
 
+  {% set caption -%}
+    Incentive level review details for {{ locationDescription }}
+  {%- endset %}
   <div class="app-reviews-container">
     {{ govukTable({
+      caption: caption,
+      captionClasses: "govuk-visually-hidden",
       classes: "app-reviews-table",
       head: tableHead,
       rows: tableRows if tableRows.length > 0 else [[{

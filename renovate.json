@@ -53,7 +53,7 @@
     "packageRules": [
       {
         "matchDepTypes": ["engines"],
-        "allowedVersions": "^18.0.0"
+        "allowedVersions": "^18.*.*"
       }
     ]
   },
@@ -61,7 +61,7 @@
     "packageRules": [
       {
         "matchDepTypes": ["engines"],
-        "allowedVersions": "^9.0.0"
+        "allowedVersions": "^9.*.*"
       }
     ]
   },

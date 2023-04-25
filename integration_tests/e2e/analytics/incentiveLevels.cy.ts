@@ -15,6 +15,7 @@ context('Analytics section > Incentive levels page', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubPrisonApiLocations')
     cy.task('stubCreateZendeskTicket')
 
     cy.signIn()
@@ -94,6 +95,7 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubPrisonApiLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
@@ -175,6 +177,7 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubPrisonApiLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)

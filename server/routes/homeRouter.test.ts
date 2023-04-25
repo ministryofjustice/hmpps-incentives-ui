@@ -4,10 +4,14 @@ import request from 'supertest'
 import config from '../config'
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
+import { getTestLocation } from '../testData/prisonApi'
 import { mockSdkS3ClientResponse } from '../testData/s3Bucket'
 import type { AboutPageFeedbackData } from './forms/aboutPageFeedbackForm'
+import { PrisonApi } from '../data/prisonApi'
 import ZendeskClient from '../data/zendeskClient'
 import { cache } from './analyticsRouter'
+
+jest.mock('../data/prisonApi')
 
 const s3 = {
   send: jest.fn(),
@@ -40,32 +44,85 @@ afterAll(() => {
 })
 
 let app: Express
+let prisonApi: jest.Mocked<PrisonApi>
 
 beforeEach(() => {
   jest.clearAllMocks()
+
+  prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
+  prisonApi.getUserLocations.mockResolvedValue([
+    getTestLocation({
+      agencyId: 'MDI',
+      locationPrefix: 'MDI-1',
+      userDescription: 'Houseblock 1',
+    }),
+  ])
 
   app = appWithAllRoutes({})
 })
 
 describe('Home page', () => {
-  it('has a manage incentive reviews tile', () => {
-    return request(app)
-      .get('/')
-      .expect(res => {
-        expect(res.text).toContain('Manage incentive reviews')
-        expect(res.text).toContain(
-          'See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location',
-        )
-        expect(res.text).toContain('overdue reviews')
-      })
+  const incentiveReviewTileIds = ['incentive-information', 'about-national-policy']
+  const analyticsChartTileIds = ['incentive-analytics', 'select-pgd-region', 'about-data']
+
+  describe('when user’s active case load has "locations"', () => {
+    // a prison case load would have locations (e.g. wings or house blocks) so can see location-specific tiles
+
+    it.each(incentiveReviewTileIds)('shows incentive review management tile: %s', tileId => {
+      return request(app)
+        .get('/')
+        .expect(res => {
+          expect(res.text).toContain(`data-test="${tileId}"`)
+        })
+    })
+
+    it.each(analyticsChartTileIds)('shows analytics chart tile: %s', tileId => {
+      return request(app)
+        .get('/')
+        .expect(res => {
+          expect(res.text).toContain(`data-test="${tileId}"`)
+        })
+    })
   })
 
-  it('has a tile linking to About page', () => {
-    return request(app)
-      .get('/')
-      .expect(res => {
-        expect(res.text).toContain('Information on how we collect, group and analyse data')
-      })
+  describe('when user’s active case load has no "locations"', () => {
+    // an LSA's special case load (CADM_I) has no locations so cannot see location-specific tiles
+
+    beforeEach(() => {
+      prisonApi.getUserLocations.mockResolvedValue([])
+    })
+
+    it.each(incentiveReviewTileIds)('does not show incentive review management tile: %s', tileId => {
+      return request(app)
+        .get('/')
+        .expect(res => {
+          expect(res.text).not.toContain(`data-test="${tileId}"`)
+        })
+    })
+
+    it('does not show analytics chart tile: incentive-analytics', () => {
+      return request(app)
+        .get('/')
+        .expect(res => {
+          expect(res.text).not.toContain('data-test="incentive-analytics"')
+        })
+    })
+
+    it('shows analytics chart tile: select-pgd-region', () => {
+      return request(app)
+        .get('/')
+        .expect(res => {
+          expect(res.text).toContain('data-test="select-pgd-region"')
+        })
+    })
+
+    it('shows analytics chart tile: about-data', () => {
+      return request(app)
+        .get('/')
+        .expect(res => {
+          expect(res.text).toContain('data-test="about-data"')
+        })
+    })
   })
 
   describe('admin section', () => {
@@ -89,7 +146,20 @@ describe('Home page', () => {
         })
     })
 
-    it('shows tile to manage prison incentive levels if user has appropriate role', () => {
+    it('shows tile to manage incentive levels if user has appropriate role even without having any locations in active case load', () => {
+      prisonApi.getUserLocations.mockResolvedValue([])
+
+      return request(app)
+        .get('/')
+        .set('Authorization', `Bearer ${createUserToken(['ROLE_MAINTAIN_INCENTIVE_LEVELS'])}`)
+        .expect(res => {
+          expect(res.text).toContain('data-qa="admin-section"')
+          expect(res.text).toContain('data-test="manage-incentive-levels"')
+          expect(res.text).not.toContain('data-test="manage-prison-incentive-levels"')
+        })
+    })
+
+    it('shows tile to manage prison incentive levels if user has appropriate role and there are locations in active case load', () => {
       return request(app)
         .get('/')
         .set('Authorization', `Bearer ${createUserToken(['ROLE_MAINTAIN_PRISON_IEP_LEVELS'])}`)
@@ -99,10 +169,23 @@ describe('Home page', () => {
           expect(res.text).toContain('data-test="manage-prison-incentive-levels"')
         })
     })
+
+    it('does not show tile to manage prison incentive levels if active case load does not have locations even if user has appropriate role', () => {
+      prisonApi.getUserLocations.mockResolvedValue([])
+
+      return request(app)
+        .get('/')
+        .set('Authorization', `Bearer ${createUserToken(['ROLE_MAINTAIN_PRISON_IEP_LEVELS'])}`)
+        .expect(res => {
+          expect(res.text).not.toContain('data-qa="admin-section"')
+          expect(res.text).not.toContain('data-test="manage-incentive-levels"')
+          expect(res.text).not.toContain('data-test="manage-prison-incentive-levels"')
+        })
+    })
   })
 })
 
-describe('About page', () => {
+describe('About visualisations page', () => {
   const url = '/about'
   const formId = 'about-page-feedback'
 

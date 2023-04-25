@@ -8,6 +8,7 @@ context('Prison group selection', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubPrisonApiLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)

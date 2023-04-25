@@ -1,15 +1,15 @@
-import IncentiveLevelForm, { type IncentiveLevelData } from './incentiveLevelForm'
+import IncentiveLevelEditForm, { type IncentiveLevelEditData } from './incentiveLevelEditForm'
 
-describe('IncentiveLevelForm', () => {
+describe('IncentiveLevelEditForm', () => {
   const formId = 'test-form-1' as const
 
-  const validData: Partial<IncentiveLevelData>[] = [
+  const validData: Partial<IncentiveLevelEditData>[] = [
     { name: 'Standard', availability: 'required' },
     { name: 'Basic', availability: 'active' },
     { name: 'Entry', availability: 'inactive' },
   ]
-  it.each(validData)('with valid data', (testCase: Partial<IncentiveLevelData>) => {
-    const form = new IncentiveLevelForm(formId)
+  it.each(validData)('with valid data', (testCase: Partial<IncentiveLevelEditData>) => {
+    const form = new IncentiveLevelEditForm(formId)
     form.submit({ formId, ...testCase })
     expect(form.hasErrors).toBeFalsy()
   })
@@ -21,8 +21,8 @@ describe('IncentiveLevelForm', () => {
     { name: 'Basic', availability: 'none' },
   ]
   it.each(invalidData)('with invalid data', (testCase: unknown) => {
-    const form = new IncentiveLevelForm(formId)
-    form.submit({ formId, ...(testCase as Partial<IncentiveLevelData>) })
+    const form = new IncentiveLevelEditForm(formId)
+    form.submit({ formId, ...(testCase as Partial<IncentiveLevelEditData>) })
     expect(form.hasErrors).toBeTruthy()
   })
 })

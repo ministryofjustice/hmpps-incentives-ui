@@ -8,7 +8,7 @@ import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels } from '../testData/incentivesApi'
 import { IncentivesApi, type ErrorResponse } from '../data/incentivesApi'
 import type { SanitisedError } from '../sanitisedError'
-import type { IncentiveLevelData } from './forms/incentiveLevelForm'
+import type { IncentiveLevelEditData } from './forms/incentiveLevelEditForm'
 import type { IncentiveLevelStatusData } from './forms/incentiveLevelStatusForm'
 
 jest.mock('../data/hmppsAuthClient')
@@ -57,7 +57,7 @@ describe('Incentive level management', () => {
   it.each([
     ['/incentive-levels', 'incentive-levels-list'],
     ['/incentive-levels/view/STD', 'incentive-levels-detail'],
-    ['/incentive-levels/edit/STD', 'incentive-levels-form'],
+    ['/incentive-levels/edit/STD', 'incentive-levels-edit'],
     ['/incentive-levels/status/STD', 'incentive-levels-status'],
   ])('should be accessible with necessary role: %s', (url: string, expectedPage: string) => {
     return request(app)
@@ -450,7 +450,7 @@ describe('Incentive level management', () => {
     type SuccessTestCase = {
       scenario: string
       name: string
-      availability: IncentiveLevelData['availability']
+      availability: IncentiveLevelEditData['availability']
     }
     const successTestCases: SuccessTestCase[] = [
       {
@@ -484,7 +484,7 @@ describe('Incentive level management', () => {
         required: expectedRequired,
       })
 
-      const form: IncentiveLevelData = {
+      const form: IncentiveLevelEditData = {
         formId: 'incentiveLevelEditForm',
         name,
         availability,
@@ -562,7 +562,7 @@ describe('Incentive level management', () => {
       }
       incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
 
-      const validForm: IncentiveLevelData = {
+      const validForm: IncentiveLevelEditData = {
         formId: 'incentiveLevelEditForm',
         name: 'Standard',
         availability: 'required',

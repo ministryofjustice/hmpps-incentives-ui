@@ -1,11 +1,11 @@
 import Form, { type BaseFormData } from './forms'
 
-export interface IncentiveLevelData extends BaseFormData {
+export interface IncentiveLevelEditData extends BaseFormData {
   name: string
   availability: 'required' | 'active' | 'inactive'
 }
 
-export default class IncentiveLevelForm extends Form<IncentiveLevelData> {
+export default class IncentiveLevelEditForm extends Form<IncentiveLevelEditData> {
   protected validate(): void {
     if (!this.data.name || this.data.name.length < 1) {
       this.addError('name', 'The level’s name is required')

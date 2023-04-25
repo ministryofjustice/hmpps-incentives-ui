@@ -6,7 +6,7 @@ import type { SanitisedError } from '../sanitisedError'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, ErrorResponse } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
-import IncentiveLevelForm from './forms/incentiveLevelForm'
+import IncentiveLevelEditForm from './forms/incentiveLevelEditForm'
 import IncentiveLevelStatusForm from './forms/incentiveLevelStatusForm'
 
 export const manageIncentiveLevelsRole = 'ROLE_MAINTAIN_INCENTIVE_LEVELS'
@@ -115,21 +115,21 @@ export default function routes(router: Router): Router {
     }),
   )
 
-  const formId = 'incentiveLevelEditForm' as const
+  const editFormId = 'incentiveLevelEditForm' as const
   router.all(
     ['/edit/:levelCode'],
     requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-      const form = new IncentiveLevelForm(formId)
+      const form = new IncentiveLevelEditForm(editFormId)
       res.locals.forms = res.locals.forms || {}
-      res.locals.forms[formId] = form
+      res.locals.forms[editFormId] = form
 
       if (req.method !== 'POST') {
         next()
         return
       }
-      if (!req.body.formId || req.body.formId !== formId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${formId} is allowed`)
+      if (!req.body.formId || req.body.formId !== editFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${editFormId} is allowed`)
         next(new BadRequest())
         return
       }
@@ -188,7 +188,7 @@ export default function routes(router: Router): Router {
       const { levelCode } = req.params
       const incentiveLevel = await incentivesApi.getIncentiveLevel(levelCode)
 
-      const form: IncentiveLevelForm = res.locals.forms[formId]
+      const form: IncentiveLevelEditForm = res.locals.forms[editFormId]
       if (!form.submitted) {
         let availability
         if (incentiveLevel.required) {
@@ -199,7 +199,7 @@ export default function routes(router: Router): Router {
           availability = 'inactive' as const
         }
         form.submit({
-          formId,
+          formId: editFormId,
           name: incentiveLevel.name,
           availability,
         })
@@ -209,7 +209,7 @@ export default function routes(router: Router): Router {
         { text: 'Global incentive level admin', href: '/incentive-levels' },
         { text: `Change details for ${incentiveLevel.name}` },
       )
-      res.render('pages/incentiveLevelForm.njk', {
+      res.render('pages/incentiveLevelEditForm.njk', {
         messages: req.flash(),
         form,
         incentiveLevel,

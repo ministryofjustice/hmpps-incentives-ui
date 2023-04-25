@@ -68,6 +68,22 @@ export default {
     })
   },
 
+  stubPatchIncentiveLevel: (options: { incentiveLevel: IncentiveLevel }): SuperAgentRequest => {
+    const { incentiveLevel } = options
+
+    return stubFor({
+      request: {
+        method: 'PATCH',
+        urlPattern: `/incentivesApi/incentive/levels/${incentiveLevel.code}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: incentiveLevel,
+      },
+    })
+  },
+
   stubPrisonIncentiveLevels: (
     options: { prisonId: string } & ({ inactive: boolean } | { prisonIncentiveLevels: PrisonIncentiveLevel[] }) = {
       prisonId: 'MDI',

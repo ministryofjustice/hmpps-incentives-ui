@@ -7,6 +7,7 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, ErrorResponse } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
 import IncentiveLevelForm from './forms/incentiveLevelForm'
+import IncentiveLevelStatusForm from './forms/incentiveLevelStatusForm'
 
 export const manageIncentiveLevelsRole = 'ROLE_MAINTAIN_INCENTIVE_LEVELS'
 
@@ -35,6 +36,84 @@ export default function routes(router: Router): Router {
     )
     res.render('pages/incentiveLevel.njk', { messages: req.flash(), incentiveLevel })
   })
+
+  const statusFormId = 'incentiveLevelStatusForm' as const
+  router.all(
+    ['/status/:levelCode'],
+    requireGetOrPost,
+    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+
+      const { levelCode } = req.params
+
+      const form = new IncentiveLevelStatusForm(statusFormId)
+      res.locals.forms = res.locals.forms || {}
+      res.locals.forms[statusFormId] = form
+
+      if (req.method !== 'POST') {
+        next()
+        return
+      }
+      if (!req.body.formId || req.body.formId !== statusFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${statusFormId} is allowed`)
+        next(new BadRequest())
+        return
+      }
+
+      form.submit(req.body)
+      if (form.hasErrors) {
+        logger.warn(`Form ${form.formId} submitted with errors`)
+        next()
+        return
+      }
+
+      try {
+        const updatedIncentiveLevel = await incentivesApi.updateIncentiveLevel(levelCode, {
+          active: form.getField('status').value === 'active',
+        })
+        const message = `Incentive level status was saved for ${updatedIncentiveLevel.name}.`
+        req.flash('success', message)
+        logger.info(message)
+      } catch (error) {
+        logger.error('Failed to update incentive level status', error)
+        let message = 'Incentive level status was not saved!'
+        const errorResponse = (error as SanitisedError<ErrorResponse>).data
+        if (ErrorResponse.isErrorResponse(errorResponse)) {
+          const userMessage = errorResponse.userMessage?.trim() || ''
+          if (userMessage.length > 0) {
+            message = `${message}\n\n${userMessage}`
+          }
+        }
+        req.flash('warning', message)
+      }
+
+      res.redirect('/incentive-levels')
+    }),
+    asyncMiddleware(async (req: Request, res: Response) => {
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+
+      const { levelCode } = req.params
+      const incentiveLevel = await incentivesApi.getIncentiveLevel(levelCode)
+
+      const form: IncentiveLevelStatusForm = res.locals.forms[statusFormId]
+      if (!form.submitted) {
+        form.submit({
+          formId: statusFormId,
+          status: incentiveLevel.active ? 'active' : 'inactive',
+        })
+      }
+
+      res.locals.breadcrumbs.addItems(
+        { text: 'Global incentive level admin', href: '/incentive-levels' },
+        { text: 'Select incentive level status' },
+      )
+      res.render('pages/incentiveLevelStatusForm.njk', {
+        messages: req.flash(),
+        form,
+        incentiveLevel,
+      })
+    }),
+  )
 
   const formId = 'incentiveLevelEditForm' as const
   router.all(

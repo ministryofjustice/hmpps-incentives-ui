@@ -9,6 +9,7 @@ import { sampleIncentiveLevels } from '../testData/incentivesApi'
 import { IncentivesApi, type ErrorResponse } from '../data/incentivesApi'
 import type { SanitisedError } from '../sanitisedError'
 import type { IncentiveLevelData } from './forms/incentiveLevelForm'
+import type { IncentiveLevelStatusData } from './forms/incentiveLevelStatusForm'
 
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/incentivesApi', () => {
@@ -38,23 +39,26 @@ const tokenWithMissingRole = createUserToken([])
 const tokenWithNecessaryRole = createUserToken(['ROLE_MAINTAIN_INCENTIVE_LEVELS'])
 
 describe('Incentive level management', () => {
-  it.each(['/incentive-levels', '/incentive-levels/view/STD', '/incentive-levels/edit/STD'])(
-    'should not be accessible without correct role: %s',
-    (url: string) => {
-      return request(app)
-        .get(url)
-        .set('authorization', `bearer ${tokenWithMissingRole}`)
-        .expect(res => {
-          expect(res.redirect).toBeTruthy()
-          expect(res.headers.location).toBe('/authError')
-        })
-    },
-  )
+  it.each([
+    '/incentive-levels',
+    '/incentive-levels/view/STD',
+    '/incentive-levels/edit/STD',
+    '/incentive-levels/status/STD',
+  ])('should not be accessible without correct role: %s', (url: string) => {
+    return request(app)
+      .get(url)
+      .set('authorization', `bearer ${tokenWithMissingRole}`)
+      .expect(res => {
+        expect(res.redirect).toBeTruthy()
+        expect(res.headers.location).toBe('/authError')
+      })
+  })
 
   it.each([
     ['/incentive-levels', 'incentive-levels-list'],
     ['/incentive-levels/view/STD', 'incentive-levels-detail'],
     ['/incentive-levels/edit/STD', 'incentive-levels-form'],
+    ['/incentive-levels/status/STD', 'incentive-levels-status'],
   ])('should be accessible with necessary role: %s', (url: string, expectedPage: string) => {
     return request(app)
       .get(url)
@@ -246,6 +250,154 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels/view/ABC')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(404)
+    })
+  })
+
+  describe('changing a level’s status', () => {
+    beforeEach(() => {
+      incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[3])
+    })
+
+    it('should show form to change an active level’s status', () => {
+      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+      return request(app)
+        .get('/incentive-levels/status/EN2')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(200)
+        .expect(res => {
+          expect(res.text).toContain('data-qa="incentive-levels-status"')
+
+          const $body = $(res.text)
+          const $form = $body.find('form')
+          const formValues = Object.fromEntries($form.serializeArray().map(pair => [pair.name, pair.value]))
+          expect(formValues).toHaveProperty('status', 'active')
+
+          expect(incentivesApi.updateIncentiveLevel).not.toHaveBeenCalled()
+        })
+    })
+
+    it('should show form to change an inactive level’s status', () => {
+      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+      incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[5])
+
+      return request(app)
+        .get('/incentive-levels/status/ENT')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(200)
+        .expect(res => {
+          expect(res.text).toContain('data-qa="incentive-levels-status"')
+
+          const $body = $(res.text)
+          const $form = $body.find('form')
+          const formValues = Object.fromEntries($form.serializeArray().map(pair => [pair.name, pair.value]))
+          expect(formValues).toHaveProperty('status', 'inactive')
+
+          expect(incentivesApi.updateIncentiveLevel).not.toHaveBeenCalled()
+        })
+    })
+
+    it('should be able to change a level’s status to active', () => {
+      incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[5])
+      incentivesApi.updateIncentiveLevel.mockResolvedValue({
+        ...sampleIncentiveLevels[5],
+        active: true,
+      })
+
+      const form: IncentiveLevelStatusData = {
+        formId: 'incentiveLevelStatusForm',
+        status: 'active',
+      }
+
+      return request(app)
+        .post('/incentive-levels/status/ENT')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(form)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/incentive-levels')
+
+          expect(incentivesApi.updateIncentiveLevel).toHaveBeenCalledWith('ENT', {
+            active: true,
+          })
+        })
+    })
+
+    it('should be able to change a level’s status to inactive', () => {
+      incentivesApi.updateIncentiveLevel.mockResolvedValue({
+        ...sampleIncentiveLevels[3],
+        active: false,
+      })
+
+      const form: IncentiveLevelStatusData = {
+        formId: 'incentiveLevelStatusForm',
+        status: 'inactive',
+      }
+
+      return request(app)
+        .post('/incentive-levels/status/EN2')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(form)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/incentive-levels')
+
+          expect(incentivesApi.updateIncentiveLevel).toHaveBeenCalledWith('EN2', {
+            active: false,
+          })
+        })
+    })
+
+    it('should show an error if status is not selected', () => {
+      return request(app)
+        .post('/incentive-levels/status/EN2')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send({ formId: 'incentiveLevelStatusForm' })
+        .expect(res => {
+          expect(res.text).toContain('There is a problem')
+          expect(incentivesApi.updateIncentiveLevel).not.toHaveBeenCalled()
+        })
+    })
+
+    it('should show error message returned by api', () => {
+      const error: SanitisedError<ErrorResponse> = {
+        status: 500,
+        message: 'Internal Server Error',
+        stack: 'Internal Server Error',
+      }
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+
+      const validForm: IncentiveLevelStatusData = {
+        formId: 'incentiveLevelStatusForm',
+        status: 'inactive',
+      }
+
+      return request(app)
+        .post('/incentive-levels/status/EN2')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
+        .redirects(1)
+        .expect(res => {
+          expect(res.text).toContain('Incentive level status was not saved!')
+          expect(res.text).not.toContain('Internal Server Error')
+
+          expect(incentivesApi.updateIncentiveLevel).toHaveBeenCalled()
+        })
+    })
+
+    it('should 404 if level does not exist', () => {
+      const error: SanitisedError<ErrorResponse> = {
+        status: 404,
+        message: 'Not Found',
+        stack: 'Not Found',
+      }
+      incentivesApi.getIncentiveLevel.mockRejectedValue(error)
+
+      return request(app)
+        .get('/incentive-levels/status/ABC')
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
         .expect(404)
     })

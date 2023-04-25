@@ -1,0 +1,68 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " – Select incentive level status" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "../partials/messages.njk" %}
+      {% include "../partials/formErrorSummary.njk" %}
+
+      <h1 class="govuk-heading-xl" data-qa="incentive-levels-status">
+        Select incentive level status
+      </h1>
+
+      <form id="form-{{ form.formId }}" method="post" novalidate>
+
+        {% set fieldId = "status" %}
+        {% set field = form.getField(fieldId) %}
+        {{ govukRadios({
+          attributes: { id: form.formId + "-" + fieldId },
+          name: fieldId,
+          items: [
+            {
+              text: "Active",
+              hint: {
+                text: "Make the level available for all establishments to use."
+              },
+              value: "active",
+              checked: field.value === "active"
+            },
+            {
+              text: "Inactive",
+              hint: {
+                text: "Prevent establishments from using the level. It will not show up in local settings. This cannot be selected if any establishments already use the level."
+              },
+              value: "inactive",
+              checked: field.value === "inactive"
+            }
+          ],
+          errorMessage: { text: field.error } if field.error else undefined
+        }) }}
+
+        <input type="hidden" name="formId" value="{{ form.formId }}" />
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        <div class="govuk-button-group govuk-!-margin-top-8">
+          {{ govukButton({
+            text: "Save",
+            preventDoubleClick: true
+          }) }}
+
+          {{ govukButton({
+            text: "Cancel",
+            classes: "govuk-button--secondary",
+            element: "a",
+            href: "/incentive-levels"
+          }) }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

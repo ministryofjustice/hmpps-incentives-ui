@@ -12,7 +12,7 @@ export default class IncentiveLevelsPage extends Page {
   }
 
   checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', 'Global incentive level admin')
+    this.breadcrumbs.last().should('contain.text', this.title)
   }
 
   get table(): PageElement<HTMLTableElement> {

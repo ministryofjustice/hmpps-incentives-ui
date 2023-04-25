@@ -24,10 +24,14 @@ export default {
       inactive: false,
     },
   ): SuperAgentRequest => {
+    let urlPattern = '/incentivesApi/incentive/levels'
     let incentiveLevels: IncentiveLevel[]
     if ('incentiveLevels' in options) {
       incentiveLevels = options.incentiveLevels
     } else {
+      if (options.inactive) {
+        urlPattern += '\\?with-inactive=true'
+      }
       incentiveLevels = options.inactive
         ? sampleIncentiveLevels
         : sampleIncentiveLevels.filter(incentiveLevel => incentiveLevel.active)
@@ -36,7 +40,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/incentivesApi/incentive/levels',
+        urlPattern,
       },
       response: {
         status: 200,

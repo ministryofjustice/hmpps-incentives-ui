@@ -1,7 +1,7 @@
 {% extends "../partials/layout.njk" %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% set pageTitle = applicationName + " – Incentive levels" %}
@@ -19,38 +19,61 @@
       {% set rows = [] %}
 
       {% for incentiveLevel in incentiveLevels %}
-        {% set nameHtml %}
-          {{ incentiveLevel.name }}
-          {% if not incentiveLevel.active %}
-            {{ govukTag({
-              text: "Disabled",
-              classes: "govuk-tag--grey"
-            }) }}
+        {% set statusHtml %}
+          {% if incentiveLevel.active %}
+            {{ govukTag({ text: "Active" }) }}
+          {% else %}
+            {{ govukTag({ text: "Inactive", classes: "govuk-tag--grey" }) }}
           {% endif %}
         {% endset %}
 
-        {% set rows = (rows.push({
-          key: { text: "Level" },
-          value: { html: nameHtml },
-          actions: { items: [{
-            href: "/incentive-levels/view/" + incentiveLevel.code,
-            text: "View",
-            visuallyHiddenText: "level details"
-          }] }
-        }), rows) %}
+        {% set changeAction -%}
+          {% if not incentiveLevel.required %}
+            <a href="/incentive-levels/status/{{ incentiveLevel.code }}">Change status</a>
+          {% endif %}
+        {%- endset %}
+
+        {% set row = [
+          { text: incentiveLevel.name },
+          { text: incentiveLevel.code },
+          { html: statusHtml }
+        ] %}
+        {% if canChangeStatus %}
+          {% set row = (row.push(
+            { html: changeAction, classes: "govuk-!-text-align-right" }
+          ), row) %}
+        {% endif %}
+
+        {% set rows = (rows.push(row), rows) %}
       {% endfor %}
 
-      {{ govukSummaryList({
+      {% set head = [
+        { text: "Incentive level" },
+        { text: "Code" },
+        { text: "Status" }
+      ] %}
+      {% if canChangeStatus %}
+        {% set head = (head.push(
+          { text: "Action", classes: "govuk-!-text-align-right" }
+        ), head) %}
+      {% endif %}
+
+      {{ govukTable({
+        caption: "Incentive levels across all establishments",
+        captionClasses: "govuk-table__caption--m",
+        classes: "govuk-!-margin-top-8",
+        attributes: { "data-qa": "incentive-levels-table" },
+        head: head,
         rows: rows
       }) }}
 
-      <p>
+      <div class="govuk-button-group govuk-!-margin-top-8">
         {{ govukButton({
-          text: "Add a new level",
+          text: "Create a new incentive level",
           element: "a",
           href: "/incentive-levels/add"
         }) }}
-      </p>
+      </div>
 
     </div>
   </div>

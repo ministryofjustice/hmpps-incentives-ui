@@ -16,9 +16,10 @@ export default function routes(router: Router): Router {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
     const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
+    const canChangeStatus = incentiveLevels.some(incentiveLevel => !incentiveLevel.required)
 
     res.locals.breadcrumbs.addItems({ text: 'Global incentive level admin' })
-    res.render('pages/incentiveLevels.njk', { messages: req.flash(), incentiveLevels })
+    res.render('pages/incentiveLevels.njk', { messages: req.flash(), incentiveLevels, canChangeStatus })
   })
 
   get('/view/:levelCode', async (req, res) => {

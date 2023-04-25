@@ -1,15 +1,3 @@
-// TODO: remove once incentive level management is designed
-.app-incentive-levels-list {
-  @include govuk-media-query($from: tablet) {
-    .govuk-summary-list__key {
-      width: 20%;
-    }
-    .govuk-summary-list__actions {
-      width: 30%;
-    }
-  }
-}
-
 .app-incentive-levels--two-column-table {
   .govuk-table__cell {
     @extend .govuk-\!-width-one-half;

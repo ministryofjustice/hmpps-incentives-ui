@@ -1,7 +1,7 @@
-import Page from '../pages/page'
 import type { UserRole } from '../../server/data/hmppsAuthClient'
 import type { PrisonIncentiveLevel } from '../../server/data/incentivesApi'
 import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../../server/testData/incentivesApi'
+import Page from '../pages/page'
 import HomePage from '../pages/home'
 import PrisonIncentiveLevelPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevel'
 import PrisonIncentiveLevelAddFormPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevelAddForm'

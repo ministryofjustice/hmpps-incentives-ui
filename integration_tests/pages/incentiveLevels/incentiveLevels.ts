@@ -1,18 +1,18 @@
 import Page, { type PageElement } from '../page'
 
 type TableRowContents = {
-  tags: string
-  viewAction: string
-  removeAction: string | undefined
+  code: string
+  status: string
+  changeStatus: string | undefined
 }
 
-export default class PrisonIncentiveLevelsPage extends Page {
+export default class IncentiveLevelsPage extends Page {
   constructor() {
-    super('Incentive level settings')
+    super('Global incentive level admin')
   }
 
   checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', this.title)
+    this.breadcrumbs.last().should('contain.text', 'Global incentive level admin')
   }
 
   get table(): PageElement<HTMLTableElement> {
@@ -22,18 +22,17 @@ export default class PrisonIncentiveLevelsPage extends Page {
   get contentsOfTable(): Cypress.Chainable<Record<string, TableRowContents>> {
     return this.table.then($table => {
       const contentsOfTable: [string, TableRowContents][] = []
-      const rows = $table[0].getElementsByTagName('tr')
+      const rows = $table.find('tbody')[0].getElementsByTagName('tr')
       for (let index = 0; index < rows.length; index += 1) {
         const row = rows[index]
-        const levelCell = row.getElementsByTagName('th')[0]
         const cells = row.getElementsByTagName('td')
-        const [tagCell, viewCell, removeCell] = [cells[0], cells[1], cells[2]]
+        const [nameCell, codeCell, statusCell, changeStatusCell] = [cells[0], cells[1], cells[2], cells[3]]
         const contents: TableRowContents = {
-          tags: tagCell.textContent.trim(),
-          viewAction: viewCell.textContent.trim(),
-          removeAction: removeCell?.textContent?.trim(),
+          code: codeCell.textContent.trim(),
+          status: statusCell.textContent.trim(),
+          changeStatus: changeStatusCell?.textContent?.trim(),
         }
-        contentsOfTable.push([levelCell.textContent.trim(), contents])
+        contentsOfTable.push([nameCell.textContent.trim(), contents])
       }
       return cy.wrap(Object.fromEntries(contentsOfTable))
     })
@@ -43,7 +42,7 @@ export default class PrisonIncentiveLevelsPage extends Page {
     return this.table.find('tr').eq(row).scrollIntoView().find(`a:contains(${text})`)
   }
 
-  get addLink(): PageElement<HTMLAnchorElement> {
-    return cy.get('a:contains(Add)')
+  get createLink(): PageElement<HTMLAnchorElement> {
+    return cy.get('a:contains(Create)')
   }
 }

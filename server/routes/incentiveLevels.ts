@@ -49,7 +49,7 @@ export default function routes(router: Router): Router {
         return
       }
       if (!req.body.formId || req.body.formId !== formId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${formId} are allowed`)
+        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${formId} is allowed`)
         next(new BadRequest())
         return
       }

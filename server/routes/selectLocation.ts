@@ -10,7 +10,7 @@ export default function routes(router: Router): Router {
 
   get('/', async (req, res) => {
     const prisonApi = new PrisonApi(res.locals.user.token)
-    const locations: Array<Location> = await prisonApi.getUserLocations()
+    const locations = await prisonApi.getUserLocations()
 
     const options = locations.map((location: Location) => ({
       value: location.locationPrefix,

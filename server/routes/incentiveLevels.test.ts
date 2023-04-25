@@ -6,7 +6,8 @@ import request from 'supertest'
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels } from '../testData/incentivesApi'
-import { IncentivesApi } from '../data/incentivesApi'
+import { IncentivesApi, type ErrorResponse } from '../data/incentivesApi'
+import { SanitisedError } from '../sanitisedError'
 
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/incentivesApi', () => {
@@ -155,6 +156,87 @@ describe('Incentive level management', () => {
         .expect(res => {
           expect(res.text).toContain('Create a new incentive level')
         })
+    })
+
+    it('should not show links to view level details', () => {
+      return request(app)
+        .get('/incentive-levels')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(res => {
+          expect(res.text).not.toContain('/incentive-levels/view/')
+        })
+    })
+  })
+
+  describe('details of a level', () => {
+    type TestCase = {
+      scenario: string
+      sampleIncentiveLevelIndex: number
+      expectedAvailability: string
+    }
+    const testCases: TestCase[] = [
+      {
+        scenario: 'a required level',
+        sampleIncentiveLevelIndex: 1,
+        expectedAvailability: 'Mandatory in all prisons',
+      },
+      {
+        scenario: 'a non-required level',
+        sampleIncentiveLevelIndex: 3,
+        expectedAvailability: 'Available for prisons to use',
+      },
+      {
+        scenario: 'an inactive level',
+        sampleIncentiveLevelIndex: 5,
+        expectedAvailability: 'Not available for prisons to use',
+      },
+    ]
+    it.each(testCases)(
+      'should show details of $scenario',
+      ({ sampleIncentiveLevelIndex, expectedAvailability }: TestCase) => {
+        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+        const incentiveLevel = sampleIncentiveLevels[sampleIncentiveLevelIndex]
+        incentivesApi.getIncentiveLevel.mockResolvedValue(incentiveLevel)
+
+        return request(app)
+          .get(`/incentive-levels/view/${incentiveLevel.code}`)
+          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .expect(res => {
+            expect(res.text).toContain(`/incentive-levels/edit/${incentiveLevel.code}`)
+
+            const $body = $(res.text)
+            const $rowDivs = $body.find('[data-qa="incentive-level-summary-list"] .govuk-summary-list__row')
+            const rows = $rowDivs
+              .map((_index, div) => {
+                const $divRow = $(div)
+                const label = $divRow.find('dt').text().trim()
+                const value = $divRow.find('dd').text().trim()
+                return { label, value }
+              })
+              .toArray()
+            const summary = Object.fromEntries(rows.map(({ label, value }) => [label, value]))
+            expect(summary).toStrictEqual({
+              Code: incentiveLevel.code,
+              Name: incentiveLevel.name,
+              Availability: expectedAvailability,
+            })
+          })
+      },
+    )
+
+    it('should 404 if level does not exist', () => {
+      const error: SanitisedError<ErrorResponse> = {
+        status: 404,
+        message: 'Not Found',
+        stack: 'Not Found',
+      }
+      incentivesApi.getIncentiveLevel.mockRejectedValue(error)
+
+      return request(app)
+        .get('/incentive-levels/view/ABC')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(404)
     })
   })
 })

@@ -1,10 +1,9 @@
 {% extends "../partials/layout.njk" %}
 
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set pageTitle = applicationName + " – " + incentiveLevel.name %}
+{% set pageTitle = applicationName + " – View details for " + incentiveLevel.name %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -13,23 +12,19 @@
       {% include "../partials/messages.njk" %}
 
       <h1 class="govuk-heading-xl" data-qa="incentive-levels-detail">
-        {{ incentiveLevel.name }}
+        View details for {{ incentiveLevel.name }}
       </h1>
 
-      {{ govukBackLink({
-        text: "Back",
-        href: "/incentive-levels"
-      }) }}
-
       {% if incentiveLevel.required %}
-        {% set availability = "Required in all prisons" %}
+        {% set availability = "Mandatory in all prisons" %}
       {% elif incentiveLevel.active %}
         {% set availability = "Available for prisons to use" %}
       {% else %}
-        {% set availability = "Disabled" %}
+        {% set availability = "Not available for prisons to use" %}
       {% endif %}
 
       {{ govukSummaryList({
+        attributes: { "data-qa": "incentive-level-summary-list" },
         rows: [
           {
             key: { text: "Code" },
@@ -46,7 +41,7 @@
         ]
       }) }}
 
-      <div class="govuk-button-group">
+      <div class="govuk-button-group govuk-!-margin-top-8">
         {{ govukButton({
           text: "Edit details",
           element: "a",

@@ -30,7 +30,7 @@ export default function routes(router: Router): Router {
 
     res.locals.breadcrumbs.addItems(
       { text: 'Global incentive level admin', href: '/incentive-levels' },
-      { text: incentiveLevel.name },
+      { text: `View details for ${incentiveLevel.name}` },
     )
     res.render('pages/incentiveLevel.njk', { messages: req.flash(), incentiveLevel })
   })

@@ -2,8 +2,9 @@ import type { NextFunction, Request, RequestHandler, Response, Router } from 'ex
 import { BadRequest } from 'http-errors'
 
 import logger from '../../logger'
+import type { SanitisedError } from '../sanitisedError'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { IncentivesApi, type IncentiveLevel } from '../data/incentivesApi'
+import { IncentivesApi, ErrorResponse } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
 import IncentiveLevelForm from './forms/incentiveLevelForm'
 
@@ -35,9 +36,9 @@ export default function routes(router: Router): Router {
     res.render('pages/incentiveLevel.njk', { messages: req.flash(), incentiveLevel })
   })
 
-  const formId = 'incentiveLevel' as const
+  const formId = 'incentiveLevelEditForm' as const
   router.all(
-    ['/add', '/edit/:levelCode'],
+    ['/edit/:levelCode'],
     requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
       const form = new IncentiveLevelForm(formId)
@@ -62,7 +63,7 @@ export default function routes(router: Router): Router {
       }
 
       const incentivesApi = new IncentivesApi(res.locals.user.token)
-      let { levelCode } = req.params as { levelCode?: string }
+      const { levelCode } = req.params
 
       const availability = form.getField('availability').value
       let active: boolean
@@ -78,34 +79,26 @@ export default function routes(router: Router): Router {
         required = false
       }
 
-      if (levelCode) {
-        try {
-          const updatedIncentiveLevel = await incentivesApi.updateIncentiveLevel(levelCode, {
-            name: form.getField('name').value,
-            active,
-            required,
-          })
-          const message = `Incentive level ${updatedIncentiveLevel.name} was saved.`
-          req.flash('success', message)
-          logger.info(message)
-        } catch (error) {
-          logger.error('Failed to update incentive level', error)
+      try {
+        const updatedIncentiveLevel = await incentivesApi.updateIncentiveLevel(levelCode, {
+          name: form.getField('name').value,
+          active,
+          required,
+        })
+        const message = `Incentive level ${updatedIncentiveLevel.name} was saved.`
+        req.flash('success', message)
+        logger.info(message)
+      } catch (error) {
+        logger.error('Failed to update incentive level', error)
+        let message = 'Incentive level details were not saved!'
+        const errorResponse = (error as SanitisedError<ErrorResponse>).data
+        if (ErrorResponse.isErrorResponse(errorResponse)) {
+          const userMessage = errorResponse.userMessage?.trim() || ''
+          if (userMessage.length > 0) {
+            message = `${message}\n\n${userMessage}`
+          }
         }
-      } else {
-        try {
-          const createdIncentiveLevel = await incentivesApi.createIncentiveLevel({
-            code: form.getField('code').value,
-            name: form.getField('name').value,
-            active,
-            required,
-          })
-          levelCode = createdIncentiveLevel.code
-          const message = `New incentive level ${createdIncentiveLevel.name} was added.`
-          req.flash('success', message)
-          logger.info(message)
-        } catch (error) {
-          logger.error('Failed to create incentive level', error)
-        }
+        req.flash('warning', message)
       }
 
       res.redirect(`/incentive-levels/view/${levelCode}`)
@@ -113,11 +106,11 @@ export default function routes(router: Router): Router {
     asyncMiddleware(async (req, res) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
 
-      const { levelCode } = req.params as { levelCode?: string }
-      const form: IncentiveLevelForm = res.locals.forms[formId]
+      const { levelCode } = req.params
+      const incentiveLevel = await incentivesApi.getIncentiveLevel(levelCode)
 
-      const incentiveLevel: IncentiveLevel | null = levelCode ? await incentivesApi.getIncentiveLevel(levelCode) : null
-      if (incentiveLevel && !form.submitted) {
+      const form: IncentiveLevelForm = res.locals.forms[formId]
+      if (!form.submitted) {
         let availability
         if (incentiveLevel.required) {
           availability = 'required' as const
@@ -128,7 +121,6 @@ export default function routes(router: Router): Router {
         }
         form.submit({
           formId,
-          code: incentiveLevel.code,
           name: incentiveLevel.name,
           availability,
         })
@@ -136,7 +128,7 @@ export default function routes(router: Router): Router {
 
       res.locals.breadcrumbs.addItems(
         { text: 'Global incentive level admin', href: '/incentive-levels' },
-        { text: incentiveLevel ? 'Change incentive level details' : 'Create a new incentive level' },
+        { text: `Change details for ${incentiveLevel.name}` },
       )
       res.render('pages/incentiveLevelForm.njk', {
         messages: req.flash(),

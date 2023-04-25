@@ -5,8 +5,8 @@ describe('IncentiveLevelForm', () => {
 
   const validData: Partial<IncentiveLevelData>[] = [
     { name: 'Standard', availability: 'required' },
-    { code: 'BAS', name: 'Basic', availability: 'active' },
-    { code: 'ENT', name: 'Entry', availability: 'inactive' },
+    { name: 'Basic', availability: 'active' },
+    { name: 'Entry', availability: 'inactive' },
   ]
   it.each(validData)('with valid data', (testCase: Partial<IncentiveLevelData>) => {
     const form = new IncentiveLevelForm(formId)
@@ -17,9 +17,8 @@ describe('IncentiveLevelForm', () => {
   const invalidData: unknown[] = [
     {},
     { name: 'Standard' },
-    { code: '', name: 'Standard', availability: 'required' },
-    { code: 'BAS', name: '', availability: 'required' },
-    { code: 'BAS', name: 'Basic', availability: 'none' },
+    { name: '', availability: 'required' },
+    { name: 'Basic', availability: 'none' },
   ]
   it.each(invalidData)('with invalid data', (testCase: unknown) => {
     const form = new IncentiveLevelForm(formId)

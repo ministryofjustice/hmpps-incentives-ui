@@ -814,5 +814,46 @@ describe('Incentive level management', () => {
           expect(incentivesApi.createIncentiveLevel).toHaveBeenCalled()
         })
     })
+
+    it('should show specific error message if code was not unique', () => {
+      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+      const error: SanitisedError<ErrorResponse> = {
+        status: 400,
+        message: 'Bad Request',
+        stack: 'Error: Bad Request',
+        data: {
+          status: 400,
+          errorCode: 102,
+          userMessage: 'Validation failure: Incentive level with code EN3 already exists',
+          developerMessage: 'Incentive level with code EN3 already exists',
+        },
+      }
+      incentivesApi.createIncentiveLevel.mockRejectedValue(error)
+
+      const validForm: IncentiveLevelCreateData = {
+        formId: 'incentiveLevelCreateForm',
+        name: 'Enhanced 4',
+        code: 'EN3',
+      }
+
+      return request(app)
+        .post('/incentive-levels/add')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
+        .redirects(1)
+        .expect(res => {
+          expect(res.text).not.toContain('Incentive level was not created!')
+          expect(res.text).not.toContain('Bad Request')
+
+          const $body = $(res.text)
+
+          const messagesBanner = $body.find('.moj-banner')
+          expect(messagesBanner.length).toEqual(1)
+          expect(messagesBanner.text()).toContain('Incentive level was not created because the code must be unique')
+
+          expect(incentivesApi.createIncentiveLevel).toHaveBeenCalled()
+        })
+    })
   })
 })

@@ -270,9 +270,14 @@ export default function routes(router: Router): Router {
         let message = 'Incentive level was not created!'
         const errorResponse = (error as SanitisedError<ErrorResponse>).data
         if (ErrorResponse.isErrorResponse(errorResponse)) {
-          const userMessage = errorResponse.userMessage?.trim() || ''
-          if (userMessage.length > 0) {
-            message = `${message}\n\n${userMessage}`
+          if (errorResponse.errorCode === ErrorCode.IncentiveLevelCodeNotUnique) {
+            message =
+              'Incentive level was not created because the code must be unique. Go back and try a different code.'
+          } else {
+            const userMessage = errorResponse.userMessage?.trim() || ''
+            if (userMessage.length > 0) {
+              message = `${message}\n\n${userMessage}`
+            }
           }
         }
         req.flash('warning', message)

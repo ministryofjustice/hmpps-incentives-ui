@@ -6,8 +6,9 @@ import request from 'supertest'
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels } from '../testData/incentivesApi'
-import { IncentivesApi, type ErrorResponse } from '../data/incentivesApi'
+import { IncentivesApi, type ErrorResponse, type IncentiveLevel } from '../data/incentivesApi'
 import type { SanitisedError } from '../sanitisedError'
+import type { IncentiveLevelCreateData } from './forms/incentiveLevelCreateForm'
 import type { IncentiveLevelEditData } from './forms/incentiveLevelEditForm'
 import type { IncentiveLevelStatusData } from './forms/incentiveLevelStatusForm'
 
@@ -31,6 +32,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  incentivesApi.createIncentiveLevel.mockClear()
   incentivesApi.updateIncentiveLevel.mockClear()
   incentivesApi.setIncentiveLevelOrder.mockClear()
 })
@@ -44,6 +46,7 @@ describe('Incentive level management', () => {
     '/incentive-levels/view/STD',
     '/incentive-levels/edit/STD',
     '/incentive-levels/status/STD',
+    '/incentive-levels/add',
   ])('should not be accessible without correct role: %s', (url: string) => {
     return request(app)
       .get(url)
@@ -59,6 +62,7 @@ describe('Incentive level management', () => {
     ['/incentive-levels/view/STD', 'incentive-levels-detail'],
     ['/incentive-levels/edit/STD', 'incentive-levels-edit'],
     ['/incentive-levels/status/STD', 'incentive-levels-status'],
+    ['/incentive-levels/add', 'incentive-levels-create'],
   ])('should be accessible with necessary role: %s', (url: string, expectedPage: string) => {
     return request(app)
       .get(url)
@@ -593,6 +597,116 @@ describe('Incentive level management', () => {
         .get('/incentive-levels/edit/ABC')
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
         .expect(404)
+    })
+  })
+
+  describe('creating a new level', () => {
+    it('should allow creating a new level if form is valid', () => {
+      const enhanced4: IncentiveLevel = {
+        code: 'EN4',
+        name: 'Enhanced 4',
+        active: true,
+        required: false,
+      }
+      incentivesApi.createIncentiveLevel.mockResolvedValue(enhanced4)
+
+      const form: IncentiveLevelCreateData = {
+        formId: 'incentiveLevelCreateForm',
+        name: 'Enhanced 4',
+        code: 'EN4',
+      }
+
+      return request(app)
+        .post('/incentive-levels/add')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(form)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/incentive-levels/status/EN4')
+
+          expect(incentivesApi.createIncentiveLevel).toHaveBeenCalledWith(enhanced4)
+        })
+    })
+
+    type FailureTestCase = {
+      scenario: string
+      errorMessage: string
+      name?: unknown
+      code?: unknown
+    }
+    const failureTestCases: FailureTestCase[] = [
+      {
+        scenario: 'form is empty',
+        errorMessage: 'There is a problem',
+      },
+      {
+        scenario: 'name is missing',
+        errorMessage: 'The level’s name is required',
+        name: '',
+        code: 'EN4',
+      },
+      {
+        scenario: 'code is missing',
+        errorMessage: 'The level’s code must be 3 letters or numbers',
+        name: 'Enhanced 4',
+        code: '',
+      },
+      {
+        scenario: 'code is too long',
+        errorMessage: 'The level’s code must be 3 letters or numbers',
+        name: 'Enhanced 4',
+        code: 'ENH4',
+      },
+      {
+        scenario: 'code has invalid characters',
+        errorMessage: 'The level’s code must be 3 letters or numbers',
+        name: 'Enhanced 4',
+        code: 'E 4',
+      },
+    ]
+    it.each(failureTestCases)('should show errors when $scenario', ({ errorMessage, name, code }) => {
+      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+      return request(app)
+        .post('/incentive-levels/add')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send({ formId: 'incentiveLevelCreateForm', name, code })
+        .expect(res => {
+          const $body = $(res.text)
+
+          const errorSummary = $body.find('.govuk-error-summary')
+          expect(errorSummary.length).toEqual(1)
+          expect(errorSummary.text()).toContain(errorMessage)
+
+          expect(incentivesApi.createIncentiveLevel).not.toHaveBeenCalled()
+        })
+    })
+
+    it('should show error message returned by api', () => {
+      const error: SanitisedError<ErrorResponse> = {
+        status: 500,
+        message: 'Internal Server Error',
+        stack: 'Internal Server Error',
+      }
+      incentivesApi.createIncentiveLevel.mockRejectedValue(error)
+
+      const validForm: IncentiveLevelCreateData = {
+        formId: 'incentiveLevelCreateForm',
+        name: 'Standard',
+        code: 'STD',
+      }
+
+      return request(app)
+        .post('/incentive-levels/add')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
+        .redirects(1)
+        .expect(res => {
+          expect(res.text).toContain('Incentive level was not created!')
+          expect(res.text).not.toContain('Internal Server Error')
+
+          expect(incentivesApi.createIncentiveLevel).toHaveBeenCalled()
+        })
     })
   })
 })

@@ -22,6 +22,7 @@ export default (on: (string, Record) => void): void => {
 
     stubIncentiveLevels: incentivesApi.stubIncentiveLevels,
     stubIncentiveLevel: incentivesApi.stubIncentiveLevel,
+    stubCreateIncentiveLevel: incentivesApi.stubCreateIncentiveLevel,
     stubPatchIncentiveLevel: incentivesApi.stubPatchIncentiveLevel,
     stubPrisonIncentiveLevels: incentivesApi.stubPrisonIncentiveLevels,
     stubPrisonIncentiveLevel: incentivesApi.stubPrisonIncentiveLevel,

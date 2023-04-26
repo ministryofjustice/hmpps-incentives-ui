@@ -68,6 +68,22 @@ export default {
     })
   },
 
+  stubCreateIncentiveLevel: (options: { incentiveLevel: IncentiveLevel }): SuperAgentRequest => {
+    const { incentiveLevel } = options
+
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: '/incentivesApi/incentive/levels',
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: incentiveLevel,
+      },
+    })
+  },
+
   stubPatchIncentiveLevel: (options: { incentiveLevel: IncentiveLevel }): SuperAgentRequest => {
     const { incentiveLevel } = options
 

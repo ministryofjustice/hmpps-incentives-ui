@@ -6,6 +6,7 @@ import type { SanitisedError } from '../sanitisedError'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, ErrorResponse } from '../data/incentivesApi'
 import { requireGetOrPost } from './forms/forms'
+import IncentiveLevelCreateForm from './forms/incentiveLevelCreateForm'
 import IncentiveLevelEditForm from './forms/incentiveLevelEditForm'
 import IncentiveLevelStatusForm from './forms/incentiveLevelStatusForm'
 
@@ -213,6 +214,70 @@ export default function routes(router: Router): Router {
         messages: req.flash(),
         form,
         incentiveLevel,
+      })
+    }),
+  )
+
+  const createFormId = 'incentiveLevelCreateForm' as const
+  router.all(
+    ['/add'],
+    requireGetOrPost,
+    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+      const form = new IncentiveLevelCreateForm(createFormId)
+      res.locals.forms = res.locals.forms || {}
+      res.locals.forms[createFormId] = form
+
+      if (req.method !== 'POST') {
+        next()
+        return
+      }
+      if (!req.body.formId || req.body.formId !== createFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${createFormId} is allowed`)
+        next(new BadRequest())
+        return
+      }
+
+      form.submit(req.body)
+      if (form.hasErrors) {
+        logger.warn(`Form ${form.formId} submitted with errors`)
+        next()
+        return
+      }
+
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+      try {
+        const incentiveLevel = await incentivesApi.createIncentiveLevel({
+          code: form.getField('code').value,
+          name: form.getField('name').value,
+          active: true,
+          required: false,
+        })
+        logger.info(`Incentive level ${incentiveLevel.name} was created.`)
+        res.redirect(`/incentive-levels/status/${incentiveLevel.code}`)
+      } catch (error) {
+        logger.error('Failed to create incentive level', error)
+        let message = 'Incentive level was not created!'
+        const errorResponse = (error as SanitisedError<ErrorResponse>).data
+        if (ErrorResponse.isErrorResponse(errorResponse)) {
+          const userMessage = errorResponse.userMessage?.trim() || ''
+          if (userMessage.length > 0) {
+            message = `${message}\n\n${userMessage}`
+          }
+        }
+        req.flash('warning', message)
+        res.redirect('/incentive-levels')
+      }
+    }),
+    asyncMiddleware(async (req, res) => {
+      const form: IncentiveLevelCreateForm = res.locals.forms[createFormId]
+
+      res.locals.breadcrumbs.addItems(
+        { text: 'Global incentive level admin', href: '/incentive-levels' },
+        { text: 'Create a new incentive level' },
+      )
+      res.render('pages/incentiveLevelCreateForm.njk', {
+        messages: req.flash(),
+        form,
       })
     }),
   )

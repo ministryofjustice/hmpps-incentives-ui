@@ -10,54 +10,50 @@
     {{ applicationName }}
   </h1>
 
-  <h2 class="govuk-heading-m govuk-!-margin-bottom-4">
-    Incentive levels by prisoner
-  </h2>
-  <ul class="govuk-grid-row card-group">
-    <li class="govuk-grid-column-one-third card-group__item">
+  {% if canViewLocationBasedTiles %}
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-4">
+      Incentive levels by prisoner
+    </h2>
+    <ul class="govuk-grid-row card-group">
+      <li class="govuk-grid-column-one-third card-group__item">
+        {{ card({
+          href: "/select-location",
+          clickable: "true",
+          heading: "Manage incentive reviews",
+          description: "See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location.",
+          id: "incentive-information"
+        }) }}
+      </li>
 
-      {% set cardHeading = "Manage incentive reviews" %}
-      {% set cardDescription = "See and record incentive levels, recent behaviour entries and overdue reviews for prisoners in your residential location." %}
-
-      {{ card({
-        href: "/select-location",
-        clickable: "true",
-        heading: cardHeading,
-        description: cardDescription,
-        id: "incentive-information"
-      }) }}
-
-    </li>
-
-    <li class="govuk-grid-column-one-third card-group__item">
-      {{ card({
-        href: "/about-national-policy",
-        clickable: "true",
-        heading: "National policy: frequency of reviews",
-        description: "Summary of the national policy guidelines used to calculate incentive review dates for prisoners on each level.",
-        id: "about-national-policy"
-      }) }}
-    </li>
-  </ul>
+      <li class="govuk-grid-column-one-third card-group__item">
+        {{ card({
+          href: "/about-national-policy",
+          clickable: "true",
+          heading: "National policy: frequency of reviews",
+          description: "Summary of the national policy guidelines used to calculate incentive review dates for prisoners on each level.",
+          id: "about-national-policy"
+        }) }}
+      </li>
+    </ul>
+  {% endif %}
 
   <h2 class="govuk-heading-m govuk-!-margin-bottom-4">
     Data visualisations
   </h2>
   <ul class="govuk-grid-row card-group">
+    {% if canViewLocationBasedTiles %}
+      <li class="govuk-grid-column-one-third card-group__item">
+        {{ card({
+          href: "/analytics/incentive-levels",
+          clickable: "true",
+          heading: "Incentive levels and behaviour entry charts",
+          description: "Data visualisation for incentive levels and behaviour entries at establishment level, including protected characteristics.",
+          id: "incentive-analytics"
+        }) }}
+      </li>
+    {% endif %}
+
     <li class="govuk-grid-column-one-third card-group__item">
-
-      {{ card({
-        href: "/analytics/incentive-levels",
-        clickable: "true",
-        heading: "Incentive levels and behaviour entry charts",
-        description: "Data visualisation for incentive levels and behaviour entries at establishment level, including protected characteristics.",
-        id: "incentive-analytics"
-      }) }}
-
-    </li>
-
-    <li class="govuk-grid-column-one-third card-group__item">
-
       {{ card({
         href: "/analytics/select-pgd-region",
         clickable: "true",
@@ -65,7 +61,6 @@
         description: "Data visualisation for incentive levels, behaviour entries and protected characteristics prison group and national level.",
         id: "select-pgd-region"
       }) }}
-
     </li>
 
     <li class="govuk-grid-column-one-third card-group__item">

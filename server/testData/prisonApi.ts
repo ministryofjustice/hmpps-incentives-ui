@@ -1,4 +1,4 @@
-import { Location } from '../data/prisonApi'
+import type { Location } from '../data/prisonApi'
 
 function getTestLocation({
   agencyId = 'MDI',

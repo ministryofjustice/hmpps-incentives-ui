@@ -5,6 +5,7 @@ import jwtDecode from 'jwt-decode'
 import config from '../config'
 import logger from '../../logger'
 import asyncMiddleware from '../middleware/asyncMiddleware'
+import { PrisonApi } from '../data/prisonApi'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import S3Client from '../data/s3Client'
 import AnalyticsService from '../services/analyticsService'
@@ -29,17 +30,28 @@ const getUserRoles = (res: Response): string[] => {
 export default function routes(router: Router): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  get('/', (req, res) => {
+  get('/', async (req, res) => {
     res.locals.breadcrumbs.lastItem.href = undefined
 
-    const userRoles = getUserRoles(res)
+    // a prison case load would have locations, e.g. wings or house blocks
+    // an LSA's special case load (CADM_I) has no locations
+    const prisonApi = new PrisonApi(res.locals.user.token)
+    const locations = await prisonApi.getUserLocations()
+    const canViewLocationBasedTiles = locations.length > 0
     let canManageIncentiveLevels = false
     let canManagePrisonIncentiveLevels = false
+
+    const userRoles = getUserRoles(res)
     if (['local', 'dev'].includes(config.environment)) {
       canManageIncentiveLevels = userRoles.includes(manageIncentiveLevelsRole)
-      canManagePrisonIncentiveLevels = userRoles.includes(managePrisonIncentiveLevelsRole)
+      canManagePrisonIncentiveLevels = canViewLocationBasedTiles && userRoles.includes(managePrisonIncentiveLevelsRole)
     }
-    res.render('pages/home.njk', { canManageIncentiveLevels, canManagePrisonIncentiveLevels })
+
+    res.render('pages/home.njk', {
+      canViewLocationBasedTiles,
+      canManageIncentiveLevels,
+      canManagePrisonIncentiveLevels,
+    })
   })
 
   get('/about-national-policy', (req, res) => {

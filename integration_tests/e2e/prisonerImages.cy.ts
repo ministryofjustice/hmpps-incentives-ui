@@ -7,6 +7,7 @@ context('Getting a prisoner image', () => {
   context('when authenticated', () => {
     beforeEach(() => {
       cy.task('stubAuthUser')
+      cy.task('stubPrisonApiLocations')
       cy.task('stubPrisonApiImages')
 
       cy.signIn()

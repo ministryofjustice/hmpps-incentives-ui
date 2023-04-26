@@ -1,4 +1,4 @@
-import { UserCaseload } from '../data/nomisUserRolesApi'
+import type { UserCaseload } from '../data/nomisUserRolesApi'
 
 function getSingleCaseload(): UserCaseload {
   return {

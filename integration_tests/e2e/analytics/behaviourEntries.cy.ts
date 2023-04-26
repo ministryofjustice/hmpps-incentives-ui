@@ -16,6 +16,7 @@ context('Analytics section > Behaviour entries page', () => {
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubPrisonApiLocations')
     cy.task('stubCreateZendeskTicket')
 
     cy.signIn()
@@ -121,6 +122,7 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubPrisonApiLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
@@ -221,6 +223,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
     cy.task('reset')
     cy.task('stubSignIn')
     cy.task('stubAuthUser')
+    cy.task('stubPrisonApiLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)

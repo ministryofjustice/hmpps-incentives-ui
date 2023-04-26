@@ -6,7 +6,9 @@ import request from 'supertest'
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels } from '../testData/incentivesApi'
+import { sampleAgencies } from '../testData/prisonApi'
 import { IncentivesApi, type ErrorResponse, type IncentiveLevel } from '../data/incentivesApi'
+import { PrisonApi } from '../data/prisonApi'
 import type { SanitisedError } from '../sanitisedError'
 import type { IncentiveLevelCreateData } from './forms/incentiveLevelCreateForm'
 import type { IncentiveLevelEditData } from './forms/incentiveLevelEditForm'
@@ -18,6 +20,23 @@ jest.mock('../data/incentivesApi', () => {
   const realModule = jest.requireActual<module>('../data/incentivesApi')
   const mockedModule = jest.createMockFromModule<module>('../data/incentivesApi')
   return { __esModule: true, ...realModule, IncentivesApi: mockedModule.IncentivesApi }
+})
+
+let prisonApi: jest.Mocked<PrisonApi>
+
+beforeAll(() => {
+  prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
+  prisonApi.getAgency.mockImplementation(
+    (agencyId: string) =>
+      new Promise((resolve, reject) => {
+        if (agencyId in sampleAgencies) {
+          resolve(sampleAgencies[agencyId])
+        } else {
+          // eslint-disable-next-line prefer-promise-reject-errors
+          reject({ status: 404, message: 'Not Found' })
+        }
+      }),
+  )
 })
 
 let app: Express
@@ -392,6 +411,49 @@ describe('Incentive level management', () => {
         })
     })
 
+    it('should show specific error message if level is active in some prisons', () => {
+      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+      const error: SanitisedError<ErrorResponse> = {
+        status: 400,
+        message: 'Bad Request',
+        stack: 'Error: Bad Request',
+        data: {
+          status: 400,
+          errorCode: 101,
+          userMessage: 'Validation failure: A level must remain active if it is active in some prison',
+          developerMessage: 'A level must remain active if it is active in some prison',
+          moreInfo: 'MDI,WRI',
+        },
+      }
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+
+      const validForm: IncentiveLevelStatusData = {
+        formId: 'incentiveLevelStatusForm',
+        status: 'inactive',
+      }
+
+      return request(app)
+        .post('/incentive-levels/status/EN2')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
+        .redirects(1)
+        .expect(res => {
+          expect(res.text).toContain('This level cannot be made inactive because some establishments are using it')
+          expect(res.text).not.toContain('Incentive level status was not saved!')
+          expect(res.text).not.toContain('Bad Request')
+
+          const $body = $(res.text)
+
+          const messagesBanner = $body.find('.moj-banner')
+          expect(messagesBanner.length).toEqual(1)
+          expect(messagesBanner.text()).toContain('Moorland')
+          expect(messagesBanner.text()).toContain('Whitemoor')
+
+          expect(incentivesApi.updateIncentiveLevel).toHaveBeenCalled()
+        })
+    })
+
     it('should 404 if level does not exist', () => {
       const error: SanitisedError<ErrorResponse> = {
         status: 404,
@@ -580,6 +642,50 @@ describe('Incentive level management', () => {
         .expect(res => {
           expect(res.text).toContain('Incentive level details were not saved!')
           expect(res.text).not.toContain('Internal Server Error')
+
+          expect(incentivesApi.updateIncentiveLevel).toHaveBeenCalled()
+        })
+    })
+
+    it('should show specific error message if level is active in some prisons', () => {
+      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+      const error: SanitisedError<ErrorResponse> = {
+        status: 400,
+        message: 'Bad Request',
+        stack: 'Error: Bad Request',
+        data: {
+          status: 400,
+          errorCode: 101,
+          userMessage: 'Validation failure: A level must remain active if it is active in some prison',
+          developerMessage: 'A level must remain active if it is active in some prison',
+          moreInfo: 'MDI',
+        },
+      }
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+
+      const validForm: IncentiveLevelEditData = {
+        formId: 'incentiveLevelEditForm',
+        name: 'Enhanced 2',
+        availability: 'inactive',
+      }
+
+      return request(app)
+        .post('/incentive-levels/edit/EN2')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
+        .redirects(1)
+        .expect(res => {
+          expect(res.text).toContain('This level cannot be made inactive because some establishments are using it')
+          expect(res.text).not.toContain('Incentive level status was not saved!')
+          expect(res.text).not.toContain('Bad Request')
+
+          const $body = $(res.text)
+
+          const messagesBanner = $body.find('.moj-banner')
+          expect(messagesBanner.length).toEqual(1)
+          expect(messagesBanner.text()).toContain('Moorland')
+          expect(messagesBanner.text()).not.toContain('Whitemoor')
 
           expect(incentivesApi.updateIncentiveLevel).toHaveBeenCalled()
         })

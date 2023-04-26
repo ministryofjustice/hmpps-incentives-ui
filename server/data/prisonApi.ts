@@ -1,7 +1,7 @@
 import config from '../config'
 import RestClient from './restClient'
 
-interface Location {
+export interface Location {
   locationId: number
   locationType: string
   description: string
@@ -12,7 +12,14 @@ interface Location {
   userDescription?: string
 }
 
-class PrisonApi extends RestClient {
+export interface Agency {
+  agencyId: string
+  description: string
+  agencyType: string
+  active: boolean
+}
+
+export class PrisonApi extends RestClient {
   constructor(token: string) {
     super('HMPPS Prison API', config.apis.hmppsPrisonApi, token)
   }
@@ -31,6 +38,8 @@ class PrisonApi extends RestClient {
       })
     })
   }
-}
 
-export { PrisonApi, Location }
+  getAgency(agencyId: string, activeOnly = true): Promise<Agency> {
+    return this.get<Agency>({ path: `/api/agencies/${encodeURIComponent(agencyId)}?activeOnly=${Boolean(activeOnly)}` })
+  }
+}

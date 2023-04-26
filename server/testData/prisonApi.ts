@@ -1,6 +1,21 @@
-import type { Location } from '../data/prisonApi'
+import type { Agency, Location } from '../data/prisonApi'
 
-function getTestLocation({
+export const sampleAgencies: Record<string, Agency> = {
+  MDI: {
+    agencyId: 'MDI',
+    description: 'Moorland (HMP & YOI)',
+    agencyType: 'INST',
+    active: true,
+  },
+  WRI: {
+    agencyId: 'WRI',
+    description: 'Whitemoor (HMP & YOI)',
+    agencyType: 'INST',
+    active: true,
+  },
+}
+
+export function getTestLocation({
   agencyId = 'MDI',
   locationId = 2,
   locationPrefix = 'MDI-2',
@@ -22,6 +37,3 @@ function getTestLocation({
     operationalCapacity: 200,
   }
 }
-
-// eslint-disable-next-line import/prefer-default-export
-export { getTestLocation }

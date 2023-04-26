@@ -4,7 +4,8 @@ import { BadRequest } from 'http-errors'
 import logger from '../../logger'
 import type { SanitisedError } from '../sanitisedError'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { IncentivesApi, ErrorResponse } from '../data/incentivesApi'
+import { IncentivesApi, ErrorCode, ErrorResponse } from '../data/incentivesApi'
+import { PrisonApi } from '../data/prisonApi'
 import { requireGetOrPost } from './forms/forms'
 import IncentiveLevelCreateForm from './forms/incentiveLevelCreateForm'
 import IncentiveLevelEditForm from './forms/incentiveLevelEditForm'
@@ -80,9 +81,14 @@ export default function routes(router: Router): Router {
         let message = 'Incentive level status was not saved!'
         const errorResponse = (error as SanitisedError<ErrorResponse>).data
         if (ErrorResponse.isErrorResponse(errorResponse)) {
-          const userMessage = errorResponse.userMessage?.trim() || ''
-          if (userMessage.length > 0) {
-            message = `${message}\n\n${userMessage}`
+          const prisonApi = new PrisonApi(res.locals.user.token)
+          if (errorResponse.errorCode === ErrorCode.IncentiveLevelActiveIfActiveInPrison) {
+            message = await errorMessageWhenCannotDeactivate(prisonApi, errorResponse)
+          } else {
+            const userMessage = errorResponse.userMessage?.trim() || ''
+            if (userMessage.length > 0) {
+              message = `${message}\n\n${userMessage}`
+            }
           }
         }
         req.flash('warning', message)
@@ -173,9 +179,14 @@ export default function routes(router: Router): Router {
         let message = 'Incentive level details were not saved!'
         const errorResponse = (error as SanitisedError<ErrorResponse>).data
         if (ErrorResponse.isErrorResponse(errorResponse)) {
-          const userMessage = errorResponse.userMessage?.trim() || ''
-          if (userMessage.length > 0) {
-            message = `${message}\n\n${userMessage}`
+          const prisonApi = new PrisonApi(res.locals.user.token)
+          if (errorResponse.errorCode === ErrorCode.IncentiveLevelActiveIfActiveInPrison) {
+            message = await errorMessageWhenCannotDeactivate(prisonApi, errorResponse)
+          } else {
+            const userMessage = errorResponse.userMessage?.trim() || ''
+            if (userMessage.length > 0) {
+              message = `${message}\n\n${userMessage}`
+            }
           }
         }
         req.flash('warning', message)
@@ -283,4 +294,30 @@ export default function routes(router: Router): Router {
   )
 
   return router
+}
+
+async function errorMessageWhenCannotDeactivate(prisonApi: PrisonApi, errorResponse: ErrorResponse): Promise<string> {
+  let message = 'This level cannot be made inactive because some establishments are using it.'
+
+  const prisonNames: string[] = []
+  const prisonIds: string[] | undefined = (errorResponse?.moreInfo ?? '')
+    .split(',')
+    .map(prisonId => prisonId.trim())
+    .filter(prisonName => prisonName)
+  // eslint-disable-next-line no-restricted-syntax
+  for (const prisonId of prisonIds) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const agency = await prisonApi.getAgency(prisonId.trim(), false)
+      prisonNames.push(agency.description)
+    } catch (error) {
+      logger.error(`Could not look up agency \`${prisonId}\` in prison-api`, error)
+    }
+  }
+  if (prisonNames.length > 0) {
+    const prisonNamesList = prisonNames.sort().join('\n')
+    message = `${message}\n\nContact the following establishments and ask them to remove it from their incentive level settings:\n\n${prisonNamesList}`
+  }
+
+  return message
 }

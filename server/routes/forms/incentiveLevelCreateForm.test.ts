@@ -35,6 +35,27 @@ describe('IncentiveLevelCreateForm', () => {
         code: '',
       },
     ],
+    [
+      'short code',
+      {
+        name: 'Standard',
+        code: 'st',
+      },
+    ],
+    [
+      'long code',
+      {
+        name: 'Standard',
+        code: 'Standard',
+      },
+    ],
+    [
+      'code with invalid characters',
+      {
+        name: 'Enhanced 4',
+        code: 'E 4',
+      },
+    ],
   ]
   it.each(invalidData)('with invalid data: %s', (_, testCase: unknown) => {
     const form = new IncentiveLevelCreateForm(formId)

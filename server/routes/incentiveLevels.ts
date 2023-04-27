@@ -49,6 +49,7 @@ export default function routes(router: Router): Router {
 
   /*
    * Set whether an incentive level is active, i.e. available for prisons to use
+   * NB: Deactivating is only allowed if the level is not active in any prison
    */
   const statusFormId = 'incentiveLevelStatusForm' as const
   router.all(

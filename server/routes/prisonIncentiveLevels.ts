@@ -22,6 +22,9 @@ export const managePrisonIncentiveLevelsRole = 'ROLE_MAINTAIN_PRISON_IEP_LEVELS'
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
+  /*
+   * List of active incentive levels in the prison
+   */
   get('/', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
@@ -85,6 +88,9 @@ export default function routes(router: Router): Router {
     })
   })
 
+  /*
+   * Detail view of active incentive level in the prison with associated information
+   */
   get('/view/:levelCode', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
@@ -107,6 +113,10 @@ export default function routes(router: Router): Router {
     })
   })
 
+  /*
+   * Remove an incentive level from the prison
+   * NB: Only allowed when there are no prisoners on the level
+   */
   const deactivateFormId = 'prisonIncentiveLevelDeactivateForm' as const
   router.all(
     '/remove/:levelCode',
@@ -215,6 +225,9 @@ export default function routes(router: Router): Router {
     }),
   )
 
+  /*
+   * Edit associated information of an active incentive level in the prison
+   */
   const editFormId = 'prisonIncentiveLevelEditForm' as const
   router.all(
     '/edit/:levelCode',
@@ -336,6 +349,9 @@ export default function routes(router: Router): Router {
     }),
   )
 
+  /*
+   * Add an available incentive level to the prison
+   */
   const addFormId = 'prisonIncentiveLevelAddForm' as const
   router.all(
     ['/add', '/add/:levelCode'],

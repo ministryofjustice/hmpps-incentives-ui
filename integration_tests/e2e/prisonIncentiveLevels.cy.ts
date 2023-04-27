@@ -134,7 +134,7 @@ context('Prison incentive level management', () => {
     deactivatePage.form.submit() // form should now be valid
 
     listPage = Page.verifyOnPage(PrisonIncentiveLevelsPage)
-    listPage.messages.should('contain.text', 'Enhanced 2').should('contain.text', 'no longer available')
+    listPage.messages.should('contain.text', 'Enhanced 2').should('contain.text', 'has been removed')
   })
 
   it('should allow editing an existing level', () => {

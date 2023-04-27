@@ -104,7 +104,7 @@ export default function routes(router: Router): Router {
       if (form.getField('confirmation').value === 'yes') {
         const incentivesApi = new IncentivesApi(res.locals.user.token)
         const { levelCode } = req.params
-        const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
+        const { id: prisonId } = res.locals.user.activeCaseload
 
         const [incentiveLevel, prisonIncentiveLevel] = await Promise.all([
           incentivesApi.getIncentiveLevel(levelCode),
@@ -124,7 +124,7 @@ export default function routes(router: Router): Router {
           const deactivatedPrisonIncentiveLevel = await incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
             active: false,
           })
-          const message = `${deactivatedPrisonIncentiveLevel.levelName} is no longer available in ${prisonName}`
+          const message = `${deactivatedPrisonIncentiveLevel.levelName} has been removed`
           logger.info(message)
           req.flash('success', message)
         } catch (error) {

@@ -5,7 +5,7 @@ import logger from '../../logger'
 import type { SanitisedError } from '../sanitisedError'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, ErrorCode, ErrorResponse } from '../data/incentivesApi'
-import { PrisonApi } from '../data/prisonApi'
+import { PrisonApi, type Agency } from '../data/prisonApi'
 import { requireGetOrPost } from './forms/forms'
 import IncentiveLevelCreateForm from './forms/incentiveLevelCreateForm'
 import IncentiveLevelEditForm from './forms/incentiveLevelEditForm'
@@ -402,21 +402,20 @@ export default function routes(router: Router): Router {
 async function errorMessageWhenCannotDeactivate(prisonApi: PrisonApi, errorResponse: ErrorResponse): Promise<string> {
   let message = 'This level cannot be made inactive because some establishments are using it.'
 
-  const prisonNames: string[] = []
-  const prisonIds: string[] | undefined = (errorResponse?.moreInfo ?? '')
+  const prisonPromises = (errorResponse?.moreInfo ?? '')
     .split(',')
     .map(prisonId => prisonId.trim())
     .filter(prisonName => prisonName)
-  // eslint-disable-next-line no-restricted-syntax
-  for (const prisonId of prisonIds) {
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      const agency = await prisonApi.getAgency(prisonId.trim(), false)
-      prisonNames.push(agency.description)
-    } catch (error) {
-      logger.error(`Could not look up agency \`${prisonId}\` in prison-api`, error)
-    }
-  }
+    .map(prisonId =>
+      prisonApi.getAgency(prisonId.trim(), false).catch(error => {
+        logger.error(`Could not look up agency \`${prisonId}\` in prison-api`, error)
+      }),
+    )
+  const prisonResults = await Promise.allSettled(prisonPromises)
+  const prisonNames = prisonResults
+    .filter((result: PromiseSettledResult<Agency>) => result.status === 'fulfilled')
+    .map((result: PromiseFulfilledResult<Agency>) => result.value.description)
+
   if (prisonNames.length > 0) {
     const prisonNamesList = prisonNames.sort().join('\n')
     message = `${message}\n\nContact the following establishments and ask them to remove it from their incentive level settings:\n\n${prisonNamesList}`

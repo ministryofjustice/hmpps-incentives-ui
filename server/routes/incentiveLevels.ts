@@ -414,7 +414,8 @@ async function errorMessageWhenCannotDeactivate(prisonApi: PrisonApi, errorRespo
   const prisonResults = await Promise.allSettled(prisonPromises)
   const prisonNames = prisonResults
     .filter((result: PromiseSettledResult<Agency>) => result.status === 'fulfilled')
-    .map((result: PromiseFulfilledResult<Agency>) => result.value.description)
+    .map((result: PromiseFulfilledResult<Agency>) => result?.value?.description)
+    .filter(prisonName => prisonName)
 
   if (prisonNames.length > 0) {
     const prisonNamesList = prisonNames.sort().join('\n')

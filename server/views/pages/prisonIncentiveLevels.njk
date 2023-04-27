@@ -69,12 +69,12 @@
         rows: rows
       }) }}
 
-      {% if canAddLevel %}
+      {% if addLevelUrl %}
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Add a new incentive level",
             element: "a",
-            href: "/prison-incentive-levels/add"
+            href: addLevelUrl
           }) }}
         </div>
       {% endif %}

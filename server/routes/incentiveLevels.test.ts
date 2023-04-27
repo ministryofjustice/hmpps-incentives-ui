@@ -12,6 +12,7 @@ import { PrisonApi } from '../data/prisonApi'
 import type { SanitisedError } from '../sanitisedError'
 import type { IncentiveLevelCreateData } from './forms/incentiveLevelCreateForm'
 import type { IncentiveLevelEditData } from './forms/incentiveLevelEditForm'
+import type { IncentiveLevelReorderData } from './forms/incentiveLevelReorderForm'
 import type { IncentiveLevelStatusData } from './forms/incentiveLevelStatusForm'
 
 jest.mock('../data/hmppsAuthClient')
@@ -66,6 +67,7 @@ describe('Incentive level management', () => {
     '/incentive-levels/edit/STD',
     '/incentive-levels/status/STD',
     '/incentive-levels/add',
+    '/incentive-levels/reorder',
   ])('should not be accessible without correct role: %s', (url: string) => {
     return request(app)
       .get(url)
@@ -82,6 +84,7 @@ describe('Incentive level management', () => {
     ['/incentive-levels/edit/STD', 'incentive-levels-edit'],
     ['/incentive-levels/status/STD', 'incentive-levels-status'],
     ['/incentive-levels/add', 'incentive-levels-create'],
+    ['/incentive-levels/reorder', 'incentive-levels-reorder'],
   ])('should be accessible with necessary role: %s', (url: string, expectedPage: string) => {
     return request(app)
       .get(url)
@@ -853,6 +856,174 @@ describe('Incentive level management', () => {
           expect(messagesBanner.text()).toContain('Incentive level was not created because the code must be unique')
 
           expect(incentivesApi.createIncentiveLevel).toHaveBeenCalled()
+        })
+    })
+  })
+
+  describe('reordering levels', () => {
+    type SuccessTestCase = {
+      scenario: string
+      code: IncentiveLevelReorderData['code']
+      direction: IncentiveLevelReorderData['direction']
+      expectedOrder: string[]
+    }
+    const successTestCases: SuccessTestCase[] = [
+      {
+        scenario: 'up if it’s not first',
+        code: 'EN3',
+        direction: 'up',
+        expectedOrder: ['BAS', 'STD', 'ENH', 'EN3', 'EN2', 'ENT'],
+      },
+      {
+        scenario: 'down if it’s not last',
+        code: 'EN3',
+        direction: 'down',
+        expectedOrder: ['BAS', 'STD', 'ENH', 'EN2', 'ENT', 'EN3'],
+      },
+    ]
+    it.each(successTestCases)('should allow moving a level $scenario', ({ code, direction, expectedOrder }) => {
+      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+      return request(app)
+        .post('/incentive-levels/reorder')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send({ formId: 'incentiveLevelReorderForm', code, direction })
+        .redirects(1)
+        .expect(res => {
+          const $body = $(res.text)
+
+          const messagesBanner = $body.find('.moj-banner')
+          expect(messagesBanner.length).toEqual(1)
+          expect(messagesBanner.text()).toContain('Incentive level order was changed')
+
+          expect(incentivesApi.setIncentiveLevelOrder).toHaveBeenCalledWith(expectedOrder)
+        })
+    })
+
+    type MoveFailureTestCase = {
+      scenario: string
+      errorMessage: string
+      code: IncentiveLevelReorderData['code']
+      direction: IncentiveLevelReorderData['direction']
+    }
+    const moveFailureTestCases: MoveFailureTestCase[] = [
+      {
+        scenario: 'up if it’s first',
+        errorMessage: 'Cannot move first incentive level up',
+        code: 'BAS',
+        direction: 'up',
+      },
+      {
+        scenario: 'down if it’s last',
+        errorMessage: 'Cannot move last incentive level down',
+        code: 'ENT',
+        direction: 'down',
+      },
+      {
+        scenario: 'when it cannot be found',
+        errorMessage: 'Cannot find level to move!',
+        code: 'EN4',
+        direction: 'down',
+      },
+    ]
+    it.each(moveFailureTestCases)('should not allow moving a level $scenario', ({ errorMessage, code, direction }) => {
+      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+      return request(app)
+        .post('/incentive-levels/reorder')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send({ formId: 'incentiveLevelReorderForm', code, direction })
+        .redirects(1)
+        .expect(res => {
+          const $body = $(res.text)
+
+          const messagesBanner = $body.find('.moj-banner')
+          expect(messagesBanner.length).toEqual(1)
+          expect(messagesBanner.text()).toContain(errorMessage)
+
+          expect(incentivesApi.setIncentiveLevelOrder).not.toHaveBeenCalled()
+        })
+    })
+
+    type FailureTestCase = {
+      scenario: string
+      errorMessage: string
+      code?: unknown
+      direction?: unknown
+    }
+    const failureTestCases: FailureTestCase[] = [
+      {
+        scenario: 'form is empty',
+        errorMessage: 'There is a problem',
+      },
+      {
+        scenario: 'code is missing',
+        errorMessage: 'The level’s code is required',
+        code: '',
+        direction: 'down',
+      },
+      {
+        scenario: 'direction is missing',
+        errorMessage: 'Direction must be chosen',
+        code: 'ENT',
+        direction: '',
+      },
+      {
+        scenario: 'direction is invalid',
+        errorMessage: 'Direction must be chosen',
+        code: 'ENT',
+        direction: 'higher',
+      },
+    ]
+    it.each(failureTestCases)('should show errors when $scenario', ({ errorMessage, code, direction }) => {
+      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
+
+      return request(app)
+        .post('/incentive-levels/reorder')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send({ formId: 'incentiveLevelReorderForm', code, direction })
+        .expect(res => {
+          const $body = $(res.text)
+
+          const errorSummary = $body.find('.govuk-error-summary')
+          expect(errorSummary.length).toEqual(1)
+          expect(errorSummary.text()).toContain(errorMessage)
+
+          expect(incentivesApi.setIncentiveLevelOrder).not.toHaveBeenCalled()
+        })
+    })
+
+    it('should show error message returned by api', () => {
+      const error: SanitisedError<ErrorResponse> = {
+        status: 400,
+        message: 'Internal Server Error',
+        stack: 'Internal Server Error',
+        data: {
+          status: 400,
+          errorCode: 103,
+          userMessage: 'Validation failure: All incentive levels required when setting order. Missing: EN3',
+          developerMessage: 'All incentive levels required when setting order. Missing: EN3',
+        },
+      }
+      incentivesApi.setIncentiveLevelOrder.mockRejectedValue(error)
+
+      const validForm: IncentiveLevelReorderData = {
+        formId: 'incentiveLevelReorderForm',
+        code: 'EN2',
+        direction: 'down',
+      }
+
+      return request(app)
+        .post('/incentive-levels/reorder')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(validForm)
+        .redirects(1)
+        .expect(res => {
+          expect(res.text).toContain('Incentive level order was not changed!')
+          expect(res.text).toContain('All incentive levels required when setting order')
+          expect(res.text).not.toContain('Internal Server Error')
+
+          expect(incentivesApi.setIncentiveLevelOrder).toHaveBeenCalled()
         })
     })
   })

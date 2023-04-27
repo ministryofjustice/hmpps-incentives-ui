@@ -9,6 +9,7 @@ import { PrisonApi } from '../data/prisonApi'
 import { requireGetOrPost } from './forms/forms'
 import IncentiveLevelCreateForm from './forms/incentiveLevelCreateForm'
 import IncentiveLevelEditForm from './forms/incentiveLevelEditForm'
+import IncentiveLevelReorderForm from './forms/incentiveLevelReorderForm'
 import IncentiveLevelStatusForm from './forms/incentiveLevelStatusForm'
 
 export const manageIncentiveLevelsRole = 'ROLE_MAINTAIN_INCENTIVE_LEVELS'
@@ -294,6 +295,82 @@ export default function routes(router: Router): Router {
       res.render('pages/incentiveLevelCreateForm.njk', {
         messages: req.flash(),
         form,
+      })
+    }),
+  )
+
+  const reorderFormId = 'incentiveLevelReorderForm' as const
+  router.all(
+    ['/reorder'],
+    requireGetOrPost,
+    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+      const form = new IncentiveLevelReorderForm(reorderFormId)
+      res.locals.forms = res.locals.forms || {}
+      res.locals.forms[reorderFormId] = form
+
+      if (req.method !== 'POST') {
+        next()
+        return
+      }
+      if (!req.body.formId || req.body.formId !== reorderFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${reorderFormId} is allowed`)
+        next(new BadRequest())
+        return
+      }
+
+      form.submit(req.body)
+      if (form.hasErrors) {
+        logger.warn(`Form ${form.formId} submitted with errors`)
+        next()
+        return
+      }
+
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+      const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
+
+      let incentiveLevelCodes: string[]
+      try {
+        incentiveLevelCodes = form.reorderIncentiveLevels(incentiveLevels)
+      } catch (error) {
+        logger.warn(error.message)
+        req.flash('warning', error.message)
+        res.redirect('/incentive-levels/reorder')
+        return
+      }
+
+      try {
+        await incentivesApi.setIncentiveLevelOrder(incentiveLevelCodes)
+        const message = 'Incentive level order was changed.'
+        req.flash('success', message)
+        logger.info(message)
+      } catch (error) {
+        logger.error('Failed to reorder incentive levels', error)
+        let message = 'Incentive level order was not changed!'
+        const errorResponse = (error as SanitisedError<ErrorResponse>).data
+        if (ErrorResponse.isErrorResponse(errorResponse)) {
+          const userMessage = errorResponse.userMessage?.trim() || ''
+          if (userMessage.length > 0) {
+            message = `${message}\n\n${userMessage}`
+          }
+        }
+        req.flash('warning', message)
+      }
+      res.redirect('/incentive-levels/reorder')
+    }),
+    asyncMiddleware(async (req, res) => {
+      const incentivesApi = new IncentivesApi(res.locals.user.token)
+      const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
+
+      const form: IncentiveLevelCreateForm = res.locals.forms[reorderFormId]
+
+      res.locals.breadcrumbs.addItems(
+        { text: 'Global incentive level admin', href: '/incentive-levels' },
+        { text: 'Change order of levels' },
+      )
+      res.render('pages/incentiveLevelReorderForm.njk', {
+        messages: req.flash(),
+        form,
+        incentiveLevels,
       })
     }),
   )

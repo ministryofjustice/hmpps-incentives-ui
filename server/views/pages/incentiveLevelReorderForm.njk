@@ -1,0 +1,100 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% set pageTitle = applicationName + " – Change order of levels" %}
+
+{% block head %}
+  {{ super() }}
+  <style nonce="{{ cspNonce }}">
+    [data-qa=incentive-levels-reorder-table] .govuk-button {
+      margin: 0;
+    }
+  </style>
+{% endblock %}
+
+{% macro moveForm(code, direction) %}
+  <form id="form-{{ form.formId }}-{{ code }}" method="post" novalidate>
+    <input type="hidden" name="code" value="{{ code }}" />
+    {{ govukButton({
+      text: "Move " + direction,
+      name: "direction",
+      value: direction,
+      preventDoubleClick: true
+    }) }}
+    <input type="hidden" name="formId" value="{{ form.formId }}" />
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+  </form>
+{% endmacro %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "../partials/messages.njk" %}
+      {% include "../partials/formErrorSummary.njk" %}
+
+      <h1 class="govuk-heading-xl" data-qa="incentive-levels-reorder">
+        Change order of levels
+      </h1>
+
+      {% set rows = [] %}
+
+      {% for incentiveLevel in incentiveLevels %}
+        {% set statusHtml %}
+          {% if incentiveLevel.active %}
+            {{ govukTag({ text: "Active" }) }}
+          {% else %}
+            {{ govukTag({ text: "Inactive", classes: "govuk-tag--grey" }) }}
+          {% endif %}
+        {% endset %}
+
+        {% set moveUpForm -%}
+          {% if not loop.first %}
+            {{ moveForm(incentiveLevel.code, "up") }}
+          {% endif %}
+        {%- endset %}
+
+        {% set moveDownForm -%}
+          {% if not loop.last %}
+            {{ moveForm(incentiveLevel.code, "down") }}
+          {% endif %}
+        {%- endset %}
+
+        {% set rows = (rows.push([
+          { text: incentiveLevel.name },
+          { text: incentiveLevel.code },
+          { html: statusHtml },
+          { html: moveUpForm },
+          { html: moveDownForm }
+        ]), rows) %}
+      {% endfor %}
+
+      {% set head = [
+        { text: "Incentive level" },
+        { text: "Code" },
+        { text: "Status" },
+        { text: "Action", colspan: 2 }
+      ] %}
+      {{ govukTable({
+        caption: "Move incentive levels up and down for all establishments",
+        captionClasses: "govuk-table__caption--m",
+        attributes: { "data-qa": "incentive-levels-reorder-table" },
+        head: head,
+        rows: rows
+      }) }}
+
+      <div class="govuk-button-group govuk-!-margin-top-8">
+        {{ govukButton({
+          text: "Cancel",
+          classes: "govuk-button--secondary",
+          element: "a",
+          href: "/incentive-levels"
+        }) }}
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

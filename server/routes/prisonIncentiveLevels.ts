@@ -31,14 +31,34 @@ export default function routes(router: Router): Router {
       incentivesApi.getPrisonIncentiveLevels(prisonId),
     ])
 
-    const activeLevelCodes = new Set(prisonIncentiveLevels.map(prisonIncentiveLevel => prisonIncentiveLevel.levelCode))
-    const requiredLevelCodes = new Set(
-      incentiveLevels.filter(incentiveLevel => incentiveLevel.required).map(incentiveLevel => incentiveLevel.code),
-    )
+    const activeLevelCodes = prisonIncentiveLevels.map(prisonIncentiveLevel => prisonIncentiveLevel.levelCode)
+    const requiredLevelCodes = incentiveLevels
+      .filter(incentiveLevel => incentiveLevel.required)
+      .map(incentiveLevel => incentiveLevel.code)
+
+    const missingRequiredLevelCodes = requiredLevelCodes.filter(code => !activeLevelCodes.includes(code))
+    if (missingRequiredLevelCodes.length) {
+      logger.warn(`${prisonName} is missing required levels: ${missingRequiredLevelCodes.join(', ')}`)
+      try {
+        await Promise.allSettled(
+          missingRequiredLevelCodes.map(levelCode =>
+            incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
+              active: true,
+            }),
+          ),
+        )
+        logger.info(`Missing required incentive levels have been added to ${prisonName}`)
+        req.flash('success', 'Mandatory incentive levels have been added.')
+        res.redirect('/prison-incentive-levels')
+        return
+      } catch (error) {
+        logger.error(`Missing required incentive levels could not be added to ${prisonName}!`, error)
+      }
+    }
 
     const prisonIncentiveLevelsWithRequiredFlag: (PrisonIncentiveLevel & { levelRequired: boolean })[] =
       prisonIncentiveLevels.map(prisonIncentiveLevel => {
-        return { ...prisonIncentiveLevel, levelRequired: requiredLevelCodes.has(prisonIncentiveLevel.levelCode) }
+        return { ...prisonIncentiveLevel, levelRequired: requiredLevelCodes.includes(prisonIncentiveLevel.levelCode) }
       })
     const canRemoveLevel = prisonIncentiveLevelsWithRequiredFlag.some(
       prisonIncentiveLevel => !prisonIncentiveLevel.levelRequired && !prisonIncentiveLevel.defaultOnAdmission,
@@ -46,7 +66,7 @@ export default function routes(router: Router): Router {
 
     let addLevelUrl: string | undefined
     const incentiveLevelCodeAvailability = incentiveLevels.map(incentiveLevel => {
-      return { code: incentiveLevel.code, available: !activeLevelCodes.has(incentiveLevel.code) }
+      return { code: incentiveLevel.code, available: !activeLevelCodes.includes(incentiveLevel.code) }
     })
     const firstAvailableIndex = incentiveLevelCodeAvailability.findIndex(({ available }) => available)
     if (firstAvailableIndex >= 0) {

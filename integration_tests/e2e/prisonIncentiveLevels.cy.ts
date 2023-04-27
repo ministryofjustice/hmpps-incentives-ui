@@ -4,7 +4,7 @@ import type { PrisonIncentiveLevel } from '../../server/data/incentivesApi'
 import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../../server/testData/incentivesApi'
 import HomePage from '../pages/home'
 import PrisonIncentiveLevelPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevel'
-import PrisonIncentiveLevelAddFormPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevelAddForm'
+import PrisonIncentiveLevelNextAddFormPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevelNextAddForm'
 import PrisonIncentiveLevelEditFormPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevelEditForm'
 import PrisonIncentiveLevelDeactivateFormPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevelDeactivateForm'
 import PrisonIncentiveLevelsPage from '../pages/prisonIncentiveLevels/prisonIncentiveLevels'
@@ -51,14 +51,14 @@ context('Prison incentive level management', () => {
   })
 
   it('should allow adding a new level', () => {
-    const enhanced3: PrisonIncentiveLevel = {
+    const enhanced2: PrisonIncentiveLevel = {
       ...samplePrisonIncentiveLevels[2],
-      levelCode: 'EN3',
-      levelName: 'Enhanced 3',
+      levelCode: 'EN2',
+      levelName: 'Enhanced 2',
     }
-    cy.task('stubPatchPrisonIncentiveLevel', { prisonIncentiveLevel: enhanced3 })
-    cy.task('stubPrisonIncentiveLevel', { prisonIncentiveLevel: enhanced3 })
-    cy.task('stubIncentiveLevel', { incentiveLevel: sampleIncentiveLevels[4] })
+    cy.task('stubPatchPrisonIncentiveLevel', { prisonIncentiveLevel: enhanced2 })
+    cy.task('stubPrisonIncentiveLevel', { prisonIncentiveLevel: enhanced2 })
+    cy.task('stubIncentiveLevel', { incentiveLevel: sampleIncentiveLevels[3] })
 
     const homePage = Page.verifyOnPage(HomePage)
     homePage.managePrisonIncentiveLevelsLink().click()
@@ -66,19 +66,21 @@ context('Prison incentive level management', () => {
     const listPage = Page.verifyOnPage(PrisonIncentiveLevelsPage)
     listPage.addLink.click()
 
-    const addPage = Page.verifyOnPage(PrisonIncentiveLevelAddFormPage)
+    const addPage = Page.verifyOnPage(PrisonIncentiveLevelNextAddFormPage, 'Enhanced 2')
     addPage.checkLastBreadcrumb()
 
     addPage.form.submit() // empty form
-    Page.verifyOnPage(PrisonIncentiveLevelAddFormPage)
+    Page.verifyOnPage(PrisonIncentiveLevelNextAddFormPage, 'Enhanced 2')
     addPage.errorSummaryTitle.should('contain.text', 'There is a problem')
 
+    /* only applies when adding user-selected level
     addPage.levelCodeRadios.then($radios => {
       const levelNames = $radios.map((_index, div) => div.textContent.trim()).toArray()
       expect(levelNames).to.deep.equal(['Enhanced 2', 'Enhanced 3'])
     })
+    addPage.levelCodeRadios.eq(0).find('label').click() // select EN2
+     */
 
-    addPage.levelCodeRadios.eq(1).find('label').click()
     addPage.getInputField('remandTransferLimit').type('66.00')
     addPage.getInputField('convictedTransferLimit').type('44')
     addPage.getInputField('remandSpendLimit').type('660.00')
@@ -87,8 +89,8 @@ context('Prison incentive level management', () => {
     addPage.getInputField('privilegedVisitOrders').type('3')
     addPage.form.submit() // form should now be valid
 
-    const detailPage = Page.verifyOnPage(PrisonIncentiveLevelPage, 'Enhanced 3')
-    detailPage.messages.should('contain.text', 'Enhanced 3').should('contain.text', 'added')
+    const detailPage = Page.verifyOnPage(PrisonIncentiveLevelPage, 'Enhanced 2')
+    detailPage.messages.should('contain.text', 'Enhanced 2').should('contain.text', 'added')
     detailPage.contentsOfTables.its(0).its('Default for new prisoners').should('eq', 'No')
   })
 

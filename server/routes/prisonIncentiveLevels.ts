@@ -30,11 +30,12 @@ export default function routes(router: Router): Router {
       incentivesApi.getIncentiveLevels(),
       incentivesApi.getPrisonIncentiveLevels(prisonId),
     ])
+
     const activeLevelCodes = new Set(prisonIncentiveLevels.map(prisonIncentiveLevel => prisonIncentiveLevel.levelCode))
-    const canAddLevel = incentiveLevels.some(incentiveLevel => !activeLevelCodes.has(incentiveLevel.code))
     const requiredLevelCodes = new Set(
       incentiveLevels.filter(incentiveLevel => incentiveLevel.required).map(incentiveLevel => incentiveLevel.code),
     )
+
     const prisonIncentiveLevelsWithRequiredFlag: (PrisonIncentiveLevel & { levelRequired: boolean })[] =
       prisonIncentiveLevels.map(prisonIncentiveLevel => {
         return { ...prisonIncentiveLevel, levelRequired: requiredLevelCodes.has(prisonIncentiveLevel.levelCode) }
@@ -43,11 +44,28 @@ export default function routes(router: Router): Router {
       prisonIncentiveLevel => !prisonIncentiveLevel.levelRequired && !prisonIncentiveLevel.defaultOnAdmission,
     )
 
+    let addLevelUrl: string | undefined
+    const incentiveLevelCodeAvailability = incentiveLevels.map(incentiveLevel => {
+      return { code: incentiveLevel.code, available: !activeLevelCodes.has(incentiveLevel.code) }
+    })
+    const firstAvailableIndex = incentiveLevelCodeAvailability.findIndex(({ available }) => available)
+    if (firstAvailableIndex >= 0) {
+      // some level is available to add
+      const unusedLevelCodes = incentiveLevelCodeAvailability.slice(firstAvailableIndex)
+      if (unusedLevelCodes.some(({ available }) => !available)) {
+        // some higher level has already been added, so let user choose
+        addLevelUrl = '/prison-incentive-levels/add'
+      } else {
+        // all available levels are unused, so add next by default
+        addLevelUrl = `/prison-incentive-levels/add/${unusedLevelCodes[0].code}`
+      }
+    }
+
     res.locals.breadcrumbs.addItems({ text: 'Incentive level settings' })
     res.render('pages/prisonIncentiveLevels.njk', {
       messages: req.flash(),
       prisonIncentiveLevels: prisonIncentiveLevelsWithRequiredFlag,
-      canAddLevel,
+      addLevelUrl,
       canRemoveLevel,
       prisonName,
     })
@@ -408,7 +426,7 @@ export default function routes(router: Router): Router {
 
       res.locals.breadcrumbs.addItems(
         { text: 'Incentive level settings', href: '/prison-incentive-levels' },
-        { text: 'Add a new incentive level' },
+        { text: incentiveLevel ? `Add ${incentiveLevel.name}` : 'Add a new incentive level' },
       )
       res.render(
         incentiveLevel ? 'pages/prisonIncentiveLevelNextAddForm.njk' : 'pages/prisonIncentiveLevelAddForm.njk',

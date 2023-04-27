@@ -27,7 +27,9 @@ beforeEach(() => {
   app = appWithAllRoutes({})
 
   incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
-  incentivesApi.getIncentiveLevels.mockResolvedValue(sampleIncentiveLevels)
+  incentivesApi.getIncentiveLevels.mockResolvedValue(
+    sampleIncentiveLevels.filter(incentiveLevel => incentiveLevel.active),
+  )
   incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(
     samplePrisonIncentiveLevels.filter(prisonIncentiveLevel => prisonIncentiveLevel.active),
   )
@@ -151,6 +153,26 @@ describe('Prison incentive level management', () => {
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).toContain('Add a new incentive level')
+          expect(res.text).toContain('"/prison-incentive-levels/add/EN2"')
+          expect(res.text).not.toContain('"/prison-incentive-levels/add"')
+        })
+    })
+
+    it('should show add level button when there are some available levels, but higher ones have been added already', () => {
+      // pretend that prison has all active levels but EN2
+      const prisonIncentiveLevels = samplePrisonIncentiveLevels.filter(
+        prisonIncentiveLevel => prisonIncentiveLevel.active,
+      )
+      prisonIncentiveLevels.push({ ...prisonIncentiveLevels.at(-1), levelCode: 'EN3', levelName: 'Enhanced 3' })
+      incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(prisonIncentiveLevels)
+
+      return request(app)
+        .get('/prison-incentive-levels')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(res => {
+          expect(res.text).toContain('Add a new incentive level')
+          expect(res.text).not.toContain('"/prison-incentive-levels/add/EN2"')
+          expect(res.text).toContain('"/prison-incentive-levels/add"')
         })
     })
 
@@ -735,12 +757,6 @@ describe('Prison incentive level management', () => {
   })
 
   describe('adding a level', () => {
-    beforeEach(() => {
-      incentivesApi.getIncentiveLevels.mockResolvedValue(
-        sampleIncentiveLevels.filter(incentiveLevel => incentiveLevel.active),
-      )
-    })
-
     it.each([
       {
         scenario: 'user-selected level',

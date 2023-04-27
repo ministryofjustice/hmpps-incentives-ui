@@ -40,13 +40,7 @@ export default function routes(router: Router): Router {
     if (missingRequiredLevelCodes.length) {
       logger.warn(`${prisonName} is missing required levels: ${missingRequiredLevelCodes.join(', ')}`)
       try {
-        await Promise.allSettled(
-          missingRequiredLevelCodes.map(levelCode =>
-            incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
-              active: true,
-            }),
-          ),
-        )
+        await addMissingRequiredLevels(incentivesApi, prisonId, prisonIncentiveLevels, missingRequiredLevelCodes)
         logger.info(`Missing required incentive levels have been added to ${prisonName}`)
         req.flash('success', 'Mandatory incentive levels have been added.')
         res.redirect('/prison-incentive-levels')
@@ -463,4 +457,28 @@ export default function routes(router: Router): Router {
   )
 
   return router
+}
+
+async function addMissingRequiredLevels(
+  incentivesApi: IncentivesApi,
+  prisonId: string,
+  prisonIncentiveLevels: PrisonIncentiveLevel[],
+  levelCodes: string[],
+) {
+  // ensure that there is a default level
+  if (!prisonIncentiveLevels.some(prisonIncentiveLevel => prisonIncentiveLevel.defaultOnAdmission)) {
+    await incentivesApi.updatePrisonIncentiveLevel(prisonId, 'STD', {
+      active: true,
+      defaultOnAdmission: true,
+    })
+  }
+
+  // make all missing required levels active
+  await Promise.allSettled(
+    levelCodes.map(levelCode =>
+      incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
+        active: true,
+      }),
+    ),
+  )
 }

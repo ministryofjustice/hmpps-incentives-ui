@@ -189,7 +189,7 @@ export default function routes(router: Router): Router {
     requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
-      const { levelCode } = req.params as { levelCode?: string }
+      const { levelCode } = req.params
       const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
 
       const prisonIncentiveLevel = await incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode)
@@ -306,7 +306,7 @@ export default function routes(router: Router): Router {
 
   const addFormId = 'prisonIncentiveLevelAddForm' as const
   router.all(
-    '/add',
+    ['/add', '/add/:levelCode'],
     requireGetOrPost,
     asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
@@ -398,17 +398,29 @@ export default function routes(router: Router): Router {
       const availableUnusedIncentiveLevels = res.locals.availableUnusedIncentiveLevels as IncentiveLevel[]
       const mustBeDefaultOnAdmission = res.locals.mustBeDefaultOnAdmission as boolean
 
+      const { levelCode } = req.params as { levelCode?: string }
+      const incentiveLevel: IncentiveLevel | undefined = availableUnusedIncentiveLevels.find(
+        level => level.code === levelCode,
+      )
+      if (typeof levelCode === 'string' && typeof incentiveLevel === 'undefined') {
+        throw NotFound(`Level "${levelCode}" is not available to add`)
+      }
+
       res.locals.breadcrumbs.addItems(
         { text: 'Incentive level settings', href: '/prison-incentive-levels' },
         { text: 'Add a new incentive level' },
       )
-      res.render('pages/prisonIncentiveLevelAddForm.njk', {
-        messages: req.flash(),
-        form,
-        prisonName,
-        availableUnusedIncentiveLevels,
-        mustBeDefaultOnAdmission,
-      })
+      res.render(
+        incentiveLevel ? 'pages/prisonIncentiveLevelNextAddForm.njk' : 'pages/prisonIncentiveLevelAddForm.njk',
+        {
+          messages: req.flash(),
+          form,
+          prisonName,
+          availableUnusedIncentiveLevels,
+          mustBeDefaultOnAdmission,
+          incentiveLevel, // NB: may be undefined
+        },
+      )
     }),
   )
 

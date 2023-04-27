@@ -1,0 +1,70 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set pageTitle = applicationName + " – Create a new incentive level" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+
+      {% include "../partials/messages.njk" %}
+      {% include "../partials/formErrorSummary.njk" %}
+
+      <h1 class="govuk-heading-xl" data-qa="incentive-levels-create">
+        Create a new incentive level
+      </h1>
+      <p>
+        Enter details of the incentive level you want to create.
+        These details cannot be changed later.
+      </p>
+
+      <form id="form-{{ form.formId }}" method="post" novalidate>
+
+        {% set fieldId = "name" %}
+        {% set field = form.getField(fieldId) %}
+        {{ govukInput({
+          label: { text: "Name of incentive level", classes: "govuk-label--m" },
+          classes: "govuk-input--width-20",
+          id: form.formId + "-" + fieldId,
+          name: fieldId,
+          value: field.value,
+          errorMessage: { text: field.error } if field.error else undefined
+        }) }}
+
+        {% set fieldId = "code" %}
+        {% set field = form.getField(fieldId) %}
+        {{ govukInput({
+          label: { text: "Code", classes: "govuk-label--m" },
+          hint: { text: "Enter a code containing 3 letters or numbers. For example, EN4. This will only be visible in NOMIS." },
+          classes: "govuk-input--width-3",
+          id: form.formId + "-" + fieldId,
+          name: fieldId,
+          value: field.value,
+          spellcheck: false,
+          errorMessage: { text: field.error } if field.error else undefined
+        }) }}
+
+        <input type="hidden" name="formId" value="{{ form.formId }}" />
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        <div class="govuk-button-group govuk-!-margin-top-8">
+          {{ govukButton({
+            text: "Save",
+            preventDoubleClick: true
+          }) }}
+
+          {{ govukButton({
+            text: "Cancel",
+            classes: "govuk-button--secondary",
+            element: "a",
+            href: "/incentive-levels"
+          }) }}
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

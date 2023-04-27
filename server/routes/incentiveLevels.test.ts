@@ -209,6 +209,7 @@ describe('Incentive level management', () => {
     })
   })
 
+  // NB: Only for super-admin use; not linked to
   describe('details of a level', () => {
     type TestCase = {
       scenario: string
@@ -472,6 +473,7 @@ describe('Incentive level management', () => {
     })
   })
 
+  // NB: Only for super-admin use; not linked to
   describe('editing a level', () => {
     type PrefillTestCase = {
       scenario: string
@@ -860,6 +862,7 @@ describe('Incentive level management', () => {
     })
   })
 
+  // NB: Only for super-admin use; not linked to
   describe('reordering levels', () => {
     type SuccessTestCase = {
       scenario: string

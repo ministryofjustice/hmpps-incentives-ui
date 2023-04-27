@@ -17,6 +17,9 @@ export const manageIncentiveLevelsRole = 'ROLE_MAINTAIN_INCENTIVE_LEVELS'
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
+  /*
+   * List of all incentive levels that exist globally, whether in use or historic
+   */
   get('/', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
@@ -27,6 +30,10 @@ export default function routes(router: Router): Router {
     res.render('pages/incentiveLevels.njk', { messages: req.flash(), incentiveLevels, canChangeStatus })
   })
 
+  /*
+   * Detail view of a specific incentive level
+   * NB: Only for super-admin use; not linked to
+   */
   get('/view/:levelCode', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
@@ -40,6 +47,9 @@ export default function routes(router: Router): Router {
     res.render('pages/incentiveLevel.njk', { messages: req.flash(), incentiveLevel })
   })
 
+  /*
+   * Set whether an incentive level is active, i.e. available for prisons to use
+   */
   const statusFormId = 'incentiveLevelStatusForm' as const
   router.all(
     ['/status/:levelCode'],
@@ -123,6 +133,10 @@ export default function routes(router: Router): Router {
     }),
   )
 
+  /*
+   * Edit any of an existing incentive level’s details
+   * NB: Only for super-admin use; not linked to
+   */
   const editFormId = 'incentiveLevelEditForm' as const
   router.all(
     ['/edit/:levelCode'],
@@ -230,6 +244,9 @@ export default function routes(router: Router): Router {
     }),
   )
 
+  /*
+   * Create a new incentive level which is automatically active but not required
+   */
   const createFormId = 'incentiveLevelCreateForm' as const
   router.all(
     ['/add'],
@@ -299,6 +316,10 @@ export default function routes(router: Router): Router {
     }),
   )
 
+  /*
+   * Change the order of incentive levels
+   * NB: Only for super-admin use; not linked to
+   */
   const reorderFormId = 'incentiveLevelReorderForm' as const
   router.all(
     ['/reorder'],

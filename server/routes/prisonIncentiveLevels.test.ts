@@ -122,9 +122,11 @@ describe('Prison incentive level management', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
       // pretend that only BAS & STD are required
       incentivesApi.getIncentiveLevels.mockResolvedValue(
-        sampleIncentiveLevels.map((incentiveLevel, index) => {
-          return { ...incentiveLevel, required: index < 2 }
-        }),
+        sampleIncentiveLevels
+          .filter(incentiveLevel => incentiveLevel.active)
+          .map((incentiveLevel, index) => {
+            return { ...incentiveLevel, required: index < 2 }
+          }),
       )
 
       return request(app)
@@ -176,7 +178,7 @@ describe('Prison incentive level management', () => {
         })
     })
 
-    it('should show not add level button when there are no more available levels', () => {
+    it('should not show add level button when there are no more available levels', () => {
       // pretend that only BAS, STD & ENH exist all of which are already active
       incentivesApi.getIncentiveLevels.mockResolvedValue(
         sampleIncentiveLevels.filter(incentiveLevel =>
@@ -192,6 +194,104 @@ describe('Prison incentive level management', () => {
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).not.toContain('Add a new incentive level')
+        })
+    })
+
+    it('should not activate any levels when no required level is missing', () => {
+      return request(app)
+        .get('/prison-incentive-levels')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(res => {
+          expect(res.redirect).toBeFalsy()
+          expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
+        })
+    })
+
+    it('should activate one missing required level', () => {
+      // pretend that EN2 is also required
+      incentivesApi.getIncentiveLevels.mockResolvedValue(
+        sampleIncentiveLevels
+          .filter(incentiveLevel => incentiveLevel.active)
+          .map(incentiveLevel => {
+            return {
+              ...incentiveLevel,
+              required: ['BAS', 'STD', 'ENH', 'EN2'].includes(incentiveLevel.code),
+            }
+          }),
+      )
+
+      return request(app)
+        .get('/prison-incentive-levels')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(1)
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'EN2', { active: true })
+        })
+    })
+
+    it('should activate several missing required levels', () => {
+      // pretend that EN2 & EN3 are also required
+      incentivesApi.getIncentiveLevels.mockResolvedValue(
+        sampleIncentiveLevels
+          .filter(incentiveLevel => incentiveLevel.active)
+          .map(incentiveLevel => {
+            return {
+              ...incentiveLevel,
+              required: true,
+            }
+          }),
+      )
+
+      return request(app)
+        .get('/prison-incentive-levels')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(2)
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'EN2', { active: true })
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'EN3', { active: true })
+        })
+    })
+
+    it('should activate all missing required levels, but first make Standard the default for admissions', () => {
+      // simulate new prison
+      incentivesApi.getPrisonIncentiveLevels.mockResolvedValue([])
+
+      return request(app)
+        .get('/prison-incentive-levels')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(4)
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenNthCalledWith(1, 'MDI', 'STD', {
+            active: true,
+            defaultOnAdmission: true,
+          })
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'BAS', { active: true })
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'STD', { active: true })
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'ENH', { active: true })
+        })
+    })
+
+    it('should set Standard as the default level if there is none set when all require levels are actice', () => {
+      incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(
+        samplePrisonIncentiveLevels
+          .filter(prisonIncentiveLevel => prisonIncentiveLevel.active)
+          .map(prisonIncentiveLevel => {
+            return { ...prisonIncentiveLevel, defaultOnAdmission: false }
+          }),
+      )
+
+      return request(app)
+        .get('/prison-incentive-levels')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(res => {
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(1)
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'STD', {
+            active: true,
+            defaultOnAdmission: true,
+          })
         })
     })
   })

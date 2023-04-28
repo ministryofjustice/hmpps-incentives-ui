@@ -49,6 +49,7 @@ export default function routes(router: Router): Router {
 
   /*
    * Set whether an incentive level is active, i.e. available for prisons to use
+   * NB: Deactivating is only allowed if the level is not active in any prison
    */
   const statusFormId = 'incentiveLevelStatusForm' as const
   router.all(
@@ -407,7 +408,7 @@ async function errorMessageWhenCannotDeactivate(prisonApi: PrisonApi, errorRespo
     .map(prisonId => prisonId.trim())
     .filter(prisonName => prisonName)
     .map(prisonId =>
-      prisonApi.getAgency(prisonId.trim(), false).catch(error => {
+      prisonApi.getAgency(prisonId, false).catch(error => {
         logger.error(`Could not look up agency \`${prisonId}\` in prison-api`, error)
       }),
     )

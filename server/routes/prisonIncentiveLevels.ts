@@ -22,6 +22,9 @@ export const managePrisonIncentiveLevelsRole = 'ROLE_MAINTAIN_PRISON_IEP_LEVELS'
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
+  /*
+   * List of active incentive levels in the prison
+   */
   get('/', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
@@ -31,14 +34,32 @@ export default function routes(router: Router): Router {
       incentivesApi.getPrisonIncentiveLevels(prisonId),
     ])
 
-    const activeLevelCodes = new Set(prisonIncentiveLevels.map(prisonIncentiveLevel => prisonIncentiveLevel.levelCode))
-    const requiredLevelCodes = new Set(
-      incentiveLevels.filter(incentiveLevel => incentiveLevel.required).map(incentiveLevel => incentiveLevel.code),
-    )
+    const activeLevelCodes = prisonIncentiveLevels.map(prisonIncentiveLevel => prisonIncentiveLevel.levelCode)
+    const requiredLevelCodes = incentiveLevels
+      .filter(incentiveLevel => incentiveLevel.required)
+      .map(incentiveLevel => incentiveLevel.code)
+
+    const missingRequiredLevelCodes = requiredLevelCodes.filter(code => !activeLevelCodes.includes(code))
+    if (missingRequiredLevelCodes.length) {
+      logger.warn(`${prisonName} is missing required levels: ${missingRequiredLevelCodes.join(', ')}`)
+      try {
+        await addMissingRequiredLevels(incentivesApi, prisonId, prisonIncentiveLevels, missingRequiredLevelCodes)
+        logger.info(`Missing required incentive levels have been added to ${prisonName}`)
+        req.flash('success', 'Mandatory incentive levels have been added.')
+        res.redirect('/prison-incentive-levels')
+        return
+      } catch (error) {
+        logger.error(`Missing required incentive levels could not be added to ${prisonName}!`, error)
+      }
+    } else {
+      ensureDefaultLevelExists(incentivesApi, prisonId, prisonIncentiveLevels).catch(error => {
+        logger.error(`Failed to set a default level for ${prisonName}!`, error)
+      })
+    }
 
     const prisonIncentiveLevelsWithRequiredFlag: (PrisonIncentiveLevel & { levelRequired: boolean })[] =
       prisonIncentiveLevels.map(prisonIncentiveLevel => {
-        return { ...prisonIncentiveLevel, levelRequired: requiredLevelCodes.has(prisonIncentiveLevel.levelCode) }
+        return { ...prisonIncentiveLevel, levelRequired: requiredLevelCodes.includes(prisonIncentiveLevel.levelCode) }
       })
     const canRemoveLevel = prisonIncentiveLevelsWithRequiredFlag.some(
       prisonIncentiveLevel => !prisonIncentiveLevel.levelRequired && !prisonIncentiveLevel.defaultOnAdmission,
@@ -46,7 +67,7 @@ export default function routes(router: Router): Router {
 
     let addLevelUrl: string | undefined
     const incentiveLevelCodeAvailability = incentiveLevels.map(incentiveLevel => {
-      return { code: incentiveLevel.code, available: !activeLevelCodes.has(incentiveLevel.code) }
+      return { code: incentiveLevel.code, available: !activeLevelCodes.includes(incentiveLevel.code) }
     })
     const firstAvailableIndex = incentiveLevelCodeAvailability.findIndex(({ available }) => available)
     if (firstAvailableIndex >= 0) {
@@ -71,6 +92,9 @@ export default function routes(router: Router): Router {
     })
   })
 
+  /*
+   * Detail view of active incentive level in the prison with associated information
+   */
   get('/view/:levelCode', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
@@ -93,6 +117,10 @@ export default function routes(router: Router): Router {
     })
   })
 
+  /*
+   * Remove an incentive level from the prison
+   * NB: Only allowed when there are no prisoners on the level
+   */
   const deactivateFormId = 'prisonIncentiveLevelDeactivateForm' as const
   router.all(
     '/remove/:levelCode',
@@ -201,6 +229,9 @@ export default function routes(router: Router): Router {
     }),
   )
 
+  /*
+   * Edit associated information of an active incentive level in the prison
+   */
   const editFormId = 'prisonIncentiveLevelEditForm' as const
   router.all(
     '/edit/:levelCode',
@@ -322,6 +353,9 @@ export default function routes(router: Router): Router {
     }),
   )
 
+  /*
+   * Add an available incentive level to the prison
+   */
   const addFormId = 'prisonIncentiveLevelAddForm' as const
   router.all(
     ['/add', '/add/:levelCode'],
@@ -443,4 +477,37 @@ export default function routes(router: Router): Router {
   )
 
   return router
+}
+
+async function ensureDefaultLevelExists(
+  incentivesApi: IncentivesApi,
+  prisonId: string,
+  prisonIncentiveLevels: PrisonIncentiveLevel[],
+  defaultLevelCode = 'STD',
+) {
+  if (!prisonIncentiveLevels.some(prisonIncentiveLevel => prisonIncentiveLevel.defaultOnAdmission)) {
+    await incentivesApi.updatePrisonIncentiveLevel(prisonId, defaultLevelCode, {
+      active: true,
+      defaultOnAdmission: true,
+    })
+  }
+}
+
+async function addMissingRequiredLevels(
+  incentivesApi: IncentivesApi,
+  prisonId: string,
+  prisonIncentiveLevels: PrisonIncentiveLevel[],
+  levelCodes: string[],
+) {
+  // ensure that there is a default level, otherwise no other levels can be updated
+  await ensureDefaultLevelExists(incentivesApi, prisonId, prisonIncentiveLevels)
+
+  // make all missing required levels active
+  await Promise.allSettled(
+    levelCodes.map(levelCode =>
+      incentivesApi.updatePrisonIncentiveLevel(prisonId, levelCode, {
+        active: true,
+      }),
+    ),
+  )
 }

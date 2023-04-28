@@ -51,6 +51,10 @@ export default function routes(router: Router): Router {
       } catch (error) {
         logger.error(`Missing required incentive levels could not be added to ${prisonName}!`, error)
       }
+    } else {
+      ensureDefaultLevelExists(incentivesApi, prisonId, prisonIncentiveLevels).catch(error => {
+        logger.error(`Failed to set a default level for ${prisonName}!`, error)
+      })
     }
 
     const prisonIncentiveLevelsWithRequiredFlag: (PrisonIncentiveLevel & { levelRequired: boolean })[] =
@@ -475,19 +479,28 @@ export default function routes(router: Router): Router {
   return router
 }
 
+async function ensureDefaultLevelExists(
+  incentivesApi: IncentivesApi,
+  prisonId: string,
+  prisonIncentiveLevels: PrisonIncentiveLevel[],
+  defaultLevelCode = 'STD',
+) {
+  if (!prisonIncentiveLevels.some(prisonIncentiveLevel => prisonIncentiveLevel.defaultOnAdmission)) {
+    await incentivesApi.updatePrisonIncentiveLevel(prisonId, defaultLevelCode, {
+      active: true,
+      defaultOnAdmission: true,
+    })
+  }
+}
+
 async function addMissingRequiredLevels(
   incentivesApi: IncentivesApi,
   prisonId: string,
   prisonIncentiveLevels: PrisonIncentiveLevel[],
   levelCodes: string[],
 ) {
-  // ensure that there is a default level
-  if (!prisonIncentiveLevels.some(prisonIncentiveLevel => prisonIncentiveLevel.defaultOnAdmission)) {
-    await incentivesApi.updatePrisonIncentiveLevel(prisonId, 'STD', {
-      active: true,
-      defaultOnAdmission: true,
-    })
-  }
+  // ensure that there is a default level, otherwise no other levels can be updated
+  await ensureDefaultLevelExists(incentivesApi, prisonId, prisonIncentiveLevels)
 
   // make all missing required levels active
   await Promise.allSettled(

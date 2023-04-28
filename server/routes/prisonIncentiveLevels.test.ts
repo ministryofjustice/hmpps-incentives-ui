@@ -273,6 +273,27 @@ describe('Prison incentive level management', () => {
           expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'ENH', { active: true })
         })
     })
+
+    it('should set Standard as the default level if there is none set when all require levels are actice', () => {
+      incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(
+        samplePrisonIncentiveLevels
+          .filter(prisonIncentiveLevel => prisonIncentiveLevel.active)
+          .map(prisonIncentiveLevel => {
+            return { ...prisonIncentiveLevel, defaultOnAdmission: false }
+          }),
+      )
+
+      return request(app)
+        .get('/prison-incentive-levels')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(res => {
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(1)
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'STD', {
+            active: true,
+            defaultOnAdmission: true,
+          })
+        })
+    })
   })
 
   describe('details of a level', () => {

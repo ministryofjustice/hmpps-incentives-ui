@@ -408,7 +408,7 @@ async function errorMessageWhenCannotDeactivate(prisonApi: PrisonApi, errorRespo
     .map(prisonId => prisonId.trim())
     .filter(prisonName => prisonName)
     .map(prisonId =>
-      prisonApi.getAgency(prisonId.trim(), false).catch(error => {
+      prisonApi.getAgency(prisonId, false).catch(error => {
         logger.error(`Could not look up agency \`${prisonId}\` in prison-api`, error)
       }),
     )

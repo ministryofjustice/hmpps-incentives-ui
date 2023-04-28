@@ -15,12 +15,8 @@
       "stabilityDays": 3
     },
     {
-      "matchDepNames": ["node"],
-      "allowedVersions": "^18"
-    },
-    {
-      "matchDepNames": ["npm"],
-      "allowedVersions": "^9"
+      "matchDepTypes": ["engines"],
+      "enabled": false
     },
     {
       "matchPackageNames": ["typescript", "govuk-frontend"],
@@ -49,22 +45,6 @@
       "allowedVersions": "7.0"
     }
   ],
-  "node": {
-    "packageRules": [
-      {
-        "matchDepTypes": ["engines"],
-        "allowedVersions": "^18.*.*"
-      }
-    ]
-  },
-  "npm": {
-    "packageRules": [
-      {
-        "matchDepTypes": ["engines"],
-        "allowedVersions": "^9.*.*"
-      }
-    ]
-  },
   "vulnerabilityAlerts": {
     "stabilityDays": 0
   }

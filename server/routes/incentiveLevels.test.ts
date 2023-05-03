@@ -15,6 +15,8 @@ import type { IncentiveLevelEditData } from './forms/incentiveLevelEditForm'
 import type { IncentiveLevelReorderData } from './forms/incentiveLevelReorderForm'
 import type { IncentiveLevelStatusData } from './forms/incentiveLevelStatusForm'
 
+import { sanitiseIncentiveName } from './incentiveLevels'
+
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/incentivesApi', () => {
   type module = typeof import('../data/incentivesApi')
@@ -860,8 +862,32 @@ describe('Incentive level management', () => {
           expect(incentivesApi.createIncentiveLevel).toHaveBeenCalled()
         })
     })
-  })
+    it('should sanitise incentive level name', () => {
+      const enhanced5: IncentiveLevel = {
+        code: 'EN5',
+        name: '     Enhanced 5  ',
+        active: true,
+        required: false,
+      }
+      enhanced5.name = sanitiseIncentiveName(enhanced5.name)
+      incentivesApi.createIncentiveLevel.mockResolvedValue(enhanced5)
+      const form: IncentiveLevelCreateData = {
+        formId: 'incentiveLevelCreateForm',
+        name: 'Enhanced 5',
+        code: 'EN5',
+      }
+      return request(app)
+        .post('/incentive-levels/add')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(form)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/incentive-levels/status/EN5')
 
+          expect(incentivesApi.createIncentiveLevel).toHaveBeenCalledWith(enhanced5)
+        })
+    })
+  })
   // NB: Only for super-admin use; not linked to
   describe('reordering levels', () => {
     type SuccessTestCase = {

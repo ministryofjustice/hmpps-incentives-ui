@@ -15,8 +15,6 @@ import type { IncentiveLevelEditData } from './forms/incentiveLevelEditForm'
 import type { IncentiveLevelReorderData } from './forms/incentiveLevelReorderForm'
 import type { IncentiveLevelStatusData } from './forms/incentiveLevelStatusForm'
 
-import { sanitiseIncentiveName } from './incentiveLevels'
-
 jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/incentivesApi', () => {
   type module = typeof import('../data/incentivesApi')
@@ -863,19 +861,21 @@ describe('Incentive level management', () => {
         })
     })
     it('should sanitise incentive level name', () => {
-      const enhanced5: IncentiveLevel = {
+      // Given incentive level name should have no leading or preceding whitespaces
+      const expected: IncentiveLevel = {
         code: 'EN5',
-        name: '     Enhanced 5  ',
+        name: 'Enhanced 5',
         active: true,
         required: false,
       }
-      enhanced5.name = sanitiseIncentiveName(enhanced5.name)
-      incentivesApi.createIncentiveLevel.mockResolvedValue(enhanced5)
+      incentivesApi.createIncentiveLevel.mockResolvedValue(expected)
       const form: IncentiveLevelCreateData = {
         formId: 'incentiveLevelCreateForm',
-        name: 'Enhanced 5',
+        name: ' Enhanced 5   ',
         code: 'EN5',
       }
+      // When a user submits a form with a name that has contains whitespaces
+      // Then expect the whitespaces to have been removed
       return request(app)
         .post('/incentive-levels/add')
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
@@ -883,8 +883,7 @@ describe('Incentive level management', () => {
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(res.headers.location).toBe('/incentive-levels/status/EN5')
-
-          expect(incentivesApi.createIncentiveLevel).toHaveBeenCalledWith(enhanced5)
+          expect(incentivesApi.createIncentiveLevel).toHaveBeenCalledWith(expected)
         })
     })
   })

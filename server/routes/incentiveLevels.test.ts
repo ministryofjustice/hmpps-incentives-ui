@@ -577,6 +577,38 @@ describe('Incentive level management', () => {
         })
     })
 
+    it('should sanitise incentive level name when renamed', () => {
+      // Given incentive level names should have no leading/preceding whitespaces
+      const expected: IncentiveLevel = {
+        code: 'EN2',
+        active: true,
+        name: 'Gold 2',
+        required: true,
+      }
+
+      incentivesApi.updateIncentiveLevel.mockResolvedValue(expected)
+      const form: IncentiveLevelEditData = {
+        formId: 'incentiveLevelEditForm',
+        name: '    Gold 2    ',
+        availability: 'required',
+      }
+      // When a user edits an incentive level name that includes leading/preceding whitespaces
+      // Then expect the whitespaces to have been removed
+      return request(app)
+        .post('/incentive-levels/edit/EN2')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .send(form)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(res.headers.location).toBe('/incentive-levels/view/EN2')
+          expect(incentivesApi.updateIncentiveLevel).toHaveBeenCalledWith('EN2', {
+            name: expected.name,
+            active: expected.active,
+            required: expected.required,
+          })
+        })
+    })
+
     type FailureTestCase = {
       scenario: string
       errorMessage: string
@@ -861,7 +893,7 @@ describe('Incentive level management', () => {
         })
     })
     it('should sanitise incentive level name', () => {
-      // Given incentive level name should have no leading or preceding whitespaces
+      // Given incentive level name should have no leading/preceding whitespaces
       const expected: IncentiveLevel = {
         code: 'EN5',
         name: 'Enhanced 5',
@@ -874,7 +906,7 @@ describe('Incentive level management', () => {
         name: ' Enhanced 5   ',
         code: 'EN5',
       }
-      // When a user submits a form with a name that has contains whitespaces
+      // When a user submits a form with a name that contains leading/preceding whitespaces
       // Then expect the whitespaces to have been removed
       return request(app)
         .post('/incentive-levels/add')

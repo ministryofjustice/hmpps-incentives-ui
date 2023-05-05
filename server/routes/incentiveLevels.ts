@@ -12,6 +12,10 @@ import IncentiveLevelEditForm from './forms/incentiveLevelEditForm'
 import IncentiveLevelReorderForm from './forms/incentiveLevelReorderForm'
 import IncentiveLevelStatusForm from './forms/incentiveLevelStatusForm'
 
+export function sanitiseIncentiveName(name: string) {
+  return name.trim()
+}
+
 export const manageIncentiveLevelsRole = 'ROLE_MAINTAIN_INCENTIVE_LEVELS'
 
 export default function routes(router: Router): Router {
@@ -183,7 +187,7 @@ export default function routes(router: Router): Router {
 
       try {
         const updatedIncentiveLevel = await incentivesApi.updateIncentiveLevel(levelCode, {
-          name: form.getField('name').value,
+          name: sanitiseIncentiveName(form.getField('name').value),
           active,
           required,
         })
@@ -228,7 +232,7 @@ export default function routes(router: Router): Router {
         }
         form.submit({
           formId: editFormId,
-          name: incentiveLevel.name,
+          name: sanitiseIncentiveName(incentiveLevel.name),
           availability,
         })
       }
@@ -278,7 +282,7 @@ export default function routes(router: Router): Router {
       try {
         const incentiveLevel = await incentivesApi.createIncentiveLevel({
           code: form.getField('code').value,
-          name: form.getField('name').value,
+          name: sanitiseIncentiveName(form.getField('name').value),
           active: true,
           required: false,
         })

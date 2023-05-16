@@ -14,6 +14,10 @@ RUN addgroup --gid 2000 --system appgroup && \
 
 WORKDIR /app
 
+# Cache breaking
+ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
+ENV GIT_REF ${GIT_REF:-unknown}
+
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get autoremove -y && \
@@ -33,12 +37,7 @@ RUN CYPRESS_INSTALL_BINARY=0 npm ci --no-audit
 
 COPY . .
 RUN npm run build
-
-RUN export BUILD_NUMBER=${BUILD_NUMBER} && \
-    export GIT_REF=${GIT_REF} && \
-    npm run record-build-info
-
-RUN npm prune --no-audit --production
+RUN npm prune --no-audit --omit=dev
 
 # Stage: copy production assets and dependencies
 FROM base
@@ -47,9 +46,6 @@ COPY --from=build --chown=appuser:appgroup \
         /app/package.json \
         /app/package-lock.json \
         ./
-
-COPY --from=build --chown=appuser:appgroup \
-        /app/build-info.json ./dist/build-info.json
 
 COPY --from=build --chown=appuser:appgroup \
         /app/assets ./assets

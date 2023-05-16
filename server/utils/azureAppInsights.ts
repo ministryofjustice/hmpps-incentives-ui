@@ -1,22 +1,11 @@
 import { Contracts, setup, defaultClient, TelemetryClient, DistributedTracingModes } from 'applicationinsights'
 import { EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
-import applicationVersion from '../applicationVersion'
+
+import { applicationInfo } from '../applicationInfo'
 
 export type ContextObject = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [name: string]: any
-}
-
-function defaultName(): string {
-  const {
-    packageData: { name },
-  } = applicationVersion
-  return name
-}
-
-function version(): string {
-  const { buildNumber } = applicationVersion
-  return buildNumber
 }
 
 export function initialiseAppInsights(): void {
@@ -28,10 +17,10 @@ export function initialiseAppInsights(): void {
   }
 }
 
-export function buildAppInsightsClient(name = defaultName()): TelemetryClient {
+export function buildAppInsightsClient(): TelemetryClient {
   if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-    defaultClient.context.tags['ai.cloud.role'] = name
-    defaultClient.context.tags['ai.application.ver'] = version()
+    defaultClient.context.tags['ai.cloud.role'] = applicationInfo.applicationName
+    defaultClient.context.tags['ai.application.ver'] = applicationInfo.buildNumber
     defaultClient.addTelemetryProcessor(addUserDataToRequests)
     return defaultClient
   }

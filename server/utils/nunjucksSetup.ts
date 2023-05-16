@@ -1,17 +1,18 @@
 /* eslint-disable no-param-reassign */
-import nunjucks from 'nunjucks'
+import path from 'path'
+
 import express from 'express'
-import * as pathModule from 'path'
+import nunjucks from 'nunjucks'
 
 import config from '../config'
-import applicationVersion from '../applicationVersion'
+import { applicationInfo } from '../applicationInfo'
 import { calculateTrendsRange, makeChartPalette } from './analytics'
 import format from './format'
 import { daysSince, initialiseName } from './utils'
 
 const production = process.env.NODE_ENV === 'production'
 
-export default function nunjucksSetup(app: express.Express, path: pathModule.PlatformPath): void {
+export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
@@ -29,7 +30,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   // Cachebusting version string
   if (production) {
     // Version only changes with new commits
-    app.locals.version = applicationVersion.gitRef
+    app.locals.version = applicationInfo.gitRef
   } else {
     // Version changes every request
     app.use((req, res, next) => {

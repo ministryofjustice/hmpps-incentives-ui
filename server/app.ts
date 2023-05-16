@@ -1,5 +1,3 @@
-import path from 'path'
-
 import express from 'express'
 import { NotFound } from 'http-errors'
 
@@ -33,7 +31,7 @@ export default function createApp(userService: UserService): express.Application
   app.use(setUpWebSession())
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
-  nunjucksSetup(app, path)
+  nunjucksSetup(app)
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(breadcrumbs())

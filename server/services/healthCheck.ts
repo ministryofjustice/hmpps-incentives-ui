@@ -1,10 +1,8 @@
-import { readFileSync } from 'fs'
-import path from 'path'
-
 import promClient from 'prom-client'
 
 import type { AgentConfig } from '../config'
 import config from '../config'
+import { applicationInfo } from '../applicationInfo'
 import { serviceCheckFactory } from '../data/healthCheck'
 
 const healthCheckGauge = new promClient.Gauge({
@@ -36,23 +34,16 @@ function service(name: string, url: string, agentConfig: AgentConfig): HealthChe
 }
 
 function addAppInfo(result: HealthCheckResult): HealthCheckResult {
-  const buildInformation = getBuild()
   const buildInfo = {
     uptime: process.uptime(),
-    build: buildInformation,
-    version: buildInformation && buildInformation.buildNumber,
+    build: {
+      buildNumber: applicationInfo.buildNumber,
+      gitRef: applicationInfo.gitRef,
+    },
+    version: applicationInfo.buildNumber,
   }
 
   return { ...result, ...buildInfo }
-}
-
-function getBuild(): { buildNumber: string; gitRef: string } | null {
-  try {
-    const buildInfo = readFileSync(path.resolve(__dirname, '../../build-info.json'), { encoding: 'utf8' })
-    return JSON.parse(buildInfo)
-  } catch (ex) {
-    return null
-  }
 }
 
 function gatherCheckInfo(aggregateStatus: Record<string, unknown>, currentStatus: HealthCheckStatus) {

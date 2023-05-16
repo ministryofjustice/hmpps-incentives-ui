@@ -17,6 +17,7 @@ describe('Healthcheck', () => {
 
     healthCheck(callback, successfulChecks)
   })
+
   it('Healthcheck reports unhealthy', done => {
     const successfulChecks = [successfulCheck('check1'), erroredCheck('check2')]
 

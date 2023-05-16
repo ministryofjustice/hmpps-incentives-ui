@@ -1,5 +1,3 @@
-import path from 'path'
-
 import flash from 'connect-flash'
 import express, { type Express, type Router } from 'express'
 import { Cookie, type Session, type SessionData } from 'express-session'
@@ -77,7 +75,7 @@ function appSetup(
 
   app.set('view engine', 'njk')
 
-  nunjucksSetup(app, path)
+  nunjucksSetup(app)
 
   app.use((req, res, next) => {
     req.session = testSession

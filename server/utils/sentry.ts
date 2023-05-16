@@ -2,14 +2,13 @@ import type { Express } from 'express'
 import * as Sentry from '@sentry/node'
 
 import config from '../config'
-import applicationVersion from '../applicationVersion'
 
 export function initSentry(): void {
   if (config.sentry.dsn) {
     Sentry.init({
       dsn: config.sentry.dsn,
       environment: config.environment,
-      release: applicationVersion.gitRef,
+      release: config.applicationInfo.gitRef,
       debug: config.environment === 'local',
     })
   }

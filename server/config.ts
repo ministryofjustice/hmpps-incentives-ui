@@ -34,7 +34,21 @@ export interface ApiConfig {
   agent: AgentConfig
 }
 
+export interface ApplicationInfo {
+  applicationName: string
+  buildNumber: string
+  gitRef: string
+}
+
+const applicationInfo: ApplicationInfo = {
+  applicationName: 'hmpps-incentives-ui',
+  buildNumber: get('BUILD_NUMBER', '2022-01-07.1.ef03202', requiredInProduction),
+  gitRef: get('GIT_REF', 'unknown', requiredInProduction),
+}
+
 export default {
+  applicationInfo,
+  production,
   environment: process.env.ENVIRONMENT || 'local',
   https: production,
   staticResourceCacheDuration: '1h',

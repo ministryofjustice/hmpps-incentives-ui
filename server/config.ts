@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 const production = process.env.NODE_ENV === 'production'
 
 type EnvOptions = { requireInProduction: boolean }
@@ -34,9 +37,22 @@ export interface ApiConfig {
   agent: AgentConfig
 }
 
-export default {
+export interface ApplicationInfo {
+  applicationName: string
+  buildNumber: string
+  gitRef: string
+}
+
+const packageJson = path.join(__dirname, '../package.json')
+const { name: applicationName } = JSON.parse(fs.readFileSync(packageJson, { encoding: 'utf8' }))
+const applicationInfo: ApplicationInfo = {
+  applicationName,
   buildNumber: get('BUILD_NUMBER', '1_0_0', requiredInProduction),
   gitRef: get('GIT_REF', 'unknown', requiredInProduction),
+}
+
+export default {
+  applicationInfo,
   production,
   environment: process.env.ENVIRONMENT || 'local',
   https: production,

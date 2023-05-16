@@ -2,7 +2,6 @@ import promClient from 'prom-client'
 
 import type { AgentConfig } from '../config'
 import config from '../config'
-import { applicationInfo } from '../applicationInfo'
 import { serviceCheckFactory } from '../data/healthCheck'
 
 const healthCheckGauge = new promClient.Gauge({
@@ -37,10 +36,10 @@ function addAppInfo(result: HealthCheckResult): HealthCheckResult {
   const buildInfo = {
     uptime: process.uptime(),
     build: {
-      buildNumber: applicationInfo.buildNumber,
-      gitRef: applicationInfo.gitRef,
+      buildNumber: config.applicationInfo.buildNumber,
+      gitRef: config.applicationInfo.gitRef,
     },
-    version: applicationInfo.buildNumber,
+    version: config.applicationInfo.buildNumber,
   }
 
   return { ...result, ...buildInfo }

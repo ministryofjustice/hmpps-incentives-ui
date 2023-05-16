@@ -5,7 +5,6 @@ import express from 'express'
 import nunjucks from 'nunjucks'
 
 import config from '../config'
-import { applicationInfo } from '../applicationInfo'
 import { calculateTrendsRange, makeChartPalette } from './analytics'
 import format from './format'
 import { daysSince, initialiseName } from './utils'
@@ -30,7 +29,7 @@ export default function nunjucksSetup(app: express.Express): void {
   // Cachebusting version string
   if (production) {
     // Version only changes with new commits
-    app.locals.version = applicationInfo.gitRef
+    app.locals.version = config.applicationInfo.gitRef
   } else {
     // Version changes every request
     app.use((req, res, next) => {

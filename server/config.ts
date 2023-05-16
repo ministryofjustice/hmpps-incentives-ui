@@ -1,6 +1,3 @@
-import fs from 'fs'
-import path from 'path'
-
 const production = process.env.NODE_ENV === 'production'
 
 type EnvOptions = { requireInProduction: boolean }
@@ -43,10 +40,8 @@ export interface ApplicationInfo {
   gitRef: string
 }
 
-const packageJson = path.join(__dirname, '../package.json')
-const { name: applicationName } = JSON.parse(fs.readFileSync(packageJson, { encoding: 'utf8' }))
 const applicationInfo: ApplicationInfo = {
-  applicationName,
+  applicationName: 'hmpps-incentives-ui',
   buildNumber: get('BUILD_NUMBER', '2022-01-07.1.ef03202', requiredInProduction),
   gitRef: get('GIT_REF', 'unknown', requiredInProduction),
 }

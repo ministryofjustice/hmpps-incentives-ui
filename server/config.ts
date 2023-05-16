@@ -47,7 +47,7 @@ const packageJson = path.join(__dirname, '../package.json')
 const { name: applicationName } = JSON.parse(fs.readFileSync(packageJson, { encoding: 'utf8' }))
 const applicationInfo: ApplicationInfo = {
   applicationName,
-  buildNumber: get('BUILD_NUMBER', '1_0_0', requiredInProduction),
+  buildNumber: get('BUILD_NUMBER', '2022-01-07.1.ef03202', requiredInProduction),
   gitRef: get('GIT_REF', 'unknown', requiredInProduction),
 }
 

@@ -1,8 +1,8 @@
 # Stage: base image
 FROM node:18.16-bullseye-slim as base
 
-ARG BUILD_NUMBER=1_0_0
-ARG GIT_REF=not-available
+ARG BUILD_NUMBER=2022-01-07.1.ef03202
+ARG GIT_REF=unknown
 
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
@@ -15,8 +15,8 @@ RUN addgroup --gid 2000 --system appgroup && \
 WORKDIR /app
 
 # Cache breaking
-ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
-ENV GIT_REF ${GIT_REF:-unknown}
+ENV BUILD_NUMBER=${BUILD_NUMBER:-2022-01-07.1.ef03202}
+ENV GIT_REF=${GIT_REF:-unknown}
 
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -26,8 +26,8 @@ RUN apt-get update && \
 # Stage: build assets
 FROM base as build
 
-ARG BUILD_NUMBER=1_0_0
-ARG GIT_REF=not-available
+ARG BUILD_NUMBER=2022-01-07.1.ef03202
+ARG GIT_REF=unknown
 
 RUN apt-get update && \
     apt-get install -y make python g++

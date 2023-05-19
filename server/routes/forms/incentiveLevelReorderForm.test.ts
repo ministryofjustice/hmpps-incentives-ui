@@ -13,13 +13,13 @@ describe('IncentiveLevelReorderForm', () => {
     expect(form.hasErrors).toBeFalsy()
   })
 
-  const invalidData: unknown[] = [
-    {},
-    { code: 'ENT' },
-    { code: '', direction: 'up' },
-    { code: 'ENT', direction: 'higher' },
+  const invalidData: [string, unknown][] = [
+    ['empty submission', {}],
+    ['missing direction', { code: 'ENT' }],
+    ['blank code', { code: '', direction: 'up' }],
+    ['invalid direction', { code: 'ENT', direction: 'higher' }],
   ]
-  it.each(invalidData)('with invalid data', (testCase: unknown) => {
+  it.each(invalidData)('with invalid data: %s', (_, testCase: unknown) => {
     const form = new IncentiveLevelReorderForm(formId)
     form.submit({ formId, ...(testCase as Partial<IncentiveLevelReorderData>) })
     expect(form.hasErrors).toBeTruthy()

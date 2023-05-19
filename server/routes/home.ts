@@ -42,7 +42,7 @@ export default function routes(router: Router): Router {
     let canManagePrisonIncentiveLevels = false
 
     const userRoles = getUserRoles(res)
-    if (['local', 'dev'].includes(config.environment)) {
+    if (['local', 'dev', 'preprod'].includes(config.environment)) {
       canManageIncentiveLevels = userRoles.includes(manageIncentiveLevelsRole)
       canManagePrisonIncentiveLevels = canViewLocationBasedTiles && userRoles.includes(managePrisonIncentiveLevelsRole)
     }

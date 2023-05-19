@@ -12,11 +12,26 @@ describe('IncentiveLevelCreateForm', () => {
       name: 'Enhanced 4',
       code: 'EN4',
     },
+    {
+      name: ' Enhanced 4  ',
+      code: 'EN4',
+    },
   ]
   it.each(validData)('with valid data', testCase => {
     const form = new IncentiveLevelCreateForm(formId)
     form.submit({ formId, ...testCase })
     expect(form.hasErrors).toBeFalsy()
+  })
+
+  it('trims name', () => {
+    const form = new IncentiveLevelCreateForm(formId)
+    form.submit({
+      formId,
+      name: ' Enhanced 4  ',
+      code: 'EN4',
+    })
+    expect(form.hasErrors).toBeFalsy()
+    expect(form.getField('name').value).toEqual('Enhanced 4')
   })
 
   const invalidData: [string, unknown][] = [
@@ -25,6 +40,13 @@ describe('IncentiveLevelCreateForm', () => {
       'blank name',
       {
         name: '',
+        code: 'ABC',
+      },
+    ],
+    [
+      'name with only spaces',
+      {
+        name: '   ',
         code: 'ABC',
       },
     ],

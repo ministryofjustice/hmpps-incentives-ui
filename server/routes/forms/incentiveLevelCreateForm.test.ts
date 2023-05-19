@@ -78,6 +78,13 @@ describe('IncentiveLevelCreateForm', () => {
         code: 'E 4',
       },
     ],
+    [
+      'excessively long name',
+      {
+        name: 'Standard level for all prisoners',
+        code: 'STD',
+      },
+    ],
   ]
   it.each(invalidData)('with invalid data: %s', (_, testCase: unknown) => {
     const form = new IncentiveLevelCreateForm(formId)

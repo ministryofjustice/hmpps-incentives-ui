@@ -32,6 +32,7 @@ describe('IncentiveLevelEditForm', () => {
     { name: '', availability: 'required' },
     { name: '    ', availability: 'required' },
     { name: 'Basic', availability: 'none' },
+    { name: '123456789 123456789 123456789 X', availability: 'required' },
   ]
   it.each(invalidData)('with invalid data', (testCase: unknown) => {
     const form = new IncentiveLevelEditForm(formId)

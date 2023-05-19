@@ -10,9 +10,9 @@ export default class IncentiveLevelEditForm extends Form<IncentiveLevelEditData>
     this.data.name = this.data.name?.trim() ?? ''
     if (this.data.name.length < 1) {
       this.addError('name', 'The level’s name is required')
+    } else if (this.data.name.length > 30) {
+      this.addError('name', 'The name must be no more than 30 characters in length')
     }
-    // TODO: add max length limit to `name` & error message once determined
-    //       NOMIS has hard limit of 40, incentives DB is 30
 
     if (!['required', 'active', 'inactive'].includes(this.data.availability)) {
       delete this.data.availability

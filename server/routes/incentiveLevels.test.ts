@@ -585,13 +585,14 @@ describe('Incentive level management', () => {
         name: 'Gold 2',
         required: true,
       }
-
       incentivesApi.updateIncentiveLevel.mockResolvedValue(expected)
+
       const form: IncentiveLevelEditData = {
         formId: 'incentiveLevelEditForm',
         name: '    Gold 2    ',
         availability: 'required',
       }
+
       // When a user edits an incentive level name that includes leading/preceding whitespaces
       // Then expect the whitespaces to have been removed
       return request(app)
@@ -601,6 +602,7 @@ describe('Incentive level management', () => {
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(res.headers.location).toBe('/incentive-levels/view/EN2')
+
           expect(incentivesApi.updateIncentiveLevel).toHaveBeenCalledWith('EN2', {
             name: expected.name,
             active: expected.active,
@@ -901,11 +903,13 @@ describe('Incentive level management', () => {
         required: false,
       }
       incentivesApi.createIncentiveLevel.mockResolvedValue(expected)
+
       const form: IncentiveLevelCreateData = {
         formId: 'incentiveLevelCreateForm',
         name: ' Enhanced 5   ',
         code: 'EN5',
       }
+
       // When a user submits a form with a name that contains leading/preceding whitespaces
       // Then expect the whitespaces to have been removed
       return request(app)
@@ -915,6 +919,7 @@ describe('Incentive level management', () => {
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(res.headers.location).toBe('/incentive-levels/status/EN5')
+
           expect(incentivesApi.createIncentiveLevel).toHaveBeenCalledWith(expected)
         })
     })

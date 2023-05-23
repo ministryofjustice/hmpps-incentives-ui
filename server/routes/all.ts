@@ -1,7 +1,6 @@
 import { Router } from 'express'
 
 import authorisationMiddleware from '../middleware/authorisationMiddleware'
-import { environmentGate } from '../middleware/featureGate'
 import type UserService from '../services/userService'
 import homeRoutes from './home'
 import analyticsRouter from './analyticsRouter'
@@ -23,12 +22,12 @@ export default function routes(userService: UserService): Router {
   router.use(
     '/incentive-levels',
     authorisationMiddleware([manageIncentiveLevelsRole]),
-    environmentGate(['local', 'dev', 'preprod'], incentiveLevelRoutes(standardRouter(userService))),
+    incentiveLevelRoutes(standardRouter(userService)),
   )
   router.use(
     '/prison-incentive-levels',
     authorisationMiddleware([managePrisonIncentiveLevelsRole]),
-    environmentGate(['local', 'dev', 'preprod'], prisonIncentiveLevelRoutes(standardRouter(userService))),
+    prisonIncentiveLevelRoutes(standardRouter(userService)),
   )
   router.use('/analytics/:pgdRegionCode([A-Z0-9]{2,5}|National)?', analyticsRouter(standardRouter(userService)))
   router.use('/prisoner-images/:prisonerNumber.jpeg', prisonerImagesRoutes(imageRouter()))

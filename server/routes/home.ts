@@ -38,14 +38,11 @@ export default function routes(router: Router): Router {
     const prisonApi = new PrisonApi(res.locals.user.token)
     const locations = await prisonApi.getUserLocations()
     const canViewLocationBasedTiles = locations.length > 0
-    let canManageIncentiveLevels = false
-    let canManagePrisonIncentiveLevels = false
 
     const userRoles = getUserRoles(res)
-    if (['local', 'dev', 'preprod'].includes(config.environment)) {
-      canManageIncentiveLevels = userRoles.includes(manageIncentiveLevelsRole)
-      canManagePrisonIncentiveLevels = canViewLocationBasedTiles && userRoles.includes(managePrisonIncentiveLevelsRole)
-    }
+    const canManageIncentiveLevels = userRoles.includes(manageIncentiveLevelsRole)
+    const canManagePrisonIncentiveLevels =
+      canViewLocationBasedTiles && userRoles.includes(managePrisonIncentiveLevelsRole)
 
     res.render('pages/home.njk', {
       canViewLocationBasedTiles,

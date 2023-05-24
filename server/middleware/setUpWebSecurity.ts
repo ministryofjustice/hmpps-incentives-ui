@@ -48,6 +48,7 @@ export default function setUpWebSecurity(): Router {
           imgSrc: ["'self'", '*.google-analytics.com', '*.googletagmanager.com', 'https://*.hotjar.com'],
         },
       },
+      crossOriginEmbedderPolicy: { policy: 'require-corp' },
     }),
   )
 

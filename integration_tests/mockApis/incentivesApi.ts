@@ -163,7 +163,7 @@ export default {
   },
 
   /**
-   * @deprecated use stubIncentiveLevels once api switches over
+   * @deprecated use stubPrisonIncentiveLevels
    */
   stubGetAvailableLevels: (): SuperAgentRequest => {
     return stubFor({

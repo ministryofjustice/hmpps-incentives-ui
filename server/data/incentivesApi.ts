@@ -68,7 +68,7 @@ export interface PrisonIncentiveLevel {
 export type PrisonIncentiveLevelUpdate = Omit<Partial<PrisonIncentiveLevel>, 'prisonId' | 'levelCode' | 'levelName'>
 
 /**
- * @deprecated use IncentiveLevel once api switches over
+ * @deprecated returned by legacy api endpoint
  */
 export interface Level {
   iepLevel: string
@@ -201,7 +201,7 @@ export class IncentivesApi extends RestClient {
   }
 
   /**
-   * @deprecated use getPrisonIncentiveLevels once api switches over
+   * @deprecated use getPrisonIncentiveLevels
    */
   getAvailableLevels(agencyId: string): Promise<Level[]> {
     return this.get<Level[]>({ path: `/iep/levels/${agencyId}` })

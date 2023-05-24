@@ -5,9 +5,9 @@ import request from 'supertest'
 
 import config from '../config'
 import { appWithAllRoutes } from './testutils/appSetup'
-import { getTestIncentivesReviews } from '../testData/incentivesApi'
+import { getTestIncentivesReviews, samplePrisonIncentiveLevels } from '../testData/incentivesApi'
 import HmppsAuthClient from '../data/hmppsAuthClient'
-import type { Level, IncentivesReviewsRequest, sortOptions, orderOptions } from '../data/incentivesApi'
+import type { IncentivesReviewsRequest, sortOptions, orderOptions } from '../data/incentivesApi'
 import { IncentivesApi } from '../data/incentivesApi'
 
 jest.mock('../data/hmppsAuthClient')
@@ -17,27 +17,6 @@ jest.mock('../data/incentivesApi', () => {
   const mockedModule = jest.createMockFromModule<module>('../data/incentivesApi')
   return { __esModule: true, ...realModule, IncentivesApi: mockedModule.IncentivesApi }
 })
-
-const sampleLevels: Level[] = [
-  {
-    iepLevel: 'BAS',
-    iepDescription: 'Basic',
-    sequence: 1,
-    default: false,
-  },
-  {
-    iepLevel: 'STD',
-    iepDescription: 'Standard',
-    sequence: 2,
-    default: true,
-  },
-  {
-    iepLevel: 'ENH',
-    iepDescription: 'Enhanced',
-    sequence: 3,
-    default: false,
-  },
-]
 
 const reviewsResponse = getTestIncentivesReviews()
 
@@ -51,7 +30,9 @@ beforeAll(() => {
   hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
 
   incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
-  incentivesApi.getAvailableLevels.mockResolvedValue(sampleLevels)
+  incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(
+    samplePrisonIncentiveLevels.filter(prisonIncentiveLevel => prisonIncentiveLevel.active),
+  )
 })
 
 afterAll(() => {

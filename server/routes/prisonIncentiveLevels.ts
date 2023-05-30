@@ -487,9 +487,9 @@ async function ensureDefaultLevelExists(
   if (!prisonIncentiveLevels.some(prisonIncentiveLevel => prisonIncentiveLevel.defaultOnAdmission)) {
     logger.warn(`${prisonId} is missing a default level`)
     const defaultLevelCode =
-      (await incentivesApi.getPrisonIncentiveLevels(prisonId, true))
-        .filter(prisonIncentiveLevel => prisonIncentiveLevel.defaultOnAdmission)
-        .map(prisonIncentiveLevel => prisonIncentiveLevel.levelCode)?.[0] ?? 'STD'
+      (await incentivesApi.getPrisonIncentiveLevels(prisonId, true)).find(
+        prisonIncentiveLevel => prisonIncentiveLevel.defaultOnAdmission,
+      )?.levelCode ?? 'STD'
     logger.info(`Selecting ${defaultLevelCode} as the default level for ${prisonId}`)
     await incentivesApi.updatePrisonIncentiveLevel(prisonId, defaultLevelCode, {
       active: true,

@@ -176,8 +176,9 @@ export class IncentivesApi extends RestClient {
     })
   }
 
-  getPrisonIncentiveLevels(prisonId: string): Promise<PrisonIncentiveLevel[]> {
-    return this.get({ path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}` })
+  getPrisonIncentiveLevels(prisonId: string, withInactive = false): Promise<PrisonIncentiveLevel[]> {
+    const path = `/incentive/prison-levels/${encodeURIComponent(prisonId)}${withInactive ? '?with-inactive=true' : ''}`
+    return this.get({ path })
   }
 
   getPrisonIncentiveLevel(prisonId: string, levelCode: string): Promise<PrisonIncentiveLevel> {

@@ -254,7 +254,7 @@ describe('Prison incentive level management', () => {
         })
     })
 
-    it('should activate all missing required levels, but first make Standard the default for admissions', () => {
+    it('should activate all missing required levels and first make Standard the default for admissions when none existed previously', () => {
       // simulate new prison
       incentivesApi.getPrisonIncentiveLevels.mockResolvedValue([])
 
@@ -265,6 +265,45 @@ describe('Prison incentive level management', () => {
           expect(res.redirect).toBeTruthy()
           expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(4)
           expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenNthCalledWith(1, 'MDI', 'STD', {
+            active: true,
+            defaultOnAdmission: true,
+          })
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'BAS', { active: true })
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'STD', { active: true })
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'ENH', { active: true })
+        })
+    })
+
+    it('should activate all missing required levels and retain the previous default for admissions level', () => {
+      // simulate deactivated prison that previously had BAS, STD & ENH with Enhanced being the default
+      incentivesApi.getPrisonIncentiveLevels.mockImplementation(
+        (_prisonId, withInactive) =>
+          new Promise(resolve => {
+            if (withInactive) {
+              resolve(
+                samplePrisonIncentiveLevels
+                  .filter(prisonIncentiveLevel => prisonIncentiveLevel.active)
+                  .map(prisonIncentiveLevel => {
+                    return {
+                      ...prisonIncentiveLevel,
+                      active: false,
+                      defaultOnAdmission: prisonIncentiveLevel.levelCode === 'ENH',
+                    }
+                  }),
+              )
+            } else {
+              resolve([])
+            }
+          }),
+      )
+
+      return request(app)
+        .get('/prison-incentive-levels')
+        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .expect(res => {
+          expect(res.redirect).toBeTruthy()
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(4)
+          expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenNthCalledWith(1, 'MDI', 'ENH', {
             active: true,
             defaultOnAdmission: true,
           })

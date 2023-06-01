@@ -115,7 +115,9 @@ type BaseReportRow = { label: string }
 /**
  * Used to sort rows with locations
  */
-export function compareLocations({ label: location1 }: BaseReportRow, { label: location2 }: BaseReportRow) {
+export function compareLocations({ label: label1 }: BaseReportRow, { label: label2 }: BaseReportRow) {
+  const location1 = label1 ?? 'Unknown'
+  const location2 = label2 ?? 'Unknown'
   if (location1 === 'All') {
     return -1
   }
@@ -146,10 +148,9 @@ export function compareLocations({ label: location1 }: BaseReportRow, { label: l
 /**
  * Used to sort rows with protected characteristics
  */
-export function compareCharacteristics(
-  { label: characteristic1 }: BaseReportRow,
-  { label: characteristic2 }: BaseReportRow,
-) {
+export function compareCharacteristics({ label: label1 }: BaseReportRow, { label: label2 }: BaseReportRow) {
+  const characteristic1 = label1 ?? 'Unknown'
+  const characteristic2 = label2 ?? 'Unknown'
   if (characteristic1 === 'All') {
     return -1
   }

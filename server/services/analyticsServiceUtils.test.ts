@@ -21,11 +21,15 @@ describe('comparators and filters', () => {
     { a: { label: '1' }, b: { label: 'Unknown' }, expected: -1 },
     { a: { label: 'A' }, b: { label: '1' }, expected: 1 },
     { a: { label: 'A' }, b: { label: 'B' }, expected: -1 },
+    { a: { label: 'C' }, b: { label: 'C' }, expected: 0 },
     { a: { label: 'SEG' }, b: { label: 'X' }, expected: 1 },
     { a: { label: 'RECP' }, b: { label: 'SEG' }, expected: -1 },
     { a: { label: 'RECP' }, b: { label: 'Non-wing' }, expected: -1 },
     { a: { label: 'RECP' }, b: { label: 'Unknown' }, expected: -1 },
     { a: { label: 'Unknown' }, b: { label: 'Non-wing' }, expected: 1 },
+    { a: { label: null }, b: { label: 'Non-wing' }, expected: 1 },
+    { a: { label: 'RECP' }, b: { label: null }, expected: -1 },
+    { a: { label: null }, b: { label: null }, expected: 1 },
   ])('compareLocations()', ({ a, b, expected }) => {
     let compares = '='
     if (expected > 0) {
@@ -44,11 +48,15 @@ describe('comparators and filters', () => {
     { a: { label: 'Unknown' }, b: { label: 'All' }, expected: 1 },
     { a: { label: 'Other' }, b: { label: 'All' }, expected: 1 },
     { a: { label: 'White' }, b: { label: 'All' }, expected: 1 },
+    { a: { label: 'Asian or Asian British' }, b: { label: 'Asian or Asian British' }, expected: 0 },
     { a: { label: 'Asian or Asian British' }, b: { label: 'Other' }, expected: -1 },
     { a: { label: 'Asian or Asian British' }, b: { label: 'Unknown' }, expected: -1 },
     { a: { label: 'Yes' }, b: { label: 'Unknown' }, expected: -1 },
     { a: { label: 'Other' }, b: { label: 'Yes' }, expected: 1 },
     { a: { label: 'Unknown' }, b: { label: 'Other' }, expected: 1 },
+    { a: { label: null }, b: { label: 'Other' }, expected: 1 },
+    { a: { label: 'Yes' }, b: { label: null }, expected: -1 },
+    { a: { label: null }, b: { label: null }, expected: 1 },
   ])('compareCharacteristics()', ({ a, b, expected }) => {
     let compares = '='
     if (expected > 0) {

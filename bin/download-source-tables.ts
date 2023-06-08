@@ -22,7 +22,7 @@ const [tableTypeKey, date, savePath] = process.argv.slice(2, 5)
 if (process.argv.length !== 5 || !tableTypes.includes(tableTypeKey) || !/^\d\d\d\d-\d\d-\d\d$/.test(date)) {
   printHelpAndExit()
 }
-const tableType = TableType[tableTypeKey]
+const tableType = TableType[tableTypeKey as keyof typeof TableType]
 const tableKey = `${tableType}/${date}.json`
 
 const s3Client = new S3Client(config.s3)

@@ -20,7 +20,7 @@ if (process.argv.length !== 4 || !tableTypes.includes(chosenTableType)) {
 }
 const destPath = path.resolve(
   __dirname,
-  `../server/testData/s3Bucket/${TableType[chosenTableType]}/${path.basename(sourcePath)}`,
+  `../server/testData/s3Bucket/${TableType[chosenTableType as keyof typeof TableType]}/${path.basename(sourcePath)}`,
 )
 
 const characteristicsToKeep: ReadonlySet<string> = new Set([

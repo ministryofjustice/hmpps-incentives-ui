@@ -1,4 +1,4 @@
-import PgdRegionService from './pgdRegionService'
+import PgdRegionService, { type PgdRegionCode } from './pgdRegionService'
 
 describe('PgdRegion Service', () => {
   it('getAllPgdRegions() returns all PgdRegions', () => {
@@ -14,7 +14,7 @@ describe('PgdRegion Service', () => {
     })
 
     it('does not return a PgdRegion if it cannot find one', () => {
-      const pgdRegion = PgdRegionService.getPgdRegionByCode('test')
+      const pgdRegion = PgdRegionService.getPgdRegionByCode('test' as PgdRegionCode)
       expect(pgdRegion).toBeNull()
     })
   })

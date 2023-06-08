@@ -1,11 +1,11 @@
-export const National: string = 'National' as const
+export const National = 'National' as const
 
 export interface PgdRegion {
   name: string
   code: string
 }
 
-const pgdRegions = {
+export const pgdRegions = {
   ASD: 'Avon and South Dorset',
   BCN: 'Bedfordshire, Cambridgeshire and Norfolk',
   CNTR: 'Contracted',
@@ -28,6 +28,8 @@ const pgdRegions = {
   YCS: 'Youth custody service',
 }
 
+export type PgdRegionCode = keyof typeof pgdRegions
+
 export default class PgdRegionService {
   static getAllPgdRegions(): PgdRegion[] {
     return Object.entries(pgdRegions).map(([code, name]) => {
@@ -35,7 +37,7 @@ export default class PgdRegionService {
     })
   }
 
-  static getPgdRegionByCode(pgdRegionCode: string): PgdRegion {
+  static getPgdRegionByCode(pgdRegionCode: PgdRegionCode): PgdRegion {
     const pgdRegionName = pgdRegions[pgdRegionCode]
     if (pgdRegionName) {
       return { code: pgdRegionCode, name: pgdRegionName }

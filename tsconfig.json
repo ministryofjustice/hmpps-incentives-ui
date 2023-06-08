@@ -5,7 +5,6 @@
     "strict": false,
     "outDir": "./dist",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
     "noEmit": false,
     "allowJs": true,
     "checkJs": true,
@@ -14,7 +13,6 @@
     "noImplicitAny": true,
     "experimentalDecorators": true,
     "typeRoots": ["./server/@types", "./node_modules/@types"],
-    "ignoreDeprecations": "5.0"
   },
   "exclude": ["node_modules", "assets", "dist", "helm_deploy", "integration_tests", "test_results", "cypress.config.ts"],
   "include": ["**/*.js", "**/*.ts"]

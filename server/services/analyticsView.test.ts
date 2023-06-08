@@ -1,4 +1,5 @@
 import AnalyticsView from './analyticsView'
+import type { PgdRegionCode } from './pgdRegionService'
 
 const viewTypes: ('behaviour-entries' | 'incentive-levels' | 'protected-characteristic')[] = [
   'behaviour-entries',
@@ -22,7 +23,7 @@ describe('AnalyticsView', () => {
       })
 
       it('returns false when PGD region code is not recognised', () => {
-        const analyticsView = new AnalyticsView('INVALID_REGION_CODE', 'behaviour-entries', 'MDI')
+        const analyticsView = new AnalyticsView('INVALID_REGION_CODE' as PgdRegionCode, 'behaviour-entries', 'MDI')
         expect(analyticsView.isValidPgdRegion).toEqual(false)
       })
     })

@@ -19,7 +19,6 @@ export default function nunjucksSetup(app: express.Express): void {
   app.locals.dpsHome = config.dpsUrl
   app.locals.supportUrl = config.supportUrl
   app.locals.feedbackUrl = config.feedbackUrl
-  app.locals.googleAnalyticsUaId = config.googleAnalytics.uaTrackingId
   app.locals.googleAnalyticsGa4Id = config.googleAnalytics.ga4MeasurementId
   app.locals.hotjarSiteId = config.hotjar.siteId
   app.locals.featureFlags = config.featureFlags

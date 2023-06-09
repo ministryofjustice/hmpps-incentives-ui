@@ -1,4 +1,4 @@
-import sanitisedError, { type UnsanitisedError } from './sanitisedError'
+import sanitisedError, { type SanitisedError, type UnsanitisedError } from './sanitisedError'
 
 describe('sanitised error', () => {
   it('it should omit the request headers from the error object ', () => {
@@ -25,14 +25,15 @@ describe('sanitised error', () => {
       stack: 'stack description',
     } as unknown as UnsanitisedError
 
-    expect(sanitisedError(error)).toEqual({
-      headers: { date: 'Tue, 19 May 2020 15:16:20 GMT' },
-      message: 'Not Found',
-      stack: 'stack description',
-      status: 404,
-      text: { details: 'details' },
-      data: { content: 'hello' },
-    })
+    const expectedError = new Error() as SanitisedError<{ content: string }>
+    expectedError.message = 'Not Found'
+    expectedError.text = 'details'
+    expectedError.status = 404
+    expectedError.headers = { date: 'Tue, 19 May 2020 15:16:20 GMT' }
+    expectedError.data = { content: 'hello' }
+    expectedError.stack = 'stack description'
+
+    expect(sanitisedError(error)).toEqual(expectedError)
   })
 
   it('it should return the error message ', () => {

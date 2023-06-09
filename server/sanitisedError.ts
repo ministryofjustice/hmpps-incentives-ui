@@ -13,14 +13,14 @@ export type UnsanitisedError = ResponseError
 
 export default function sanitise<Data = unknown>(error: UnsanitisedError): SanitisedError<Data> {
   if (error.response) {
-    return {
-      text: error.response.text,
-      status: error.response.status,
-      headers: error.response.headers,
-      data: error.response.body,
-      message: error.message,
-      stack: error.stack,
-    }
+    const e = new Error(error.message) as SanitisedError<Data>
+    e.text = error.response.text
+    e.status = error.response.status
+    e.headers = error.response.headers
+    e.data = error.response.body
+    e.message = error.message
+    e.stack = error.stack
+    return e
   }
   return {
     message: error.message,

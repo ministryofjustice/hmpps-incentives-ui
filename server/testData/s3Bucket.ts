@@ -15,7 +15,7 @@ const fileDates = {
   [TableType.behaviourEntriesNationalAll]: new Date('2022-08-04T19:33:00Z'),
   [TableType.incentiveLevels]: new Date('2022-08-04T19:34:00Z'),
   [TableType.trends]: new Date('2022-08-04T19:35:00Z'),
-}
+} as const
 
 export enum MockTable {
   /** mimics a normal table */
@@ -33,7 +33,7 @@ function mockedListObjects(prefix: string, tableResponse: MockTable): { key: str
 
   const [tableType] = prefix.split('/', 1)
   if (tableType in fileDates) {
-    const fileDate = fileDates[tableType]
+    const fileDate = fileDates[tableType as keyof typeof fileDates]
     const fileName = filenameFromDate(fileDate)
     return [{ key: `${tableType}/${fileName}`, modified: fileDate }]
   }
@@ -49,7 +49,7 @@ function mockedGetObject(key: string, tableResponse: MockTable): string {
   let fileName = 'empty.json'
   if (tableResponse !== MockTable.Empty) {
     if (tableType in fileDates) {
-      const fileDate = fileDates[tableType]
+      const fileDate = fileDates[tableType as keyof typeof fileDates]
       fileName = filenameFromDate(fileDate)
     } else {
       throw new Error('Not implemented')

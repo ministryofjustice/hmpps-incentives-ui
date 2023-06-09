@@ -1,4 +1,4 @@
-import PgdRegionService, { National, type PgdRegion } from './pgdRegionService'
+import PgdRegionService, { National, type PgdRegion, type PgdRegionCode } from './pgdRegionService'
 import type { AnalyticsChartContent } from '../routes/analyticsChartsContent'
 import {
   BehaviourEntriesChartsContent,
@@ -67,7 +67,7 @@ export default class AnalyticsView {
 
   protected protectedCharacteristicsChartsContent: Record<string, AnalyticsChartContent>
 
-  constructor(pgdRegionCode: string | null, viewType: ViewType, activeCaseLoad: string) {
+  constructor(pgdRegionCode: typeof National | PgdRegionCode | null, viewType: ViewType, activeCaseLoad: string) {
     if (pgdRegionCode) {
       if (pgdRegionCode === National) {
         this.viewLevel = 'national'

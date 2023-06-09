@@ -17,7 +17,7 @@ import type { ChartId } from './analyticsChartTypes'
 import { requireGetOrPost } from './forms/forms'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
-import PgdRegionService, { National, type PgdRegion } from '../services/pgdRegionService'
+import PgdRegionService, { National, type PgdRegionCode } from '../services/pgdRegionService'
 import {
   StitchedTablesCache,
   MemoryStitchedTablesCache,
@@ -94,8 +94,9 @@ export default function routes(router: Router): Router {
   })
 
   get('/select-pgd-region', async (req, res) => {
-    const options = [{ value: National, text: National }].concat(
-      PgdRegionService.getAllPgdRegions().map((pgdRegion: PgdRegion) => ({
+    const options: { value: string; text: string }[] = [{ value: National, text: National }]
+    options.push(
+      ...PgdRegionService.getAllPgdRegions().map(pgdRegion => ({
         value: pgdRegion.code,
         text: pgdRegion.name,
       })),
@@ -131,7 +132,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Behaviour entries' })
 
-    const { pgdRegionCode } = req.params
+    const { pgdRegionCode } = req.params as { pgdRegionCode: PgdRegionCode }
     const activeCaseLoad = res.locals.user.activeCaseload.id
     const analyticsView = new AnalyticsView(pgdRegionCode, 'behaviour-entries', activeCaseLoad)
     if (!analyticsView.isValidPgdRegion) {
@@ -162,7 +163,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive levels' })
 
-    const { pgdRegionCode } = req.params
+    const { pgdRegionCode } = req.params as { pgdRegionCode: PgdRegionCode }
     const activeCaseLoad = res.locals.user.activeCaseload.id
     const analyticsView = new AnalyticsView(pgdRegionCode, 'incentive-levels', activeCaseLoad)
     if (!analyticsView.isValidPgdRegion) {
@@ -227,14 +228,14 @@ export default function routes(router: Router): Router {
 
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
-    const { pgdRegionCode } = req.params
+    const { pgdRegionCode } = req.params as { pgdRegionCode: PgdRegionCode }
     const analyticsView = new AnalyticsView(pgdRegionCode, 'protected-characteristic', activeCaseLoad)
     if (!analyticsView.isValidPgdRegion) {
       res.redirect('/analytics/select-pgd-region')
       return
     }
 
-    const characteristicName = (req.query.characteristic || 'age') as string
+    const characteristicName = (req.query.characteristic || 'age') as keyof typeof protectedCharacteristicRoutes
     if (!(characteristicName in protectedCharacteristicRoutes)) {
       next(new NotFound())
       return

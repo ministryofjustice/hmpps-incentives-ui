@@ -6,10 +6,10 @@ import S3Client from '../data/s3Client'
 import AnalyticsView from '../services/analyticsView'
 import AnalyticsService from '../services/analyticsService'
 import { Ages, ProtectedCharacteristic } from '../services/analyticsServiceTypes'
-import PgdRegionService, { National } from '../services/pgdRegionService'
+import PgdRegionService, { National, type PgdRegionCode } from '../services/pgdRegionService'
 import { cache } from './analyticsRouter'
 
-async function precacheTablesForRegion(region: string | null) {
+async function precacheTablesForRegion(region: typeof National | PgdRegionCode | null) {
   // NB: viewType and activeCaseLoad have no effect on what data is loaded and stitched
   const analyticsView = new AnalyticsView(region, 'behaviour-entries', 'MDI')
   const s3Client = new S3Client(config.s3)
@@ -39,7 +39,7 @@ async function precachePrisonTables() {
 
 async function precacheRegionTables() {
   // NB: specific region has no effect on what data is loaded and stitched
-  await precacheTablesForRegion(PgdRegionService.getPgdRegionByCode('WLS').code)
+  await precacheTablesForRegion(PgdRegionService.getPgdRegionByCode('WLS').code as PgdRegionCode)
   setImmediate(precacheNationalTables)
 }
 

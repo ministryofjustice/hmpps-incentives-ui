@@ -18,7 +18,7 @@ const [tableTypeKey] = process.argv.slice(2, 3)
 if (process.argv.length !== 3 || !tableTypes.includes(tableTypeKey)) {
   printHelpAndExit()
 }
-const tableType = TableType[tableTypeKey]
+const tableType = TableType[tableTypeKey as keyof typeof TableType]
 
 const s3Client = new S3Client(config.s3)
 s3Client.listObjects(tableType).then(objects => {

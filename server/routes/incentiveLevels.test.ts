@@ -269,6 +269,7 @@ describe('Incentive level management', () => {
 
     it('should 404 if level does not exist', () => {
       const error: SanitisedError<ErrorResponse> = {
+        name: 'Error',
         status: 404,
         message: 'Not Found',
         stack: 'Not Found',
@@ -391,6 +392,7 @@ describe('Incentive level management', () => {
 
     it('should show error message returned by api', () => {
       const error: SanitisedError<ErrorResponse> = {
+        name: 'Error',
         status: 500,
         message: 'Internal Server Error',
         stack: 'Internal Server Error',
@@ -419,6 +421,7 @@ describe('Incentive level management', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
       const error: SanitisedError<ErrorResponse> = {
+        name: 'Error',
         status: 400,
         message: 'Bad Request',
         stack: 'Error: Bad Request',
@@ -460,6 +463,7 @@ describe('Incentive level management', () => {
 
     it('should 404 if level does not exist', () => {
       const error: SanitisedError<ErrorResponse> = {
+        name: 'Error',
         status: 404,
         message: 'Not Found',
         stack: 'Not Found',
@@ -661,6 +665,7 @@ describe('Incentive level management', () => {
 
     it('should show error message returned by api', () => {
       const error: SanitisedError<ErrorResponse> = {
+        name: 'Error',
         status: 500,
         message: 'Internal Server Error',
         stack: 'Internal Server Error',
@@ -690,6 +695,7 @@ describe('Incentive level management', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
       const error: SanitisedError<ErrorResponse> = {
+        name: 'Error',
         status: 400,
         message: 'Bad Request',
         stack: 'Error: Bad Request',
@@ -732,6 +738,7 @@ describe('Incentive level management', () => {
 
     it('should 404 if level does not exist', () => {
       const error: SanitisedError<ErrorResponse> = {
+        name: 'Error',
         status: 404,
         message: 'Not Found',
         stack: 'Not Found',
@@ -829,6 +836,7 @@ describe('Incentive level management', () => {
 
     it('should show error message returned by api', () => {
       const error: SanitisedError<ErrorResponse> = {
+        name: 'Error',
         status: 500,
         message: 'Internal Server Error',
         stack: 'Internal Server Error',
@@ -858,6 +866,7 @@ describe('Incentive level management', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
       const error: SanitisedError<ErrorResponse> = {
+        name: 'Error',
         status: 400,
         message: 'Bad Request',
         stack: 'Error: Bad Request',
@@ -1060,6 +1069,7 @@ describe('Incentive level management', () => {
 
     it('should show error message returned by api', () => {
       const error: SanitisedError<ErrorResponse> = {
+        name: 'Error',
         status: 400,
         message: 'Internal Server Error',
         stack: 'Internal Server Error',

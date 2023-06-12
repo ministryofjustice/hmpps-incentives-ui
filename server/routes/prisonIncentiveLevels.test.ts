@@ -510,6 +510,7 @@ describe('Prison incentive level management', () => {
 
       it('should show error message returned by api', () => {
         const error: SanitisedError<ErrorResponse> = {
+          name: 'Error',
           status: 400,
           message: 'Bad Request',
           stack: 'Error: Bad Request',
@@ -536,6 +537,7 @@ describe('Prison incentive level management', () => {
 
       it('should show specific error message if there are prisoners on the level', () => {
         const error: SanitisedError<ErrorResponse> = {
+          name: 'Error',
           status: 400,
           message: 'Bad Request',
           stack: 'Error: Bad Request',
@@ -751,6 +753,7 @@ describe('Prison incentive level management', () => {
 
       it('should show error message returned by api', () => {
         const error: SanitisedError<ErrorResponse> = {
+          name: 'Error',
           status: 400,
           message: 'Bad Request',
           stack: 'Error: Bad Request',
@@ -1174,6 +1177,7 @@ describe('Prison incentive level management', () => {
         },
       ])('should show error message returned by api ($scenario)', ({ url }) => {
         const error: SanitisedError<ErrorResponse> = {
+          name: 'Error',
           status: 400,
           message: 'Bad Request',
           stack: 'Error: Bad Request',

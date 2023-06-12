@@ -15,11 +15,6 @@ function gaSendEvent() {
     }
   }
 
-  // universal analytics
-  if (typeof ga === typeof Function) {
-    ga('send', 'event', gaCategory, gaAction, gaLabel)
-  }
-
   // google analytics 4
   if (typeof gtag === typeof Function) {
     gtag('event', 'incentives_event', {

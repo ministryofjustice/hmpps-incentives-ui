@@ -1,6 +1,4 @@
 ---
-# Per environment values which override defaults in hmpps-incentives-ui/values.yaml
-
 generic-service:
   replicaCount: 2
 

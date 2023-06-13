@@ -5,7 +5,7 @@ Deployment is usually handled through CircleCI, but sometimes it’s useful to a
 
 ## Prerequisites
 
-Ensure you have kubectl v1.21 (or compatible) and helm v3 clients installed.
+Ensure you have kubectl v1.23 (or compatible) and helm v3 clients installed.
 
 You will need to be a member of the `@ministryofjustice/hmpps-incentives` team on github and
 have authenticated kubectl with [Cloud Platform](https://user-guide.cloud-platform.service.justice.gov.uk/).

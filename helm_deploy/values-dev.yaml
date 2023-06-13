@@ -1,6 +1,4 @@
 ---
-# Per environment values which override defaults in hmpps-incentives-ui/values.yaml
-
 generic-service:
   replicaCount: 2
 
@@ -8,6 +6,7 @@ generic-service:
 
   ingress:
     host: incentives-ui-dev.hmpps.service.justice.gov.uk
+
   allowlist: null
 
   env:

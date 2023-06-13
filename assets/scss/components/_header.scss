@@ -3,33 +3,33 @@
   @include govuk-responsive-padding(3, 'bottom');
   background-color: govuk-colour('black');
 
-  &__container {
+  .hmpps-header__container {
     @include govuk-width-container;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  &__logo {
+  .hmpps-header__logo {
     @include govuk-responsive-margin(2, 'right');
     position: relative;
     top: -2px;
     fill: govuk-colour('white');
   }
 
-  &__title {
+  .hmpps-header__title {
     @include govuk-responsive-padding(3, 'right');
     display: flex;
     align-items: center;
 
-    &__organisation-name {
+    .hmpps-header__title__organisation-name {
       @include govuk-responsive-margin(2, 'right');
       @include govuk-font($size: 24, $weight: 'bold');
       display: flex;
       align-items: center;
     }
 
-    &__service-name {
+    .hmpps-header__title__service-name {
       display: none;
       @include govuk-font(24);
 
@@ -39,7 +39,7 @@
     }
   }
 
-  &__link {
+  .hmpps-header__link {
     @include govuk-link-common;
     @include govuk-link-style-default;
 
@@ -62,7 +62,7 @@
       }
     }
 
-    &__sub-text {
+    .hmpps-header__link__sub-text {
       @include govuk-font(16);
       display: none;
 
@@ -72,7 +72,7 @@
     }
   }
 
-  &__navigation {
+  .hmpps-header__navigation {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -85,7 +85,7 @@
       align-items: center;
     }
 
-    &__item {
+    .hmpps-header__navigation__item {
       @include govuk-font(19);
       margin-bottom: govuk-spacing(1);
       text-align: right;
@@ -112,30 +112,4 @@
   @media print {
     display: none;
   }
-}
-
-.location-bar {
-  @include govuk-width-container;
-  @include govuk-responsive-margin(3, 'bottom');
-  @include govuk-responsive-padding(3, 'top');
-  @include govuk-responsive-padding(3, 'bottom');
-  display: flex;
-  flex-wrap: wrap;
-  border-bottom: 1px solid $govuk-border-colour;
-
-  &__location {
-    @include govuk-font($size: 19, $weight: 'bold');
-    @include govuk-responsive-margin(3, 'right');
-  }
-
-  &__link {
-    @include govuk-link-common;
-    @include govuk-link-style-default;
-    @include govuk-font($size: 19, $weight: 'normal');
-  }
-}
-
-.spacer-bar {
-  @include govuk-width-container;
-  @include govuk-responsive-padding(2, 'bottom');
 }

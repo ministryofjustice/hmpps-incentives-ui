@@ -21,15 +21,15 @@
 
 {% endblock %}
 
-{% block pageTitle %}{{pageTitle | default(applicationName)}}{% endblock %}
+{% block pageTitle %}{{ pageTitle | default(applicationName) }}{% endblock %}
 
 {% block header %}
   {% include "./header.njk" %}
 
   {% if analyticsView and (analyticsView.isNational or analyticsView.isRegional) %}
-    {% include "./spacer.njk" %}
+    <div class="govuk-!-padding-bottom-3"></div>
   {% else %}
-    {% include "./locationBar.njk" %}
+    {% include "./caseloadBar.njk" %}
   {% endif %}
 
   {% include "./feedbackBanner.njk" %}

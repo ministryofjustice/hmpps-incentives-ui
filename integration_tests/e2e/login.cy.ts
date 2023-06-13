@@ -1,5 +1,5 @@
-import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
+import AuthSignInPage from '../pages/authSignIn'
 import AuthManageDetailsPage from '../pages/authManageDetails'
 import HomePage from '../pages/home'
 

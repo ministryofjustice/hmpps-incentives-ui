@@ -24,8 +24,8 @@ $(() => {
   })
 
   // for clickable cards, forward a click anywhere inside it to single contained link, if it exists
-  $('.card--clickable').each((index, card) => {
-    const $links = $('.card__link', card)
+  $('.dps-card--clickable').each((index, card) => {
+    const $links = $('.dps-card__link', card)
     if ($links.length === 1) {
       const $card = $(card)
       $card.on('click', e => {

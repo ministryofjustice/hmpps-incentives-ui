@@ -48,7 +48,7 @@ const applicationInfo: ApplicationInfo = {
 
 export default {
   applicationInfo,
-  production,
+  production, // NB: this is true in _all_ deployed environments
   environment: process.env.ENVIRONMENT || 'local',
   https: production,
   staticResourceCacheDuration: '1h',

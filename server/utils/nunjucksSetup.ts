@@ -9,24 +9,27 @@ import { calculateTrendsRange, makeChartPalette } from './analytics'
 import format from './format'
 import { daysSince, initialiseName } from './utils'
 
-const production = process.env.NODE_ENV === 'production'
-
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Manage incentives'
-  app.locals.dpsHome = config.dpsUrl
-  app.locals.supportUrl = config.supportUrl
-  app.locals.feedbackUrl = config.feedbackUrl
-  app.locals.googleAnalyticsGa4Id = config.googleAnalytics.ga4MeasurementId
-  app.locals.hotjarSiteId = config.hotjar.siteId
+  app.locals.production = config.production
+  app.locals.environment = config.environment
   app.locals.featureFlags = config.featureFlags
+
   app.locals.phaseName = config.phaseName
   app.locals.phaseNameColour = config.phaseName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
 
+  app.locals.googleAnalyticsGa4Id = config.googleAnalytics.ga4MeasurementId
+  app.locals.hotjarSiteId = config.hotjar.siteId
+
+  app.locals.dpsHome = config.dpsUrl
+  app.locals.supportUrl = config.supportUrl
+  app.locals.feedbackUrl = config.feedbackUrl
+
   // Cachebusting version string
-  if (production) {
+  if (config.production) {
     // Version only changes with new commits
     app.locals.version = config.applicationInfo.gitRef
   } else {

@@ -1,6 +1,7 @@
 import nock from 'nock'
-import RestClient from './restClient'
+
 import { AgentConfig } from '../config'
+import RestClient from './restClient'
 
 const restClient = new RestClient(
   'name-1',

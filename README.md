@@ -2,8 +2,7 @@
 
 This application is a front-end application used by staff in HMPPS prisons to view offenders’ incentive level information.
 
-It is backed by [hmpps-incentives-api](https://github.com/ministryofjustice/hmpps-incentives-api)
-which currently is a facade to incentive level information in NOMIS but will become the single source of truth in future.
+It is backed by [hmpps-incentives-api](https://github.com/ministryofjustice/hmpps-incentives-api).
 
 ## Running locally
 

@@ -73,8 +73,6 @@ function appSetup(
   const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
   prisonApi.getUserLocations.mockResolvedValue([testLocation])
 
-  app.set('view engine', 'njk')
-
   nunjucksSetup(app)
 
   app.use((req, res, next) => {

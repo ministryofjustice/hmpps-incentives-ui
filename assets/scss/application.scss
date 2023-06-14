@@ -8,6 +8,7 @@ $govuk-page-width: $moj-page-width;
 @import 'moj/all';
 
 @import './components/card';
+@import './components/caseload-bar';
 @import './components/chart-colours';
 @import './components/chart-disclaimer';
 @import './components/chart-legend';
@@ -18,7 +19,7 @@ $govuk-page-width: $moj-page-width;
 @import './components/data-list';
 @import './components/error-stack';
 @import './components/feedback-banner';
-@import './components/header-bar';
+@import './components/header';
 @import './components/tables';
 @import './components/reviews-table';
 @import './components/incentive-levels';

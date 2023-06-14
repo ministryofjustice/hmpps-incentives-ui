@@ -21,6 +21,6 @@ export default class HomePage extends Page {
     cy.get('[data-test="manage-prison-incentive-levels"] a')
 
   get cards(): PageElement<HTMLDivElement> {
-    return cy.get('.card')
+    return cy.get('.dps-card')
   }
 }

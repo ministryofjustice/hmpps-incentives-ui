@@ -88,7 +88,7 @@ export default {
     },
     hmppsIncentivesApi: {
       url: get('HMPPS_INCENTIVES_API_URL', 'http://localhost:2999', requiredInProduction),
-      externalUrl: get('HMPPS_PRISON_API_EXTERNAL_URL', get('HMPPS_INCENTIVES_API_URL', 'http://localhost:2999')),
+      externalUrl: get('HMPPS_INCENTIVES_API_EXTERNAL_URL', get('HMPPS_INCENTIVES_API_URL', 'http://localhost:2999')),
       timeout: {
         response: Number(get('HMPPS_INCENTIVES_API_TIMEOUT_RESPONSE', 60000)),
         deadline: Number(get('HMPPS_INCENTIVES_API_TIMEOUT_DEADLINE', 60000)),

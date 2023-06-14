@@ -12,9 +12,6 @@ declare namespace Cypress {
    * Declare globals
    */
   interface ApplicationWindow {
-    /** Google Analytics – Universal Analytics (deprecated) */
-    ga?: (...args: string[]) => void
-
     /** Google Analytics version 4 */
     gtag?: (...args: [string, string, Record<string, string>]) => void
   }

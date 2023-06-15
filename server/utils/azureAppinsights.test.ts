@@ -1,21 +1,26 @@
-import { DataTelemetry, EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
-import { addUserDataToRequests, ContextObject } from './azureAppInsights'
+import { RequestData, type DataTelemetry, type EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
+
+import { addUserDataToRequests, ignorePathsProcessor, type ContextObject } from './azureAppInsights'
 
 const user = {
   activeCaseLoadId: 'LII',
   username: 'test-user',
 }
 
-const createEnvelope = (properties: Record<string, string | boolean>, baseType = 'RequestData') =>
-  ({
+function createEnvelope(name: string, properties: Record<string, string | boolean>, baseType = 'RequestData') {
+  const baseData = new RequestData()
+  baseData.name = name
+  baseData.properties = properties
+  return {
     data: {
       baseType,
-      baseData: { properties },
+      baseData,
     } as DataTelemetry,
-  } as EnvelopeTelemetry)
+  } as EnvelopeTelemetry
+}
 
-const createContext = (username: string, activeCaseLoadId: string) =>
-  ({
+function createContext(username: string, activeCaseLoadId: string) {
+  return {
     'http.ServerRequest': {
       res: {
         locals: {
@@ -26,14 +31,15 @@ const createContext = (username: string, activeCaseLoadId: string) =>
         },
       },
     },
-  } as ContextObject)
+  } as ContextObject
+}
 
 const context = createContext(user.username, user.activeCaseLoadId)
 
 describe('azure-appinsights', () => {
   describe('addUserDataToRequests', () => {
     it('adds user data to properties when present', () => {
-      const envelope = createEnvelope({ other: 'things' })
+      const envelope = createEnvelope('GET /', { other: 'things' })
 
       addUserDataToRequests(envelope, context)
 
@@ -44,7 +50,7 @@ describe('azure-appinsights', () => {
     })
 
     it('handles absent user data', () => {
-      const envelope = createEnvelope({ other: 'things' })
+      const envelope = createEnvelope('GET /', { other: 'things' })
 
       addUserDataToRequests(envelope, createContext(undefined, user.activeCaseLoadId))
 
@@ -52,7 +58,7 @@ describe('azure-appinsights', () => {
     })
 
     it('returns true when not RequestData type', () => {
-      const envelope = createEnvelope({}, 'NOT_REQUEST_DATA')
+      const envelope = createEnvelope('GET /', {}, 'NOT_REQUEST_DATA')
 
       const response = addUserDataToRequests(envelope, context)
 
@@ -60,7 +66,7 @@ describe('azure-appinsights', () => {
     })
 
     it('handles when no properties have been set', () => {
-      const envelope = createEnvelope(undefined)
+      const envelope = createEnvelope('GET /', undefined)
 
       addUserDataToRequests(envelope, context)
 
@@ -68,7 +74,7 @@ describe('azure-appinsights', () => {
     })
 
     it('handles missing user details', () => {
-      const envelope = createEnvelope({ other: 'things' })
+      const envelope = createEnvelope('GET /', { other: 'things' })
 
       addUserDataToRequests(envelope, {
         'http.ServerRequest': {},
@@ -77,6 +83,22 @@ describe('azure-appinsights', () => {
       expect(envelope.data.baseData.properties).toEqual({
         other: 'things',
       })
+    })
+  })
+
+  describe('ignorePathsProcessor', () => {
+    it.each(['/metrics', '/healthcheck/ping'])('ignores pre-specified path: %s', path => {
+      const envelope = createEnvelope(`GET ${path}`, {})
+
+      const result = ignorePathsProcessor(envelope)
+      expect(result).toEqual(false)
+    })
+
+    it.each(['/', '/healthcheck', '/non-associations'])('allows path: %s', path => {
+      const envelope = createEnvelope(`GET ${path}`, {})
+
+      const result = ignorePathsProcessor(envelope)
+      expect(result).toEqual(true)
     })
   })
 })

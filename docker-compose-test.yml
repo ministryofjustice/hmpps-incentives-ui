@@ -1,11 +1,13 @@
 # Runs the services needed for integation testing
-version: '3.8'
+# or the subset of services needed by the application if it is connected to `dev` HMPPS APIs
+version: '3.9'
+
 services:
 
   redis:
     image: redis:7.0
     networks:
-      - hmpps_int
+      - hmpps
     container_name: inc-ui-redis
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
@@ -15,7 +17,7 @@ services:
   minio:
     image: minio/minio
     networks:
-      - hmpps_int
+      - hmpps
     container_name: inc-ui-minio
     environment:
       - MINIO_ROOT_USER=incentives
@@ -35,7 +37,7 @@ services:
   minio-init:
     image: minio/mc
     networks:
-      - hmpps_int
+      - hmpps
     container_name: inc-ui-minio-init
     depends_on:
       - minio
@@ -61,11 +63,11 @@ services:
   wiremock:
     image: wiremock/wiremock
     networks:
-      - hmpps_int
+      - hmpps
     container_name: inc-ui-wiremock
     restart: always
     ports:
       - '9091:8080'
 
 networks:
-  hmpps_int:
+  hmpps:

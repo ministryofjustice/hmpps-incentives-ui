@@ -26,7 +26,7 @@ export default function routes(router: Router): Router {
     const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
     const canChangeStatus = incentiveLevels.some(incentiveLevel => !incentiveLevel.required)
 
-    res.locals.breadcrumbs.addItems({ text: 'Global incentive level admin' })
+    res.locals.breadcrumbs.addItems({ text: 'Global incentive level admin', href: req.originalUrl })
     res.render('pages/incentiveLevels.njk', { messages: req.flash(), incentiveLevels, canChangeStatus })
   })
 
@@ -42,7 +42,7 @@ export default function routes(router: Router): Router {
 
     res.locals.breadcrumbs.addItems(
       { text: 'Global incentive level admin', href: '/incentive-levels' },
-      { text: `View details for ${incentiveLevel.name}` },
+      { text: `View details for ${incentiveLevel.name}`, href: req.originalUrl },
     )
     res.render('pages/incentiveLevel.njk', { messages: req.flash(), incentiveLevel })
   })
@@ -124,7 +124,7 @@ export default function routes(router: Router): Router {
 
       res.locals.breadcrumbs.addItems(
         { text: 'Global incentive level admin', href: '/incentive-levels' },
-        { text: 'Select incentive level status' },
+        { text: 'Select incentive level status', href: req.originalUrl },
       )
       res.render('pages/incentiveLevelStatusForm.njk', {
         messages: req.flash(),
@@ -235,7 +235,7 @@ export default function routes(router: Router): Router {
 
       res.locals.breadcrumbs.addItems(
         { text: 'Global incentive level admin', href: '/incentive-levels' },
-        { text: `Change details for ${incentiveLevel.name}` },
+        { text: `Change details for ${incentiveLevel.name}`, href: req.originalUrl },
       )
       res.render('pages/incentiveLevelEditForm.njk', {
         messages: req.flash(),
@@ -308,7 +308,7 @@ export default function routes(router: Router): Router {
 
       res.locals.breadcrumbs.addItems(
         { text: 'Global incentive level admin', href: '/incentive-levels' },
-        { text: 'Create a new incentive level' },
+        { text: 'Create a new incentive level', href: req.originalUrl },
       )
       res.render('pages/incentiveLevelCreateForm.njk', {
         messages: req.flash(),
@@ -387,7 +387,7 @@ export default function routes(router: Router): Router {
 
       res.locals.breadcrumbs.addItems(
         { text: 'Global incentive level admin', href: '/incentive-levels' },
-        { text: 'Change order of levels' },
+        { text: 'Change order of levels', href: req.originalUrl },
       )
       res.render('pages/incentiveLevelReorderForm.njk', {
         messages: req.flash(),

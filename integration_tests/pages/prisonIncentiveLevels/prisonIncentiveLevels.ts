@@ -11,10 +11,6 @@ export default class PrisonIncentiveLevelsPage extends Page {
     super('Incentive level settings')
   }
 
-  checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', this.title)
-  }
-
   get table(): PageElement<HTMLTableElement> {
     return cy.get('.govuk-table')
   }

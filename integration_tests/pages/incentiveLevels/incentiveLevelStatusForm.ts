@@ -5,10 +5,6 @@ export default class IncentiveLevelStatusFormPage extends Page {
     super('Select incentive level status')
   }
 
-  checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', this.title)
-  }
-
   get form(): PageElement<HTMLFormElement> {
     return cy.get('#form-incentiveLevelStatusForm')
   }

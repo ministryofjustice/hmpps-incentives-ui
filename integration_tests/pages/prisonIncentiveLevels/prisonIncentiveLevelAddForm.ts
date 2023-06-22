@@ -5,10 +5,6 @@ export default class PrisonIncentiveLevelAddFormPage extends Page {
     super('Add a new incentive level')
   }
 
-  checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', this.title)
-  }
-
   get form(): PageElement<HTMLFormElement> {
     return cy.get('#form-prisonIncentiveLevelAddForm')
   }

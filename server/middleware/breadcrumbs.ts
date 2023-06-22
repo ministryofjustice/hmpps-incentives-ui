@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction, RequestHandler } from 'express'
 
-type Breadcrumb = ({ text: string } | { html: string }) & { href?: string }
+type Breadcrumb = { href: string } & ({ text: string } | { html: string })
 
 class Breadcrumbs {
   breadcrumbs: Breadcrumb[]
@@ -18,15 +18,11 @@ class Breadcrumbs {
     ]
   }
 
-  get lastItem(): Breadcrumb {
-    return this.breadcrumbs[this.breadcrumbs.length - 1]
+  addItems(...items: Breadcrumb[]): void {
+    this.breadcrumbs.push(...items)
   }
 
-  addItems(...items: Breadcrumb[]) {
-    items.forEach(item => this.breadcrumbs.push(item))
-  }
-
-  getItems(): Breadcrumb[] {
+  get items(): readonly Breadcrumb[] {
     return [...this.breadcrumbs]
   }
 }
@@ -34,6 +30,6 @@ class Breadcrumbs {
 export default function breadcrumbs(): RequestHandler {
   return (req: Request, res: Response, next: NextFunction): void => {
     res.locals.breadcrumbs = new Breadcrumbs(res)
-    return next()
+    next()
   }
 }

@@ -11,10 +11,6 @@ export default class IncentiveLevelsPage extends Page {
     super('Global incentive level admin')
   }
 
-  checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', this.title)
-  }
-
   get table(): PageElement<HTMLTableElement> {
     return cy.get('.govuk-table')
   }

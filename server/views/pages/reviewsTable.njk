@@ -57,6 +57,9 @@
 
     {% set profileLink %}
       <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}" data-ga-category="Reviews table > Clicked on link" data-ga-action="prisoner name">
+        <span class="govuk-visually-hidden">
+          View prisoner profile for
+        </span>
         {{ review.lastName }}, {{ review.firstName }}
         <br />
         {{ review.prisonerNumber }}
@@ -81,13 +84,23 @@
 
     {% set positiveBehaviours %}
       <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}/case-notes?type=POS&amp;{{ caseNoteFilter }}" data-ga-category="Reviews table > Clicked on link" data-ga-action="positive behaviours">
-        {{ review.positiveBehaviours }}
+        <span class="govuk-visually-hidden">
+          View {{ review.positiveBehaviours }} positive behaviour case notes
+        </span>
+        <span aria-hidden="true">
+          {{ review.positiveBehaviours }}
+        </span>
       </a>
     {% endset %}
 
     {% set negativeBehaviours %}
       <a href="{{ dpsUrl }}/prisoner/{{ review.prisonerNumber }}/case-notes?type=NEG&amp;{{ caseNoteFilter }}" data-ga-category="Reviews table > Clicked on link" data-ga-action="negative behaviours">
-        {{ review.negativeBehaviours }}
+        <span class="govuk-visually-hidden">
+          View {{ review.negativeBehaviours }} negative behaviour case notes
+        </span>
+        <span aria-hidden="true">
+          {{ review.negativeBehaviours }}
+        </span>
       </a>
     {% endset %}
 

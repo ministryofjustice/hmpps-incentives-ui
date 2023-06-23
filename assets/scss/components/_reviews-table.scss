@@ -30,12 +30,12 @@
 
     th[aria-sort='none'] {
       a::before {
-        content: ' ▲';
+        content: ' ▲' / '';
         top: 0;
         font-size: 12px;
       }
       a::after {
-        content: ' ▼';
+        content: ' ▼' / '';
         top: 12px;
         font-size: 12px;
       }
@@ -43,14 +43,14 @@
 
     th[aria-sort='ascending'] {
       a::before {
-        content: ' ▲';
+        content: ' ▲' / '';
         top: 4px;
       }
     }
 
     th[aria-sort='descending'] {
       a::after {
-        content: ' ▼';
+        content: ' ▼' / '';
         top: 6px;
       }
     }

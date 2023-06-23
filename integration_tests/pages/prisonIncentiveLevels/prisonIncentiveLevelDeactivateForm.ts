@@ -5,10 +5,6 @@ export default class PrisonIncentiveLevelDeactivateFormPage extends Page {
     super('Remove an incentive level')
   }
 
-  checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', this.title)
-  }
-
   get form(): PageElement<HTMLFormElement> {
     return cy.get('#form-prisonIncentiveLevelDeactivateForm')
   }

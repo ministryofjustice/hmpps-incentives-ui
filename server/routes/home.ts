@@ -31,8 +31,6 @@ export default function routes(router: Router): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', async (req, res) => {
-    res.locals.breadcrumbs.lastItem.href = undefined
-
     // a prison case load would have locations, e.g. wings or house blocks
     // an LSA's special case load (CADM_I) has no locations
     const prisonApi = new PrisonApi(res.locals.user.token)
@@ -52,7 +50,7 @@ export default function routes(router: Router): Router {
   })
 
   get('/about-national-policy', (req, res) => {
-    res.locals.breadcrumbs.addItems({ text: 'National policy: frequency of reviews' })
+    res.locals.breadcrumbs.addItems({ text: 'National policy: frequency of reviews', href: req.originalUrl })
 
     res.render('pages/about-national-policy.njk')
   })
@@ -141,7 +139,7 @@ ${noComments}`
       next()
     }),
     asyncMiddleware(async (req: Request, res: Response) => {
-      res.locals.breadcrumbs.addItems({ text: 'About' })
+      res.locals.breadcrumbs.addItems({ text: 'About', href: req.originalUrl })
 
       const activeCaseLoad = res.locals.user.activeCaseload.id
       const prisonRegions = await getPrisonRegions(activeCaseLoad)

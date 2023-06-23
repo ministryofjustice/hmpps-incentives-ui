@@ -26,7 +26,15 @@ export default abstract class Page {
   }
 
   get breadcrumbs(): PageElement<HTMLDivElement> {
-    return cy.get('.govuk-breadcrumbs')
+    return cy.get('.govuk-breadcrumbs__list-item')
+  }
+
+  checkLastBreadcrumb() {
+    cy.url().then(location => {
+      const url = new URL(location)
+      this.breadcrumbs.last().should('contain.text', this.title)
+      this.breadcrumbs.last().find('a').should('have.attr', 'href', url.pathname)
+    })
   }
 
   get messages(): PageElement<HTMLDivElement> {

@@ -5,10 +5,6 @@ export default class PrisonIncentiveLevelEditFormPage extends Page {
     super(`Change settings for ${levelName}`)
   }
 
-  checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', this.title)
-  }
-
   get form(): PageElement<HTMLFormElement> {
     return cy.get('#form-prisonIncentiveLevelEditForm')
   }

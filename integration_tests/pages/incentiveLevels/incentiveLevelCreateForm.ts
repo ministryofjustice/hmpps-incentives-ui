@@ -5,10 +5,6 @@ export default class IncentiveLevelCreateFormPage extends Page {
     super('Create a new incentive level')
   }
 
-  checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', this.title)
-  }
-
   get form(): PageElement<HTMLFormElement> {
     return cy.get('#form-incentiveLevelCreateForm')
   }

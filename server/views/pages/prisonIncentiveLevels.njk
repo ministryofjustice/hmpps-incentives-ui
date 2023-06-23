@@ -36,17 +36,21 @@
         {%- endset %}
 
         {% set viewAction -%}
-          <a href="/prison-incentive-levels/view/{{ prisonIncentiveLevel.levelCode }}">View settings</a>
+          <a href="/prison-incentive-levels/view/{{ prisonIncentiveLevel.levelCode }}" aria-describedby="incentive-level-{{ loop.index0 }}">
+            View settings
+          </a>
         {%- endset %}
 
         {% set removeAction -%}
           {% if not prisonIncentiveLevel.levelRequired and not prisonIncentiveLevel.defaultOnAdmission %}
-            <a href="/prison-incentive-levels/remove/{{ prisonIncentiveLevel.levelCode }}">Remove level</a>
+            <a href="/prison-incentive-levels/remove/{{ prisonIncentiveLevel.levelCode }}" aria-describedby="incentive-level-{{ loop.index0 }}">
+              Remove level
+            </a>
           {% endif %}
         {%- endset %}
 
         {% set row = [
-          { text: prisonIncentiveLevel.levelName },
+          { text: prisonIncentiveLevel.levelName, attributes: { id: "incentive-level-" + loop.index0 } },
           { html: tags },
           { html: viewAction, classes: "govuk-!-text-align-right" }
         ] %}

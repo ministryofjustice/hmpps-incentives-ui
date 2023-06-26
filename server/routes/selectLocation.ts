@@ -42,8 +42,8 @@ export default function routes(router: Router): Router {
       res.redirect('/select-location')
       return
     }
-
-    res.redirect(`/incentive-summary/${selectedLocation.locationPrefix}`)
+    const subLocationChar = selectedLocation.subLocations ? '-' : ''
+    res.redirect(`/incentive-summary/${selectedLocation.locationPrefix}${subLocationChar}`)
   })
 
   return router

@@ -58,6 +58,7 @@ export default {
             locationPrefix: 'MDI-2',
             operationalCapacity: 200,
             userDescription: 'Houseblock 2',
+            subLocations: true,
           },
           {
             locationId: 42,
@@ -68,6 +69,7 @@ export default {
             locationPrefix: 'MDI-42',
             operationalCapacity: 200,
             userDescription: 'Houseblock 42',
+            subLocations: true,
           },
         ],
       },

@@ -203,7 +203,7 @@ export default {
       request: {
         method: 'GET',
         urlPattern:
-          '/incentivesApi/incentives-reviews/prison/MDI/location/MDI-42/level/BAS\\?sort=NEXT_REVIEW_DATE&order=ASC&page=0&pageSize=20',
+          '/incentivesApi/incentives-reviews/prison/MDI/location/MDI-42-/level/BAS\\?sort=NEXT_REVIEW_DATE&order=ASC&page=0&pageSize=20',
       },
       response: {
         status: 200,
@@ -257,7 +257,7 @@ export default {
       request: {
         method: 'GET',
         urlPattern:
-          '/incentivesApi/incentives-reviews/prison/MDI/location/MDI-42/level/STD\\?sort=NEXT_REVIEW_DATE&order=ASC&page=0&pageSize=20',
+          '/incentivesApi/incentives-reviews/prison/MDI/location/MDI-42-/level/STD\\?sort=NEXT_REVIEW_DATE&order=ASC&page=0&pageSize=20',
       },
       response: {
         status: 200,
@@ -311,7 +311,7 @@ export default {
       request: {
         method: 'GET',
         urlPattern:
-          '/incentivesApi/incentives-reviews/prison/MDI/location/MDI-42/level/BAS\\?sort=DAYS_SINCE_LAST_REVIEW&order=ASC&page=0&pageSize=20',
+          '/incentivesApi/incentives-reviews/prison/MDI/location/MDI-42-/level/BAS\\?sort=DAYS_SINCE_LAST_REVIEW&order=ASC&page=0&pageSize=20',
       },
       response: {
         status: 200,

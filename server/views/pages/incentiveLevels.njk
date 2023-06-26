@@ -29,12 +29,14 @@
 
         {% set changeAction -%}
           {% if not incentiveLevel.required %}
-            <a href="/incentive-levels/status/{{ incentiveLevel.code }}">Change status</a>
+            <a href="/incentive-levels/status/{{ incentiveLevel.code }}" aria-describedby="incentive-level-{{ loop.index0 }}">
+              Change status
+            </a>
           {% endif %}
         {%- endset %}
 
         {% set row = [
-          { text: incentiveLevel.name },
+          { text: incentiveLevel.name, attributes: { id: "incentive-level-" + loop.index0 } },
           { text: incentiveLevel.code },
           { html: statusHtml }
         ] %}

@@ -3,7 +3,7 @@
 <div class="govuk-width-container">
   {% if breadcrumbs %}
     {{ govukBreadcrumbs({
-      items: breadcrumbs.getItems()
+      items: breadcrumbs.items
     }) }}
   {% else %}
     {{ govukBreadcrumbs({

@@ -5,10 +5,6 @@ export default class PrisonIncentiveLevelNextAddFormPage extends Page {
     super(`Add ${levelName}`)
   }
 
-  checkLastBreadcrumb() {
-    this.breadcrumbs.last().should('contain.text', this.title)
-  }
-
   get form(): PageElement<HTMLFormElement> {
     // NB: reuses same form as PrisonIncentiveLevelAddFormPage
     return cy.get('#form-prisonIncentiveLevelAddForm')

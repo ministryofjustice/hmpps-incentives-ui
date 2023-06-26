@@ -346,11 +346,11 @@ describe('Reviews table', () => {
         expect(nextReviewDateCell.textContent).toContain('12 July 2022')
         expect(nextReviewDateCell.textContent).toContain('89 days overdue')
         expect(daysSinceLastReviewCell.textContent).toContain('37 days ago')
-        expect(positiveBehavioursCell.textContent.trim()).toEqual('3')
+        expect(positiveBehavioursCell.textContent).toContain('3 positive behaviour case notes')
         expect(positiveBehavioursCell.innerHTML).toContain(
           '/prisoner/G6123VU/case-notes?type=POS&amp;fromDate=09/07/2022',
         )
-        expect(negativeBehavioursCell.textContent.trim()).toEqual('2')
+        expect(negativeBehavioursCell.textContent).toContain('2 negative behaviour case notes')
         expect(negativeBehavioursCell.innerHTML).toContain(
           '/prisoner/G6123VU/case-notes?type=NEG&amp;fromDate=09/07/2022',
         )

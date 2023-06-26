@@ -100,6 +100,8 @@ export default function routes(router: Router): Router {
       selectedLevelDescription,
       tableHead,
       reviews: response.reviews,
+      page,
+      pageCount,
       paginationParams,
       sort,
       order,

@@ -66,7 +66,7 @@ describe('POST /select-location', () => {
         .send({ locationPrefix: 'MDI-42' })
         .expect(res => {
           expect(res.redirect).toBeTruthy()
-          expect(res.headers.location).toBe('/incentive-summary/MDI-42-')
+          expect(res.headers.location).toBe('/incentive-summary/MDI-42')
         })
     })
   })

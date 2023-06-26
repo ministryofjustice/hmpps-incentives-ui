@@ -1,7 +1,24 @@
+export type PaginationPreviousOrNext = {
+  href: string
+  text?: string
+  attributes?: Record<string, string>
+}
+
+export type PaginationItem =
+  | {
+      number: number
+      href: string
+      current?: boolean
+    }
+  | {
+      ellipsis: true
+    }
+
 export type Pagination = {
-  previous?: { href: string }
-  next?: { href: string }
-  items?: ({ number: number; href: string; current?: boolean } | { ellipsis: true })[]
+  previous?: PaginationPreviousOrNext
+  items?: PaginationItem[]
+  next?: PaginationPreviousOrNext
+  landmarkLabel?: string
 }
 
 /**
@@ -44,14 +61,14 @@ export function pagination(page: number, pageCount: number, hrefPrefix: string):
 
   params.items = pages.map((somePage: number | null) => {
     if (somePage) {
-      const p: Pagination['items'][number] = {
+      const item: PaginationItem = {
         number: somePage,
         href: `${hrefPrefix}page=${somePage}`,
       }
       if (somePage === page) {
-        p.current = true
+        item.current = true
       }
-      return p
+      return item
     }
     return { ellipsis: true }
   })

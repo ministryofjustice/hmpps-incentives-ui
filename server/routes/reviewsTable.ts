@@ -88,6 +88,17 @@ export default function routes(router: Router): Router {
     const pageCount = Math.ceil(reviewCount / PAGE_SIZE)
     const paginationUrlPrefix = `?level=${selectedLevelCode}&sort=${sort}&order=${order}&`
     const paginationParams = pagination(page, pageCount, paginationUrlPrefix)
+    paginationParams.landmarkLabel = 'Incentive level review details'
+    if (paginationParams.previous) {
+      paginationParams.previous.attributes = {
+        'aria-label': 'Previous page of prisoner details and review status',
+      }
+    }
+    if (paginationParams.next) {
+      paginationParams.next.attributes = {
+        'aria-label': 'Next page of prisoner details and review status',
+      }
+    }
 
     res.render('pages/reviewsTable', {
       dpsUrl: config.dpsUrl,

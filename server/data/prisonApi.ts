@@ -10,6 +10,7 @@ export interface Location {
   operationalCapacity?: number
   locationPrefix: string
   userDescription?: string
+  subLocations?: boolean
 }
 
 export interface Agency {

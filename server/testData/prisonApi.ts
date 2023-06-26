@@ -25,6 +25,7 @@ export function getTestLocation({
   locationId?: number
   locationPrefix?: string
   userDescription?: string
+  subLocations: true
 }): Location {
   return {
     agencyId,

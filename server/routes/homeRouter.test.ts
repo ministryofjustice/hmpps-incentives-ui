@@ -55,6 +55,7 @@ beforeEach(() => {
       agencyId: 'MDI',
       locationPrefix: 'MDI-1',
       userDescription: 'Houseblock 1',
+      subLocations: true,
     }),
   ])
 

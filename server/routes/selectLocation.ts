@@ -37,13 +37,15 @@ export default function routes(router: Router): Router {
     const allLocations: Array<Location> = await prisonApi.getUserLocations()
     const selectedLocation = allLocations.find(location => location.locationPrefix === locationPrefix)
 
+    const subLocationChar = selectedLocation.subLocations ? '-' : ''
+
     if (!selectedLocation) {
       logger.error(req.originalUrl, 'location not part of active case load')
       res.redirect('/select-location')
       return
     }
 
-    res.redirect(`/incentive-summary/${selectedLocation.locationPrefix}`)
+    res.redirect(`/incentive-summary/${selectedLocation.locationPrefix}${subLocationChar}`)
   })
 
   return router

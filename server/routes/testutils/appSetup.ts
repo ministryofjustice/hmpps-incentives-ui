@@ -31,6 +31,7 @@ const testLocation: Location = getTestLocation({
   agencyId: 'MDI',
   locationPrefix: 'MDI-2',
   userDescription: 'Houseblock 2',
+  subLocations: true,
 })
 
 class MockUserService extends UserService {

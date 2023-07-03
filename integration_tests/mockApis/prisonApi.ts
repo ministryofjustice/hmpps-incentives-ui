@@ -41,7 +41,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/prisonApi/api/users/me/locations',
+        urlPattern: '/prisonApi/api/users/me/locations?include-non-residential-locations=true',
       },
       response: {
         status: 200,

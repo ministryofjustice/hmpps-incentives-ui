@@ -68,6 +68,11 @@ export default {
   s3: {
     region: get('S3_REGION', 'eu-west-1', notRequiredInProduction),
     bucket: get('S3_BUCKET_NAME', 'example-bucket', requiredInProduction),
+    /**
+     * NB: the IAM access key is _not_ available to apps running in Cloud Platform,
+     * IRSA is used instead for read-only access to the bucket.
+     * For running locally and for integration testing, minio is used with an IAM access key.
+     */
     accessKeyId: get('S3_ACCESS_KEY_ID', null, notRequiredInProduction),
     secretAccessKey: get('S3_SECRET_ACCESS_KEY', null, notRequiredInProduction),
     endpoint: get('S3_ENDPOINT', null, notRequiredInProduction),

@@ -53,11 +53,6 @@ context('Analytics section > Protected characteristics page', () => {
     cy.title().should('eq', 'Manage incentives – Protected characteristics (Age) – Prison')
   })
 
-  it('has feedback banner', () => {
-    cy.get('.app-feedback-banner').contains('help us to improve it')
-    cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/analytics-feedback')
-  })
-
   it('selector allows user to change protected characteristic', () => {
     cy.get('#characteristic').select('Sexual orientation')
     cy.get('#form-select-characteristic button').click()

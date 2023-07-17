@@ -149,9 +149,5 @@ export default {
     precacheTables: flag('FEATURE_PRECACHE_TABLES', false),
   },
   analyticsDataStaleAferDays: Number(get('ANALYTICS_DATA_STALE_AFTER_DAYS', 0)),
-  feedbackUrl: get('FEEDBACK_URL', ''),
-  feedbackUrlForAnalytics: get('FEEDBACK_URL_ANALYTICS', ''),
-  feedbackUrlForTable: get('FEEDBACK_URL_TABLE', ''),
-  feedbackUrlForReviewsTable: get('FEEDBACK_URL_REVIEWS_TABLE', ''),
   phaseName: get('PHASE_NAME', ''),
 }

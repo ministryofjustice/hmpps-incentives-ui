@@ -59,11 +59,6 @@ context('Manage incentive reviews', () => {
     cy.title().should('eq', 'Manage incentives – Manage incentive reviews')
   })
 
-  it('has feedback banner', () => {
-    cy.get('.app-feedback-banner').contains('help us to improve it')
-    cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/table-feedback')
-  })
-
   it('users will see selected location or select alternative', () => {
     cy.get('.govuk-main-wrapper').contains('Houseblock 42')
   })

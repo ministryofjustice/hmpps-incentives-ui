@@ -29,11 +29,6 @@ context('Analytics section > Incentive levels page', () => {
     cy.title().should('eq', 'Manage incentives – Incentive levels – Prison')
   })
 
-  it('has feedback banner', () => {
-    cy.get('.app-feedback-banner').contains('help us to improve it')
-    cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/analytics-feedback')
-  })
-
   it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsIncentiveLevels)
 

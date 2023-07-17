@@ -54,7 +54,6 @@ export const protectedCharacteristicRoutes = {
  */
 function templateContext(req: Request): Record<string, unknown> {
   return {
-    feedbackUrl: config.feedbackUrlForAnalytics || config.feedbackUrl,
     messages: req.flash(),
   }
 }

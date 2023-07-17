@@ -31,11 +31,6 @@ context('Analytics section > Behaviour entries page', () => {
     cy.title().should('eq', 'Manage incentives – Behaviour entries – Prison')
   })
 
-  it('has feedback banner', () => {
-    cy.get('.app-feedback-banner').contains('help us to improve it')
-    cy.get('.app-feedback-banner a').invoke('attr', 'href').should('equal', 'https://example.com/analytics-feedback')
-  })
-
   it('users see analytics', () => {
     const page = Page.verifyOnPage(AnalyticsBehaviourEntries)
 

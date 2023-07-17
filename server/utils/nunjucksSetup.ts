@@ -26,7 +26,6 @@ export default function nunjucksSetup(app: express.Express): void {
 
   app.locals.dpsHome = config.dpsUrl
   app.locals.supportUrl = config.supportUrl
-  app.locals.feedbackUrl = config.feedbackUrl
 
   // Cachebusting version string
   if (config.production) {

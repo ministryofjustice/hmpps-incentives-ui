@@ -37,7 +37,7 @@
     {
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/node"],
-      "allowedVersions": "18.16-browsers"
+      "allowedVersions": "18.17-browsers"
     },
     {
       "matchDatasources": ["orb"],

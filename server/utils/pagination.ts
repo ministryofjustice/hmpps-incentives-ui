@@ -24,13 +24,18 @@ export type Pagination = {
 /**
  * Produces parameters for GOV.UK Pagination component macro
  * NB: `page` starts at 1
+ *
+ * Accessibility notes:
+ * - set `landmarkLabel` on the returned object otherwise the navigation box is announced as "results"
+ * - set `previous.attributes.aria-label` and `next.attributes.aria-label` on the returned object if "Previous" and "Next" are not clear enough
  */
 export function pagination(page: number, pageCount: number, hrefPrefix: string): Pagination {
-  if (pageCount <= 1) {
-    return {}
+  const params: Pagination = {}
+
+  if (!pageCount || pageCount <= 1) {
+    return params
   }
 
-  const params: Pagination = {}
   if (page !== 1) {
     params.previous = {
       href: `${hrefPrefix}page=${page - 1}`,
@@ -59,7 +64,7 @@ export function pagination(page: number, pageCount: number, hrefPrefix: string):
     pages.push(maxPage + 1, null, pageCount - 1, pageCount)
   }
 
-  params.items = pages.map((somePage: number | null) => {
+  params.items = pages.map((somePage: number | null): PaginationItem => {
     if (somePage) {
       const item: PaginationItem = {
         number: somePage,

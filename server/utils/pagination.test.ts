@@ -1,6 +1,10 @@
 import { type Pagination, pagination } from './pagination'
 
 describe('pagination', () => {
+  it('should be empty when there are no pages', () => {
+    expect(pagination(1, 0, '?a=b&')).toEqual<Pagination>({})
+  })
+
   it('should be empty when there’s only 1 page', () => {
     expect(pagination(1, 1, '?a=b&')).toEqual<Pagination>({})
   })

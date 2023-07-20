@@ -25,7 +25,7 @@ export class PrisonApi extends RestClient {
     super('HMPPS Prison API', config.apis.hmppsPrisonApi, token)
   }
 
-  getImageByPrisonerNumber(prisonerNumber: string): Promise<unknown> {
+  getImageByPrisonerNumber(prisonerNumber: string): Promise<Buffer> {
     return this.get({
       path: `/api/bookings/offenderNo/${prisonerNumber}/image/data?fullSizeImage=false`,
       handle404: true,

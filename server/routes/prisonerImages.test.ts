@@ -8,13 +8,15 @@ import UserService from '../services/userService'
 jest.mock('../data/prisonApi')
 jest.mock('../services/userService')
 
+const imageData = Buffer.from('image 123 data')
+
 let app: Express
 let prisonApi: jest.Mocked<PrisonApi>
 let userService: jest.Mocked<UserService>
 
 beforeEach(() => {
   prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getImageByPrisonerNumber.mockResolvedValue('image 123 data')
+  prisonApi.getImageByPrisonerNumber.mockResolvedValue(imageData)
 
   userService = UserService.prototype as jest.Mocked<UserService>
 
@@ -28,24 +30,24 @@ afterEach(() => {
 describe('GET /prisoner-images/:prisonerNumber.jpeg', () => {
   it('responds with the image data', () => {
     const prisonerNumber = 'A1234AB'
-    const secondsInWeek = 604800
+    const oneDay = 86400 as const
 
     return request(app)
       .get(`/prisoner-images/${prisonerNumber}.jpeg`)
-      .expect('Content-Type', /images\/jpeg/)
+      .expect('Content-Type', /image\/jpeg/)
       .expect(res => {
         expect(prisonApi.getImageByPrisonerNumber).toBeCalledWith(prisonerNumber)
 
         expect(res.statusCode).toBe(200)
-        expect(res.headers['cache-control']).toEqual(`private, max-age=${secondsInWeek}`)
-        expect(res.text).toEqual('image 123 data')
+        expect(res.headers['cache-control']).toEqual(`private, max-age=${oneDay}`)
+        expect(res.body).toEqual(imageData)
       })
   })
 
   it('does not trigger getUser()', () => {
     return request(app)
       .get(`/prisoner-images/123.jpeg`)
-      .expect('Content-Type', /images\/jpeg/)
+      .expect('Content-Type', /image\/jpeg/)
       .expect(res => {
         expect(userService.getUser).toBeCalledTimes(0)
       })

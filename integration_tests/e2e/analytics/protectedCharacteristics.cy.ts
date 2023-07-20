@@ -46,6 +46,7 @@ context('Analytics section > Protected characteristics page', () => {
     const homePage = Page.verifyOnPage(HomePage)
     homePage.viewAnalyticsLink().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 
@@ -230,6 +231,7 @@ context('Pgd Region selection > National > Analytics section > Protected charact
     locationSelectionPage.changePgdRegionSelect().select('National')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 
@@ -391,6 +393,7 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
     locationSelectionPage.changePgdRegionSelect().select('LTHS')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 

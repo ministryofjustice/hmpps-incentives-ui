@@ -18,6 +18,7 @@ context('About Analytics page', () => {
 
   it('users can submit feedback', () => {
     let page = Page.verifyOnPage(AboutAnalyticsPage)
+    page.checkLastBreadcrumb('Manage incentives', '/')
 
     // leave some comments and submit
     page.feedbackForm.find('[name=informationUseful][value=no]').click()

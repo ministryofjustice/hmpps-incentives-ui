@@ -129,8 +129,6 @@ export default function routes(router: Router): Router {
     'trends-entries',
   ]
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
-    res.locals.breadcrumbs.addItems({ text: 'Behaviour entries', href: req.originalUrl })
-
     const { pgdRegionCode } = req.params as { pgdRegionCode: PgdRegionCode }
     const activeCaseLoad = res.locals.user.activeCaseload.id
     const analyticsView = new AnalyticsView(pgdRegionCode, 'behaviour-entries', activeCaseLoad)
@@ -160,8 +158,6 @@ export default function routes(router: Router): Router {
 
   const incentiveLevelChartIds: ChartId[] = ['incentive-levels-by-location', 'trends-incentive-levels']
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
-    res.locals.breadcrumbs.addItems({ text: 'Incentive levels', href: req.originalUrl })
-
     const { pgdRegionCode } = req.params as { pgdRegionCode: PgdRegionCode }
     const activeCaseLoad = res.locals.user.activeCaseload.id
     const analyticsView = new AnalyticsView(pgdRegionCode, 'incentive-levels', activeCaseLoad)
@@ -223,8 +219,6 @@ export default function routes(router: Router): Router {
     'prisoners-with-entries-by-sexual-orientation',
   ]
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
-    res.locals.breadcrumbs.addItems({ text: 'Protected characteristics', href: req.originalUrl })
-
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
     const { pgdRegionCode } = req.params as { pgdRegionCode: PgdRegionCode }

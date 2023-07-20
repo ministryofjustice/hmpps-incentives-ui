@@ -65,6 +65,8 @@ context('Manage incentive reviews', () => {
 
   it('has reviews table', () => {
     const page = Page.verifyOnPage(ReviewsTablePage)
+    page.checkLastBreadcrumb('Manage incentives', '/')
+
     page
       .getReviewsTable()
       .first()

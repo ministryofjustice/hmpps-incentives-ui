@@ -24,6 +24,7 @@ context('Analytics section > Behaviour entries page', () => {
     const homePage = Page.verifyOnPage(HomePage)
     homePage.viewAnalyticsLink().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
     analyticsPage.behaviourEntriesNavItem.click()
   })
 
@@ -126,6 +127,7 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
     locationSelectionPage.changePgdRegionSelect().select('National')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
     analyticsPage.behaviourEntriesNavItem.click()
   })
 
@@ -227,6 +229,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
     locationSelectionPage.changePgdRegionSelect().select('LTHS')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
     analyticsPage.behaviourEntriesNavItem.click()
   })
 

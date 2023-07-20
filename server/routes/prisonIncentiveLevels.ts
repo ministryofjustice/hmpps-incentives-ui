@@ -22,6 +22,11 @@ export const managePrisonIncentiveLevelsRole = 'ROLE_MAINTAIN_PRISON_IEP_LEVELS'
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
+  router.use((req, res, next) => {
+    res.locals.breadcrumbs.addItems({ text: 'Incentive level settings', href: '/prison-incentive-levels' })
+    next()
+  })
+
   /*
    * List of active incentive levels in the prison
    */
@@ -82,7 +87,6 @@ export default function routes(router: Router): Router {
       }
     }
 
-    res.locals.breadcrumbs.addItems({ text: 'Incentive level settings', href: req.originalUrl })
     res.render('pages/prisonIncentiveLevels.njk', {
       messages: req.flash(),
       prisonIncentiveLevels: prisonIncentiveLevelsWithRequiredFlag,
@@ -105,10 +109,6 @@ export default function routes(router: Router): Router {
       incentivesApi.getPrisonIncentiveLevel(prisonId, levelCode),
     ])
 
-    res.locals.breadcrumbs.addItems(
-      { text: 'Incentive level settings', href: '/prison-incentive-levels' },
-      { text: `View settings for ${prisonIncentiveLevel.levelName}`, href: req.originalUrl },
-    )
     res.render('pages/prisonIncentiveLevel.njk', {
       messages: req.flash(),
       incentiveLevel,
@@ -216,10 +216,6 @@ export default function routes(router: Router): Router {
         throw BadRequest('Incentive level is required globally')
       }
 
-      res.locals.breadcrumbs.addItems(
-        { text: 'Incentive level settings', href: '/prison-incentive-levels' },
-        { text: 'Remove an incentive level', href: req.originalUrl },
-      )
       res.render('pages/prisonIncentiveLevelDeactivateForm.njk', {
         messages: req.flash(),
         form,
@@ -340,10 +336,6 @@ export default function routes(router: Router): Router {
         })
       }
 
-      res.locals.breadcrumbs.addItems(
-        { text: 'Incentive level settings', href: '/prison-incentive-levels' },
-        { text: `Change settings for ${prisonIncentiveLevel.levelName}`, href: req.originalUrl },
-      )
       res.render('pages/prisonIncentiveLevelEditForm.njk', {
         messages: req.flash(),
         form,
@@ -458,10 +450,6 @@ export default function routes(router: Router): Router {
         throw NotFound(`Level "${levelCode}" is not available to add`)
       }
 
-      res.locals.breadcrumbs.addItems(
-        { text: 'Incentive level settings', href: '/prison-incentive-levels' },
-        { text: incentiveLevel ? `Add ${incentiveLevel.name}` : 'Add a new incentive level', href: req.originalUrl },
-      )
       res.render(
         incentiveLevel ? 'pages/prisonIncentiveLevelNextAddForm.njk' : 'pages/prisonIncentiveLevelAddForm.njk',
         {

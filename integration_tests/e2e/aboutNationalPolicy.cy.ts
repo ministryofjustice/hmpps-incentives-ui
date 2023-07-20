@@ -15,7 +15,8 @@ context('About National policy page', () => {
   })
 
   it('contains a summary of the National incentives policy', () => {
-    Page.verifyOnPage(AboutNationalPolicyPage)
+    const page = Page.verifyOnPage(AboutNationalPolicyPage)
+    page.checkLastBreadcrumb('Manage incentives', '/')
 
     cy.get('p').contains(
       'The national incentives policy framework (2020) is designed to help prisons incentivise good behaviour.',

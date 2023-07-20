@@ -17,7 +17,7 @@ context('Getting a prisoner image', () => {
       cy.request('/prisoner-images/123.jpeg').then(resp => {
         expect(resp.redirectedToUrl).to.eq(undefined)
         expect(resp.status).to.eq(200)
-        expect(resp.headers['content-type']).to.eq('images/jpeg')
+        expect(resp.headers['content-type']).to.eq('image/jpeg')
       })
     })
   })

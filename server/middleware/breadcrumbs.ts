@@ -9,7 +9,7 @@ class Breadcrumbs {
     this.breadcrumbs = [
       {
         text: 'Digital Prison Services',
-        href: res.app.locals.dpsHome,
+        href: res.app.locals.dpsUrl,
       },
       {
         text: 'Manage incentives',

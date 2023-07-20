@@ -24,7 +24,7 @@ export default function nunjucksSetup(app: express.Express): void {
   app.locals.googleAnalyticsGa4Id = config.googleAnalytics.ga4MeasurementId
   app.locals.hotjarSiteId = config.hotjar.siteId
 
-  app.locals.dpsHome = config.dpsUrl
+  app.locals.dpsUrl = config.dpsUrl
   app.locals.supportUrl = config.supportUrl
 
   // Cachebusting version string

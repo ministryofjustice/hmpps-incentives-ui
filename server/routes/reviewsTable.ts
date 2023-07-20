@@ -39,8 +39,6 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', async (req, res) => {
-    res.locals.breadcrumbs.addItems({ text: 'Manage incentive reviews', href: req.originalUrl })
-
     const { user } = res.locals
     const { locationPrefix } = req.params
     let { level: selectedLevelCode }: { level?: string } = req.query

@@ -25,7 +25,8 @@ context('Incentive level management', () => {
     homePage.manageIncentiveLevelsLink().click()
 
     const listPage = Page.verifyOnPage(IncentiveLevelsPage)
-    listPage.checkLastBreadcrumb()
+    listPage.checkLastBreadcrumb('Global incentive level admin', '/incentive-levels')
+
     listPage.contentsOfTable.should(
       'have.all.key',
       'Basic',
@@ -52,7 +53,7 @@ context('Incentive level management', () => {
     listPage.createLink.click()
 
     const createPage = Page.verifyOnPage(IncentiveLevelCreateFormPage)
-    createPage.checkLastBreadcrumb()
+    createPage.checkLastBreadcrumb('Global incentive level admin', '/incentive-levels')
 
     createPage.form.submit() // empty form
     Page.verifyOnPage(IncentiveLevelCreateFormPage)
@@ -88,7 +89,7 @@ context('Incentive level management', () => {
     listPage.findTableLink(4, 'Change status').click()
 
     const statusPage = Page.verifyOnPage(IncentiveLevelStatusFormPage)
-    statusPage.checkLastBreadcrumb()
+    statusPage.checkLastBreadcrumb('Global incentive level admin', '/incentive-levels')
 
     statusPage.statusRadios.eq(1).find('label').click()
     statusPage.form.submit()

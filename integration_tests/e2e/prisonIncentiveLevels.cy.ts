@@ -29,14 +29,16 @@ context('Prison incentive level management', () => {
     homePage.managePrisonIncentiveLevelsLink().click()
 
     const listPage = Page.verifyOnPage(PrisonIncentiveLevelsPage)
-    listPage.checkLastBreadcrumb()
+    listPage.checkLastBreadcrumb('Incentive level settings', '/prison-incentive-levels')
+
     listPage.contentsOfTable.should('have.all.key', 'Basic', 'Standard', 'Enhanced')
     listPage.contentsOfTable.its('Standard').its('tags').should('contain', 'Default')
 
     listPage.findTableLink(1, 'View settings').click()
 
     const detailPage = Page.verifyOnPage(PrisonIncentiveLevelPage, 'Standard')
-    detailPage.checkLastBreadcrumb()
+    detailPage.checkLastBreadcrumb('Incentive level settings', '/prison-incentive-levels')
+
     detailPage.contentsOfTables
       .should('have.length', 4)
       .should('deep.equal', [
@@ -67,7 +69,7 @@ context('Prison incentive level management', () => {
     listPage.addLink.click()
 
     const addPage = Page.verifyOnPage(PrisonIncentiveLevelNextAddFormPage, 'Enhanced 2')
-    addPage.checkLastBreadcrumb()
+    addPage.checkLastBreadcrumb('Incentive level settings', '/prison-incentive-levels')
 
     addPage.form.submit() // empty form
     Page.verifyOnPage(PrisonIncentiveLevelNextAddFormPage, 'Enhanced 2')
@@ -117,7 +119,7 @@ context('Prison incentive level management', () => {
     listPage.findTableLink(3, 'Remove level').click()
 
     let deactivatePage = Page.verifyOnPage(PrisonIncentiveLevelDeactivateFormPage)
-    deactivatePage.checkLastBreadcrumb()
+    deactivatePage.checkLastBreadcrumb('Incentive level settings', '/prison-incentive-levels')
 
     deactivatePage.form.submit() // empty form
     Page.verifyOnPage(PrisonIncentiveLevelDeactivateFormPage)
@@ -153,7 +155,7 @@ context('Prison incentive level management', () => {
     detailPage.changeLink.click()
 
     const editPage = Page.verifyOnPage(PrisonIncentiveLevelEditFormPage, 'Basic')
-    editPage.checkLastBreadcrumb()
+    editPage.checkLastBreadcrumb('Incentive level settings', '/prison-incentive-levels')
 
     editPage.getInputField('convictedTransferLimit').clear()
     editPage.form.submit() // 1 invalid field

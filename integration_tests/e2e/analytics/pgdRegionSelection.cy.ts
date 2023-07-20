@@ -17,6 +17,7 @@ context('Prison group selection', () => {
 
   it('user can select national', () => {
     const locationSelectionPage = Page.verifyOnPage(PgdRegionSelection)
+    locationSelectionPage.checkLastBreadcrumb('Manage incentives', '/')
     locationSelectionPage.changePgdRegionSelect().select('National')
     locationSelectionPage.continueButton().click()
 

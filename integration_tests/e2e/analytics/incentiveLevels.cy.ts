@@ -22,7 +22,8 @@ context('Analytics section > Incentive levels page', () => {
 
     const homePage = Page.verifyOnPage(HomePage)
     homePage.viewAnalyticsLink().click()
-    Page.verifyOnPage(AnalyticsIncentiveLevels)
+    const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
   })
 
   it('has correct title', () => {
@@ -98,7 +99,8 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
     const locationSelectionPage = Page.verifyOnPage(PgdRegionSelection)
     locationSelectionPage.changePgdRegionSelect().select('National')
     locationSelectionPage.continueButton().click()
-    Page.verifyOnPage(AnalyticsIncentiveLevels)
+    const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
   })
 
   it('has correct title', () => {
@@ -180,7 +182,8 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
     const locationSelectionPage = Page.verifyOnPage(PgdRegionSelection)
     locationSelectionPage.changePgdRegionSelect().select('LTHS')
     locationSelectionPage.continueButton().click()
-    Page.verifyOnPage(AnalyticsIncentiveLevels)
+    const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
+    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
   })
 
   it('has correct title', () => {

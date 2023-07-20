@@ -14,6 +14,7 @@ context('Home page', () => {
   it('should open card when clicked anywhere inside', () => {
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
+    homePage.checkLastBreadcrumb('Digital Prison Service', 'http://localhost:3000')
     homePage.cards.last().find('.dps-card__description').contains('Information on how we collect').click()
     Page.verifyOnPage(AboutAnalyticsPage)
   })

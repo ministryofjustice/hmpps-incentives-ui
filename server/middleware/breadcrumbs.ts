@@ -18,6 +18,10 @@ class Breadcrumbs {
     ]
   }
 
+  popLastItem(): Breadcrumb {
+    return this.breadcrumbs.pop()
+  }
+
   addItems(...items: Breadcrumb[]): void {
     this.breadcrumbs.push(...items)
   }

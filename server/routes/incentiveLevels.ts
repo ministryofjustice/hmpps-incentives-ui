@@ -31,6 +31,7 @@ export default function routes(router: Router): Router {
     const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
     const canChangeStatus = incentiveLevels.some(incentiveLevel => !incentiveLevel.required)
 
+    res.locals.breadcrumbs.popLastItem()
     res.render('pages/incentiveLevels.njk', { messages: req.flash(), incentiveLevels, canChangeStatus })
   })
 

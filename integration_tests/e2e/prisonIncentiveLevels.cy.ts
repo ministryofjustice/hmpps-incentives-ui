@@ -29,7 +29,7 @@ context('Prison incentive level management', () => {
     homePage.managePrisonIncentiveLevelsLink().click()
 
     const listPage = Page.verifyOnPage(PrisonIncentiveLevelsPage)
-    listPage.checkLastBreadcrumb('Incentive level settings', '/prison-incentive-levels')
+    listPage.checkLastBreadcrumb('Manage incentives', '/')
 
     listPage.contentsOfTable.should('have.all.key', 'Basic', 'Standard', 'Enhanced')
     listPage.contentsOfTable.its('Standard').its('tags').should('contain', 'Default')

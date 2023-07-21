@@ -87,6 +87,7 @@ export default function routes(router: Router): Router {
       }
     }
 
+    res.locals.breadcrumbs.popLastItem()
     res.render('pages/prisonIncentiveLevels.njk', {
       messages: req.flash(),
       prisonIncentiveLevels: prisonIncentiveLevelsWithRequiredFlag,

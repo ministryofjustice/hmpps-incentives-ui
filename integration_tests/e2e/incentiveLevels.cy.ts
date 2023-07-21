@@ -25,7 +25,7 @@ context('Incentive level management', () => {
     homePage.manageIncentiveLevelsLink().click()
 
     const listPage = Page.verifyOnPage(IncentiveLevelsPage)
-    listPage.checkLastBreadcrumb('Global incentive level admin', '/incentive-levels')
+    listPage.checkLastBreadcrumb('Manage incentives', '/')
 
     listPage.contentsOfTable.should(
       'have.all.key',

@@ -1,5 +1,6 @@
-import type { GetObjectOutput, ListObjectsV2Output } from '@aws-sdk/client-s3'
 import { Readable } from 'stream'
+
+import type { GetObjectOutput, ListObjectsV2Output } from '@aws-sdk/client-s3'
 
 import S3Client from './s3Client'
 

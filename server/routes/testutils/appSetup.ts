@@ -5,6 +5,7 @@ import { NotFound } from 'http-errors'
 
 import allRoutes from '../all'
 import breadcrumbs from '../../middleware/breadcrumbs'
+import setUpProductInfo from '../../middleware/setUpProductInfo'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import UserService from '../../services/userService'
@@ -91,6 +92,7 @@ function appSetup(
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
+  app.use(setUpProductInfo())
   app.use(breadcrumbs())
 
   // App routes

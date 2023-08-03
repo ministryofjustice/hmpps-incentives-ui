@@ -36,12 +36,14 @@ export interface ApiConfig {
 
 export interface ApplicationInfo {
   applicationName: string
+  productId: string
   buildNumber: string
   gitRef: string
 }
 
 const applicationInfo: ApplicationInfo = {
   applicationName: 'hmpps-incentives-ui',
+  productId: get('PRODUCT_ID', 'DPS???', requiredInProduction),
   buildNumber: get('BUILD_NUMBER', '2022-01-07.1.ef03202', requiredInProduction),
   gitRef: get('GIT_REF', 'unknown', requiredInProduction),
 }

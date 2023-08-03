@@ -1,6 +1,7 @@
 ---
 generic-service:
   nameOverride: hmpps-incentives-ui
+  productId: DPS020
 
   replicaCount: 4
 

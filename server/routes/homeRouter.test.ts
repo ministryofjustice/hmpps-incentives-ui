@@ -136,7 +136,7 @@ describe('Home page', () => {
         })
     })
 
-    it('shows tile to incentive levels if user has appropriate role', () => {
+    it('shows tile to manage incentive levels if user has appropriate role', () => {
       return request(app)
         .get('/')
         .set('Authorization', `Bearer ${createUserToken(['ROLE_MAINTAIN_INCENTIVE_LEVELS'])}`)

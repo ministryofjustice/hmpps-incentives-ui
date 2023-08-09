@@ -23,11 +23,11 @@ context('Analytics section > Incentive levels page', () => {
     const homePage = Page.verifyOnPage(HomePage)
     homePage.viewAnalyticsLink().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
+    analyticsPage.checkLastBreadcrumb('Incentives', '/')
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Incentive levels – Prison')
+    cy.title().should('eq', 'Incentives – Incentive levels – Prison')
   })
 
   it('users see analytics', () => {
@@ -100,11 +100,11 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
     locationSelectionPage.changePgdRegionSelect().select('National')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
+    analyticsPage.checkLastBreadcrumb('Incentives', '/')
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Incentive levels – National')
+    cy.title().should('eq', 'Incentives – Incentive levels – National')
   })
 
   it('users see analytics', () => {
@@ -183,11 +183,11 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
     locationSelectionPage.changePgdRegionSelect().select('LTHS')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
+    analyticsPage.checkLastBreadcrumb('Incentives', '/')
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Incentive levels – Long-term and high security')
+    cy.title().should('eq', 'Incentives – Incentive levels – Long-term and high security')
   })
 
   it('users see analytics', () => {

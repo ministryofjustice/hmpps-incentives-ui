@@ -24,12 +24,12 @@ context('Analytics section > Behaviour entries page', () => {
     const homePage = Page.verifyOnPage(HomePage)
     homePage.viewAnalyticsLink().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
+    analyticsPage.checkLastBreadcrumb('Incentives', '/')
     analyticsPage.behaviourEntriesNavItem.click()
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Behaviour entries – Prison')
+    cy.title().should('eq', 'Incentives – Behaviour entries – Prison')
   })
 
   it('users see analytics', () => {
@@ -127,12 +127,12 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
     locationSelectionPage.changePgdRegionSelect().select('National')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
+    analyticsPage.checkLastBreadcrumb('Incentives', '/')
     analyticsPage.behaviourEntriesNavItem.click()
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Behaviour entries – National')
+    cy.title().should('eq', 'Incentives – Behaviour entries – National')
   })
 
   it('users see analytics', () => {
@@ -229,12 +229,12 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
     locationSelectionPage.changePgdRegionSelect().select('LTHS')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
+    analyticsPage.checkLastBreadcrumb('Incentives', '/')
     analyticsPage.behaviourEntriesNavItem.click()
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Behaviour entries – Long-term and high security')
+    cy.title().should('eq', 'Incentives – Behaviour entries – Long-term and high security')
   })
 
   it('users see analytics', () => {

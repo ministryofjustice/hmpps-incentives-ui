@@ -13,7 +13,7 @@ export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
-  app.locals.applicationName = 'Manage incentives'
+  app.locals.applicationName = 'Incentives'
   app.locals.production = config.production
   app.locals.environment = config.environment
   app.locals.featureFlags = config.featureFlags

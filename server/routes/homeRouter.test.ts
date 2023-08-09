@@ -147,7 +147,7 @@ describe('Home page', () => {
         })
     })
 
-    it('shows tile to incentive levels if user has appropriate role even without having any locations in active case load', () => {
+    it('shows tile to manage incentive levels if user has appropriate role even without having any locations in active case load', () => {
       prisonApi.getUserLocations.mockResolvedValue([])
 
       return request(app)

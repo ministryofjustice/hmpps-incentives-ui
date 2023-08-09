@@ -20,7 +20,7 @@ context('Manage incentives (select a location)', () => {
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Select a location')
+    cy.title().should('eq', 'Incentives – Select a location')
   })
 
   it('user sees correct locations for their active case load', () => {
@@ -56,7 +56,7 @@ context('Manage incentive reviews', () => {
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Manage incentive reviews')
+    cy.title().should('eq', 'Incentives – Manage incentive reviews')
   })
 
   it('users will see selected location or select alternative', () => {
@@ -65,7 +65,7 @@ context('Manage incentive reviews', () => {
 
   it('has reviews table', () => {
     const page = Page.verifyOnPage(ReviewsTablePage)
-    page.checkLastBreadcrumb('Manage incentives', '/')
+    page.checkLastBreadcrumb('Incentives', '/')
 
     page
       .getReviewsTable()

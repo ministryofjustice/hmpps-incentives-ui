@@ -2,7 +2,7 @@ import Page, { type PageElement } from './page'
 
 export default class HomePage extends Page {
   constructor() {
-    super('Manage incentives')
+    super('Incentives')
   }
 
   viewIncentivesLevelsLink = (): PageElement<HTMLAnchorElement> => cy.get('[data-test="incentive-information"] a')

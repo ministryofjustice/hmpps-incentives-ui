@@ -87,12 +87,15 @@ describe('azure-appinsights', () => {
   })
 
   describe('ignorePathsProcessor', () => {
-    it.each(['/metrics', '/ping', '/health', '/health?service=abc'])('ignores pre-specified path: %s', path => {
-      const envelope = createEnvelope(`GET ${path}`, {})
+    it.each(['/metrics', '/info', '/ping', '/health', '/health?service=abc'])(
+      'ignores pre-specified path: %s',
+      path => {
+        const envelope = createEnvelope(`GET ${path}`, {})
 
-      const result = ignorePathsProcessor(envelope)
-      expect(result).toEqual(false)
-    })
+        const result = ignorePathsProcessor(envelope)
+        expect(result).toEqual(false)
+      },
+    )
 
     it.each(['/', '/incentive-summary', '/incentive-levels'])('allows path: %s', path => {
       const envelope = createEnvelope(`GET ${path}`, {})

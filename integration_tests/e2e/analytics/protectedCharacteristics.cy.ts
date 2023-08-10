@@ -46,19 +46,19 @@ context('Analytics section > Protected characteristics page', () => {
     const homePage = Page.verifyOnPage(HomePage)
     homePage.viewAnalyticsLink().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
+    analyticsPage.checkLastBreadcrumb('Incentives', '/')
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Protected characteristics (Age) – Prison')
+    cy.title().should('eq', 'Incentives – Protected characteristics (Age) – Prison')
   })
 
   it('selector allows user to change protected characteristic', () => {
     cy.get('#characteristic').select('Sexual orientation')
     cy.get('#form-select-characteristic button').click()
 
-    cy.title().should('eq', 'Manage incentives – Protected characteristics (Sexual orientation) – Prison')
+    cy.title().should('eq', 'Incentives – Protected characteristics (Sexual orientation) – Prison')
 
     cy.get('h2.govuk-heading-m')
       .first()
@@ -231,19 +231,19 @@ context('Pgd Region selection > National > Analytics section > Protected charact
     locationSelectionPage.changePgdRegionSelect().select('National')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
+    analyticsPage.checkLastBreadcrumb('Incentives', '/')
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Protected characteristics (Age) – National')
+    cy.title().should('eq', 'Incentives – Protected characteristics (Age) – National')
   })
 
   it('selector allows user to change protected characteristic for that pgdRegion', () => {
     cy.get('#characteristic').select('Sexual orientation')
     cy.get('#form-select-characteristic button').click()
 
-    cy.title().should('eq', 'Manage incentives – Protected characteristics (Sexual orientation) – National')
+    cy.title().should('eq', 'Incentives – Protected characteristics (Sexual orientation) – National')
 
     cy.get('.govuk-heading-xl').contains('National')
     cy.get('h2.govuk-heading-m').first().contains('Percentage and number of prisoners by sexual orientation')
@@ -393,12 +393,12 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
     locationSelectionPage.changePgdRegionSelect().select('LTHS')
     locationSelectionPage.continueButton().click()
     const analyticsPage = Page.verifyOnPage(AnalyticsIncentiveLevels)
-    analyticsPage.checkLastBreadcrumb('Manage incentives', '/')
+    analyticsPage.checkLastBreadcrumb('Incentives', '/')
     analyticsPage.protectedCharacteristicsNavItem.click()
   })
 
   it('has correct title', () => {
-    cy.title().should('eq', 'Manage incentives – Protected characteristics (Age) – Long-term and high security')
+    cy.title().should('eq', 'Incentives – Protected characteristics (Age) – Long-term and high security')
   })
 
   it('users see analytics', () => {

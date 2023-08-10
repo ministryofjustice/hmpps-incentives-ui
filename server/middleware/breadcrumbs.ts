@@ -12,7 +12,7 @@ class Breadcrumbs {
         href: res.app.locals.dpsUrl,
       },
       {
-        text: 'Manage incentives',
+        text: 'Incentives',
         href: '/',
       },
     ]

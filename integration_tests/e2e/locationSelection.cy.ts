@@ -18,7 +18,7 @@ context('Location selection', () => {
 
   it('user sees correct locations for their active case load', () => {
     const locationSelectionPage = Page.verifyOnPage(LocationSelectionPage)
-    locationSelectionPage.checkLastBreadcrumb('Manage incentives', '/')
+    locationSelectionPage.checkLastBreadcrumb('Incentives', '/')
     locationSelectionPage.locationSelectOptions().should('contain.text', 'Houseblock 2')
     locationSelectionPage.locationSelectOptions().should('contain.text', 'Houseblock 42')
   })

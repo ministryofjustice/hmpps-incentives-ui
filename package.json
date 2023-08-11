@@ -99,7 +99,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.385.0",
+    "@aws-sdk/client-s3": "^3.386.0",
     "@ministryofjustice/frontend": "^1.8.0",
     "@sentry/node": "^7.61.1",
     "agentkeepalive": "^4.5.0",
@@ -152,8 +152,8 @@
     "@types/superagent": "^4.1.18",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.2",
-    "@typescript-eslint/eslint-plugin": "^6.2.1",
-    "@typescript-eslint/parser": "^6.2.1",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/parser": "^6.3.0",
     "audit-ci": "^6.6.1",
     "concurrently": "^8.2.0",
     "cookie-session": "^2.0.0",

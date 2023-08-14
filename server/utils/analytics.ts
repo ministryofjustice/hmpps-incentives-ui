@@ -46,7 +46,10 @@ export function makeChartPalette(columns: string[]): Colour[] {
 }
 
 export class TrendsRange {
-  constructor(readonly max: number, readonly step: number) {
+  constructor(
+    readonly max: number,
+    readonly step: number,
+  ) {
     assert.equal(max % step, 0, 'Range `max` must divide exactly by `step`')
   }
 

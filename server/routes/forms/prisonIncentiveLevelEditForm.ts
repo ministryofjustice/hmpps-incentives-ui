@@ -19,7 +19,10 @@ export default class PrisonIncentiveLevelEditForm<
   protected readonly mustBeDefaultOnAdmissionError: string =
     'There must be a default level for new prisoners. Go back to Incentive level settings and select a default level.'
 
-  constructor(formId: string, protected readonly mustBeDefaultOnAdmission: boolean) {
+  constructor(
+    formId: string,
+    protected readonly mustBeDefaultOnAdmission: boolean,
+  ) {
     super(formId)
   }
 

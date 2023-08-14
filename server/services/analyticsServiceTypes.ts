@@ -280,7 +280,10 @@ export enum AnalyticsErrorType {
  * Thrown by the analytics service when a categorisable error ocurred
  */
 export class AnalyticsError extends Error {
-  constructor(readonly type: AnalyticsErrorType, message?: string) {
+  constructor(
+    readonly type: AnalyticsErrorType,
+    message?: string,
+  ) {
     super(message)
   }
 }

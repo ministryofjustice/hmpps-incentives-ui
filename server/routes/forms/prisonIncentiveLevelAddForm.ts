@@ -9,7 +9,11 @@ export default class PrisonIncentiveLevelAddForm extends PrisonIncentiveLevelEdi
     'The first level you add must be the default level for new prisoners. ' +
     'You can change this later when adding other levels.'
 
-  constructor(formId: string, private readonly validLevelCodes: string[], mustBeDefaultOnAdmission: boolean) {
+  constructor(
+    formId: string,
+    private readonly validLevelCodes: string[],
+    mustBeDefaultOnAdmission: boolean,
+  ) {
     super(formId, mustBeDefaultOnAdmission)
   }
 

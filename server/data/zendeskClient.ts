@@ -38,7 +38,11 @@ export interface TicketResponse {
 export default class ZendeskClient {
   agent: Agent
 
-  constructor(private readonly config: ApiConfig, private readonly username: string, private readonly token: string) {
+  constructor(
+    private readonly config: ApiConfig,
+    private readonly username: string,
+    private readonly token: string,
+  ) {
     const agentConfig = { ...config.agent, keepAlive: false }
     this.agent = config.url.startsWith('https') ? new HttpsAgent(agentConfig) : new Agent(agentConfig)
   }

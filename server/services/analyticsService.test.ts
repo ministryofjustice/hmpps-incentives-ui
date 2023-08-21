@@ -600,9 +600,8 @@ describe('AnalyticsService', () => {
     })
 
     it(`[${characteristic}]: has a totals row`, async () => {
-      const { columns, rows: prisonersOnLevels } = await analyticsService.getIncentiveLevelsByProtectedCharacteristic(
-        characteristic,
-      )
+      const { columns, rows: prisonersOnLevels } =
+        await analyticsService.getIncentiveLevelsByProtectedCharacteristic(characteristic)
       expect(prisonersOnLevels).toHaveLength(expectedCharacteristics.length)
 
       const prisonTotal = prisonersOnLevels.shift()

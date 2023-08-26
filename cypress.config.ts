@@ -10,8 +10,11 @@ export default defineConfig({
   reporterOptions: {
     configFile: 'reporter-config.json',
   },
+  video: false,
   videoUploadOnPasses: false,
   taskTimeout: 60000,
+  viewportWidth: 1200,
+  viewportHeight: 850,
   e2e: {
     setupNodeEvents,
     baseUrl: 'http://localhost:3007',

@@ -21,6 +21,10 @@ parameters:
     type: string
     default: '3.10'
 
+  cypress-videos:
+    type: string
+    default: 'false'
+
 executors:
   # same as hmpps/node_redis executor with the addition of minio containers
   integration-tests:
@@ -124,7 +128,7 @@ jobs:
           command: sleep 5
       - run:
           name: Run integration tests
-          command: npm run int-test
+          command: npm run int-test -- --config video=<< pipeline.parameters.cypress-videos >>
       - store_test_results:
           path: test_results
       - store_artifacts:

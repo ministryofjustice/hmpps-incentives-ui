@@ -128,9 +128,11 @@ jobs:
       - store_test_results:
           path: test_results
       - store_artifacts:
-          path: integration-tests/videos
+          name: 'Uploading cypress videos'
+          path: integration_tests/videos
       - store_artifacts:
-          path: integration-tests/screenshots
+          name: 'Uploading cypress screenshots'
+          path: integration_tests/screenshots
 
 workflows:
   version: 2

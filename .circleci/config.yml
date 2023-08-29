@@ -21,6 +21,10 @@ parameters:
     type: string
     default: '3.10'
 
+  cypress-videos:
+    type: string
+    default: 'false'
+
 executors:
   # same as hmpps/node_redis executor with the addition of minio containers
   integration-tests:
@@ -45,7 +49,7 @@ jobs:
       - checkout
       - run:
           name: Update npm
-          command: sudo npm install -g npm@9.2.0
+          command: sudo npm install -g npm@latest
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
@@ -99,7 +103,7 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get wiremock
-          command: curl -o wiremock.jar https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/2.27.1/wiremock-standalone-2.27.1.jar
+          command: curl -o wiremock.jar https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-jre8-standalone/2.35.0/wiremock-jre8-standalone-2.35.0.jar
       - run:
           name: Run wiremock
           command: java -jar wiremock.jar --port 9091
@@ -124,13 +128,15 @@ jobs:
           command: sleep 5
       - run:
           name: Run integration tests
-          command: npm run int-test
+          command: npm run int-test -- --config video=<< pipeline.parameters.cypress-videos >>
       - store_test_results:
           path: test_results
       - store_artifacts:
-          path: integration-tests/videos
+          name: 'Uploading cypress videos'
+          path: integration_tests/videos
       - store_artifacts:
-          path: integration-tests/screenshots
+          name: 'Uploading cypress screenshots'
+          path: integration_tests/screenshots
 
 workflows:
   version: 2

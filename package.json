@@ -30,7 +30,7 @@
     "test": "jest",
     "test:ci": "jest --detectOpenHandles",
     "security_audit": "npx audit-ci --config audit-ci.json",
-    "int-test": "cypress run --config video=false",
+    "int-test": "cypress run",
     "int-test-ui": "cypress open",
     "clean": "rm -rf assets/stylesheets build dist node_modules"
   },

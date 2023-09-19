@@ -9,6 +9,8 @@
     "allowJs": true,
     "checkJs": true,
     "resolveJsonModule": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,

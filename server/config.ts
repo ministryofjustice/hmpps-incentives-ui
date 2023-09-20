@@ -139,6 +139,14 @@ export default {
       username: get('ZENDESK_USERNAME', '', requiredInProduction),
       token: get('ZENDESK_TOKEN', '', requiredInProduction),
     },
+    frontendComponents: {
+      url: get('COMPONENT_API_URL', 'http://localhost:8082', requiredInProduction),
+      timeout: {
+        response: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 20000)),
+        deadline: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 20000)),
+      },
+      agent: new AgentConfig(Number(get('COMPONENT_API_TIMEOUT_SECONDS', 20000))),
+    },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   dpsUrl: get('DPS_URL', 'http://localhost:3000', requiredInProduction),

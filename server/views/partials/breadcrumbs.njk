@@ -1,6 +1,5 @@
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-<div class="govuk-width-container">
   {% if breadcrumbs %}
     {{ govukBreadcrumbs({
       items: breadcrumbs.items
@@ -13,4 +12,4 @@
       ]
     }) }}
   {% endif %}
-</div>
+

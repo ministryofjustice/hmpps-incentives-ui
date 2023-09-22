@@ -2,46 +2,51 @@
   @include govuk-responsive-padding(3, 'top');
   @include govuk-responsive-padding(3, 'bottom');
   background-color: govuk-colour('black');
+  color: govuk-colour('white');
 
-  .hmpps-header__container {
+  &__container {
     @include govuk-width-container;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .hmpps-header__logo {
+  &__logo {
     @include govuk-responsive-margin(2, 'right');
     position: relative;
     top: -2px;
     fill: govuk-colour('white');
   }
 
-  .hmpps-header__title {
+  &__title {
     @include govuk-responsive-padding(3, 'right');
     display: flex;
     align-items: center;
 
-    .hmpps-header__title__organisation-name {
+    &__organisation-name {
       @include govuk-responsive-margin(2, 'right');
       @include govuk-font($size: 24, $weight: 'bold');
       display: flex;
       align-items: center;
     }
 
-    .hmpps-header__title__service-name {
-      display: none;
+    &__service-name {
+      @include govuk-responsive-margin(2, 'right');
       @include govuk-font(24);
+      display: none;
 
       @include govuk-media-query($from: desktop) {
-        display: inline-block;
+        display: flex;
+        align-items: center;
       }
     }
   }
 
-  .hmpps-header__link {
+  &__link {
     @include govuk-link-common;
     @include govuk-link-style-default;
+
+    text-underline-offset: 0.1em;
 
     &:link,
     &:visited,
@@ -62,7 +67,7 @@
       }
     }
 
-    .hmpps-header__link__sub-text {
+    &__sub-text {
       @include govuk-font(16);
       display: none;
 
@@ -72,7 +77,7 @@
     }
   }
 
-  .hmpps-header__navigation {
+  &__navigation {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -85,7 +90,7 @@
       align-items: center;
     }
 
-    .hmpps-header__navigation__item {
+    &__item {
       @include govuk-font(19);
       margin-bottom: govuk-spacing(1);
       text-align: right;
@@ -106,10 +111,16 @@
         border-right: 0;
         padding-right: 0;
       }
+
     }
   }
 
   @media print {
     display: none;
   }
+}
+
+.govuk-phase-banner {
+  @include govuk-width-container;
+  border: none;
 }

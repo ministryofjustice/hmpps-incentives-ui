@@ -15,27 +15,34 @@ export default function setUpWebSecurity(): Router {
     res.locals.cspNonce = crypto.randomBytes(16).toString('hex')
     next()
   })
+
+  const scriptSrc = [
+    "'self'",
+    '*.google-analytics.com',
+    '*.googletagmanager.com',
+    (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
+  ]
+  const styleSrc = ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`]
+  const imgSrc = ["'self'", 'data:', '*.google-analytics.com', '*.googletagmanager.com']
+  const fontSrc = ["'self'"]
+
+  if (config.apis.frontendComponents.url) {
+    scriptSrc.push(config.apis.frontendComponents.url)
+    styleSrc.push(config.apis.frontendComponents.url)
+    imgSrc.push(config.apis.frontendComponents.url)
+    fontSrc.push(config.apis.frontendComponents.url)
+  }
+
   router.use(
     helmet({
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
+          scriptSrc,
+          styleSrc,
+          fontSrc,
+          imgSrc,
           formAction: ["'self'", new URL(config.apis.hmppsAuth.url).hostname],
-          scriptSrc: [
-            "'self'",
-            '*.google-analytics.com',
-            '*.googletagmanager.com',
-            'https://*.hotjar.com',
-            "'unsafe-inline'",
-            (req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
-          ],
-          styleSrc: [
-            "'self'",
-            'https://*.hotjar.com',
-            "'unsafe-inline'",
-            (req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
-          ],
-          fontSrc: ["'self'", 'https://*.hotjar.com'],
           frameSrc: ['https://*.hotjar.com'],
           connectSrc: [
             "'self'",
@@ -46,7 +53,7 @@ export default function setUpWebSecurity(): Router {
             'https://*.hotjar.io',
             'wss://*.hotjar.com',
           ],
-          imgSrc: ["'self'", '*.google-analytics.com', '*.googletagmanager.com', 'https://*.hotjar.com'],
+
         },
       },
       crossOriginEmbedderPolicy: { policy: 'require-corp' },

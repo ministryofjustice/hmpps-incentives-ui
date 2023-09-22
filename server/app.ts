@@ -17,9 +17,12 @@ import setUpProductInfo from './middleware/setUpProductInfo'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import breadcrumbs from './middleware/breadcrumbs'
+import getDpsFrontendComponents from './middleware/dpsFrontendComponents'
 import { metricsMiddleware } from './monitoring/metricsApp'
 
-export default function createApp(userService: UserService): express.Application {
+import type { Services } from './services/index'
+
+export default function createApp(userService: UserService, services: Services): express.Application {
   const app = express()
 
   app.set('json spaces', 2)
@@ -38,6 +41,7 @@ export default function createApp(userService: UserService): express.Application
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(breadcrumbs())
+  app.use(getDpsFrontendComponents(services))
 
   // App routes
   app.use('/', allRoutes(userService))

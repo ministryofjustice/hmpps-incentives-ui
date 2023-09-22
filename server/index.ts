@@ -6,7 +6,7 @@ import { createRedisClient } from './data/redisClient'
 import TokenStore from './data/tokenStore'
 import { createMetricsApp } from './monitoring/metricsApp'
 import UserService from './services/userService'
-import { services } from './services/index'
+import { services } from './services'
 
 promClient.collectDefaultMetrics()
 

@@ -20,7 +20,7 @@ import breadcrumbs from './middleware/breadcrumbs'
 import getDpsFrontendComponents from './middleware/dpsFrontendComponents'
 import { metricsMiddleware } from './monitoring/metricsApp'
 
-import type { Services } from './services/index'
+import type { Services } from './services'
 
 export default function createApp(userService: UserService, services: Services): express.Application {
   const app = express()

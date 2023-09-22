@@ -53,7 +53,6 @@ export default function setUpWebSecurity(): Router {
             'https://*.hotjar.io',
             'wss://*.hotjar.com',
           ],
-
         },
       },
       crossOriginEmbedderPolicy: { policy: 'require-corp' },

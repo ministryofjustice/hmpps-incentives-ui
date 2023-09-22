@@ -43,6 +43,7 @@
     {% if analyticsView and (analyticsView.isNational or analyticsView.isRegional) %}
       <div class="govuk-!-padding-bottom-3"></div>
     {% else %}
+      {% include "./header.njk" %}
       {% include "./caseloadBar.njk" %}
     {% endif %}
   {% endif %}

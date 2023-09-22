@@ -21,10 +21,6 @@ export default abstract class Page {
     return cy.get('[data-qa=signOut]')
   }
 
-  get manageDetails(): PageElement<HTMLAnchorElement> {
-    return cy.get('[data-qa=manageDetails]')
-  }
-
   get breadcrumbs(): PageElement<HTMLDivElement> {
     return cy.get('.govuk-breadcrumbs__list-item')
   }
@@ -48,5 +44,13 @@ export default abstract class Page {
 
   get errorSummaryItems(): PageElement<HTMLLIElement> {
     return this.errorSummary.find('.govuk-error-summary__list li')
+  }
+
+  get fallbackHeaderUserName(): PageElement<HTMLLIElement> {
+    return cy.get('[data-qa=header-user-name]')
+  }
+
+  get fallbackFooter(): PageElement<HTMLLIElement> {
+    return cy.get('.govuk-footer')
   }
 }

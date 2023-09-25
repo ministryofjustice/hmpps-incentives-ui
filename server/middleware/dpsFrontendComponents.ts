@@ -1,9 +1,14 @@
 import type { RequestHandler } from 'express'
 
 import logger from '../../logger'
-import { Services } from '../services'
+import ComponentService from '../services/dpsComponentService'
+import DpsFeComponentsClient from '../data/dpsComponentsClient'
 
-export default function getFrontendComponents({ componentService }: Services): RequestHandler {
+const componentApiClientBuilder = new DpsFeComponentsClient()
+
+const componentService = new ComponentService(componentApiClientBuilder)
+
+export default function getFrontendComponents(): RequestHandler {
   return async (req, res, next) => {
     try {
       const [header, footer] = await Promise.all([

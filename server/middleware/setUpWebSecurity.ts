@@ -24,8 +24,12 @@ export default function setUpWebSecurity(): Router {
     '*.googletagmanager.com',
     (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
   ]
-  const styleSrc = ["'self'", 'https://*.hotjar.com',
-    "'unsafe-inline'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`]
+  const styleSrc = [
+    "'self'",
+    'https://*.hotjar.com',
+    "'unsafe-inline'",
+    (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
+  ]
   const imgSrc = ["'self'", 'data:', '*.google-analytics.com', '*.googletagmanager.com', 'https://*.hotjar.com']
   const fontSrc = ["'self'", 'https://*.hotjar.com']
 

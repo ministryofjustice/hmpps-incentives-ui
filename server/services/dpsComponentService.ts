@@ -1,6 +1,6 @@
 import DpsComponentsClient, { AvailableComponent, Component } from '../data/dpsComponentsClient'
 
-export default class FeComponentsService {
+export default class DpsComponentService {
   // eslint-disable-next-line
   constructor(private readonly dpsFeComponentsClient: DpsComponentsClient) {}
 

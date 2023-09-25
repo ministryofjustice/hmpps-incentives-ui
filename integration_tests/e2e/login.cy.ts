@@ -42,7 +42,7 @@ context('SignIn', () => {
       cy.signIn()
       cy.task('stubDpsComponentsFail')
       const indexPage = Page.verifyOnPage(HomePage)
-      indexPage.fallbackFooter.should('not.include.text', 'Feedback')
+      indexPage.fallbackFooter.should('include.text', 'Terms and conditions')
     })
   })
 

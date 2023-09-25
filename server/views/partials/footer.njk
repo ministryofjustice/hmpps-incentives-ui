@@ -1,7 +1,8 @@
 {% from "govuk/components/footer/macro.njk" import govukFooter %}
 
-<footer class="govuk-footer govuk-!-display-none-print">
+
 {{ govukFooter({
+  classes: 'govuk-!-display-none-print',
   contentLicence: {text: "Official sensitive"},
   meta: {
     items: [
@@ -16,4 +17,4 @@
     ]
   }
 }) }}
-</footer>
+

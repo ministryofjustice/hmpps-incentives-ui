@@ -1,0 +1,20 @@
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
+
+
+{{ govukFooter({
+  classes: 'govuk-!-display-none-print',
+  contentLicence: {text: "Official sensitive"},
+  meta: {
+    items: [
+      {
+        href: supportUrl + "/feedback-and-support",
+        text: "Get help"
+      },
+      {
+        href: dpsUrl + "/content/terms-conditions",
+        text: "Terms and conditions"
+      }
+    ]
+  }
+}) }}
+

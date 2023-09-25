@@ -17,6 +17,7 @@ import setUpProductInfo from './middleware/setUpProductInfo'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import breadcrumbs from './middleware/breadcrumbs'
+import getDpsFrontendComponents from './middleware/dpsFrontendComponents'
 import { metricsMiddleware } from './monitoring/metricsApp'
 
 export default function createApp(userService: UserService): express.Application {
@@ -38,6 +39,7 @@ export default function createApp(userService: UserService): express.Application
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(breadcrumbs())
+  app.use(getDpsFrontendComponents())
 
   // App routes
   app.use('/', allRoutes(userService))

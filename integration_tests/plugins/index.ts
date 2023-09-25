@@ -6,6 +6,7 @@ import prisonApi from '../mockApis/prisonApi'
 import incentivesApi from '../mockApis/incentivesApi'
 import nomisUserRolesApi from '../mockApis/nomisUserRolesApi'
 import zendeskApi from '../mockApis/zendeskApi'
+import dpsComponents from '../mockApis/dpsComponents'
 
 export default (on: (string, Record) => void): void => {
   on('task', {
@@ -30,6 +31,8 @@ export default (on: (string, Record) => void): void => {
 
     stubNomisUserRolesApiPing: nomisUserRolesApi.stubPing,
     stubNomisUserRolesApiUserCaseloads: nomisUserRolesApi.stubGetUserCaseloads,
+
+    stubDpsComponentsFail: dpsComponents.stubDpsComponentsFail,
 
     stubPrisonApiPing: prisonApi.stubPing,
     stubPrisonApiImages: prisonApi.stubGetImage,

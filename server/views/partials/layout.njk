@@ -19,19 +19,33 @@
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet" />
   <script src="/assets/js/jquery.min.js"></script>
 
+
+  {% if feComponents.jsInclude %}
+    {% for js in feComponents.jsIncludes %}
+      <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
+    {% endfor %}
+  {% endif %}
+
+  {% if feComponents.cssIncludes %}
+    {% for css in feComponents.cssIncludes %}
+      <link href="{{ css }}" nonce="{{ cspNonce }}" rel="stylesheet" />
+    {% endfor %}
+  {% endif %}
+
 {% endblock %}
 
 {% block pageTitle %}{{ pageTitle | default(applicationName) }}{% endblock %}
 
 {% block header %}
-  {% include "./header.njk" %}
-
-  {% if analyticsView and (analyticsView.isNational or analyticsView.isRegional) %}
-    <div class="govuk-!-padding-bottom-3"></div>
+  {% if feComponents.header %}
+    {{ feComponents.header | safe }}
   {% else %}
-    {% include "./caseloadBar.njk" %}
+      {% include "./header.njk" %}
+      {% include "./caseloadBar.njk" %}
   {% endif %}
+{% endblock %}
 
+{% block beforeContent %}
   {% include "./breadcrumbs.njk" %}
 {% endblock %}
 
@@ -47,21 +61,9 @@
 {% endblock %}
 
 {% block footer %}
-  {% from "govuk/components/footer/macro.njk" import govukFooter %}
-
-  {{ govukFooter({
-    contentLicence: {text: 'Official sensitive'},
-    meta: {
-      items: [
-        {
-          href: supportUrl + "/feedback-and-support",
-          text: "Get help"
-        },
-        {
-          href: dpsUrl + "/content/terms-conditions",
-          text: "Terms and conditions"
-        }
-      ]
-    }
-  }) }}
+  {% if feComponents.footer %}
+    {{ feComponents.footer | safe }}
+  {% else %}
+    {% include "./footer.njk" %}
+  {% endif %}
 {% endblock %}

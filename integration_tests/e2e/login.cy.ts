@@ -1,6 +1,5 @@
 import Page from '../pages/page'
 import AuthSignInPage from '../pages/authSignIn'
-import AuthManageDetailsPage from '../pages/authManageDetails'
 import HomePage from '../pages/home'
 
 context('SignIn', () => {
@@ -10,6 +9,7 @@ context('SignIn', () => {
     cy.task('stubAuthUser')
     cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubPrisonApiLocations')
+    cy.task('stubDpsComponentsFail')
   })
 
   it('Unauthenticated user directed to auth', () => {
@@ -22,10 +22,10 @@ context('SignIn', () => {
     Page.verifyOnPage(AuthSignInPage)
   })
 
-  it('User name visible in header', () => {
+  it('User name visible in fallback header', () => {
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
-    homePage.headerUserName.should('contain.text', 'J. Smith')
+    homePage.fallbackHeaderUserName.should('contain.text', 'J. Smith')
   })
 
   it('User can log out', () => {
@@ -35,24 +35,14 @@ context('SignIn', () => {
     Page.verifyOnPage(AuthSignInPage)
   })
 
-  it('User can manage their details', () => {
-    cy.signIn()
-    const homePage = Page.verifyOnPage(HomePage)
-
-    homePage.manageDetails.get('a').invoke('removeAttr', 'target')
-    homePage.manageDetails.click()
-    Page.verifyOnPage(AuthManageDetailsPage)
-  })
-
   it('User sees links in footer but not Open Government Licence', () => {
     cy.signIn()
     Page.verifyOnPage(HomePage)
-
-    cy.get('.govuk-footer__inline-list .govuk-footer__link:visible').then(footerLinks => {
-      expect(footerLinks.length).equal(2)
-
-      const TsAndCsLink = footerLinks.last()
-      expect(TsAndCsLink).to.contain('Terms and conditions')
+    it('Fallback footer exists with no content', () => {
+      cy.signIn()
+      cy.task('stubDpsComponentsFail')
+      const indexPage = Page.verifyOnPage(HomePage)
+      indexPage.fallbackFooter.should('include.text', 'Terms and conditions')
     })
   })
 

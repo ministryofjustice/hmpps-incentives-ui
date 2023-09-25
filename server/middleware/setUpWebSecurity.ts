@@ -18,13 +18,16 @@ export default function setUpWebSecurity(): Router {
 
   const scriptSrc = [
     "'self'",
+    'https://*.hotjar.com',
+    "'unsafe-inline'",
     '*.google-analytics.com',
     '*.googletagmanager.com',
     (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
   ]
-  const styleSrc = ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`]
-  const imgSrc = ["'self'", 'data:', '*.google-analytics.com', '*.googletagmanager.com']
-  const fontSrc = ["'self'"]
+  const styleSrc = ["'self'", 'https://*.hotjar.com',
+    "'unsafe-inline'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`]
+  const imgSrc = ["'self'", 'data:', '*.google-analytics.com', '*.googletagmanager.com', 'https://*.hotjar.com']
+  const fontSrc = ["'self'", 'https://*.hotjar.com']
 
   if (config.apis.frontendComponents.url) {
     scriptSrc.push(config.apis.frontendComponents.url)

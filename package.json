@@ -99,7 +99,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.417.0",
+    "@aws-sdk/client-s3": "^3.418.0",
     "@ministryofjustice/frontend": "^1.8.0",
     "@sentry/node": "^7.70.0",
     "agentkeepalive": "^4.5.0",
@@ -125,7 +125,7 @@
     "passport": "^0.6.0",
     "passport-oauth2": "^1.7.0",
     "prom-client": "^14.2.0",
-    "redis": "^4.6.9",
+    "redis": "^4.6.10",
     "superagent": "^8.1.2",
     "url-value-parser": "^2.2.0",
     "uuid": "^9.0.1"
@@ -160,10 +160,10 @@
     "cypress": "^13.2.0",
     "cypress-multi-reporters": "^1.6.3",
     "dotenv": "^16.3.1",
-    "eslint": "^8.49.0",
+    "eslint": "^8.50.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.0.0",
-    "eslint-import-resolver-typescript": "^3.6.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-cypress": "^2.15.1",
     "eslint-plugin-import": "2.28.1",
     "eslint-plugin-prettier": "^5.0.0",

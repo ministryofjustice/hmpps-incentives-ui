@@ -28,12 +28,9 @@
             preventDoubleClick: true
           }) }}
 
-          {{ govukButton({
-            text: "Cancel",
-            classes: "govuk-button--secondary",
-            element: "a",
-            href: "/prison-incentive-levels/view/" + prisonIncentiveLevel.levelCode
-          }) }}
+          <a href="/prison-incentive-levels/view/{{ prisonIncentiveLevel.levelCode }}" class="govuk-link">
+            Cancel
+          </a>
         </div>
 
       </form>

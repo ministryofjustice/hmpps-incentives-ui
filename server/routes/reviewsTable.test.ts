@@ -523,7 +523,7 @@ describe('Reviews table', () => {
       expectedLevel: 'ENH',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
-      expectedPages: [1, 2, 6, 7],
+      expectedPages: [2, 6, 7],
     },
     {
       name: 'preserves level and uses default sorting; accepts page',
@@ -531,7 +531,7 @@ describe('Reviews table', () => {
       expectedLevel: 'ENH',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
-      expectedPages: [1, 2, 6, 7],
+      expectedPages: [2, 6, 7],
     },
     {
       name: 'preserves level and uses default sorting; accepts another page',
@@ -539,7 +539,7 @@ describe('Reviews table', () => {
       expectedLevel: 'STD',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
-      expectedPages: [1, 2, 3, 4, 6, 7],
+      expectedPages: [1, 2, 4, 6, 7],
     },
     {
       name: 'uses basic level and sorting if not provided',
@@ -547,7 +547,7 @@ describe('Reviews table', () => {
       expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
-      expectedPages: [1, 2, 6, 7],
+      expectedPages: [2, 6, 7],
     },
     {
       name: 'uses basic level and sorting if not provided; accepts page',
@@ -555,7 +555,7 @@ describe('Reviews table', () => {
       expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
-      expectedPages: [1, 2, 6, 7],
+      expectedPages: [1, 2, 6],
     },
     {
       name: 'preserves sort and uses basic level if not provided',
@@ -563,7 +563,7 @@ describe('Reviews table', () => {
       expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'ASC',
-      expectedPages: [1, 2, 6, 7],
+      expectedPages: [1, 2, 6],
     },
     {
       name: 'preserves sort and order, but uses basic level if not provided',
@@ -571,7 +571,7 @@ describe('Reviews table', () => {
       expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'DESC',
-      expectedPages: [1, 2, 6, 7],
+      expectedPages: [1, 2, 6],
     },
   ]
   describe.each(paginationScenarios)(
@@ -588,7 +588,7 @@ describe('Reviews table', () => {
           .get(`/incentive-summary/MDI-1${givenUrl}`)
           .expect(res => {
             const $body = $(res.text)
-            const paginationHtml = $body.find('.app-reviews-pagination').html()
+            const paginationHtml = $body.find('.moj-pagination__list').html()
 
             const pageLink = (page: number) => `${paginationUrlPrefix}&amp;page=${page}`
             for (let page = 1; page <= 10; page += 1) {

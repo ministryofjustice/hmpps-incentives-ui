@@ -2,7 +2,7 @@ import type { RequestHandler, Router } from 'express'
 import { NotFound } from 'http-errors'
 
 import config from '../config'
-import { pagination } from '../utils/pagination'
+import { pagination, type LegacyPagination } from '../utils/pagination'
 import { type SortableTableColumns, sortableTableHead } from '../utils/sortableTable'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -85,18 +85,15 @@ export default function routes(router: Router): Router {
     const { reviewCount } = response.levels.find(level => level.levelCode === selectedLevelCode)
     const pageCount = Math.ceil(reviewCount / PAGE_SIZE)
     const paginationUrlPrefix = `?level=${selectedLevelCode}&sort=${sort}&order=${order}&`
-    const paginationParams = pagination(page, pageCount, paginationUrlPrefix)
-    paginationParams.landmarkLabel = 'Incentive level review details'
-    if (paginationParams.previous) {
-      paginationParams.previous.attributes = {
-        'aria-label': 'Previous page of prisoner details and review status',
-      }
-    }
-    if (paginationParams.next) {
-      paginationParams.next.attributes = {
-        'aria-label': 'Next page of prisoner details and review status',
-      }
-    }
+    const paginationParams: LegacyPagination = pagination(
+      page,
+      pageCount,
+      paginationUrlPrefix,
+      'moj',
+      reviewCount,
+      PAGE_SIZE,
+    )
+    paginationParams.results.text = 'reviews'
 
     res.render('pages/reviewsTable', {
       dpsUrl: config.dpsUrl,

@@ -68,12 +68,9 @@
             preventDoubleClick: true
           }) }}
 
-          {{ govukButton({
-            text: "Cancel",
-            classes: "govuk-button--secondary",
-            element: "a",
-            href: "/incentive-levels/view/" + incentiveLevel.code
-          }) }}
+          <a href="/incentive-levels/view/{{ incentiveLevel.code }}" class="govuk-link">
+            Cancel
+          </a>
         </div>
 
       </form>

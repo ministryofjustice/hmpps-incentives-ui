@@ -27,22 +27,27 @@ export class PrisonApi extends RestClient {
 
   getImageByPrisonerNumber(prisonerNumber: string): Promise<Buffer> {
     return this.get({
-      path: `/api/bookings/offenderNo/${prisonerNumber}/image/data?fullSizeImage=false`,
+      path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}/image/data`,
+      query: { fullSizeImage: 'false' },
       handle404: true,
     })
   }
 
   getUserLocations(): Promise<Array<Location>> {
-    return this.get<Array<Location>>({ path: '/api/users/me/locations?include-non-residential-locations=true' }).then(
-      locations => {
-        return locations.filter(location => {
-          return location.currentOccupancy > 0
-        })
-      },
-    )
+    return this.get<Array<Location>>({
+      path: '/api/users/me/locations',
+      query: { 'include-non-residential-locations': 'true' },
+    }).then(locations => {
+      return locations.filter(location => {
+        return location.currentOccupancy > 0
+      })
+    })
   }
 
   getAgency(agencyId: string, activeOnly = true): Promise<Agency> {
-    return this.get<Agency>({ path: `/api/agencies/${encodeURIComponent(agencyId)}?activeOnly=${Boolean(activeOnly)}` })
+    return this.get<Agency>({
+      path: `/api/agencies/${encodeURIComponent(agencyId)}}`,
+      query: { activeOnly: activeOnly.toString() },
+    })
   }
 }

@@ -1,7 +1,7 @@
 import { Readable } from 'stream'
 
-import superagent from 'superagent'
 import Agent, { HttpsAgent } from 'agentkeepalive'
+import superagent from 'superagent'
 
 import logger from '../../logger'
 import sanitiseError from '../sanitisedError'
@@ -9,21 +9,16 @@ import type { ApiConfig } from '../config'
 import type { UnsanitisedError } from '../sanitisedError'
 import { restClientMetricsMiddleware } from './restClientMetricsMiddleware'
 
-interface GetRequest {
-  path?: string
+interface Request {
+  path: string
   query?: object | string
   headers?: Record<string, string>
   responseType?: string
   raw?: boolean
-  handle404?: boolean
 }
 
-interface PostRequest {
-  path?: string
-  headers?: Record<string, string>
-  responseType?: string
+interface RequestWithBody extends Request {
   data?: Record<string, unknown>
-  raw?: boolean
   retry?: boolean
 }
 
@@ -53,24 +48,24 @@ export default class RestClient {
   }
 
   async get<Response = unknown>({
-    path = null,
+    path,
     query = {},
     headers = {},
     responseType = '',
     raw = false,
     handle404 = false,
-  }: GetRequest): Promise<Response> {
-    logger.info(`Get using user credentials: calling ${this.name}: ${path} ${query}`)
+  }: Request & { handle404?: boolean }): Promise<Response> {
+    logger.info(`${this.name} GET: ${path}`)
     try {
       const result = await superagent
         .get(`${this.apiUrl()}${path}`)
+        .query(query)
         .agent(this.agent)
         .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
           if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
         })
-        .query(query)
         .auth(this.token, { type: 'bearer' })
         .set(headers)
         .responseType(responseType)
@@ -79,26 +74,22 @@ export default class RestClient {
       return raw ? result : result.body
     } catch (error) {
       const sanitisedError = sanitiseError(error)
-      if (handle404 === true && error.response.status === 404) {
+      if (handle404 === true && error?.response?.status === 404) {
         return null
       }
-      logger.warn({ ...sanitisedError, query }, `Error calling ${this.name}, path: '${path}', verb: 'GET'`)
+      logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: 'GET'`)
       throw sanitisedError
     }
   }
 
-  async post<Response = unknown>({
-    path = null,
-    headers = {},
-    responseType = '',
-    data = {},
-    raw = false,
-    retry = false,
-  }: PostRequest = {}): Promise<Response> {
-    logger.info(`Post using user credentials: calling ${this.name}: ${path}`)
+  private async requestWithBody<Response = unknown>(
+    method: 'patch' | 'post' | 'put',
+    { path, query = {}, headers = {}, responseType = '', data = {}, raw = false, retry = false }: RequestWithBody,
+  ): Promise<Response> {
+    logger.info(`${this.name} ${method.toUpperCase()}: ${path}`)
     try {
-      const result = await superagent
-        .post(`${this.apiUrl()}${path}`)
+      const result = await superagent[method](`${this.apiUrl()}${path}`)
+        .query(query)
         .send(data)
         .agent(this.agent)
         .use(restClientMetricsMiddleware)
@@ -117,27 +108,39 @@ export default class RestClient {
       return raw ? result : result.body
     } catch (error) {
       const sanitisedError = sanitiseError(error)
-      logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: 'POST'`)
+      logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: '${method.toUpperCase()}'`)
       throw sanitisedError
     }
   }
 
-  async patch<Response = unknown>({
-    path = null,
+  async patch<Response = unknown>(request: RequestWithBody): Promise<Response> {
+    return this.requestWithBody('patch', request)
+  }
+
+  async post<Response = unknown>(request: RequestWithBody): Promise<Response> {
+    return this.requestWithBody('post', request)
+  }
+
+  async put<Response = unknown>(request: RequestWithBody): Promise<Response> {
+    return this.requestWithBody('put', request)
+  }
+
+  async delete<Response = unknown>({
+    path,
+    query = {},
     headers = {},
     responseType = '',
-    data = {},
     raw = false,
-  }: PostRequest = {}): Promise<Response> {
-    logger.info(`Patch using user credentials: calling ${this.name}: ${path}`)
+  }: Request): Promise<Response> {
+    logger.info(`${this.name} DELETE: ${path}`)
     try {
       const result = await superagent
-        .patch(`${this.apiUrl()}${path}`)
-        .send(data)
+        .delete(`${this.apiUrl()}${path}`)
+        .query(query)
         .agent(this.agent)
         .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
-          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
+          if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
         })
         .auth(this.token, { type: 'bearer' })
@@ -148,7 +151,7 @@ export default class RestClient {
       return raw ? result : result.body
     } catch (error) {
       const sanitisedError = sanitiseError(error)
-      logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: 'PATCH'`)
+      logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: 'DELETE'`)
       throw sanitisedError
     }
   }

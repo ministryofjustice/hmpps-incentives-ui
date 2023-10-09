@@ -628,7 +628,7 @@ describe('Incentive level management', () => {
       },
       {
         scenario: 'name is missing',
-        errorMessage: 'The level’s name is required',
+        errorMessage: 'Incentive level name is required',
         name: '',
         availability: 'required',
       },
@@ -793,25 +793,25 @@ describe('Incentive level management', () => {
       },
       {
         scenario: 'name is missing',
-        errorMessage: 'The level’s name is required',
+        errorMessage: 'Incentive level name is required',
         name: '',
         code: 'EN4',
       },
       {
         scenario: 'code is missing',
-        errorMessage: 'The level’s code must be 3 letters or numbers',
+        errorMessage: 'Code must be 3 letters or numbers',
         name: 'Enhanced 4',
         code: '',
       },
       {
         scenario: 'code is too long',
-        errorMessage: 'The level’s code must be 3 letters or numbers',
+        errorMessage: 'Code must be 3 letters or numbers',
         name: 'Enhanced 4',
         code: 'ENH4',
       },
       {
         scenario: 'code has invalid characters',
-        errorMessage: 'The level’s code must be 3 letters or numbers',
+        errorMessage: 'Code must be 3 letters or numbers',
         name: 'Enhanced 4',
         code: 'E 4',
       },

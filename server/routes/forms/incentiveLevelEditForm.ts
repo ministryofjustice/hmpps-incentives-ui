@@ -9,7 +9,7 @@ export default class IncentiveLevelEditForm extends Form<IncentiveLevelEditData>
   protected validate(): void {
     this.data.name = this.data.name?.trim() ?? ''
     if (this.data.name.length < 1) {
-      this.addError('name', 'The level’s name is required')
+      this.addError('name', 'Incentive level name is required')
     } else if (this.data.name.length > 30) {
       this.addError('name', 'The name must be no more than 30 characters in length')
     }

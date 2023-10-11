@@ -67,16 +67,6 @@ export interface PrisonIncentiveLevel {
 
 export type PrisonIncentiveLevelUpdate = Omit<Partial<PrisonIncentiveLevel>, 'prisonId' | 'levelCode' | 'levelName'>
 
-/**
- * @deprecated returned by legacy api endpoint
- */
-export interface Level {
-  iepLevel: string
-  iepDescription: string
-  sequence: number
-  default: boolean
-}
-
 export const sortOptions = [
   'PRISONER_NUMBER',
   'FIRST_NAME',

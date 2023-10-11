@@ -207,13 +207,6 @@ export class IncentivesApi extends RestClient {
     })
   }
 
-  /**
-   * @deprecated use getPrisonIncentiveLevels
-   */
-  getAvailableLevels(agencyId: string): Promise<Level[]> {
-    return this.get<Level[]>({ path: `/iep/levels/${agencyId}` })
-  }
-
   getReviews({
     agencyId,
     locationPrefix,

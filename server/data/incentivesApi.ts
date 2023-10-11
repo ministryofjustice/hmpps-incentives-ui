@@ -67,16 +67,6 @@ export interface PrisonIncentiveLevel {
 
 export type PrisonIncentiveLevelUpdate = Omit<Partial<PrisonIncentiveLevel>, 'prisonId' | 'levelCode' | 'levelName'>
 
-/**
- * @deprecated returned by legacy api endpoint
- */
-export interface Level {
-  iepLevel: string
-  iepDescription: string
-  sequence: number
-  default: boolean
-}
-
 export const sortOptions = [
   'PRISONER_NUMBER',
   'FIRST_NAME',
@@ -205,13 +195,6 @@ export class IncentivesApi extends RestClient {
       path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}/level/${encodeURIComponent(levelCode)}`,
       data,
     })
-  }
-
-  /**
-   * @deprecated use getPrisonIncentiveLevels
-   */
-  getAvailableLevels(agencyId: string): Promise<Level[]> {
-    return this.get<Level[]>({ path: `/iep/levels/${agencyId}` })
   }
 
   getReviews({

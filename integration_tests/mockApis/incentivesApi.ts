@@ -162,42 +162,6 @@ export default {
     })
   },
 
-  /**
-   * @deprecated use stubPrisonIncentiveLevels
-   */
-  stubGetAvailableLevels: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/incentivesApi/iep/levels/MDI',
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: [
-          {
-            iepLevel: 'BAS',
-            iepDescription: 'Basic',
-            sequence: 1,
-            default: false,
-          },
-          {
-            iepLevel: 'STD',
-            iepDescription: 'Standard',
-            sequence: 2,
-            default: true,
-          },
-          {
-            iepLevel: 'ENH',
-            iepDescription: 'Enhanced',
-            sequence: 3,
-            default: false,
-          },
-        ],
-      },
-    })
-  },
-
   stubGetIncentivesLevelBasic: (): SuperAgentRequest => {
     return stubFor({
       request: {

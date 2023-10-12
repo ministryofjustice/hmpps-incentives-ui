@@ -35,8 +35,7 @@
     "clean": "rm -rf assets/stylesheets build dist node_modules"
   },
   "engines": {
-    "node": "^20",
-    "npm": "^10"
+    "node": "^20"
   },
   "jest": {
     "preset": "ts-jest",

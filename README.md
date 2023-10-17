@@ -17,11 +17,15 @@ The UI application needs a suite of services to work:
 
 ### Requirements
 
-This application is built for node 18 and docker will be needed to run it locally.
-[nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm)
-can be used to install appropriate node versions.
+This application is built for Node.js and docker will be needed to run it locally.
+[`nvm`](https://github.com/nvm-sh/nvm) or [`fnm`](https://github.com/Schniz/fnm)
+can be used to install appropriate node versions, e.g.:
 
-Additional tools are required to manage deployment: kubectl and helm.
+```shell
+nvm use
+```
+
+Additional tools are required to manage deployment: `kubectl` and `helm`.
 
 ### Using services in `dev` environment
 

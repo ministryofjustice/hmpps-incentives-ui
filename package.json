@@ -98,7 +98,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.431.0",
+    "@aws-sdk/client-s3": "^3.433.0",
     "@ministryofjustice/frontend": "^1.8.0",
     "@sentry/node": "^7.74.1",
     "agentkeepalive": "^4.5.0",
@@ -159,7 +159,7 @@
     "cypress": "^13.3.2",
     "cypress-multi-reporters": "^1.6.3",
     "dotenv": "^16.3.1",
-    "eslint": "^8.51.0",
+    "eslint": "^8.52.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "^3.6.1",

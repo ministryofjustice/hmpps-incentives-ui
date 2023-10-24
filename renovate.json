@@ -2,6 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>ministryofjustice/hmpps-renovate-config:node"],
   "assigneesFromCodeOwners": true,
+  "prBodyTemplate": "{{{table}}}{{{notes}}}{{{warnings}}}{{{controls}}}",
   "packageRules": [
     {
       "matchManagers": ["npm"],
@@ -30,6 +31,12 @@
       "enabled": false
     },
     {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["node"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
       "matchDatasources": ["docker-compose"],
       "matchPackageNames": ["redis"],
       "allowedVersions": "7.0"
@@ -37,7 +44,8 @@
     {
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/node"],
-      "allowedVersions": "20.8-browsers"
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     },
     {
       "matchDatasources": ["orb"],

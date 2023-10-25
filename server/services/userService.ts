@@ -1,9 +1,9 @@
 import { convertToTitleCase } from '../utils/utils'
-import type HmppsAuthClient from '../data/hmppsAuthClient'
 import { NomisUserRolesApi, type Caseload } from '../data/nomisUserRolesApi'
+import ManageUsersApiClient from '../data/manageUsersApiClient'
 
 export interface UserDetails {
-  name: string
+  name?: string
   displayName: string
   caseloads: Array<Caseload>
   activeCaseload: Caseload
@@ -11,10 +11,10 @@ export interface UserDetails {
 
 export default class UserService {
   // eslint-disable-next-line no-empty-function
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  constructor(private readonly manageUsersApiClient: ManageUsersApiClient) {}
 
   async getUser(token: string): Promise<UserDetails> {
-    return this.hmppsAuthClient.getUser(token).then(user => {
+    return this.manageUsersApiClient.getUser(token).then(user => {
       const nomisUserRolesApi = new NomisUserRolesApi(token)
 
       return nomisUserRolesApi.getUserCaseloads().then(uc => {

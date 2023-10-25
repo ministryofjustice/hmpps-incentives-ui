@@ -107,42 +107,6 @@ const token = (roles: UserRole[] = []) =>
     },
   })
 
-const stubUser = (name: string) =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/auth/api/user/me',
-    },
-    response: {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: {
-        staffId: 231232,
-        username: 'USER1',
-        active: true,
-        name,
-        activeCaseLoadId: 'MDI',
-      },
-    },
-  })
-
-const stubUserRoles = (roles: UserRole[] = []) =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/auth/api/user/me/roles',
-    },
-    response: {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: roles,
-    },
-  })
-
 export default {
   getSignInUrl,
   stubAuthPing: ping,
@@ -156,17 +120,5 @@ export default {
     },
   ): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
-  stubAuthUser: (
-    {
-      name = 'john smith',
-      roles = [],
-    }: {
-      name: string
-      roles: UserRole[]
-    } = {
-      name: 'john smith',
-      roles: [],
-    },
-  ): Promise<[Response, Response, Response]> =>
-    Promise.all([stubUser(name), stubUserRoles(roles), nomisUserRolesApi.stubGetUserCaseloads()]),
+  stubAuthUser: (): Promise<[Response]> => Promise.all([nomisUserRolesApi.stubGetUserCaseloads()]),
 }

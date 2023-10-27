@@ -1,6 +1,6 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
 import { BadRequest } from 'http-errors'
-import jwtDecode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 
 import config from '../config'
 import logger from '../../logger'

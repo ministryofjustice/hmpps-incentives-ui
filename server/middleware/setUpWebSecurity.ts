@@ -16,40 +16,41 @@ export default function setUpWebSecurity(): Router {
     next()
   })
 
-  const scriptSrc = [
-    "'self'",
-    'https://*.hotjar.com',
-    "'unsafe-inline'",
-    '*.google-analytics.com',
-    '*.googletagmanager.com',
-    (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
-  ]
-  const styleSrc = [
-    "'self'",
-    'https://*.hotjar.com',
-    "'unsafe-inline'",
-    (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
-  ]
-  const imgSrc = ["'self'", 'data:', '*.google-analytics.com', '*.googletagmanager.com', 'https://*.hotjar.com']
-  const fontSrc = ["'self'", 'https://*.hotjar.com']
-
-  if (config.apis.frontendComponents.url) {
-    scriptSrc.push(config.apis.frontendComponents.url)
-    styleSrc.push(config.apis.frontendComponents.url)
-    imgSrc.push(config.apis.frontendComponents.url)
-    fontSrc.push(config.apis.frontendComponents.url)
-  }
+  const authHost = new URL(config.apis.hmppsAuth.externalUrl).hostname
+  const dpsHost = new URL(config.dpsUrl).hostname
+  const frontendComponentsHost = new URL(config.apis.frontendComponents.url).hostname
 
   router.use(
     helmet({
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          scriptSrc,
-          styleSrc,
-          fontSrc,
-          imgSrc,
-          formAction: [`'self' ${new URL(config.apis.hmppsAuth.url).hostname} ${config.dpsUrl}`],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            frontendComponentsHost,
+            '*.google-analytics.com',
+            '*.googletagmanager.com',
+            'https://*.hotjar.com',
+            (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
+          ],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            frontendComponentsHost,
+            'https://*.hotjar.com',
+            (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
+          ],
+          fontSrc: ["'self'", frontendComponentsHost, 'https://*.hotjar.com'],
+          imgSrc: [
+            "'self'",
+            'data:',
+            frontendComponentsHost,
+            '*.google-analytics.com',
+            '*.googletagmanager.com',
+            'https://*.hotjar.com',
+          ],
+          formAction: ["'self'", authHost, dpsHost],
           frameSrc: ['https://*.hotjar.com'],
           connectSrc: [
             "'self'",

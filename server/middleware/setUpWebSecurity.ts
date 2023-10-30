@@ -49,7 +49,7 @@ export default function setUpWebSecurity(): Router {
           styleSrc,
           fontSrc,
           imgSrc,
-          formAction: ["'self'", new URL(config.apis.hmppsAuth.url).hostname],
+          formAction: [`'self' ${new URL(config.apis.hmppsAuth.url).hostname} ${config.dpsUrl}`],
           frameSrc: ['https://*.hotjar.com'],
           connectSrc: [
             "'self'",

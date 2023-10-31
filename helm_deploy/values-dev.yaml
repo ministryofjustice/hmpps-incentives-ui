@@ -2,6 +2,9 @@
 generic-service:
   replicaCount: 2
 
+  scheduledDowntime:
+    enabled: true
+
   serviceAccountName: hmpps-incentives-dev-analytical-platform
 
   ingress:

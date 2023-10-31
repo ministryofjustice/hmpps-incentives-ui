@@ -98,9 +98,9 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.437.0",
+    "@aws-sdk/client-s3": "^3.438.0",
     "@ministryofjustice/frontend": "^1.8.0",
-    "@sentry/node": "^7.75.1",
+    "@sentry/node": "^7.76.0",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.0",
     "body-parser": "^1.20.2",

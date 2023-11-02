@@ -1,4 +1,4 @@
-import type { UserRole } from '../../server/data/hmppsAuthClient'
+import type { UserRole } from '../../server/data/manageUsersApiClient'
 import { sampleIncentiveLevels } from '../../server/testData/incentivesApi'
 import type { IncentiveLevel } from '../../server/data/incentivesApi'
 import Page from '../pages/page'
@@ -12,8 +12,9 @@ context('Incentive level management', () => {
     const roles: UserRole[] = [{ roleCode: 'ROLE_MAINTAIN_INCENTIVE_LEVELS' }]
     cy.task('reset')
     cy.task('stubSignIn', { roles })
-    cy.task('stubAuthUser', { roles })
+    cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubPrisonApiLocations')
+    cy.task('stubManageUser')
     cy.task('stubIncentiveLevels', { inactive: true })
     cy.task('stubIncentiveLevel')
 

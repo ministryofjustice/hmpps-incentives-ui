@@ -1,7 +1,5 @@
 import { defineConfig } from 'cypress'
-import { resetStubs } from './integration_tests/mockApis/wiremock'
-import manageUsersApi from './integration_tests/mockApis/manageUsersApi'
-import tokenVerification from './integration_tests/mockApis/tokenVerification'
+import setupNodeEvents from './integration_tests/plugins'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -17,15 +15,7 @@ export default defineConfig({
   viewportWidth: 1200,
   viewportHeight: 850,
   e2e: {
-    // We've imported your old cypress plugins here.
-    // You may want to clean this up later by importing these.
-    setupNodeEvents(on) {
-      on('task', {
-        reset: resetStubs,
-        ...manageUsersApi,
-        ...tokenVerification,
-      })
-    },
+    setupNodeEvents,
     baseUrl: 'http://localhost:3007',
     excludeSpecPattern: '**/!(*.cy).ts',
     specPattern: 'integration_tests/e2e/**/*.cy.{js,jsx,ts,tsx}',

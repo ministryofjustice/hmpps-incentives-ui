@@ -1,10 +1,9 @@
 import { Response } from 'superagent'
 
-import type { UserRole } from '../../server/data/hmppsAuthClient'
+import type { UserRole } from '../../server/data/manageUsersApiClient'
 import createUserToken from '../../server/routes/testutils/createUserToken'
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
-import nomisUserRolesApi from './nomisUserRolesApi'
 
 const getSignInUrl = (): Promise<string> =>
   getMatchingRequests({
@@ -120,5 +119,4 @@ export default {
     },
   ): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
-  stubAuthUser: (): Promise<[Response]> => Promise.all([nomisUserRolesApi.stubGetUserCaseloads()]),
 }

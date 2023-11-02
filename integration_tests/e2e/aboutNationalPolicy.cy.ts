@@ -6,7 +6,8 @@ context('About National policy page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubNomisUserRolesGetCaseloads')
+    cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
 
     cy.signIn()

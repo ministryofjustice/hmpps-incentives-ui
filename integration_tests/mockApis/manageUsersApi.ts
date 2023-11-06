@@ -38,6 +38,17 @@ const stubUserRoles = (roles: UserRole[] = [{ roleCode: 'SOME_USER_ROLE' }]) =>
     },
   })
 
+const ping = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/manage-users-api/health/ping',
+    },
+    response: {
+      status: 200,
+    },
+  })
+
 export default {
   stubManageUser: (
     {
@@ -51,4 +62,5 @@ export default {
       roles: [],
     },
   ): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles(roles)]),
+  stubManageUsersPing: ping,
 }

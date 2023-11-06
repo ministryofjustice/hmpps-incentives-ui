@@ -6,7 +6,8 @@ context('About Analytics page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubNomisUserRolesGetCaseloads')
+    cy.task('stubManageUser')
     cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubPrisonApiLocations')
     cy.task('stubCreateZendeskTicket')

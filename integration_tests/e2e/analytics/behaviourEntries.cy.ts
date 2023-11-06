@@ -15,7 +15,8 @@ context('Analytics section > Behaviour entries page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubNomisUserRolesGetCaseloads')
+    cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
     cy.task('stubCreateZendeskTicket')
 
@@ -117,7 +118,8 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubNomisUserRolesGetCaseloads')
+    cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
 
     cy.signIn()
@@ -219,7 +221,8 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubNomisUserRolesGetCaseloads')
+    cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
 
     cy.signIn()

@@ -1,16 +1,14 @@
 import promClient from 'prom-client'
 
 import createApp from './app'
-import HmppsAuthClient from './data/hmppsAuthClient'
-import { createRedisClient } from './data/redisClient'
-import TokenStore from './data/tokenStore'
+import ManageUsersApiClient from './data/manageUsersApiClient'
 import { createMetricsApp } from './monitoring/metricsApp'
 import UserService from './services/userService'
 
 promClient.collectDefaultMetrics()
 
-const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient('server/index.ts')))
-const userService = new UserService(hmppsAuthClient)
+const manageUsersApiClient = new ManageUsersApiClient()
+const userService = new UserService(manageUsersApiClient)
 
 const app = createApp(userService)
 const metricsApp = createMetricsApp()

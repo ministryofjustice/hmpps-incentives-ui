@@ -4,6 +4,7 @@ import auth from '../mockApis/auth'
 import tokenVerification from '../mockApis/tokenVerification'
 import prisonApi from '../mockApis/prisonApi'
 import incentivesApi from '../mockApis/incentivesApi'
+import manageUsersApi from '../mockApis/manageUsersApi'
 import nomisUserRolesApi from '../mockApis/nomisUserRolesApi'
 import zendeskApi from '../mockApis/zendeskApi'
 import dpsComponents from '../mockApis/dpsComponents'
@@ -13,6 +14,7 @@ export default (on: (string, Record) => void): void => {
     reset: resetStubs,
 
     ...auth,
+    ...manageUsersApi,
     ...tokenVerification,
 
     stubIncentivesApiPing: incentivesApi.stubPing,
@@ -28,6 +30,7 @@ export default (on: (string, Record) => void): void => {
     stubPrisonIncentiveLevel: incentivesApi.stubPrisonIncentiveLevel,
     stubPatchPrisonIncentiveLevel: incentivesApi.stubPatchPrisonIncentiveLevel,
 
+    stubNomisUserRolesGetCaseloads: nomisUserRolesApi.stubGetUserCaseloads,
     stubNomisUserRolesApiPing: nomisUserRolesApi.stubPing,
     stubNomisUserRolesApiUserCaseloads: nomisUserRolesApi.stubGetUserCaseloads,
 

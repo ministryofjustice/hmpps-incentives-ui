@@ -37,7 +37,8 @@ context('Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubNomisUserRolesGetCaseloads')
+    cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
     cy.task('stubCreateZendeskTicket')
 
@@ -221,7 +222,8 @@ context('Pgd Region selection > National > Analytics section > Protected charact
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubNomisUserRolesGetCaseloads')
+    cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
 
     cy.signIn()
@@ -383,7 +385,8 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
-    cy.task('stubAuthUser')
+    cy.task('stubNomisUserRolesGetCaseloads')
+    cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
 
     cy.signIn()

@@ -1,6 +1,7 @@
 import { Response } from 'superagent'
 
 import { stubFor } from './wiremock'
+import { UserRole } from '../../server/data/manageUsersApiClient'
 
 const stubUser = (name: string) =>
   stubFor({
@@ -22,7 +23,7 @@ const stubUser = (name: string) =>
     },
   })
 
-const stubUserRoles = () =>
+const stubUserRoles = (roles: UserRole[] = [{ roleCode: 'SOME_USER_ROLE' }]) =>
   stubFor({
     request: {
       method: 'GET',
@@ -33,11 +34,21 @@ const stubUserRoles = () =>
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
-      jsonBody: [{ roleCode: 'SOME_USER_ROLE' }],
+      jsonBody: roles,
     },
   })
 
 export default {
-  stubManageUser: (name = 'john smith'): Promise<[Response, Response]> =>
-    Promise.all([stubUser(name), stubUserRoles()]),
+  stubManageUser: (
+    {
+      name,
+      roles,
+    }: {
+      name: string
+      roles: UserRole[]
+    } = {
+      name: 'john smith',
+      roles: [],
+    },
+  ): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles(roles)]),
 }

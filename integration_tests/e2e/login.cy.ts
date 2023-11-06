@@ -64,7 +64,7 @@ context('SignIn', () => {
     cy.request('/').its('body').should('contain', 'Sign in')
 
     cy.task('stubVerifyToken', true)
-    cy.task('stubManageUser', 'bobby brown')
+    cy.task('stubManageUser', { name: 'bobby brown' })
     cy.signIn()
 
     indexPage.headerUserName.contains('B. Brown')

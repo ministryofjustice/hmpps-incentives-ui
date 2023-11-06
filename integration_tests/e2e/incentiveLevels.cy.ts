@@ -14,7 +14,7 @@ context('Incentive level management', () => {
     cy.task('stubSignIn', { roles })
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubPrisonApiLocations')
-    cy.task('stubManageUser')
+    cy.task('stubManageUser', { roles })
     cy.task('stubIncentiveLevels', { inactive: true })
     cy.task('stubIncentiveLevel')
 

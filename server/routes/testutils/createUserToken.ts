@@ -1,7 +1,9 @@
 import jwt from 'jsonwebtoken'
 
+import type { AuthToken } from '../../middleware/authorisationMiddleware'
+
 export default function createUserToken(authorities: string[]) {
-  const payload = {
+  const payload: AuthToken = {
     user_name: 'user1',
     scope: ['read', 'write'],
     auth_source: 'nomis',

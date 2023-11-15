@@ -5,6 +5,17 @@ import createUserToken from '../../server/routes/testutils/createUserToken'
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 
+const mockHtmlResponse = (title: string) => `
+<html lang="en">
+<head>
+  <title>${title} – Digital Prison Services</title>
+</head>
+<body>
+  <h1>${title}</h1>
+</body>
+</html>
+`
+
 const getSignInUrl = (): Promise<string> =>
   getMatchingRequests({
     method: 'GET',
@@ -19,7 +30,7 @@ const favicon = () =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/favicon.ico',
+      urlPath: '/favicon.ico',
     },
     response: {
       status: 200,
@@ -30,7 +41,7 @@ const ping = () =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/auth/health/ping',
+      urlPath: '/auth/health/ping',
     },
     response: {
       status: 200,
@@ -49,7 +60,7 @@ const redirect = () =>
         'Content-Type': 'text/html',
         Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
-      body: '<html><body>SignIn page<h1>Sign in</h1></body></html>',
+      body: mockHtmlResponse('Sign in'),
     },
   })
 
@@ -64,7 +75,7 @@ const signOut = () =>
       headers: {
         'Content-Type': 'text/html',
       },
-      body: '<html><body>SignIn page<h1>Sign in</h1></body></html>',
+      body: mockHtmlResponse('Sign in'),
     },
   })
 
@@ -79,7 +90,7 @@ const manageDetails = () =>
       headers: {
         'Content-Type': 'text/html',
       },
-      body: '<html><body><h1>Your account details</h1></body></html>',
+      body: mockHtmlResponse('Your account details'),
     },
   })
 
@@ -87,7 +98,7 @@ const token = (roles: UserRole[] = []) =>
   stubFor({
     request: {
       method: 'POST',
-      urlPattern: '/auth/oauth/token',
+      urlPath: '/auth/oauth/token',
     },
     response: {
       status: 200,

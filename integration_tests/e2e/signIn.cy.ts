@@ -2,7 +2,7 @@ import Page from '../pages/page'
 import AuthSignInPage from '../pages/authSignIn'
 import HomePage from '../pages/home'
 
-context('SignIn', () => {
+context('Sign in', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
@@ -28,7 +28,7 @@ context('SignIn', () => {
     homePage.fallbackHeaderUserName.should('contain.text', 'J. Smith')
   })
 
-  it('User can log out', () => {
+  it('User can sign out', () => {
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
     homePage.signOut.click()
@@ -64,7 +64,7 @@ context('SignIn', () => {
     cy.request('/').its('body').should('contain', 'Sign in')
 
     cy.task('stubVerifyToken', true)
-    cy.task('stubManageUser', { name: 'bobby brown' })
+    cy.task('stubManageUser', 'bobby brown')
     cy.signIn()
 
     indexPage.headerUserName.contains('B. Brown')

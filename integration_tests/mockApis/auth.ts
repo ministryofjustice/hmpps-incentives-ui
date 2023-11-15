@@ -109,6 +109,7 @@ const token = (roles: UserRole[] = []) =>
 export default {
   getSignInUrl,
   stubAuthPing: ping,
+  stubAuthManageDetails: manageDetails,
   stubSignIn: (
     {
       roles = [],
@@ -117,6 +118,6 @@ export default {
     } = {
       roles: [],
     },
-  ): Promise<[Response, Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(roles), tokenVerification.stubVerifyToken()]),
+  ): Promise<[Response, Response, Response, Response, Response]> =>
+    Promise.all([favicon(), redirect(), signOut(), token(roles), tokenVerification.stubVerifyToken()]),
 }

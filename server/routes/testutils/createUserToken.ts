@@ -2,7 +2,9 @@ import jwt from 'jsonwebtoken'
 
 import type { AuthToken } from '../../middleware/authorisationMiddleware'
 
-export default function createUserToken(authorities: string[]) {
+export default function createUserToken(roles: string[]) {
+  // authorities in the session are always prefixed by ROLE.
+  const authorities = roles.map(role => (role.startsWith('ROLE_') ? role : `ROLE_${role}`))
   const payload: AuthToken = {
     user_name: 'user1',
     scope: ['read', 'write'],

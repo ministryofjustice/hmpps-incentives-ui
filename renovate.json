@@ -13,8 +13,7 @@
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non major NPM dependencies",
       "groupSlug": "all-npm-minor-patch",
-      "stabilityDays": 3,
-      "automerge": true
+      "stabilityDays": 3
     },
     {
       "matchDepTypes": ["engines"],

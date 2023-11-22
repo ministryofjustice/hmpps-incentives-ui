@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@7.5
+  hmpps: ministryofjustice/hmpps@8.0
   slack: circleci/slack@4.12.5
 
 parameters:
@@ -165,6 +165,8 @@ workflows:
           env: "dev"
           helm_timeout: 7m
           jira_update: true
+          pipeline_id: <<pipeline.id>>
+          pipeline_number: <<pipeline.number>>
           context: hmpps-common-vars
           filters:
             branches:
@@ -185,6 +187,8 @@ workflows:
           helm_timeout: 7m
           jira_update: true
           jira_env_type: staging
+          pipeline_id: <<pipeline.id>>
+          pipeline_number: <<pipeline.number>>
           context:
             - hmpps-common-vars
             - hmpps-incentives-ui-preprod
@@ -200,6 +204,8 @@ workflows:
           helm_timeout: 7m
           jira_update: true
           jira_env_type: production
+          pipeline_id: <<pipeline.id>>
+          pipeline_number: <<pipeline.number>>
           slack_notification: true
           slack_channel_name: << pipeline.parameters.releases-slack-channel >>
           context:

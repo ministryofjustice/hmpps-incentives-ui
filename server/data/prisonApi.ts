@@ -25,11 +25,17 @@ export class PrisonApi extends RestClient {
     super('HMPPS Prison API', config.apis.hmppsPrisonApi, token)
   }
 
-  getImageByPrisonerNumber(prisonerNumber: string): Promise<Buffer> {
-    return this.get({
+  getImageByPrisonerNumber(prisonerNumber: string): Promise<Buffer | null> {
+    return this.get<Buffer>({
       path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}/image/data`,
       query: { fullSizeImage: 'false' },
-      handle404: true,
+    }).catch(error => {
+      const status = error?.status
+      if (status === 403 || status === 404) {
+        // return null if unauthorised or not found
+        return null
+      }
+      throw error
     })
   }
 

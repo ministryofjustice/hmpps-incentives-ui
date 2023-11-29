@@ -53,8 +53,7 @@ export default class RestClient {
     headers = {},
     responseType = '',
     raw = false,
-    handle404 = false,
-  }: Request & { handle404?: boolean }): Promise<Response> {
+  }: Request): Promise<Response> {
     logger.info(`${this.name} GET: ${path}`)
     try {
       const result = await superagent
@@ -74,9 +73,6 @@ export default class RestClient {
       return raw ? result : result.body
     } catch (error) {
       const sanitisedError = sanitiseError(error)
-      if (handle404 === true && error?.response?.status === 404) {
-        return null
-      }
       logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: 'GET'`)
       throw sanitisedError
     }

@@ -33,7 +33,6 @@ generic-service:
     metricsPath: /metrics
     metricsPort: 3001
 
-  # Environment variables to load into the deployment
   env:
     ENVIRONMENT: ""
     NODE_ENV: "production"
@@ -44,24 +43,11 @@ generic-service:
     PHASE_NAME: ""
     FEATURE_ADD_TEST_ERROR_ENDPOINT: ""
 
-  # Pre-existing kubernetes secrets to load as environment variables in the deployment.
-  # namespace_secrets:
-  #   [name of kubernetes secret]:
-  #     [name of environment variable as seen by app]: [key of kubernetes secret to load]
+  envFrom:
+    - secretRef:
+        name: hmpps-incentives-ui
 
   namespace_secrets:
-    hmpps-incentives-ui:
-      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
-      API_CLIENT_ID: "API_CLIENT_ID"
-      API_CLIENT_SECRET: "API_CLIENT_SECRET"
-      SYSTEM_CLIENT_ID: "SYSTEM_CLIENT_ID"
-      SYSTEM_CLIENT_SECRET: "SYSTEM_CLIENT_SECRET"
-      SESSION_SECRET: "SESSION_SECRET"
-      ZENDESK_USERNAME: "ZENDESK_USERNAME"
-      ZENDESK_TOKEN: "ZENDESK_TOKEN"
-      GOOGLE_ANALYTICS_GA4_MEASUREMENT_ID: "GOOGLE_ANALYTICS_GA4_MEASUREMENT_ID"
-      HOTJAR_SITE_ID: "HOTJAR_SITE_ID"
-      SENTRY_DSN: "SENTRY_DSN"
     elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"

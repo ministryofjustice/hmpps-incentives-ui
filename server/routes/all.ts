@@ -7,6 +7,7 @@ import analyticsRouter from './analyticsRouter'
 import throwTestErrorRouter from './throwTestErrorRouter'
 import imageRouter from './imageRouter'
 import incentiveLevelRoutes, { manageIncentiveLevelsRole } from './incentiveLevels'
+import prisonerIncentiveLevels from './prisonerIncentiveLevelDetails'
 import prisonIncentiveLevelRoutes, { managePrisonIncentiveLevelsRole } from './prisonIncentiveLevels'
 import prisonerImagesRoutes from './prisonerImages'
 import selectLocationRoutes from './selectLocation'
@@ -23,6 +24,11 @@ export default function routes(userService: UserService): Router {
     '/incentive-levels',
     authorisationMiddleware([manageIncentiveLevelsRole]),
     incentiveLevelRoutes(standardRouter(userService)),
+  )
+  router.use(
+    '/incentive-reviews/prisoner',
+    authorisationMiddleware(['ROLE_MAINTAIN_IEP']),
+    prisonerIncentiveLevels(standardRouter(userService)),
   )
   router.use(
     '/prison-incentive-levels',

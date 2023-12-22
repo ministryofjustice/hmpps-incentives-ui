@@ -127,6 +127,10 @@ export class IncentivesApi extends RestClient {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
   }
 
+  getIncentiveSummaryForPrisoner(prisonerNumber: string): Promise<IncentivesReview> {
+    return this.get({ path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}` })
+  }
+
   getIncentiveLevels(withInactive = false): Promise<IncentiveLevel[]> {
     const query = withInactive ? { 'with-inactive': 'true' } : {}
     return this.get({

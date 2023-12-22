@@ -2,7 +2,8 @@
 . "$(dirname "$0")/_/husky.sh"
 
 export NODE_ENV=dev
-npx lint-staged && npx tsc
+npx lint-staged
+npm run typecheck
 
 # Check test data doesn't contain booking IDs
 if grep -q book server/testData/s3Bucket/*/*; then

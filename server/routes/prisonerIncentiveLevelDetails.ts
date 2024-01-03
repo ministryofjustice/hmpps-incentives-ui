@@ -5,6 +5,8 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, ErrorCode, ErrorResponse } from '../data/incentivesApi'
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
+import { OffenderSearchClient } from '../data/offenderSearch'
+import { nameOfPerson } from '../utils/utils'
 
 const hmppsAuthClient = new HmppsAuthClient(
   new TokenStore(createRedisClient('routes/prisonerIncentiveLevelDetails.ts')),
@@ -19,13 +21,16 @@ export default function routes(router: Router): Router {
 
   get('/:prisonerNumber', async (req, res) => {
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
-    const incentivesApi = new IncentivesApi(systemToken)
 
+    const incentivesApi = new IncentivesApi(systemToken)
     const { prisonerNumber } = req.params
+    const offenderSearchClient = new OffenderSearchClient(systemToken)
 
     const incentiveLevel = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
+    const prisoner = await offenderSearchClient.getPrisoner(prisonerNumber)
+    const prisonerName = nameOfPerson(prisoner)
 
-    res.render('pages/prisonerIncentiveLevelDetails.njk', { messages: req.flash(), incentiveLevel })
+    res.render('pages/prisonerIncentiveLevelDetails.njk', { messages: req.flash(), incentiveLevel, prisonerName })
   })
 
   return router

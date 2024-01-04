@@ -1,0 +1,50 @@
+.dps-mini-profile-header--align-right {
+  align-self: center;
+  margin-left: auto;
+
+  .govuk-button, .hmpps-action-button {
+    margin-bottom: 0;
+  }
+}
+
+.dps-mini-profile-header {
+  @extend .govuk-\!-padding-3;
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  background: govuk-colour('light-grey');
+
+  .app-prisoner-photo--small {
+    margin-right: govuk-spacing(6);
+  }
+
+  dl {
+    margin-right: govuk-spacing(9);
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+
+
+  @include govuk-media-query($until: tablet) {
+    display: block;
+
+    .app-prisoner-photo--small {
+      margin-bottom: govuk-spacing(4);
+    }
+
+    dl {
+      margin-right: 0;
+
+      &:last-child {
+        margin-bottom: 0;
+
+        dd {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}

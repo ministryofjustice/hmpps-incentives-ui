@@ -9,7 +9,6 @@
 {% from "components/datePicker/datePicker.njk" import datePicker %}
 
 {% set title =  "Incentive details" %}
-{% set recordIncentiveUrl = recordIncentiveUrl %}
 
 {% block beforeContent %}
   {{ govukBreadcrumbs({
@@ -41,7 +40,7 @@
   <div class="horizontal-information govuk-!-margin-bottom-3">
     <div class="horizontal-information__item">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Current incentive level</h3>
-      <p class="govuk-body" data-test="current-iep">{{ currentIepLevel }}</p>
+      <p class="govuk-body" data-test="current-iep">{{ currentIncentiveLevel }}</p>
     </div>
     <div class="horizontal-information__item">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Next review due by</h3>
@@ -64,7 +63,7 @@
         <div class="dps-mini-profile-header--align-right">
           <p class="hmpps-action-button govuk-!-display-none-print">
           <img src="/assets/images/icon_record_incentive_level.svg" alt="Icon representing an incentive level" aria-hidden="true" />
-          <a href=recordIncentiveLevel>
+          <a href="{{ recordIncentiveUrl }}">
             Record incentive level
           </a>
           </p>
@@ -72,7 +71,7 @@
     {% endif %}
   </div>
 
-  {% if results != null %}
+{#  {% if results != null %}#}
     <div class="govuk-!-padding-3 govuk-!-margin-bottom-5 form-background">
       <h2 class="govuk-heading-m">View by</h2>
       <form class="horizontal-form govuk-body govuk-!-margin-bottom-3" method="GET">
@@ -106,7 +105,9 @@
           label: 'Date from',
           name: 'fromDate',
           date: formValues.fromDate,
-          errorMessage: errors | findError('fromDate')
+          errorMessage: errors | findError('fromDate'),
+          classes: 'js-appointment-date',
+          attributes: {'data-disable-past-date':'true', 'data-add-appointment-date': 'true'}
         }) }}
 
         {{ datePicker({
@@ -114,7 +115,9 @@
           label: 'Date to',
           name: 'toDate',
           date: formValues.toDate,
-          errorMessage: errors | findError('toDate')
+          errorMessage: errors | findError('toDate'),
+          classes: 'js-appointment-date',
+          attributes: {'data-disable-past-date':'true', 'data-add-appointment-date': 'true'}
         }) }}
 
         {{ govukButton({
@@ -129,7 +132,7 @@
         <a href="./incentive-level-details" class="govuk-link govuk-link--no-visited-state">Clear</a>
       </form>
     </div>
-  {% endif %}
+{#  {% endif %}#}
 
   {% if results == null or results.length == 0 %}
     <p class="govuk-body" data-test="no-incentive-level-history-message">{{ noResultsFoundMessage }}</p>

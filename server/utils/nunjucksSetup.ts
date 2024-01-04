@@ -63,6 +63,45 @@ export default function nunjucksSetup(app: express.Express): void {
     return encodeURI(`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`)
   })
 
+  njkEnv.addFilter('findError', (array, formFieldId) => {
+    if (!array) return null
+    // @ts-ignore
+    const item = array.find((error) => error.href === `#${formFieldId}`)
+    if (item) {
+      return {
+        text: item.text,
+      }
+    }
+    return null
+  })
+
+  njkEnv.addFilter('addDefaultSelectedVale', (items, text, show) => {
+    if (!items) return null
+    const attributes: { hidden?: string } = {}
+    if (!show) attributes.hidden = ''
+
+    return [
+      {
+        text,
+        value: '',
+        selected: true,
+        attributes,
+      },
+      ...items,
+    ]
+  })
+
+  njkEnv.addFilter(
+    'setSelected',
+    (items, selected) =>
+      items &&
+      // @ts-ignore
+      items.map((entry) => ({
+        ...entry,
+        selected: entry && entry.value === selected,
+      }))
+  )
+
   // date & number formatting
   njkEnv.addFilter('date', format.date)
   njkEnv.addFilter('shortDate', format.shortDate)

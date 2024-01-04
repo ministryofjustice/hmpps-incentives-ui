@@ -56,4 +56,11 @@ export class PrisonApi extends RestClient {
       query: { activeOnly: activeOnly.toString() },
     })
   }
+
+  getAgencyDetails(context: string, agencyId: string): Promise<Agency> {
+    return this.get<Agency>({
+      path: `/api/agencies/${agencyId}?activeOnly=false`,
+      query: context
+  })
+  }
 }

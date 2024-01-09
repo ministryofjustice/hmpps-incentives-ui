@@ -1,9 +1,9 @@
 // eslint-disable-next-line max-classes-per-file
-import fs from 'fs'
-import fsPromises from 'fs/promises'
-import os from 'os'
-import path from 'path'
-import v8 from 'v8'
+import fs from 'node:fs'
+import fsPromises from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import v8 from 'node:v8'
 
 import logger from '../../logger'
 import type { TableType } from './analyticsServiceTypes'

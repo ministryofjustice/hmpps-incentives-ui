@@ -16,10 +16,8 @@ export default function nunjucksSetup(app: express.Express): void {
   app.locals.applicationName = 'Incentives'
   app.locals.production = config.production
   app.locals.environment = config.environment
-  app.locals.featureFlags = config.featureFlags
-
   app.locals.phaseName = config.phaseName
-  app.locals.phaseNameColour = config.phaseName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+  app.locals.featureFlags = config.featureFlags
 
   app.locals.googleAnalyticsGa4Id = config.googleAnalytics.ga4MeasurementId
   app.locals.hotjarSiteId = config.hotjar.siteId
@@ -42,8 +40,8 @@ export default function nunjucksSetup(app: express.Express): void {
   const njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),
-      'node_modules/govuk-frontend/',
-      'node_modules/govuk-frontend/components/',
+      'node_modules/govuk-frontend/dist/',
+      'node_modules/govuk-frontend/dist/components/',
       'node_modules/@ministryofjustice/frontend/',
       'node_modules/@ministryofjustice/frontend/moj/components/',
     ],

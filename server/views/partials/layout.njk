@@ -19,7 +19,6 @@
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet" />
   <script src="/assets/js/jquery.min.js"></script>
 
-
   {% if feComponents.jsIncludes %}
     {% for js in feComponents.jsIncludes %}
       <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
@@ -53,11 +52,9 @@
 {% endblock %}
 
 {% block bodyEnd %}
-  {# Run JavaScript at end of the
-  <body>, to avoid blocking the initial render. #}
-  <script src="/assets/govuk/all.js"></script>
+  <script type="module" src="/assets/govuk/govuk-frontend.min.js"></script>
   <script src="/assets/moj/all.js"></script>
-  <script src="/assets/application.js"></script>
+  <script type="module" src="/assets/application.js"></script>
 {% endblock %}
 
 {% block footer %}

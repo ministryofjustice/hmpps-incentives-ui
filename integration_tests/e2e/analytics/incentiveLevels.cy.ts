@@ -14,6 +14,7 @@ context('Analytics section > Incentive levels page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
@@ -91,6 +92,7 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
@@ -175,6 +177,7 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')

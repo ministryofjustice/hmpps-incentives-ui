@@ -1,3 +1,4 @@
+import logger from '../../logger'
 import config from '../config'
 import RestClient from './restClient'
 
@@ -9,15 +10,16 @@ export interface Component {
 
 export type AvailableComponent = 'header' | 'footer'
 
-export default class DpsComponentsClient {
+export default class FrontendComponentsClient {
   private static restClient(token: string): RestClient {
     return new RestClient('HMPPS Components Client', config.apis.frontendComponents, token)
   }
 
   getComponent(component: AvailableComponent, userToken: string): Promise<Component> {
-    return DpsComponentsClient.restClient(userToken).get({
+    logger.info(`Getting frontend component ${component}`)
+    return FrontendComponentsClient.restClient(userToken).get<Component>({
       path: `/${component}`,
       headers: { 'x-user-token': userToken },
-    }) as Promise<Component>
+    })
   }
 }

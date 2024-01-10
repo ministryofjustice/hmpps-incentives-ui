@@ -1,14 +1,12 @@
 import moment from 'moment'
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
 import HmppsAuthClient from '../data/hmppsAuthClient'
+import ManageUsersApiClient from '../data/manageUsersApiClient'
 import {PrisonApi} from "../data/prisonApi";
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import {
-  IncentivesApi,
-  ErrorCode,
-  ErrorResponse,
-  IepSummaryDetail, IepSummaryForBookingWithDetails
+  IncentivesApi, IncentiveSummaryDetail, IncentiveSummaryForBookingWithDetails
 } from '../data/incentivesApi'
 
 import TokenStore from '../data/tokenStore'
@@ -17,7 +15,7 @@ import { OffenderSearchClient } from '../data/offenderSearch'
 import {nameOfPerson, putLastNameFirst, properCaseName } from '../utils/utils'
 import { newDaysSince } from "../utils/utils";
 
-type HistoryDetail = IepSummaryDetail & {
+type HistoryDetail = IncentiveSummaryDetail & {
   iepEstablishment: string
   iepStaffMember: string | undefined
   formattedTime: string
@@ -65,109 +63,162 @@ const SYSTEM_USERS = ['INCENTIVES_API']
 const hmppsAuthClient = new HmppsAuthClient(
   new TokenStore(createRedisClient('routes/prisonerIncentiveLevelDetails.ts')),
 )
+
+const manageUsersApiClient = new ManageUsersApiClient()
+
+
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/:prisonerNumber', async (req, res) => {
-
+    const { prisonerNumber } = req.params
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
     const prisonApi = new PrisonApi(systemToken);
-    const { prisonerNumber } = req.params
     const incentivesApi = new IncentivesApi(systemToken)
-    const offenderSearchClient = new OffenderSearchClient(systemToken)
 
-    const incentiveLevelDetails: IepSummaryForBookingWithDetails= await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-    const currentIncentiveLevel = incentiveLevelDetails.iepLevel
+    try {
+      const offenderSearchClient = new OffenderSearchClient(systemToken)
+      const incentiveLevelDetails: IncentiveSummaryForBookingWithDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
 
-    const nextReviewDate = moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
-    const reviewDaysOverdue = newDaysSince(nextReviewDate)
-    const { agencyId, incentiveLevel, fromDate, toDate } = req.query
 
-    // TODO: FIX TS-IGNORES
-    //@ts-ignore
-    const fromDateFormatted = moment(fromDate, 'DD/MM/YYYY')
-    // @ts-ignore
-    const toDateFormatted = moment(toDate, 'DD/MM/YYYY')
+      const currentIncentiveLevel = incentiveLevelDetails.iepLevel
+      const {agencyId, incentiveLevel, fromDate, toDate} = req.query
 
-    // Offenders are likely to have multiple IEPs at the same agency.
-    // By getting a unique list of users and agencies, we reduce the duplicate
-    // calls to the database.
-    const uniqueUserIds = Array.from(new Set(incentiveLevelDetails.iepDetails.map((details) => details.userId)))
-    const uniqueAgencyIds = Array.from(new Set(incentiveLevelDetails.iepDetails.map((details) => details.agencyId)))
+      const nextReviewDate = moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
+      const reviewDaysOverdue = newDaysSince(nextReviewDate)
 
-    // Only get users that map to a user in the prison staff table
-    const users = (
-      await Promise.all(
-        uniqueUserIds
-          .filter((userId) => Boolean(userId))
-          .map((userId: string) => {
-            if (SYSTEM_USERS.includes(userId)) {
-              return {
-                username: userId,
-                firstName: 'System',
-                lastName: '',
-              }
-            }
-            return prisonApi.getStaffDetails(systemToken, userId)
-          })
+      const [prisonerDetails, userRoles] = await Promise.all([
+        prisonApi.getDetails(prisonerNumber),
+        manageUsersApiClient.getUserRoles(systemToken),
+      ])
+
+      const prisonerWithinCaseloads = res.locals.user.caseloads.find(
+        // "ts-expect-error
+        // @ts-ignore
+        caseload => caseload.id === prisonerDetails.agencyId,
       )
-    ).filter(notEmpty)
+      const userCanMaintainIncentives = userRoles.find(role => role === 'MAINTAIN_IEP')
 
-    const establishments: any[] = await Promise.all(uniqueAgencyIds.filter((id) => Boolean(id)).map((id) => prisonApi.getAgencyDetails(systemToken, id))
-    )
-    const levels = Array.from(new Set(incentiveLevelDetails.iepDetails.map((details) => details.iepLevel))).sort()
+      // TODO: FIX TS-IGNORES
+      //@ts-ignore
+      const fromDateFormatted = moment(fromDate, 'DD/MM/YYYY')
+      // @ts-ignore
+      const toDateFormatted = moment(toDate, 'DD/MM/YYYY')
 
-    const iepHistoryDetails: HistoryDetail[] = incentiveLevelDetails.iepDetails.map((details) => {
+      // Offenders are likely to have multiple IEPs at the same agency.
+      // By getting a unique list of users and agencies, we reduce the duplicate
+      // calls to the database.
+      const uniqueUserIds = Array.from(new Set(incentiveLevelDetails.iepDetails.map((details) => details.userId)))
+      const uniqueAgencyIds = Array.from(new Set(incentiveLevelDetails.iepDetails.map((details) => details.agencyId)))
 
-      const { description } = establishments.find((estb) => estb.agencyId === details.agencyId)
-      const user: any = details.userId && users.find((u: any) => u.username === details.userId)
+      // Only get users that map to a user in the prison staff table
+      const users = (
+        await Promise.all(
+          uniqueUserIds
+            .filter((userId) => Boolean(userId))
+            .map((userId: string) => {
+              if (SYSTEM_USERS.includes(userId)) {
+                return {
+                  username: userId,
+                  firstName: 'System',
+                  lastName: '',
+                }
+              }
+              return prisonApi.getStaffDetails(systemToken, userId)
+            })
+        )
+      ).filter(notEmpty)
 
-      return {
-        iepEstablishment: description,
-        iepStaffMember: user && `${properCaseName(user.firstName)} ${properCaseName(user.lastName)}`.trim(),
-        formattedTime: moment(details.iepTime, 'YYYY-MM-DD HH:mm').format('D MMMM YYYY - HH:mm'),
-        ...details,
+      const establishments: any[] = await Promise.all(uniqueAgencyIds.filter((id) => Boolean(id)).map((id) => prisonApi.getAgencyDetails(systemToken, id))
+      )
+      const levels = Array.from(new Set(incentiveLevelDetails.iepDetails.map((details) => details.iepLevel))).sort()
+
+      const iepHistoryDetails: HistoryDetail[] = incentiveLevelDetails.iepDetails.map((details) => {
+        const {description} = establishments.find((estb) => estb.agencyId === details.agencyId)
+        const user: any = details.userId && users.find((u: any) => u.username === details.userId)
+
+        return {
+          iepEstablishment: description,
+          iepStaffMember: user && `${properCaseName(user.firstName)} ${properCaseName(user.lastName)}`.trim(),
+          formattedTime: moment(details.iepTime, 'YYYY-MM-DD HH:mm').format('D MMMM YYYY - HH:mm'),
+          ...details,
+        }
+      })
+
+      const filteredResults = filterData(iepHistoryDetails, {
+        // @ts-ignore
+        agencyId,
+        // @ts-ignore
+        incentiveLevel,
+        fromDate: fromDate && fromDateFormatted.format('YYYY-MM-DD'),
+        toDate: toDate && toDateFormatted.format('YYYY-MM-DD'),
+      })
+
+      const prisoner = await offenderSearchClient.getPrisoner(prisonerNumber)
+      const prisonerName = nameOfPerson(prisoner)
+      const {firstName, lastName} = prisoner
+      let incentiveSummary
+      const errors: any = []
+      const noResultsFoundMessage = `${prisonerName} has no incentive level history`
+
+      try {
+        incentiveSummary = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
+      } catch (error) {
+        if (error.response.status === 404) {
+
+
+          return res.render('prisonerProfile/prisonerIncentiveLevelDetails.njk', {
+            breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
+            currentIepDate: 'Not entered',
+            currentIepLevel: 'Not entered',
+            errors,
+            formValues: req.query,
+            incentiveSummary,
+            noResultsFoundMessage,
+            nextReviewDate: 'Not entered',
+            prisonerNumber,
+            prisonerName,
+            profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
+            results: null,
+            userCanUpdateIEP: Boolean(prisonerWithinCaseloads && userCanMaintainIncentives),
+          })
+        }
       }
-    })
 
-    const filteredResults = filterData(iepHistoryDetails, {
-      // @ts-ignore
-      agencyId,
-      // @ts-ignore
-      incentiveLevel,
-      fromDate: fromDate && fromDateFormatted.format('YYYY-MM-DD'),
-      toDate: toDate && toDateFormatted.format('YYYY-MM-DD'),
-    })
+      if (fromDate && toDate && fromDateFormatted.isAfter(toDateFormatted, 'day')) {
+        errors.push({ href: '#fromDate', text: 'Enter a from date which is not after the to date' })
+        errors.push({ href: '#toDate', text: 'Enter a to date which is not before the from date' })
+      }
 
-    const prisoner = await offenderSearchClient.getPrisoner(prisonerNumber)
-    const prisonerName = nameOfPerson(prisoner)
-    const { firstName, lastName } =  prisoner
-
-    res.render('pages/prisonerIncentiveLevelDetails.njk', { messages: req.flash(),
-      breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
-      currentIncentiveLevel,
-      establishments: establishments
-        .sort((a, b) => a.description.localeCompare(b.description))
-        .map((establishment) => ({
-          text: establishment.description,
-          value: establishment.agencyId,
+      res.render('pages/prisonerIncentiveLevelDetails.njk', {
+        messages: req.flash(),
+        breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
+        currentIncentiveLevel,
+        establishments: establishments
+          .sort((a, b) => a.description.localeCompare(b.description))
+          .map((establishment) => ({
+            text: establishment.description,
+            value: establishment.agencyId,
+          })),
+        formValues: req.query,
+        incentiveLevelDetails,
+        levels: levels.map((level) => ({
+          text: level,
+          value: level,
         })),
-      formValues: req.query,
-      incentiveLevelDetails,
-      levels: levels.map((level) => ({
-        text: level,
-        value: level,
-      })),
-      nextReviewDate: nextReviewDate.format('D MMMM YYYY'),
-      prisonerName,
-      profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
-      recordIncentiveUrl:`/prisoner/${prisonerNumber}/incentive-level-details/change-incentive-level`,
-      reviewDaysOverdue,
-      results: filteredResults,
-      // TODO: userCanUpdateIEP
-      userCanUpdateIEP: true,
-    })
+        nextReviewDate: nextReviewDate.format('D MMMM YYYY'),
+        noResultsFoundMessage,
+        prisonerName,
+        profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
+        recordIncentiveUrl: `/prisoner/${prisonerNumber}/incentive-level-details/change-incentive-level`,
+        reviewDaysOverdue,
+        results: filteredResults,
+        userCanUpdateIEP: Boolean(prisonerWithinCaseloads && userCanMaintainIncentives)
+      })
+    } catch (error) {
+      res.locals.redirectUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
+      throw error
+    }
   })
-
   return router
 }

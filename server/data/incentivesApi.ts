@@ -122,7 +122,7 @@ export interface IncentivesReview {
   isNewToPrison: boolean
 }
 
-export type IepSummaryForBooking = {
+export type IncentiveSummaryForBooking = {
   bookingId: number
   iepLevel: string
   iepDate: string
@@ -131,7 +131,7 @@ export type IepSummaryForBooking = {
   nextReviewDate: string
 }
 
-export type IepSummaryDetail = {
+export type IncentiveSummaryDetail = {
   bookingId: number
   iepLevel: string
   iepDate: string
@@ -143,8 +143,8 @@ export type IepSummaryDetail = {
   // auditModuleName: string
 }
 
-export type IepSummaryForBookingWithDetails = IepSummaryForBooking & {
-  iepDetails: IepSummaryDetail[]
+export type IncentiveSummaryForBookingWithDetails = IncentiveSummaryForBooking & {
+  iepDetails: IncentiveSummaryDetail[]
 }
 
 export class IncentivesApi extends RestClient {
@@ -152,7 +152,7 @@ export class IncentivesApi extends RestClient {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
   }
 
-  getIncentiveSummaryForPrisoner(prisonerNumber: string): Promise<IepSummaryForBookingWithDetails> {
+  getIncentiveSummaryForPrisoner(prisonerNumber: string): Promise<IncentiveSummaryForBookingWithDetails> {
     return this.get({ path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}` })
   }
 

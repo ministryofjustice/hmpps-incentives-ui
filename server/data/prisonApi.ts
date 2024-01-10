@@ -20,6 +20,23 @@ export interface Agency {
   active: boolean
 }
 
+export interface Staff {
+  firstName: string
+  lastName: string
+  staffId: number
+  username: string
+  activeCaseLoadId: string
+  active: boolean
+}
+
+export interface Offender {
+  offenderNo: string
+  bookingId: string
+  firstName: string
+  lastName: string
+  agencyId: string
+}
+
 export class PrisonApi extends RestClient {
   constructor(token: string) {
     super('HMPPS Prison API', config.apis.hmppsPrisonApi, token)
@@ -60,15 +77,20 @@ export class PrisonApi extends RestClient {
   getAgencyDetails(context: string, agencyId: string): Promise<Agency> {
     return this.get<Agency>({
       path: `/api/agencies/${agencyId}?activeOnly=false`,
-      query: context
-  })
-  }
-
-  getStaffDetails(context: string, staffId: string): Promise<Agency> {
-    return this.get<Agency>({
-      path: `/api/users/${staffId}`,
-      query: context
+      query: context,
     })
   }
 
+  getStaffDetails(context: string, staffId: string): Promise<Staff> {
+    return this.get<Staff>({
+      path: `/api/users/${staffId}`,
+      query: context,
+    })
+  }
+
+  getDetails(prisonerNumber: string): Promise<Offender> {
+    return this.get<Offender>({
+      path: `/api/bookings/offenderNo/${prisonerNumber}`,
+    })
+  }
 }

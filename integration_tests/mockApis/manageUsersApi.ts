@@ -1,5 +1,4 @@
 import { stubFor } from './wiremock'
-import { UserRole } from '../../server/data/manageUsersApiClient'
 
 const stubUser = (name: string = 'john smith') =>
   stubFor({
@@ -21,21 +20,6 @@ const stubUser = (name: string = 'john smith') =>
     },
   })
 
-const stubUserRoles = (roles: UserRole[] = [{ roleCode: 'SOME_USER_ROLE' }]) =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/manage-users-api/users/me/roles',
-    },
-    response: {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: roles,
-    },
-  })
-
 const ping = () =>
   stubFor({
     request: {
@@ -50,5 +34,4 @@ const ping = () =>
 export default {
   stubManageUser: stubUser,
   stubManageUsersPing: ping,
-  stubManageUserRoles: stubUserRoles,
 }

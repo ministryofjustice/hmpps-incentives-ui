@@ -37,6 +37,7 @@ context('Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
@@ -222,6 +223,7 @@ context('Pgd Region selection > National > Analytics section > Protected charact
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
@@ -385,6 +387,7 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')

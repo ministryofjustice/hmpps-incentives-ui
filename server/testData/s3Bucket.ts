@@ -1,6 +1,6 @@
-import { createReadStream } from 'fs'
-import fs from 'fs/promises'
-import path from 'path'
+import { createReadStream } from 'node:fs'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 
 import { GetObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3'
 import type { GetObjectOutput, ListObjectsV2Output } from '@aws-sdk/client-s3'

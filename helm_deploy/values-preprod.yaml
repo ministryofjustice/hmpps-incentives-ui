@@ -17,7 +17,7 @@ generic-service:
     SUPPORT_URL: "https://support-preprod.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
     HMPPS_INCENTIVES_API_URL: "https://incentives-api-preprod.hmpps.service.justice.gov.uk"
-    HMPPS_PRISON_API_URL: "https://api-preprod.prison.service.justice.gov.uk"
+    HMPPS_PRISON_API_URL: "https://prison-api-preprod.prison.service.justice.gov.uk"
     NOMIS_USER_ROLES_API_URL: "https://nomis-user-pp.aks-live-1.studio-hosting.service.justice.gov.uk"
     MANAGE_USERS_API_URL: "https://manage-users-api-preprod.hmpps.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"

@@ -12,8 +12,7 @@ import {
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
 import { OffenderSearchClient } from '../data/offenderSearch'
-import {nameOfPerson, putLastNameFirst, properCaseName } from '../utils/utils'
-import { newDaysSince } from "../utils/utils";
+import { nameOfPerson, putLastNameFirst, properCaseName, newDaysSince } from '../utils/utils'
 
 type HistoryDetail = IncentiveSummaryDetail & {
   iepEstablishment: string
@@ -65,7 +64,6 @@ const hmppsAuthClient = new HmppsAuthClient(
 )
 
 const manageUsersApiClient = new ManageUsersApiClient()
-
 
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
@@ -125,7 +123,7 @@ export default function routes(router: Router): Router {
                 }
               }
               return prisonApi.getStaffDetails(systemToken, userId)
-            })
+            }),
         )
       ).filter(notEmpty)
 
@@ -167,7 +165,7 @@ export default function routes(router: Router): Router {
         if (error.response.status === 404) {
 
 
-          return res.render('prisonerProfile/prisonerIncentiveLevelDetails.njk', {
+          return res.render('pages/prisonerIncentiveLevelDetails.njk', {
             breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
             currentIepDate: 'Not entered',
             currentIepLevel: 'Not entered',
@@ -210,7 +208,7 @@ export default function routes(router: Router): Router {
         noResultsFoundMessage,
         prisonerName,
         profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
-        recordIncentiveUrl: `/prisoner/${prisonerNumber}/incentive-level-details/change-incentive-level`,
+        recordIncentiveUrl: `change-incentive-level`,
         reviewDaysOverdue,
         results: filteredResults,
         userCanUpdateIEP: Boolean(prisonerWithinCaseloads && userCanMaintainIncentives)

@@ -7,7 +7,7 @@ import nunjucks from 'nunjucks'
 import config from '../config'
 import { calculateTrendsRange, makeChartPalette } from './analytics'
 import format from './format'
-import { daysSince, initialiseName } from './utils'
+import { daysSince, initialiseName, possessive } from './utils'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -107,6 +107,9 @@ export default function nunjucksSetup(app: express.Express): void {
         selected: entry && entry.value === selected,
       }))
   )
+
+  // name formatting
+  njkEnv.addFilter('possessive', possessive)
 
   // date & number formatting
   njkEnv.addFilter('date', format.date)

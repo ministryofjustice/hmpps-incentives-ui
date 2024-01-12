@@ -19,12 +19,21 @@ export const convertToTitleCase = (sentence: string): string =>
 export const nameOfPerson = (prisoner: { firstName: string; lastName: string }): string =>
   `${convertToTitleCase(prisoner.firstName)} ${convertToTitleCase(prisoner.lastName)}`.trim()
 
+export const formatName = (firstName: string, lastName: string): string =>
+  [properCaseName(firstName), properCaseName(lastName)].filter(Boolean).join(' ')
+
 export const putLastNameFirst = (firstName: string, lastName: string): string => {
   if (!firstName && !lastName) return null
   if (!firstName && lastName) return properCaseName(lastName)
   if (firstName && !lastName) return properCaseName(firstName)
 
   return `${properCaseName(lastName)}, ${properCaseName(firstName)}`
+}
+
+export const possessive = (string: string): string => {
+  if (!string) return ''
+
+  return `${string}${string.toLowerCase().endsWith('s') ? '’' : '’s'}`
 }
 
 export const initialiseName = (fullName?: string): string | null => {

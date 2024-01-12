@@ -8,6 +8,7 @@ import throwTestErrorRouter from './throwTestErrorRouter'
 import imageRouter from './imageRouter'
 import incentiveLevelRoutes, { manageIncentiveLevelsRole } from './incentiveLevels'
 import prisonerIncentiveLevels from './prisonerIncentiveLevelDetails'
+import prisonerChangeIncentiveLevelDetails from './prisonerChangeIncentiveLevelDetails'
 import prisonIncentiveLevelRoutes, { managePrisonIncentiveLevelsRole } from './prisonIncentiveLevels'
 import prisonerImagesRoutes from './prisonerImages'
 import selectLocationRoutes from './selectLocation'
@@ -29,6 +30,11 @@ export default function routes(userService: UserService): Router {
     '/incentive-reviews/prisoner',
     authorisationMiddleware(['ROLE_MAINTAIN_IEP']),
     prisonerIncentiveLevels(standardRouter(userService)),
+  )
+  router.use(
+    '/incentive-reviews/prisoner/:prisonerNumber/change-incentive-level',
+    authorisationMiddleware(['ROLE_MAINTAIN_IEP']),
+    prisonerChangeIncentiveLevelDetails(standardRouter(userService)),
   )
   router.use(
     '/prison-incentive-levels',

@@ -29,12 +29,20 @@ export interface Staff {
   active: boolean
 }
 
+export interface assignedLivingUnit {
+  agencyId: string
+      locationId: number
+      description: string
+      agencyName: string
+}
+
 export interface Offender {
   offenderNo: string
   bookingId: string
   firstName: string
   lastName: string
   agencyId: string
+  assignedLivingUnit: assignedLivingUnit
 }
 
 export class PrisonApi extends RestClient {
@@ -91,6 +99,12 @@ export class PrisonApi extends RestClient {
   getDetails(prisonerNumber: string): Promise<Offender> {
     return this.get<Offender>({
       path: `/api/bookings/offenderNo/${prisonerNumber}`,
+    })
+  }
+
+  getFullDetails(prisonerNumber: string, fullInfo: boolean): Promise<Offender> {
+    return this.get<Offender>({
+      path: `/api/bookings/offenderNo/${prisonerNumber}?fullInfo=${fullInfo}&csraSummary=${fullInfo}`,
     })
   }
 }

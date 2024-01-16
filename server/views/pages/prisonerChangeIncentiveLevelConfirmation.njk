@@ -16,10 +16,6 @@
       {
         text: breadcrumbPrisonerName,
         href: profileUrl
-      },
-      {
-        text: 'Incentive details',
-         href: profileUrl + '/incentive-level-details'
       }
     ],
     classes: 'govuk-!-display-none-print'
@@ -33,7 +29,7 @@
       {% set panelTitle %}
         {{ prisonerName | possessive }} incentive level is set to
         <br/>
-        <strong data-test="current-incentive-level">{{ iepSummary.iepLevel }}</strong>
+        <strong data-test="current-incentive-level">{{ incentiveSummary.iepLevel }}</strong>
       {% endset %}
 
       {% set panelBody -%}

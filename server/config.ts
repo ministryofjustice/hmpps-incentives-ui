@@ -112,8 +112,8 @@ export default {
       agent: new AgentConfig(Number(get('HMPPS_PRISON_API_TIMEOUT_RESPONSE', 10000))),
     },
     offenderSearchApi: {
-      url: get('OFFENDER_SEARCH_API_URL', 'http://localhost:8082', requiredInProduction),
-      externalUrl: get('OFFENDER_SEARCH_API_EXTERNAL_URL', get('OFFENDER_SEARCH_API_URL', 'http://localhost:8082')),
+      url: get('OFFENDER_SEARCH_API_URL', 'http://localhost:8083', requiredInProduction),
+      externalUrl: get('OFFENDER_SEARCH_API_EXTERNAL_URL', get('OFFENDER_SEARCH_API_URL', 'http://localhost:8083')),
       timeout: {
         response: Number(get('OFFENDER_SEARCH_API_TIMEOUT_RESPONSE', 8000)),
         deadline: Number(get('OFFENDER_SEARCH_API_TIMEOUT_DEADLINE', 8000)),

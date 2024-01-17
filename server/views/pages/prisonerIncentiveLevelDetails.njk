@@ -81,7 +81,7 @@
           label: {
             text: 'Establishment'
           },
-          items: establishments | addDefaultSelectedVale('All', true) | setSelected(formValues.agencyId),
+          items: establishments | addDefaultSelectedValue('All', true) | setSelected(formValues.agencyId),
           attributes: {
             "data-test": 'establishment-select'
           }
@@ -93,7 +93,7 @@
           label: {
             text: 'Incentive level'
           },
-          items: levels  | addDefaultSelectedVale('All', true) | setSelected(formValues.incentiveLevel),
+          items: levels  | addDefaultSelectedValue('All', true) | setSelected(formValues.incentiveLevel),
           attributes: {
             "data-test": 'incentive-level-select'
           }
@@ -129,7 +129,7 @@
           }
         }) }}
 
-        <a href="./incentive-level-details" class="govuk-link govuk-link--no-visited-state">Clear</a>
+        <a href="?" class="govuk-link govuk-link--no-visited-state">Clear</a>
       </form>
     </div>
 {#  {% endif %}#}

@@ -65,8 +65,8 @@ export default function nunjucksSetup(app: express.Express): void {
 
   njkEnv.addFilter('findError', (array, formFieldId) => {
     if (!array) return null
-    // @ts-ignore
-    const item = array.find((error) => error.href === `#${formFieldId}`)
+    // @ts-expect-error"
+    const item = array.find(error => error.href === `#${formFieldId}`)
     if (item) {
       return {
         text: item.text,
@@ -81,7 +81,7 @@ export default function nunjucksSetup(app: express.Express): void {
     return value || specifiedText || '--'
   })
 
-  njkEnv.addFilter('addDefaultSelectedVale', (items, text, show) => {
+  njkEnv.addFilter('addDefaultSelectedValue', (items, text, show) => {
     if (!items) return null
     const attributes: { hidden?: string } = {}
     if (!show) attributes.hidden = ''
@@ -101,11 +101,11 @@ export default function nunjucksSetup(app: express.Express): void {
     'setSelected',
     (items, selected) =>
       items &&
-      // @ts-ignore
-      items.map((entry) => ({
+      // @ts-expect-error"
+      items.map(entry => ({
         ...entry,
         selected: entry && entry.value === selected,
-      }))
+      })),
   )
 
   // name formatting

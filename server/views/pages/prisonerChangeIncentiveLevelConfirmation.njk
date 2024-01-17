@@ -56,6 +56,8 @@
         Your local policy may require more frequent reviews.
       </p>
 
+{#      TODO: data-test attributes included but not set up#}
+
       <div class="govuk-!-margin-top-8">
         {{ govukButton({
           text: 'Return to incentive reviews',
@@ -64,8 +66,8 @@
           classes: 'govuk-!-margin-right-2',
           attributes: {
             'data-test': 'goto-manage-incentives',
-            'data-ga-id': 'Record incentive level confirmation: manage reviews',
-            'data-case-load': user.activeCaseLoad.caseLoadId | default('')
+            'data-ga-category': 'Record incentive level confirmation',
+            'data-ga-action': 'Manage reviews'
           }
         }) }}
 
@@ -76,8 +78,9 @@
           classes: 'govuk-button--secondary',
           attributes: {
             'data-test': 'goto-prisoner-quicklook',
-            'data-ga-id': 'Record incentive level confirmation: case notes',
-            'data-case-load': user.activeCaseLoad.caseLoadId | default('') }
+            'data-ga-category': 'Record incentive level confirmation',
+            'data-ga-action': 'Prisoner profile'
+          }
         }) }}
       </div>
 
@@ -85,6 +88,7 @@
   </div>
 {% endblock %}
 
-{% block pageScripts %}
-  <script src="/static/js/incentiveLevel.js"></script>
-{% endblock %}
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/assets/incentiveLevel.js"></script>
+{% endblock bodyEnd %}

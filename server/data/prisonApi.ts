@@ -31,9 +31,9 @@ export interface Staff {
 
 export interface assignedLivingUnit {
   agencyId: string
-      locationId: number
-      description: string
-      agencyName: string
+  locationId: number
+  description: string
+  agencyName: string
 }
 
 export interface Offender {

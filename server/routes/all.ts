@@ -10,10 +10,12 @@ import incentiveLevelRoutes, { manageIncentiveLevelsRole } from './incentiveLeve
 import prisonerIncentiveLevels from './prisonerIncentiveLevelDetails'
 import prisonerChangeIncentiveLevelDetails from './prisonerChangeIncentiveLevelDetails'
 import prisonIncentiveLevelRoutes, { managePrisonIncentiveLevelsRole } from './prisonIncentiveLevels'
+import { maintainPrisonerIncentiveLevelRole } from "../data/constants";
 import prisonerImagesRoutes from './prisonerImages'
 import selectLocationRoutes from './selectLocation'
 import reviewsTableRoutes from './reviewsTable'
 import standardRouter from './standardRouter'
+
 
 export default function routes(userService: UserService): Router {
   const router = Router({ mergeParams: true })
@@ -27,13 +29,11 @@ export default function routes(userService: UserService): Router {
     incentiveLevelRoutes(standardRouter(userService)),
   )
   router.use(
-    '/incentive-reviews/prisoner',
-    authorisationMiddleware(['ROLE_MAINTAIN_IEP']),
-    prisonerIncentiveLevels(standardRouter(userService)),
+    '/incentive-reviews/prisoner', prisonerIncentiveLevels(standardRouter(userService)),
   )
   router.use(
     '/incentive-reviews/prisoner/:prisonerNumber/change-incentive-level',
-    authorisationMiddleware(['ROLE_MAINTAIN_IEP']),
+    authorisationMiddleware([maintainPrisonerIncentiveLevelRole]),
     prisonerChangeIncentiveLevelDetails(standardRouter(userService)),
   )
   router.use(

@@ -161,9 +161,9 @@ export class IncentivesApi extends RestClient {
     return this.get({ path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}` })
   }
 
-  updateIncentiveLevelForPrisoner(prisonerNumber: string, data: IepLevelChangeRequest, ): Promise<IepLevelChangeRequest> {
+  updateIncentiveLevelForPrisoner(prisonerNumber: string, data: IepLevelChangeRequest): Promise<IepLevelChangeRequest> {
     return this.post({
-      path: `/incentive-reviews/prisoner/${prisonerNumber}`,
+      path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
       data: data as unknown as Record<string, unknown>,
     })
   }

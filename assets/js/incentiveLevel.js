@@ -1,13 +1,15 @@
 $(function () {
+
   // record incentive level confirmation page
   $('.govuk-button').on('click', function (e) {
     const $prompt = $(e.target)
-    const gaId = $prompt.data('ga-id')
-    const caseload = $prompt.data('case-load')
-    if (gaId && typeof gtag === 'function') {
-      gtag('event', 'click', {
-        event_category: gaId,
-        event_label: caseload,
+    const gaCategory = $prompt.data('ga-category')
+    const gaAction = $prompt.data('ga-action')
+
+    if (gaCategory && typeof gtag === 'function') {
+      gtag('event', 'incentives_event', {
+        category: gaCategory,
+        action: gaAction,
       })
     }
   })

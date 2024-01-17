@@ -15,6 +15,7 @@ export declare global {
     interface User extends Partial<UserDetails> {
       username: string
       token: string
+      roles?: string[]
       authSource: string
     }
 
@@ -22,6 +23,10 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
+    }
+
+    interface Locals {
+      user: Express.User
     }
   }
 }

@@ -1,6 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
 import { BadRequest } from 'http-errors'
-import { jwtDecode } from 'jwt-decode'
 
 import config from '../config'
 import logger from '../../logger'
@@ -18,15 +17,6 @@ import { managePrisonIncentiveLevelsRole } from './prisonIncentiveLevels'
 import { requireGetOrPost } from './forms/forms'
 import AboutPageFeedbackForm from './forms/aboutPageFeedbackForm'
 
-const getUserRoles = (res: Response): string[] => {
-  try {
-    const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
-    return roles
-  } catch (e) {
-    return []
-  }
-}
-
 export default function routes(router: Router): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
@@ -37,7 +27,7 @@ export default function routes(router: Router): Router {
     const locations = await prisonApi.getUserLocations()
     const canViewLocationBasedTiles = locations.length > 0
 
-    const userRoles = getUserRoles(res)
+    const userRoles = res.locals.user.roles ?? []
     const canManageIncentiveLevels = userRoles.includes(manageIncentiveLevelsRole)
     const canManagePrisonIncentiveLevels =
       canViewLocationBasedTiles && userRoles.includes(managePrisonIncentiveLevelsRole)

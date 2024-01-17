@@ -14,6 +14,7 @@ context('Prison incentive level management', () => {
     const roles: UserRole[] = [{ roleCode: 'ROLE_MAINTAIN_PRISON_IEP_LEVELS' }]
     cy.task('reset')
     cy.task('stubSignIn', { roles })
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')

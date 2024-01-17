@@ -1,19 +1,15 @@
 import type { RequestHandler } from 'express'
 
 import logger from '../../logger'
-import ComponentService from '../services/dpsComponentService'
-import DpsFeComponentsClient from '../data/dpsComponentsClient'
+import FrontendComponentsClient from '../data/frontendComponentsClient'
 
-const componentApiClientBuilder = new DpsFeComponentsClient()
-
-const componentService = new ComponentService(componentApiClientBuilder)
-
-export default function getFrontendComponents(): RequestHandler {
+export default function frontendComponents(): RequestHandler {
+  const frontendComponentsClient = new FrontendComponentsClient()
   return async (req, res, next) => {
     try {
       const [header, footer] = await Promise.all([
-        componentService.getComponent('header', res.locals.user.token),
-        componentService.getComponent('footer', res.locals.user.token),
+        frontendComponentsClient.getComponent('header', res.locals.user.token),
+        frontendComponentsClient.getComponent('footer', res.locals.user.token),
       ])
       res.locals.feComponents = {
         header: header.html,

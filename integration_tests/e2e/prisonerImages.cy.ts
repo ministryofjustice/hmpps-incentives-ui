@@ -2,6 +2,7 @@ context('Getting a prisoner image', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
   })
 
   context('when authenticated', () => {

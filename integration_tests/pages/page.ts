@@ -50,7 +50,7 @@ export default abstract class Page {
     return cy.get('[data-qa=header-user-name]')
   }
 
-  get fallbackFooter(): PageElement<HTMLLIElement> {
+  get fallbackFooter(): PageElement {
     return cy.get('.govuk-footer')
   }
 }

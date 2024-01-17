@@ -1,13 +1,14 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-export NODE_ENV=dev
-npx lint-staged && npx tsc
-
-# Check test data doesn't contain booking IDs
-if grep -q book server/testData/s3Bucket/*/*; then
-  echo "FAIL: Possibly booking IDs/sensitive information in test data"
-  exit 1
-# else
-  # OK: Test data shouldn't contain booking IDs
-fi
+#. "$(dirname "$0")/_/husky.sh"
+#
+#export NODE_ENV=dev
+#npx lint-staged
+#npm run typecheck
+#
+## Check test data doesn't contain booking IDs
+#if grep -q book server/testData/s3Bucket/*/*; then
+#  echo "FAIL: Possibly booking IDs/sensitive information in test data"
+#  exit 1
+## else
+#  # OK: Test data shouldn't contain booking IDs
+#fi

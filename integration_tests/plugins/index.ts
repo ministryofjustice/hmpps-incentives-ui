@@ -7,7 +7,7 @@ import incentivesApi from '../mockApis/incentivesApi'
 import manageUsersApi from '../mockApis/manageUsersApi'
 import nomisUserRolesApi from '../mockApis/nomisUserRolesApi'
 import zendeskApi from '../mockApis/zendeskApi'
-import dpsComponents from '../mockApis/dpsComponents'
+import frontendComponents from '../mockApis/frontendComponents'
 
 export default (on: (string, Record) => void): void => {
   on('task', {
@@ -16,6 +16,7 @@ export default (on: (string, Record) => void): void => {
     ...auth,
     ...manageUsersApi,
     ...tokenVerification,
+    ...frontendComponents,
 
     stubIncentivesApiPing: incentivesApi.stubPing,
     stubGetIncentivesLevelBasic: incentivesApi.stubGetIncentivesLevelBasic,
@@ -33,8 +34,6 @@ export default (on: (string, Record) => void): void => {
     stubNomisUserRolesGetCaseloads: nomisUserRolesApi.stubGetUserCaseloads,
     stubNomisUserRolesApiPing: nomisUserRolesApi.stubPing,
     stubNomisUserRolesApiUserCaseloads: nomisUserRolesApi.stubGetUserCaseloads,
-
-    stubDpsComponentsFail: dpsComponents.stubDpsComponentsFail,
 
     stubPrisonApiPing: prisonApi.stubPing,
     stubPrisonApiImages: prisonApi.stubGetImage,

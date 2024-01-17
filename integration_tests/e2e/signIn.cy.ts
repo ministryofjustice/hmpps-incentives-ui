@@ -6,10 +6,10 @@ context('Sign in', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubManageUser')
     cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubPrisonApiLocations')
-    cy.task('stubDpsComponentsFail')
   })
 
   it('Unauthenticated user directed to auth', () => {
@@ -35,15 +35,10 @@ context('Sign in', () => {
     Page.verifyOnPage(AuthSignInPage)
   })
 
-  it('User sees links in footer but not Open Government Licence', () => {
+  it('Official sensitive shows in fallback footer', () => {
     cy.signIn()
-    Page.verifyOnPage(HomePage)
-    it('Fallback footer exists with no content', () => {
-      cy.signIn()
-      cy.task('stubDpsComponentsFail')
-      const indexPage = Page.verifyOnPage(HomePage)
-      indexPage.fallbackFooter.should('include.text', 'Terms and conditions')
-    })
+    const indexPage = Page.verifyOnPage(HomePage)
+    indexPage.fallbackFooter.should('include.text', 'Official sensitive')
   })
 
   it('Token verification failure takes user to sign in page', () => {
@@ -68,5 +63,16 @@ context('Sign in', () => {
     cy.signIn()
 
     indexPage.headerUserName.contains('B. Brown')
+  })
+
+  it('Frontend components load', () => {
+    cy.signIn()
+    cy.task('stubFrontendComponentsHeaderAndFooter')
+    cy.visit('/')
+    Page.verifyOnPage(HomePage)
+    cy.get('header').should('have.css', 'background-color', 'rgb(255, 0, 0)')
+    cy.get('footer').should('have.css', 'background-color', 'rgb(255, 255, 0)')
+    cy.window().its('FrontendComponentsHeaderDidLoad').should('be.true')
+    cy.window().its('FrontendComponentsFooterDidLoad').should('be.true')
   })
 })

@@ -1,6 +1,6 @@
 #!/usr/bin/env npx ts-node
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 
 import config from '../server/config'
 import S3Client from '../server/data/s3Client'

@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 
 import compression from 'compression'
 import express, { Router } from 'express'
@@ -19,8 +19,8 @@ export default function setUpStaticResources(): Router {
     '/assets',
     '/assets/stylesheets',
     '/assets/js',
-    '/node_modules/govuk-frontend/govuk/assets',
-    '/node_modules/govuk-frontend',
+    '/node_modules/govuk-frontend/dist/govuk/assets',
+    '/node_modules/govuk-frontend/dist',
     '/node_modules/@ministryofjustice/frontend/moj/assets',
     '/node_modules/@ministryofjustice/frontend',
   ).forEach(dir => {

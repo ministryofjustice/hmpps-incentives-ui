@@ -15,6 +15,7 @@ context('Analytics section > Behaviour entries page', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
@@ -118,6 +119,7 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')
@@ -221,6 +223,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn')
+    cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonApiLocations')

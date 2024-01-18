@@ -8,24 +8,30 @@ import breadcrumbs from '../../middleware/breadcrumbs'
 import setUpProductInfo from '../../middleware/setUpProductInfo'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
-import UserService from '../../services/userService'
+import UserService, { type UserDetails } from '../../services/userService'
 import * as auth from '../../authentication/auth'
-import { Location, PrisonApi } from '../../data/prisonApi'
+import { type Location, PrisonApi } from '../../data/prisonApi'
+import type { Caseload } from '../../data/nomisUserRolesApi'
 import { getTestLocation } from '../../testData/prisonApi'
 
 jest.mock('../../data/prisonApi')
 
-const user = {
-  name: 'john smith',
-  firstName: 'john',
-  lastName: 'smith',
-  username: 'user1',
-  displayName: 'John Smith',
-}
-
-const activeCaseload = {
+const activeCaseload: Caseload = {
   id: 'MDI',
   name: 'Moorland (HMP & YOI)',
+}
+const caseloads: Caseload[] = [activeCaseload]
+
+const user: UserDetails = {
+  name: 'john smith',
+  userId: 'id',
+  authSource: 'NOMIS',
+  username: 'user1',
+  displayName: 'John Smith',
+  active: true,
+  activeCaseLoadId: 'MDI',
+  activeCaseload,
+  caseloads,
 }
 
 const testLocation: Location = getTestLocation({
@@ -35,22 +41,21 @@ const testLocation: Location = getTestLocation({
   subLocations: true,
 })
 
-class MockUserService extends UserService {
-  constructor() {
+export class MockUserService extends UserService {
+  constructor(readonly roles: string[] = []) {
     super(undefined)
   }
 
-  async getUser(token: string) {
+  async getUser(token: string): Promise<UserDetails> {
     return {
-      token,
       ...user,
-      activeCaseload,
-      caseloads: [activeCaseload],
-    }
+      token,
+      roles: this.roles,
+    } as UserDetails
   }
 }
 
-function makeTestSession(sessionData: Partial<SessionData> = {}): Session & Partial<SessionData> {
+export function makeTestSession(sessionData: Partial<SessionData> = {}): Session & Partial<SessionData> {
   return {
     ...sessionData,
     cookie: new Cookie(),
@@ -80,6 +85,8 @@ function appSetup(
   app.use((req, res, next) => {
     req.session = testSession
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     res.locals = {}
     const authHeader = req.header('authorization')
     const token = /^Bearer\s+(?<token>.*)\s*$/i.exec(authHeader)?.groups?.token
@@ -109,7 +116,7 @@ function appSetup(
   return app
 }
 
-function appWithAllRoutes({
+export function appWithAllRoutes({
   production = false,
   testSession = makeTestSession(),
   mockUserService = new MockUserService(),
@@ -123,5 +130,3 @@ function appWithAllRoutes({
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
   return appSetup(production, testSession, mockUserService, testRouter)
 }
-
-export { appWithAllRoutes, makeTestSession }

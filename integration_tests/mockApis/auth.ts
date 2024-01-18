@@ -1,6 +1,5 @@
 import { Response } from 'superagent'
 
-import type { UserRole } from '../../server/data/manageUsersApiClient'
 import createUserToken from '../../server/routes/testutils/createUserToken'
 import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
@@ -94,7 +93,7 @@ const manageDetails = () =>
     },
   })
 
-const token = (roles: UserRole[] = []) =>
+const token = (roles: string[] = []) =>
   stubFor({
     request: {
       method: 'POST',
@@ -107,7 +106,7 @@ const token = (roles: UserRole[] = []) =>
         Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
-        access_token: createUserToken(roles.map(role => role.roleCode)),
+        access_token: createUserToken(roles),
         token_type: 'bearer',
         user_name: 'USER1',
         expires_in: 599,
@@ -125,7 +124,7 @@ export default {
     {
       roles = [],
     }: {
-      roles: UserRole[]
+      roles: string[]
     } = {
       roles: [],
     },

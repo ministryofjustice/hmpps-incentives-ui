@@ -1,4 +1,3 @@
-import type { UserRole } from '../../server/data/manageUsersApiClient'
 import { sampleIncentiveLevels } from '../../server/testData/incentivesApi'
 import type { IncentiveLevel } from '../../server/data/incentivesApi'
 import Page from '../pages/page'
@@ -9,7 +8,7 @@ import IncentiveLevelStatusFormPage from '../pages/incentiveLevels/incentiveLeve
 
 context('Incentive level management', () => {
   beforeEach(() => {
-    const roles: UserRole[] = [{ roleCode: 'ROLE_MAINTAIN_INCENTIVE_LEVELS' }]
+    const roles = ['ROLE_MAINTAIN_INCENTIVE_LEVELS']
     cy.task('reset')
     cy.task('stubSignIn', { roles })
     cy.task('stubFallbackHeaderAndFooter')

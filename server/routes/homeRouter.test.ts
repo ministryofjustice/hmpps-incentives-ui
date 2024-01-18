@@ -2,8 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 
 import config from '../config'
-import { appWithAllRoutes } from './testutils/appSetup'
-import createUserToken from './testutils/createUserToken'
+import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
 import { getTestLocation } from '../testData/prisonApi'
 import { mockSdkS3ClientResponse } from '../testData/s3Bucket'
 import type { AboutPageFeedbackData } from './forms/aboutPageFeedbackForm'
@@ -128,18 +127,24 @@ describe('Home page', () => {
 
   describe('admin section', () => {
     it('does not show if user does not have appropriate role', () => {
+      app = appWithAllRoutes({
+        mockUserService: new MockUserService([]),
+      })
+
       return request(app)
         .get('/')
-        .set('Authorization', `Bearer ${createUserToken([])}`)
         .expect(res => {
           expect(res.text).not.toContain('data-qa="admin-section"')
         })
     })
 
     it('shows tile to manage incentive levels if user has appropriate role', () => {
+      app = appWithAllRoutes({
+        mockUserService: new MockUserService(['ROLE_MAINTAIN_INCENTIVE_LEVELS']),
+      })
+
       return request(app)
         .get('/')
-        .set('Authorization', `Bearer ${createUserToken(['ROLE_MAINTAIN_INCENTIVE_LEVELS'])}`)
         .expect(res => {
           expect(res.text).toContain('data-qa="admin-section"')
           expect(res.text).toContain('data-test="manage-incentive-levels"')
@@ -148,11 +153,13 @@ describe('Home page', () => {
     })
 
     it('shows tile to manage incentive levels if user has appropriate role even without having any locations in active case load', () => {
+      app = appWithAllRoutes({
+        mockUserService: new MockUserService(['ROLE_MAINTAIN_INCENTIVE_LEVELS']),
+      })
       prisonApi.getUserLocations.mockResolvedValue([])
 
       return request(app)
         .get('/')
-        .set('Authorization', `Bearer ${createUserToken(['ROLE_MAINTAIN_INCENTIVE_LEVELS'])}`)
         .expect(res => {
           expect(res.text).toContain('data-qa="admin-section"')
           expect(res.text).toContain('data-test="manage-incentive-levels"')
@@ -161,9 +168,12 @@ describe('Home page', () => {
     })
 
     it('shows tile to manage prison incentive levels if user has appropriate role and there are locations in active case load', () => {
+      app = appWithAllRoutes({
+        mockUserService: new MockUserService(['ROLE_MAINTAIN_PRISON_IEP_LEVELS']),
+      })
+
       return request(app)
         .get('/')
-        .set('Authorization', `Bearer ${createUserToken(['ROLE_MAINTAIN_PRISON_IEP_LEVELS'])}`)
         .expect(res => {
           expect(res.text).toContain('data-qa="admin-section"')
           expect(res.text).not.toContain('data-test="manage-incentive-levels"')
@@ -172,11 +182,13 @@ describe('Home page', () => {
     })
 
     it('does not show tile to manage prison incentive levels if active case load does not have locations even if user has appropriate role', () => {
+      app = appWithAllRoutes({
+        mockUserService: new MockUserService(['ROLE_MAINTAIN_PRISON_IEP_LEVELS']),
+      })
       prisonApi.getUserLocations.mockResolvedValue([])
 
       return request(app)
         .get('/')
-        .set('Authorization', `Bearer ${createUserToken(['ROLE_MAINTAIN_PRISON_IEP_LEVELS'])}`)
         .expect(res => {
           expect(res.text).not.toContain('data-qa="admin-section"')
           expect(res.text).not.toContain('data-test="manage-incentive-levels"')

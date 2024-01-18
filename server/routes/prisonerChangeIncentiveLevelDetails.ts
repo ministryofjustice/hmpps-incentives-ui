@@ -1,5 +1,6 @@
 import moment from 'moment'
 import { RequestHandler, Router } from 'express'
+
 import { formatName, putLastNameFirst } from '../utils/utils'
 import { PrisonApi } from '../data/prisonApi'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -7,7 +8,6 @@ import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
 import { IncentiveSummaryForBookingWithDetails, IncentivesApi } from '../data/incentivesApi'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-
 
 export default function routes(router: Router): Router {
   const hmppsAuthClient = new HmppsAuthClient(
@@ -17,7 +17,8 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
-  // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   const renderTemplate = async (req, res, pageData) => {
     const { prisonerNumber } = req.params
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
@@ -55,7 +56,9 @@ export default function routes(router: Router): Router {
       throw error
     }
   }
-  // @ts-ignore
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   const renderConfirmation = async (req, res) => {
     const { prisonerNumber } = req.params
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
@@ -91,9 +94,12 @@ export default function routes(router: Router): Router {
     }
   }
 
-  // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   const index = async (req, res) => renderTemplate(req, res, undefined)
-  // @ts-ignore
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   const postForm = async (req, res) => {
     const { prisonerNumber } = req.params
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)

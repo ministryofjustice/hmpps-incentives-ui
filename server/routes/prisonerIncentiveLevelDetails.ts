@@ -1,5 +1,6 @@
 import moment from 'moment'
 import type { RequestHandler, Router } from 'express'
+
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { PrisonApi } from '../data/prisonApi'
@@ -99,8 +100,8 @@ export default function routes(router: Router): Router {
       ])
 
       const prisonerWithinCaseloads = res.locals.user.caseloads.find(
-        // "ts-expect-error
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         caseload => caseload.id === prisonerDetails.agencyId,
       )
       const userCanMaintainIncentives = userRoles.find(role => role === 'MAINTAIN_IEP')
@@ -150,9 +151,7 @@ export default function routes(router: Router): Router {
       })
 
       const filteredResults = filterData(iepHistoryDetails, {
-        // @ts-ignore
         agencyId,
-        // @ts-ignore
         incentiveLevel,
         fromDate: fromDate && fromDateFormatted.format('YYYY-MM-DD'),
         toDate: toDate && toDateFormatted.format('YYYY-MM-DD'),

@@ -61,7 +61,8 @@ export default function nunjucksSetup(app: express.Express): void {
 
   njkEnv.addFilter('findError', (array, formFieldId) => {
     if (!array) return null
-    // @ts-expect-error"
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const item = array.find(error => error.href === `#${formFieldId}`)
     if (item) {
       return {
@@ -97,7 +98,8 @@ export default function nunjucksSetup(app: express.Express): void {
     'setSelected',
     (items, selected) =>
       items &&
-      // @ts-expect-error"
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       items.map(entry => ({
         ...entry,
         selected: entry && entry.value === selected,

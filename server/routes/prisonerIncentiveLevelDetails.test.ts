@@ -6,7 +6,7 @@ import { PrisonApi } from '../data/prisonApi'
 import { IncentivesApi, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
 import UserService from '../services/userService'
 import createUserToken from './testutils/createUserToken'
-import HmppsAuthClient from "../data/hmppsAuthClient";
+import HmppsAuthClient from '../data/hmppsAuthClient'
 
 jest.mock('../data/prisonApi')
 jest.mock('../data/incentivesApi')
@@ -44,25 +44,25 @@ const incentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
       userId: 'INCENTIVES_API',
       comments: '3',
     },
-  {
-    bookingId: 123,
-    iepDate: '2017-08-10',
-    iepTime: '2017-08-10T16:04:35',
-    agencyId: 'HEI',
-    iepLevel: 'Basic',
-    userId: 'ITAG_USER',
-    comments: '2',
-  },
-  {
-    bookingId: 123,
-    iepDate: '2017-08-07',
-    iepTime: '2017-08-07T16:04:35',
-    agencyId: 'HEI',
-    iepLevel: 'Enhanced',
-    userId: 'UNKNOWN_USER',
-    comments: '1',
-  }
-],
+    {
+      bookingId: 123,
+      iepDate: '2017-08-10',
+      iepTime: '2017-08-10T16:04:35',
+      agencyId: 'HEI',
+      iepLevel: 'Basic',
+      userId: 'ITAG_USER',
+      comments: '2',
+    },
+    {
+      bookingId: 123,
+      iepDate: '2017-08-07',
+      iepTime: '2017-08-07T16:04:35',
+      agencyId: 'HEI',
+      iepLevel: 'Enhanced',
+      userId: 'UNKNOWN_USER',
+      comments: '1',
+    },
+  ],
 }
 
 beforeEach(() => {
@@ -70,7 +70,7 @@ beforeEach(() => {
   hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
 
   incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
-  incentivesApi. getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
+  incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
   app = appWithAllRoutes({})
 })
 afterEach(() => {
@@ -80,11 +80,11 @@ afterEach(() => {
 describe('GET /incentive-reviews/prisoner/', () => {
   it('should make the expected API calls', () => {
     return request(app)
-        .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
-        .expect(res => {
-            // expect(res.statusCode).toBe(200)
-            console.log(res.statusCode)
-        })
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
+      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+      .expect(res => {
+        // expect(res.statusCode).toBe(200)
+        console.log(res.statusCode)
+      })
   })
 })

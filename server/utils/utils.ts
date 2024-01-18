@@ -47,7 +47,6 @@ export const initialiseName = (fullName?: string): string | null => {
 export const newDaysSince = (date: moment.MomentInput): number =>
   Math.max(Math.floor(moment.duration(moment().startOf('day').diff(moment(date).startOf('day'))).asDays()), 0)
 
-
 /** Number of days elapsed, ignoring time of day, since `date`; 0 for today or any time in future */
 export const daysSince = (date: Date): number => {
   const today = new Date()

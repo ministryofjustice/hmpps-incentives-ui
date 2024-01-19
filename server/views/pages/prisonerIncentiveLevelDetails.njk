@@ -49,12 +49,13 @@
         {% if reviewDaysOverdue > 0 %}
           <br/>
           <span class="highlight highlight--alert" data-test="next-review-overdue">
-                        {{ reviewDaysOverdue }} {% if reviewDaysOverdue == 1 -%}
+            {{ reviewDaysOverdue }}
+            {% if reviewDaysOverdue == 1 -%}
               day
             {%- else -%}
               days
             {%- endif %} overdue
-                    </span>
+          </span>
         {% endif %}
       </p>
     </div>
@@ -62,10 +63,10 @@
 
         <div class="dps-mini-profile-header--align-right">
           <p class="hmpps-action-button govuk-!-display-none-print">
-          <img src="/assets/images/icon_record_incentive_level.svg" alt="Icon representing an incentive level" aria-hidden="true" />
-          <a href= {{  recordIncentiveUrl }}>
-            Record incentive level
-          </a>
+            <img src="/assets/images/iconRecordIncentiveLevel.svg" alt="Icon representing an incentive level" aria-hidden="true" />
+            <a href= {{  recordIncentiveUrl }}>
+              Record incentive level
+            </a>
           </p>
         </div>
     {% endif %}

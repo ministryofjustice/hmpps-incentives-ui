@@ -96,7 +96,7 @@ export class PrisonApi extends RestClient {
     })
   }
 
-  getDetails(prisonerNumber: string): Promise<Offender> {
+  getPrisonerDetails(prisonerNumber: string): Promise<Offender> {
     return this.get<Offender>({
       path: `/api/bookings/offenderNo/${prisonerNumber}`,
     })

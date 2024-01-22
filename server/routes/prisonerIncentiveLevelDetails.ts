@@ -2,7 +2,6 @@ import moment from 'moment'
 import type { RequestHandler, Router } from 'express'
 
 import HmppsAuthClient from '../data/hmppsAuthClient'
-import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { PrisonApi } from '../data/prisonApi'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
@@ -11,7 +10,7 @@ import { IncentivesApi, IncentiveSummaryDetail, IncentiveSummaryForBookingWithDe
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
 import { OffenderSearchClient } from '../data/offenderSearch'
-import { nameOfPerson, putLastNameFirst, properCaseName, newDaysSince } from '../utils/utils'
+import { nameOfPerson, putLastNameFirst, newDaysSince, formatName } from '../utils/utils'
 
 type HistoryDetail = IncentiveSummaryDetail & {
   iepEstablishment: string
@@ -62,16 +61,16 @@ const hmppsAuthClient = new HmppsAuthClient(
   new TokenStore(createRedisClient('routes/prisonerIncentiveLevelDetails.ts')),
 )
 
-const manageUsersApiClient = new ManageUsersApiClient()
-
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/:prisonerNumber', async (req, res) => {
     const { prisonerNumber } = req.params
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
+    const userRoles = res.locals.user.roles
     const prisonApi = new PrisonApi(systemToken)
     const incentivesApi = new IncentivesApi(systemToken)
+    const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
 
     try {
       const offenderSearchClient = new OffenderSearchClient(systemToken)
@@ -94,14 +93,8 @@ export default function routes(router: Router): Router {
       const nextReviewDate = moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
       const reviewDaysOverdue = newDaysSince(nextReviewDate)
 
-      const [prisonerDetails, userRoles] = await Promise.all([
-        prisonApi.getDetails(prisonerNumber),
-        manageUsersApiClient.getUserRoles(systemToken),
-      ])
-
       const prisonerWithinCaseloads = res.locals.user.caseloads.find(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
         caseload => caseload.id === prisonerDetails.agencyId,
       )
       const userCanMaintainIncentives = userRoles.find(role => role === 'MAINTAIN_IEP')
@@ -144,7 +137,7 @@ export default function routes(router: Router): Router {
 
         return {
           iepEstablishment: description,
-          iepStaffMember: user && `${properCaseName(user.firstName)} ${properCaseName(user.lastName)}`.trim(),
+          iepStaffMember: user && `${formatName(user.firstName, user.lastName)}`.trim(),
           formattedTime: moment(details.iepTime, 'YYYY-MM-DD HH:mm').format('D MMMM YYYY - HH:mm'),
           ...details,
         }

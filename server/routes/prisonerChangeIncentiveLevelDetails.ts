@@ -27,7 +27,7 @@ export default function routes(router: Router): Router {
     const { errors, formValues = {} } = pageData || {}
 
     try {
-      const prisonerDetails = await prisonApi.getDetails(prisonerNumber)
+      const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
       const { agencyId, bookingId, firstName, lastName } = prisonerDetails
       const incentiveLevelDetails: IncentiveSummaryForBookingWithDetails =
         await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)

@@ -38,7 +38,7 @@ export interface assignedLivingUnit {
 
 export interface Offender {
   offenderNo: string
-  bookingId: string
+  bookingId: number
   firstName: string
   lastName: string
   agencyId: string

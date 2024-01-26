@@ -6,6 +6,7 @@ import { PrisonApi } from '../data/prisonApi'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, IncentiveSummaryDetail, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
+import {MockUserService} from './testutils/appSetup';
 
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
@@ -98,7 +99,6 @@ export default function routes(router: Router): Router {
         caseload => caseload.id === prisonerDetails.agencyId,
       )
       const userCanMaintainIncentives = userRoles.find(role => role === 'MAINTAIN_IEP')
-
       const fromDateFormatted = moment(fromDate, 'DD/MM/YYYY')
       const toDateFormatted = moment(toDate, 'DD/MM/YYYY')
 
@@ -121,13 +121,13 @@ export default function routes(router: Router): Router {
                   lastName: '',
                 }
               }
-              return prisonApi.getStaffDetails(systemToken, userId)
+              return prisonApi.getStaffDetails(userId)
             }),
         )
       ).filter(notEmpty)
 
       const establishments = await Promise.all(
-        uniqueAgencyIds.filter(id => Boolean(id)).map(id => prisonApi.getAgencyDetails(systemToken, id)),
+        uniqueAgencyIds.filter(id => Boolean(id)).map(id => prisonApi.getAgencyDetails(id)),
       )
       const levels = Array.from(new Set(incentiveLevelDetails.iepDetails.map(details => details.iepLevel))).sort()
 

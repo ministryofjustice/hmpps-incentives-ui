@@ -82,17 +82,15 @@ export class PrisonApi extends RestClient {
     })
   }
 
-  getAgencyDetails(context: string, agencyId: string): Promise<Agency> {
+  getAgencyDetails(agencyId: string): Promise<Agency> {
     return this.get<Agency>({
       path: `/api/agencies/${agencyId}?activeOnly=false`,
-      query: context,
     })
   }
 
-  getStaffDetails(context: string, staffId: string): Promise<Staff> {
+  getStaffDetails(staffId: string): Promise<Staff> {
     return this.get<Staff>({
       path: `/api/users/${staffId}`,
-      query: context,
     })
   }
 

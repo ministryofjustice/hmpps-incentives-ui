@@ -1,9 +1,8 @@
 import type { Express } from 'express'
 import request from 'supertest'
 
-import { appWithAllRoutes } from './testutils/appSetup'
+import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
 import { PrisonApi } from '../data/prisonApi'
-import UserService from '../services/userService'
 
 jest.mock('../data/prisonApi')
 jest.mock('../services/userService')
@@ -12,15 +11,14 @@ const imageData = Buffer.from('image 123 data')
 
 let app: Express
 let prisonApi: jest.Mocked<PrisonApi>
-let userService: jest.Mocked<UserService>
+let mockUserService: MockUserService
 
 beforeEach(() => {
   prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
   prisonApi.getImageByPrisonerNumber.mockResolvedValue(imageData)
 
-  userService = UserService.prototype as jest.Mocked<UserService>
-
-  app = appWithAllRoutes({ mockUserService: userService })
+  mockUserService = new MockUserService()
+  app = appWithAllRoutes({ mockUserService })
 })
 
 afterEach(() => {
@@ -49,7 +47,7 @@ describe('GET /prisoner-images/:prisonerNumber.jpeg', () => {
       .get(`/prisoner-images/123.jpeg`)
       .expect('Content-Type', /image\/jpeg/)
       .expect(res => {
-        expect(userService.getUser).toBeCalledTimes(0)
+        expect(mockUserService.getUser).not.toHaveBeenCalled()
       })
   })
 })

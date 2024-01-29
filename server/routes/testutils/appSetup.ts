@@ -12,26 +12,36 @@ import UserService, { type UserDetails } from '../../services/userService'
 import * as auth from '../../authentication/auth'
 import { type Location, PrisonApi } from '../../data/prisonApi'
 import type { Caseload } from '../../data/nomisUserRolesApi'
-import { getTestLocation } from '../../testData/prisonApi'
+import { getTestLocation, sampleAgencies } from '../../testData/prisonApi'
 
 jest.mock('../../data/prisonApi')
 
-const activeCaseload: Caseload = {
-  id: 'MDI',
-  name: 'Moorland (HMP & YOI)',
+function makeCaseload(caseload: string): Caseload {
+  const agency = sampleAgencies[caseload]
+  return {
+    id: agency.agencyId,
+    name: agency.description,
+  }
 }
-const caseloads: Caseload[] = [activeCaseload]
 
-const user: UserDetails = {
+export const activeCaseload = makeCaseload('MDI')
+
+export const mockUserDetails: UserDetails = {
   name: 'john smith',
   userId: 'id',
   authSource: 'NOMIS',
   username: 'user1',
   displayName: 'John Smith',
   active: true,
-  activeCaseLoadId: 'MDI',
+  activeCaseLoadId: activeCaseload.id,
   activeCaseload,
-  caseloads,
+  caseloads: [activeCaseload],
+}
+
+export const mockUser: Express.User = {
+  ...mockUserDetails,
+  token: 'token1',
+  roles: [],
 }
 
 const testLocation: Location = getTestLocation({
@@ -42,16 +52,36 @@ const testLocation: Location = getTestLocation({
 })
 
 export class MockUserService extends UserService {
-  constructor(readonly roles: string[] = []) {
-    super(undefined)
+  static withRoles(roles: string[]) {
+    return new MockUserService({
+      ...mockUser,
+      roles,
+    })
   }
 
-  async getUser(token: string): Promise<UserDetails> {
+  static withCaseloads(caseload: string, caseloads: string[] | undefined = undefined) {
+    const c = makeCaseload(caseload)
+    return new MockUserService({
+      ...mockUser,
+      activeCaseLoadId: c.id,
+      activeCaseload: c,
+      caseloads: (caseloads ?? [caseload]).map(makeCaseload),
+    })
+  }
+
+  constructor(readonly user: Express.User = mockUser) {
+    super(undefined)
+    this.getUser = jest.fn()
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    this.getUser.mockResolvedValue(this.user)
+  }
+
+  getFullUserObject(token: string): Express.User {
     return {
-      ...user,
+      ...this.user,
       token,
-      roles: this.roles,
-    } as UserDetails
+    }
   }
 }
 
@@ -72,7 +102,7 @@ export function makeTestSession(sessionData: Partial<SessionData> = {}): Session
 function appSetup(
   production: boolean,
   testSession: Session,
-  mockUserService: UserService,
+  mockUserService: MockUserService,
   testRouter?: Router,
 ): Express {
   const app = express()
@@ -88,7 +118,7 @@ function appSetup(
     res.locals = {} as Express.Locals
     const authHeader = req.header('authorization')
     const token = /^Bearer\s+(?<token>.*)\s*$/i.exec(authHeader)?.groups?.token
-    res.locals.user = { ...user, token }
+    res.locals.user = mockUserService.getFullUserObject(token)
 
     next()
   })
@@ -122,7 +152,7 @@ export function appWithAllRoutes({
 }: {
   production?: boolean
   testSession?: Session
-  mockUserService?: UserService
+  mockUserService?: MockUserService
   testRouter?: Router
 }): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()

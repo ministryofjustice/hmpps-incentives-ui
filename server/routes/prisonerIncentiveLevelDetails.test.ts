@@ -6,7 +6,6 @@ import createUserToken from './testutils/createUserToken'
 import { PrisonApi, type Offender, type Staff, type Agency } from '../data/prisonApi'
 import { IncentivesApi, type IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
 import { OffenderSearchClient, type OffenderSearchResult } from '../data/offenderSearch'
-import { NomisUserRolesApi, type UserCaseload } from '../data/nomisUserRolesApi'
 import { getAgencyMockImplementation } from '../testData/prisonApi'
 
 jest.mock('../data/prisonApi')
@@ -112,23 +111,9 @@ const offenderDetails: OffenderSearchResult = {
   cellLocation: '123',
 }
 
-const userCaseload: UserCaseload = {
-  activeCaseload: {
-    id: 'MDI',
-    name: 'MDI',
-  },
-  caseloads: [
-    {
-      id: 'MDI',
-      name: 'MDI',
-    },
-  ],
-}
-
 const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
 const offenderSearch = OffenderSearchClient.prototype as jest.Mocked<OffenderSearchClient>
 const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
-const nomisUserRolesApi = NomisUserRolesApi.prototype as jest.Mocked<NomisUserRolesApi>
 
 beforeEach(() => {
   prisonApi.getPrisonerDetails.mockResolvedValue(prisonerDetails)
@@ -136,7 +121,6 @@ beforeEach(() => {
   prisonApi.getAgency.mockImplementation(getAgencyMockImplementation)
   offenderSearch.getPrisoner.mockResolvedValue(offenderDetails)
   incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
-  nomisUserRolesApi.getUserCaseloads.mockResolvedValue(userCaseload)
 
   app = appWithAllRoutes({})
 })
@@ -146,35 +130,46 @@ afterEach(() => {
 })
 
 describe('GET /incentive-reviews/prisoner/', () => {
-  it('should make the expected API calls', async () => {
-    const res = await request(app).get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-    expect(res.statusCode).toBe(200)
-    expect(prisonApi.getPrisonerDetails).toHaveBeenCalledWith(prisonerNumber)
-    expect(prisonApi.getAgency).toHaveBeenCalledWith(agencyDetails.agencyId)
-    expect(prisonApi.getStaffDetails).toHaveBeenCalledWith('SYSTEM_USER')
-    expect(offenderSearch.getPrisoner).toHaveBeenCalledWith(prisonerNumber)
-    expect(incentivesApi.getIncentiveSummaryForPrisoner).toHaveBeenCalledWith(prisonerNumber)
+  it('should make the expected API calls', () => {
+    return request(app)
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(prisonApi.getPrisonerDetails).toHaveBeenCalledWith(prisonerNumber)
+        expect(prisonApi.getAgency).toHaveBeenCalledWith(agencyDetails.agencyId)
+        expect(prisonApi.getStaffDetails).toHaveBeenCalledWith('SYSTEM_USER')
+        expect(offenderSearch.getPrisoner).toHaveBeenCalledWith(prisonerNumber)
+        expect(incentivesApi.getIncentiveSummaryForPrisoner).toHaveBeenCalledWith(prisonerNumber)
+      })
   })
 
-  it('should render the correct template with the correct data', async () => {
-    const res = await request(app).get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-    expect(res.request.url).toContain('/incentive-reviews/prisoner/A8083DY')
-    expect(res.text).toContain('Incentive level history')
-    expect(res.text).toContain('SYSTEM_USER_COMMENT')
-    expect(res.text).toContain('15 August 2017 - 16:04')
-    expect(res.text).toContain('Smith, John')
+  it('should render the correct template with the correct data', () => {
+    return request(app)
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.request.url).toContain('/incentive-reviews/prisoner/A8083DY')
+        expect(res.text).toContain('Incentive level history')
+        expect(res.text).toContain('SYSTEM_USER_COMMENT')
+        expect(res.text).toContain('15 August 2017 - 16:04')
+        expect(res.text).toContain('Smith, John')
+      })
   })
 
   it('should allow user to update iep if user is in case load and has correct role', async () => {
     app = appWithAllRoutes({
-      mockUserService: new MockUserService(['MAINTAIN_IEP']),
+      mockUserService: MockUserService.withRoles(['MAINTAIN_IEP']),
     })
 
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
       .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+      .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
+        expect(res.text).toContain('Record incentive level')
         expect(res.text).toContain('Record incentive level')
       })
   })
@@ -183,6 +178,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
       .set('authorization', `bearer ${tokenWithMissingRole}`)
+      .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Incentive level history')
@@ -190,14 +186,15 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  // MIGHT, NO, WILL NEED CHANGES TO APP SETUP
   it('should NOT allow user to update iep if user is NOT in case load and has CORRECT role', async () => {
     app = appWithAllRoutes({
-      // mockUserService: new MockUserService(['MAINTAIN_IEP']),
+      mockUserService: MockUserService.withCaseloads('LEI'),
     })
+
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
       .set('authorization', `bearer ${tokenWithMissingRole}`)
+      .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Incentive level history')
@@ -209,6 +206,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
     const level = 'Basic'
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?incentiveLevel=${level}`)
+      .expect(200)
       .expect(res => {
         expect(res.text).toContain('BASIC_SYSTEM_USER_COMMENT')
         expect(res.text).not.toContain('STANDARD_NOMIS_USER_COMMENT')
@@ -219,6 +217,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
     const date = '07%2F08%2F2017'
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?fromDate=${date}&toDate=${date}`)
+      .expect(200)
       .expect(res => {
         expect(res.text).toContain('ENHANCED_UNKNOWN_USER_COMMENT')
         expect(res.text).not.toContain('STANDARD_NOMIS_USER_COMMENT')
@@ -229,6 +228,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
     const establishment = 'LEI'
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}`)
+      .expect(200)
       .expect(res => {
         expect(res.text).toContain('LEI')
         expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
@@ -243,6 +243,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .get(
         `/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}&fromDate=${date}&toDate=${date}&level=${level}`,
       )
+      .expect(200)
       .expect(res => {
         expect(res.text).toContain('STANDARD_NOMIS_USER_COMMENT')
         expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
@@ -253,6 +254,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
     incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(emptyIncentiveSummaryForBooking)
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
+      .expect(200)
       .expect(res => {
         expect(res.text).toContain('John Smith has no incentive level history')
       })

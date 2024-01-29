@@ -9,11 +9,11 @@ import { createRedisClient } from '../data/redisClient'
 import { IncentiveSummaryForBookingWithDetails, IncentivesApi } from '../data/incentivesApi'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 
-export default function routes(router: Router): Router {
-  const hmppsAuthClient = new HmppsAuthClient(
-    new TokenStore(createRedisClient('routes/prisonerIncentiveLevelDetails.ts')),
-  )
+const hmppsAuthClient = new HmppsAuthClient(
+  new TokenStore(createRedisClient('routes/prisonerChangeIncentiveLevelDetails.ts')),
+)
 
+export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
@@ -105,7 +105,7 @@ export default function routes(router: Router): Router {
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
     const incentivesApi = new IncentivesApi(systemToken)
     const { offenderNo } = req.params
-    const errors = []
+    const errors: { href: string; text: string }[] = []
 
     const { agencyId, bookingId, iepLevel, newIepLevel, reason } = req.body || {}
 

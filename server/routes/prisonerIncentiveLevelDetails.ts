@@ -6,7 +6,6 @@ import { PrisonApi } from '../data/prisonApi'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, IncentiveSummaryDetail, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
-import {MockUserService} from './testutils/appSetup';
 
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
@@ -95,7 +94,6 @@ export default function routes(router: Router): Router {
       const reviewDaysOverdue = newDaysSince(nextReviewDate)
 
       const prisonerWithinCaseloads = res.locals.user.caseloads.find(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         caseload => caseload.id === prisonerDetails.agencyId,
       )
       const userCanMaintainIncentives = userRoles.find(role => role === 'MAINTAIN_IEP')
@@ -127,7 +125,7 @@ export default function routes(router: Router): Router {
       ).filter(notEmpty)
 
       const establishments = await Promise.all(
-        uniqueAgencyIds.filter(id => Boolean(id)).map(id => prisonApi.getAgencyDetails(id)),
+        uniqueAgencyIds.filter(id => Boolean(id)).map(id => prisonApi.getAgency(id)),
       )
       const levels = Array.from(new Set(incentiveLevelDetails.iepDetails.map(details => details.iepLevel))).sort()
 
@@ -154,14 +152,14 @@ export default function routes(router: Router): Router {
       const prisonerName = nameOfPerson(prisoner)
       const { firstName, lastName } = prisoner
       let incentiveSummary
-      const errors: any = []
+      const errors: { href: string; text: string }[] = []
       const noResultsFoundMessage = `${prisonerName} has no incentive level history`
 
       try {
         incentiveSummary = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
       } catch (error) {
         if (error.response.status === 404) {
-          return res.render('pages/prisonerIncentiveLevelDetails.njk', {
+          res.render('pages/prisonerIncentiveLevelDetails.njk', {
             breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
             currentIepDate: 'Not entered',
             currentIepLevel: 'Not entered',
@@ -176,6 +174,7 @@ export default function routes(router: Router): Router {
             results: null,
             userCanUpdateIEP: Boolean(prisonerWithinCaseloads && userCanMaintainIncentives),
           })
+          return
         }
       }
 
@@ -214,5 +213,6 @@ export default function routes(router: Router): Router {
       throw error
     }
   })
+
   return router
 }

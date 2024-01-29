@@ -29,7 +29,7 @@ export interface Staff {
   active: boolean
 }
 
-export interface assignedLivingUnit {
+export interface AssignedLivingUnit {
   agencyId: string
   locationId: number
   description: string
@@ -42,7 +42,7 @@ export interface Offender {
   firstName: string
   lastName: string
   agencyId: string
-  assignedLivingUnit: assignedLivingUnit
+  assignedLivingUnit: AssignedLivingUnit
 }
 
 export class PrisonApi extends RestClient {
@@ -82,27 +82,22 @@ export class PrisonApi extends RestClient {
     })
   }
 
-  getAgencyDetails(agencyId: string): Promise<Agency> {
-    return this.get<Agency>({
-      path: `/api/agencies/${agencyId}?activeOnly=false`,
-    })
-  }
-
   getStaffDetails(staffId: string): Promise<Staff> {
     return this.get<Staff>({
-      path: `/api/users/${staffId}`,
+      path: `/api/users/${encodeURIComponent(staffId)}`,
     })
   }
 
   getPrisonerDetails(prisonerNumber: string): Promise<Offender> {
     return this.get<Offender>({
-      path: `/api/bookings/offenderNo/${prisonerNumber}`,
+      path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}`,
     })
   }
 
   getFullDetails(prisonerNumber: string, fullInfo: boolean): Promise<Offender> {
     return this.get<Offender>({
-      path: `/api/bookings/offenderNo/${prisonerNumber}?fullInfo=${fullInfo}&csraSummary=${fullInfo}`,
+      path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}`,
+      query: { fullInfo: fullInfo.toString(), csraSummary: fullInfo.toString() },
     })
   }
 }

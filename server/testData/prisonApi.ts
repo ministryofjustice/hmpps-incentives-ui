@@ -1,6 +1,12 @@
 import type { Agency, Location } from '../data/prisonApi'
 
 export const sampleAgencies: Record<string, Agency> = {
+  LEI: {
+    agencyId: 'LEI',
+    description: 'Leeds (HMP)',
+    agencyType: 'INST',
+    active: true,
+  },
   MDI: {
     agencyId: 'MDI',
     description: 'Moorland (HMP & YOI)',
@@ -13,6 +19,17 @@ export const sampleAgencies: Record<string, Agency> = {
     agencyType: 'INST',
     active: true,
   },
+}
+
+export function getAgencyMockImplementation(agencyId: string): Promise<Agency> {
+  return new Promise((resolve, reject) => {
+    if (agencyId in sampleAgencies) {
+      resolve(sampleAgencies[agencyId])
+    } else {
+      // eslint-disable-next-line prefer-promise-reject-errors
+      reject({ status: 404, message: 'Not Found' })
+    }
+  })
 }
 
 export function getTestLocation({

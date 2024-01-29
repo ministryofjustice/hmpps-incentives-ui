@@ -2,11 +2,12 @@ import type { Express } from 'express'
 import request from 'supertest'
 
 import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
-import { PrisonApi, Offender, Staff, Agency } from '../data/prisonApi'
-import { IncentivesApi, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
 import createUserToken from './testutils/createUserToken'
-import { OffenderSearchClient, OffenderSearchResult } from '../data/offenderSearch'
-import { NomisUserRolesApi, UserCaseload } from '../data/nomisUserRolesApi'
+import { PrisonApi, type Offender, type Staff, type Agency } from '../data/prisonApi'
+import { IncentivesApi, type IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
+import { OffenderSearchClient, type OffenderSearchResult } from '../data/offenderSearch'
+import { NomisUserRolesApi, type UserCaseload } from '../data/nomisUserRolesApi'
+import { getAgencyMockImplementation } from '../testData/prisonApi'
 
 jest.mock('../data/prisonApi')
 jest.mock('../data/incentivesApi')
@@ -61,14 +62,13 @@ const incentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
   ],
 }
 
-const emptyIncentiveSummaryForBooking = {
+const emptyIncentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
   bookingId,
   iepDate: '2017-08-15',
   iepTime: '2017-08-15T16:04:35',
   iepLevel: 'Standard',
   daysSinceReview: 1868,
   nextReviewDate: '2018-08-15',
-  // @ts-ignore
   iepDetails: [],
 }
 
@@ -129,26 +129,11 @@ const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
 const offenderSearch = OffenderSearchClient.prototype as jest.Mocked<OffenderSearchClient>
 const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
 const nomisUserRolesApi = NomisUserRolesApi.prototype as jest.Mocked<NomisUserRolesApi>
+
 beforeEach(() => {
   prisonApi.getPrisonerDetails.mockResolvedValue(prisonerDetails)
   prisonApi.getStaffDetails.mockResolvedValue(staffDetails)
-  prisonApi.getAgencyDetails.mockImplementation(agencyId => {
-    if (agencyId === 'MDI') {
-      return Promise.resolve({
-        agencyId: 'MDI',
-        description: '123',
-        agencyType: '123',
-        active: true,
-      })
-    } else {
-      return Promise.resolve({
-        agencyId: 'LEI',
-        description: '123',
-        agencyType: '123',
-        active: true,
-      })
-    }
-  })
+  prisonApi.getAgency.mockImplementation(getAgencyMockImplementation)
   offenderSearch.getPrisoner.mockResolvedValue(offenderDetails)
   incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
   nomisUserRolesApi.getUserCaseloads.mockResolvedValue(userCaseload)
@@ -161,12 +146,11 @@ afterEach(() => {
 })
 
 describe('GET /incentive-reviews/prisoner/', () => {
-  
   it('should make the expected API calls', async () => {
     const res = await request(app).get(`/incentive-reviews/prisoner/${prisonerNumber}`)
     expect(res.statusCode).toBe(200)
     expect(prisonApi.getPrisonerDetails).toHaveBeenCalledWith(prisonerNumber)
-    expect(prisonApi.getAgencyDetails).toHaveBeenCalledWith(agencyDetails.agencyId)
+    expect(prisonApi.getAgency).toHaveBeenCalledWith(agencyDetails.agencyId)
     expect(prisonApi.getStaffDetails).toHaveBeenCalledWith('SYSTEM_USER')
     expect(offenderSearch.getPrisoner).toHaveBeenCalledWith(prisonerNumber)
     expect(incentivesApi.getIncentiveSummaryForPrisoner).toHaveBeenCalledWith(prisonerNumber)

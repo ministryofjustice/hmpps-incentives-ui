@@ -85,9 +85,7 @@ function appSetup(
   app.use((req, res, next) => {
     req.session = testSession
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    res.locals = {}
+    res.locals = {} as Express.Locals
     const authHeader = req.header('authorization')
     const token = /^Bearer\s+(?<token>.*)\s*$/i.exec(authHeader)?.groups?.token
     res.locals.user = { ...user, token }

@@ -7,6 +7,7 @@ import { PrisonApi, type Offender, type Staff, type Agency } from '../data/priso
 import { IncentivesApi, type IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
 import { OffenderSearchClient, type OffenderSearchResult } from '../data/offenderSearch'
 import { getAgencyMockImplementation } from '../testData/prisonApi'
+import { SanitisedError } from '../sanitisedError'
 
 jest.mock('../data/prisonApi')
 jest.mock('../data/incentivesApi')
@@ -186,14 +187,14 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
+  // TODO: Check setup of caseloads and role. Dont think set authorization is used here
   it('should NOT allow user to update iep if user is NOT in case load and has CORRECT role', async () => {
     app = appWithAllRoutes({
       mockUserService: MockUserService.withCaseloads('LEI'),
     })
-
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .set('authorization', `bearer ${tokenWithMissingRole}`)
+      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -257,6 +258,22 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('John Smith has no incentive level history')
+      })
+  })
+
+  it('should return 404 if prisoner is not found', () => {
+    const error: SanitisedError = {
+      name: 'Error',
+      status: 404,
+      message: 'Not Found',
+      stack: 'Not Found',
+    }
+    offenderSearch.getPrisoner.mockRejectedValue(error)
+    return request(app)
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
+      .expect(404)
+      .expect(res => {
+        expect(res.text).not.toContain('John, Smith')
       })
   })
 })

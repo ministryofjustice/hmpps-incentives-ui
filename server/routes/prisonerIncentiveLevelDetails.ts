@@ -2,7 +2,7 @@ import moment from 'moment'
 import type { RequestHandler, Router } from 'express'
 
 import HmppsAuthClient from '../data/hmppsAuthClient'
-import { PrisonApi } from '../data/prisonApi'
+import { PrisonApi, Staff } from '../data/prisonApi'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, IncentiveSummaryDetail, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
@@ -76,7 +76,6 @@ export default function routes(router: Router): Router {
       const offenderSearchClient = new OffenderSearchClient(systemToken)
       const incentiveLevelDetails: IncentiveSummaryForBookingWithDetails =
         await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-
       const currentIncentiveLevel = incentiveLevelDetails.iepLevel
       const {
         agencyId,
@@ -89,14 +88,13 @@ export default function routes(router: Router): Router {
         fromDate?: string
         toDate?: string
       } = req.query
-
       const nextReviewDate = moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
       const reviewDaysOverdue = newDaysSince(nextReviewDate)
 
       const prisonerWithinCaseloads = res.locals.user.caseloads.find(
         caseload => caseload.id === prisonerDetails.agencyId,
       )
-      const userCanMaintainIncentives = userRoles.find(role => role === 'MAINTAIN_IEP')
+      const userCanMaintainIncentives = userRoles.find(role => role === 'ROLE_MAINTAIN_IEP')
       const fromDateFormatted = moment(fromDate, 'DD/MM/YYYY')
       const toDateFormatted = moment(toDate, 'DD/MM/YYYY')
 
@@ -107,8 +105,8 @@ export default function routes(router: Router): Router {
       const uniqueAgencyIds = Array.from(new Set(incentiveLevelDetails.iepDetails.map(details => details.agencyId)))
 
       // Only get users that map to a user in the prison staff table
-      const users = (
-        await Promise.all(
+      const users: Staff[] = (
+        await Promise.allSettled(
           uniqueUserIds
             .filter(userId => Boolean(userId))
             .map((userId: string) => {
@@ -122,7 +120,11 @@ export default function routes(router: Router): Router {
               return prisonApi.getStaffDetails(userId)
             }),
         )
-      ).filter(notEmpty)
+      )
+        .filter(promise => {
+          return promise.status === 'fulfilled' && notEmpty(promise.value)
+        })
+        .map((promise: PromiseFulfilledResult<Staff>) => promise.value)
 
       const establishments = await Promise.all(
         uniqueAgencyIds.filter(id => Boolean(id)).map(id => prisonApi.getAgency(id)),
@@ -154,7 +156,6 @@ export default function routes(router: Router): Router {
       let incentiveSummary
       const errors: { href: string; text: string }[] = []
       const noResultsFoundMessage = `${prisonerName} has no incentive level history`
-
       try {
         incentiveSummary = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
       } catch (error) {
@@ -193,6 +194,7 @@ export default function routes(router: Router): Router {
             text: establishment.description,
             value: establishment.agencyId,
           })),
+        errors,
         formValues: req.query,
         incentiveLevelDetails,
         levels: levels.map(level => ({
@@ -203,7 +205,7 @@ export default function routes(router: Router): Router {
         noResultsFoundMessage,
         prisonerName,
         profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
-        recordIncentiveUrl: `change-incentive-level`,
+        recordIncentiveUrl: `${prisonerNumber}/change-incentive-level`,
         reviewDaysOverdue,
         results: filteredResults,
         userCanUpdateIEP: Boolean(prisonerWithinCaseloads && userCanMaintainIncentives),

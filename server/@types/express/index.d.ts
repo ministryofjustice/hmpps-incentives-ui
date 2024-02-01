@@ -15,7 +15,6 @@ export declare global {
     interface User extends Partial<UserDetails> {
       username: string
       token: string
-      authSource: string
     }
 
     interface Request {

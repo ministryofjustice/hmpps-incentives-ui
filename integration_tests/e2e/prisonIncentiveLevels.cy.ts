@@ -1,4 +1,3 @@
-import type { UserRole } from '../../server/data/manageUsersApiClient'
 import type { PrisonIncentiveLevel } from '../../server/data/incentivesApi'
 import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../../server/testData/incentivesApi'
 import Page from '../pages/page'
@@ -11,7 +10,7 @@ import PrisonIncentiveLevelsPage from '../pages/prisonIncentiveLevels/prisonInce
 
 context('Prison incentive level management', () => {
   beforeEach(() => {
-    const roles: UserRole[] = [{ roleCode: 'ROLE_MAINTAIN_PRISON_IEP_LEVELS' }]
+    const roles = ['ROLE_MAINTAIN_PRISON_IEP_LEVELS']
     cy.task('reset')
     cy.task('stubSignIn', { roles })
     cy.task('stubFallbackHeaderAndFooter')

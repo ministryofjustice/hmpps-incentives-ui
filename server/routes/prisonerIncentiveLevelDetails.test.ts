@@ -161,7 +161,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
 
   it('should allow user to update iep if user is in case load and has correct role', async () => {
     app = appWithAllRoutes({
-      mockUserService: MockUserService.withRoles(['MAINTAIN_IEP']),
+      mockUserService: MockUserService.withRoles(['ROLE_MAINTAIN_IEP']),
     })
 
     return request(app)
@@ -248,6 +248,22 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .expect(res => {
         expect(res.text).toContain('STANDARD_NOMIS_USER_COMMENT')
         expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
+      })
+  })
+
+  it('should show error when dates are incorrect', async () => {
+    const establishment = 'MDI'
+    const fromDate = '16%2F08%2F2017'
+    const toDate = '15%2F08%2F2017'
+    const level = 'Standard'
+    return request(app)
+      .get(
+        `/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}&fromDate=${fromDate}&toDate=${toDate}&level=${level}`,
+      )
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Enter a from date which is not after the to date')
+        expect(res.text).toContain('Enter a to date which is not before the from date')
       })
   })
 

@@ -107,7 +107,7 @@ export default function routes(router: Router): Router {
     const { offenderNo } = req.params
     const errors: { href: string; text: string }[] = []
 
-    const { agencyId, bookingId, iepLevel, newIepLevel, reason } = req.body || {}
+    const { newIepLevel, reason } = req.body || {}
 
     if (!newIepLevel) {
       errors.push({ text: 'Select an incentive level, even if it is the same as before', href: '#newIepLevel' })
@@ -121,13 +121,12 @@ export default function routes(router: Router): Router {
       errors.push({ text: 'Comments must be 240 characters or less', href: '#reason' })
     }
 
-    // TODO: CHECK URL
     if (errors.length > 0) {
       return renderTemplate(req, res, { errors, formValues: { newIepLevel, reason } })
     }
 
     try {
-      const changedIncentiveLevel = await incentivesApi.updateIncentiveLevelForPrisoner(prisonerNumber, {
+      await incentivesApi.updateIncentiveLevelForPrisoner(prisonerNumber, {
         iepLevel: newIepLevel,
         comment: reason,
       })

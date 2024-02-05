@@ -100,15 +100,12 @@
           }
         }) }}
 
-
         {{ datePicker({
           id: 'fromDate',
           label: 'Date from',
           name: 'fromDate',
           date: formValues.fromDate,
-          errorMessage: errors | findError('fromDate'),
-          classes: 'js-appointment-date',
-          attributes: {'data-disable-past-date':'true', 'data-add-appointment-date': 'true'}
+          errorMessage: errors | findError('fromDate')
         }) }}
 
         {{ datePicker({
@@ -116,9 +113,7 @@
           label: 'Date to',
           name: 'toDate',
           date: formValues.toDate,
-          errorMessage: errors | findError('toDate'),
-          classes: 'js-appointment-date',
-          attributes: {'data-disable-past-date':'true', 'data-add-appointment-date': 'true'}
+          errorMessage: errors | findError('toDate')
         }) }}
 
         {{ govukButton({

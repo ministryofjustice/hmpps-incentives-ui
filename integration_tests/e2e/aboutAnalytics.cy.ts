@@ -23,7 +23,7 @@ context('About Analytics page', () => {
     page.checkLastBreadcrumb('Incentives', '/')
 
     // leave some comments and submit
-    page.feedbackForm.find('[name=informationUseful][value=no]').click()
+    page.feedbackForm.find('[name=informationUseful][value=no] + label').click()
     page.feedbackForm.find('[name=noComments]').type('I’m very confused')
     page.feedbackForm.submit()
 

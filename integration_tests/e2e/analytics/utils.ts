@@ -12,7 +12,7 @@ export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(
 
     // open feedback box and select "yes"
     page.getChartFeedback(chartId).click()
-    page.getChartFeedbackForm(chartId).find('[name=chartUseful][value=yes]').click()
+    page.getChartFeedbackForm(chartId).find('[name=chartUseful][value=yes] + label').click()
     page.getChartFeedbackForm(chartId).submit()
 
     // should remain on the same page with a success message and no error summary
@@ -34,7 +34,7 @@ export function testInvalidFeedbackSubmission<PageClass extends AnalyticsPage>(
 
     // open feedback box and select "no", typing some comments
     page.getChartFeedback(chartId).click()
-    page.getChartFeedbackForm(chartId).find('[name=chartUseful][value=no]').click()
+    page.getChartFeedbackForm(chartId).find('[name=chartUseful][value=no] + label').click()
     page.getChartFeedbackForm(chartId).find('[name=noComments]').type('I’m confused')
     page.getChartFeedbackForm(chartId).submit()
 

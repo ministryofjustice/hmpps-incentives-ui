@@ -5,12 +5,6 @@ declare namespace Cypress {
      * @example cy.signIn({ failOnStatusCode: boolean })
      */
     signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
-
-    /**
-     * Set up stubs needed for listing prisoner incentive levels
-     */
-
-    navigateToPrisonerIncentiveLevelDetails(): Chainable<ListPage>
   }
 
   /**

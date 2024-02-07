@@ -4,21 +4,21 @@
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-{% set title = 'Incentive level recorded' %}
+{% set title = "Incentive level recorded" %}
 
 {% block beforeContent %}
   {{ govukBreadcrumbs({
     items: [
       {
-        text: 'Digital Prison Services',
-        href: '/'
+        text: "Digital Prison Services",
+        href: "/"
       },
       {
         text: breadcrumbPrisonerName,
         href: profileUrl
       }
     ],
-    classes: 'govuk-!-display-none-print'
+    classes: "govuk-!-display-none-print"
   }) }}
 {% endblock %}
 
@@ -43,7 +43,7 @@
       {{ govukPanel({
         titleHtml: panelTitle,
         html: panelBody,
-        classes: 'change-incentive-level-confirmation'
+        classes: "change-incentive-level-confirmation"
       }) }}
 
       <h2 class="govuk-heading-m govuk-!-margin-top-6">
@@ -60,26 +60,26 @@
 
       <div class="govuk-!-margin-top-8">
         {{ govukButton({
-          text: 'Return to incentive reviews',
-          element: 'a',
+          text: "Return to incentive reviews",
+          element: "a",
           href: manageIncentivesUrl,
-          classes: 'govuk-!-margin-right-2',
+          classes: "govuk-!-margin-right-2",
           attributes: {
-            'data-test': 'goto-manage-incentives',
-            'data-ga-category': 'Record incentive level confirmation',
-            'data-ga-action': 'Manage reviews'
+            "data-test": "goto-manage-incentives",
+            "data-ga-category": "Record incentive level confirmation",
+            "data-ga-action": "Manage reviews"
           }
         }) }}
 
         {{ govukButton({
-          text: 'Return to prisoner profile page',
-          element: 'a',
+          text: "Return to prisoner profile page",
+          element: "a",
           href: profileUrl,
-          classes: 'govuk-button--secondary',
+          classes: "govuk-button--secondary",
           attributes: {
-            'data-test': 'goto-prisoner-quicklook',
-            'data-ga-category': 'Record incentive level confirmation',
-            'data-ga-action': 'Prisoner profile'
+            "data-test": "goto-prisoner-quicklook",
+            "data-ga-category": "Record incentive level confirmation",
+            "data-ga-action": "Prisoner profile"
           }
         }) }}
       </div>

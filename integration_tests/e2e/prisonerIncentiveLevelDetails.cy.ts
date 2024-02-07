@@ -13,7 +13,6 @@ const iepSummaryResponse = {
 }
 
 context('Prisoner incentive level details', () => {
-  let detailsPage: PrisonerIncentiveDetailsPage
 
   beforeEach(() => {
     cy.task('stubFallbackHeaderAndFooter')
@@ -33,7 +32,7 @@ context('Prisoner incentive level details', () => {
     it('should display the change incentive level link', () => {
       cy.task('stubGetIncentiveSummaryForPrisoner')
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
-        detailsPage = result
+        return result
       })
       const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
       page.recordIncentiveLevelButton.click()
@@ -42,7 +41,7 @@ context('Prisoner incentive level details', () => {
     it('should show when the next review date is', () => {
       cy.task('stubGetIncentiveSummaryForPrisoner')
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
-        detailsPage = result
+        return result
       })
       const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
       page.nextReviewDate.should('contain.text', '15 August 2018')
@@ -60,7 +59,7 @@ context('Prisoner incentive level details', () => {
         nextReviewDate: nextReviewDate.format('YYYY-MM-DD'),
       })
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
-        detailsPage = result
+        return result
       })
       cy.visit('/incentive-reviews/prisoner/A1234A')
       const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
@@ -70,7 +69,7 @@ context('Prisoner incentive level details', () => {
     it('should show the correct incentive level history', () => {
       cy.task('stubGetIncentiveSummaryForPrisoner')
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
-        detailsPage = result
+        return result
       })
       const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
       page.incentiveLevelHistoryTable.then($table => {
@@ -105,7 +104,7 @@ context('Prisoner incentive level details', () => {
     it('should filter correctly and return only one response', () => {
       cy.task('stubGetIncentiveSummaryForPrisoner')
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
-        detailsPage = result
+        return result
       })
       const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
       page.establishmentSelect.select('LEI')
@@ -131,7 +130,7 @@ context('Prisoner incentive level details', () => {
     it('should filter correctly, return no data and show the default message', () => {
       cy.task('stubGetIncentiveSummaryForPrisoner')
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
-        detailsPage = result
+        return result
       })
       const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
       page.fromDate.type('01/01/2023', { force: true })
@@ -144,7 +143,7 @@ context('Prisoner incentive level details', () => {
         ...iepSummaryResponse,
       })
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
-        detailsPage = result
+        return result
       })
       const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
       page.noIncentiveLevelHistory.should('exist')
@@ -157,7 +156,7 @@ context('Prisoner incentive level details', () => {
       cy.task('stubSignIn', { roles })
       cy.task('stubGetIncentiveSummaryForPrisoner')
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
-        detailsPage = result
+        return result
       })
     })
 

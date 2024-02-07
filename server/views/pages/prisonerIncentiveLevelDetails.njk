@@ -15,14 +15,14 @@
     items: [
       {
         text: "Home",
-        href: '/'
+        href: "/"
       },
       {
         text: breadcrumbPrisonerName,
         href: profileUrl
       }
     ],
-    classes: 'govuk-!-display-none-print'
+    classes: "govuk-!-display-none-print"
   }) }}
 {% endblock %}
 
@@ -31,7 +31,7 @@
     {{ govukErrorSummary({
       titleText: "There is a problem",
       errorList: errors,
-      attributes: { 'data-qa-errors': true }
+      attributes: { "data-qa-errors": true }
     }) }}
   {% endif %}
 
@@ -77,43 +77,43 @@
       <h2 class="govuk-heading-m">View by</h2>
       <form class="horizontal-form govuk-body govuk-!-margin-bottom-3" method="GET">
         {{ govukSelect({
-          name: 'agencyId',
-          id: 'agencyId',
+          name: "agencyId",
+          id: "agencyId",
           label: {
-            text: 'Establishment'
+            text: "Establishment"
           },
-          items: establishments | addDefaultSelectedValue('All', true) | setSelected(formValues.agencyId),
+          items: establishments | addDefaultSelectedValue("All", true) | setSelected(formValues.agencyId),
           attributes: {
-            "data-test": 'establishment-select'
+            "data-test": "establishment-select"
           }
         }) }}
 
         {{ govukSelect({
-          name: 'incentiveLevel',
-          id: 'incentiveLevel',
+          name: "incentiveLevel",
+          id: "incentiveLevel",
           label: {
-            text: 'Incentive level'
+            text: "Incentive level"
           },
-          items: levels  | addDefaultSelectedValue('All', true) | setSelected(formValues.incentiveLevel),
+          items: levels  | addDefaultSelectedValue("All", true) | setSelected(formValues.incentiveLevel),
           attributes: {
-            "data-test": 'incentive-level-select'
+            "data-test": "incentive-level-select"
           }
         }) }}
 
         {{ datePicker({
-          id: 'fromDate',
-          label: 'Date from',
-          name: 'fromDate',
+          id: "fromDate",
+          label: "Date from",
+          name: "fromDate",
           date: formValues.fromDate,
-          errorMessage: errors | findError('fromDate')
+          errorMessage: errors | findError("fromDate")
         }) }}
 
         {{ datePicker({
-          id: 'toDate',
-          label: 'Date to',
-          name: 'toDate',
+          id: "toDate",
+          label: "Date to",
+          name: "toDate",
           date: formValues.toDate,
-          errorMessage: errors | findError('toDate')
+          errorMessage: errors | findError("toDate")
         }) }}
 
         {{ govukButton({
@@ -121,7 +121,7 @@
           preventDoubleClick: true,
           type: "submit",
           attributes: {
-            "data-test": 'filter-submit'
+            "data-test": "filter-submit"
           }
         }) }}
 
@@ -139,9 +139,9 @@
       {% set resultsRows = (resultsRows.push([
         { text: result.formattedTime },
         { text: result.iepLevel },
-        { html: result.comments | showDefault('Not entered'), classes: 'govuk-input--width-4 incentive-details-reason-text' },
+        { html: result.comments | showDefault("Not entered"), classes: "govuk-input--width-4 incentive-details-reason-text" },
         { text: result.iepEstablishment },
-        { text: result.iepStaffMember | showDefault('Not entered') }
+        { text: result.iepStaffMember | showDefault("Not entered") }
       ]), resultsRows) %}
     {% endfor %}
 
@@ -167,7 +167,7 @@
       ],
       rows: resultsRows,
       attributes: {
-        "data-test": 'incentive-level-history'
+        "data-test": "incentive-level-history"
       }
     }) }}
   {% endif %}

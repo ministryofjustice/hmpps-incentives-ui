@@ -28,7 +28,7 @@ export default function routes(router: Router): Router {
 
     try {
       const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
-      const { agencyId, bookingId, firstName, lastName } = prisonerDetails
+      const { agencyId, firstName, lastName } = prisonerDetails
       const incentiveLevelDetails: IncentiveSummaryForBookingWithDetails =
         await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
       const currentIncentiveLevel: string = incentiveLevelDetails.iepLevel
@@ -40,10 +40,9 @@ export default function routes(router: Router): Router {
       }))
 
       return res.render('pages/prisonerChangeIncentiveLevelDetails.njk', {
-        agencyId,
-        bookingId,
         breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
         currentIncentiveLevel,
+        cancelUrl: `/incentive-reviews/prisoner/${prisonerNumber}`,
         errors,
         formValues,
         prisonerNumber,
@@ -52,8 +51,7 @@ export default function routes(router: Router): Router {
         selectableLevels,
       })
     } catch (error) {
-      res.locals.redirectUrl = `incentive-level-details/prisoner/${prisonerNumber}`
-      throw error
+      res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
     }
   }
 
@@ -67,30 +65,26 @@ export default function routes(router: Router): Router {
 
     try {
       const prisonerDetails = await prisonApi.getFullDetails(prisonerNumber, true)
-      const { agencyId, bookingId, firstName, lastName, assignedLivingUnit } = prisonerDetails
+      const { agencyId, firstName, lastName, assignedLivingUnit } = prisonerDetails
       const locationId: string | undefined = assignedLivingUnit?.description
       const incentiveSummary = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
       const nextReviewDate =
         incentiveSummary?.nextReviewDate && moment(incentiveSummary.nextReviewDate, 'YYYY-MM-DD HH:mm')
 
       return res.render('pages/prisonerChangeIncentiveLevelConfirmation.njk', {
-        agencyId,
-        bookingId,
         breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
-        cancelUrl: '/',
         incentiveSummary,
         manageIncentivesUrl:
           agencyId && locationId && locationId.includes('-')
             ? `/incentive-summary/${agencyId}-${locationId.split('-')[0]}`
-            : '/',
+            : '/select-location',
         nextReviewDate: nextReviewDate?.format('D MMMM YYYY'),
         prisonerNumber,
         prisonerName: formatName(firstName, lastName),
         profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
       })
     } catch (error) {
-      res.locals.redirectUrl = `incentive-level-details/prisoner/${prisonerNumber}`
-      throw error
+      res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
     }
   }
 
@@ -104,7 +98,6 @@ export default function routes(router: Router): Router {
     const { prisonerNumber } = req.params
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
     const incentivesApi = new IncentivesApi(systemToken)
-    const { offenderNo } = req.params
     const errors: { href: string; text: string }[] = []
 
     const { newIepLevel, reason } = req.body || {}
@@ -132,8 +125,7 @@ export default function routes(router: Router): Router {
       })
       return renderConfirmation(req, res)
     } catch (error) {
-      res.locals.redirectUrl = `${res.app.locals.dpsUrl}/prisoner/${offenderNo}`
-      throw error
+      res.redirect(`${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`)
     }
   }
 

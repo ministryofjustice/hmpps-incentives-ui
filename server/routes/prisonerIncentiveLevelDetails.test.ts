@@ -171,7 +171,6 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Record incentive level')
-        expect(res.text).toContain('Record incentive level')
       })
   })
 
@@ -187,7 +186,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  // TODO: Check setup of caseloads and role. Dont think set authorization is used here
+  // TODO: Check setup of caseloads and role. Dont think set authorization is used here (mockUserService needs tweaking)
   it('should NOT allow user to update iep if user is NOT in case load and has CORRECT role', async () => {
     app = appWithAllRoutes({
       mockUserService: MockUserService.withCaseloads('LEI'),
@@ -274,6 +273,22 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('John Smith has no incentive level history')
+      })
+  })
+
+  it('should return default message when no level history is returned for supplied filters', async () => {
+    const establishment = 'MDI'
+    const fromDate = '15%2F08%2F1990'
+    const toDate = '15%2F08%2F1991'
+    const level = 'Standard'
+    return request(app)
+      .get(
+        `/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}&fromDate=${toDate}&toDate=${fromDate}&level=${level}`,
+      )
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('There is no incentive level history for the selections you have made')
+        expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
       })
   })
 

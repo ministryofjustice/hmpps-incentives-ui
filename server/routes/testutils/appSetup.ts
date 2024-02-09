@@ -8,41 +8,13 @@ import breadcrumbs from '../../middleware/breadcrumbs'
 import setUpProductInfo from '../../middleware/setUpProductInfo'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
-import UserService, { type UserDetails } from '../../services/userService'
+import UserService from '../../services/userService'
 import * as auth from '../../authentication/auth'
 import { type Location, PrisonApi } from '../../data/prisonApi'
-import type { Caseload } from '../../data/nomisUserRolesApi'
-import { getTestLocation, sampleAgencies } from '../../testData/prisonApi'
+import { getTestLocation } from '../../testData/prisonApi'
+import { mockUser } from './mockUsers'
 
 jest.mock('../../data/prisonApi')
-
-function makeCaseload(caseload: string): Caseload {
-  const agency = sampleAgencies[caseload]
-  return {
-    id: agency.agencyId,
-    name: agency.description,
-  }
-}
-
-export const activeCaseload = makeCaseload('MDI')
-
-export const mockUserDetails: UserDetails = {
-  name: 'john smith',
-  userId: 'id',
-  authSource: 'NOMIS',
-  username: 'user1',
-  displayName: 'John Smith',
-  active: true,
-  activeCaseLoadId: activeCaseload.id,
-  activeCaseload,
-  caseloads: [activeCaseload],
-}
-
-export const mockUser: Express.User = {
-  ...mockUserDetails,
-  token: 'token1',
-  roles: [],
-}
 
 const testLocation: Location = getTestLocation({
   agencyId: 'MDI',
@@ -52,23 +24,6 @@ const testLocation: Location = getTestLocation({
 })
 
 export class MockUserService extends UserService {
-  static withRoles(roles: string[]) {
-    return new MockUserService({
-      ...mockUser,
-      roles,
-    })
-  }
-
-  static withCaseloads(caseload: string, caseloads: string[] | undefined = undefined) {
-    const c = makeCaseload(caseload)
-    return new MockUserService({
-      ...mockUser,
-      activeCaseLoadId: c.id,
-      activeCaseload: c,
-      caseloads: (caseloads ?? [caseload]).map(makeCaseload),
-    })
-  }
-
   constructor(readonly user: Express.User = mockUser) {
     super(undefined)
     this.getUser = jest.fn()

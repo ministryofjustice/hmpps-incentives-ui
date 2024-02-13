@@ -75,4 +75,61 @@ export default {
       },
     })
   },
+  stubGetPrisonerDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: {
+          offenderNo: 'A1234A',
+          agencyId: 'MDI',
+          bookingId: -1,
+          firstName: 'John',
+          lastName: 'Smith',
+          assignedLivingUnit: {
+            agencyId: 'MDI',
+            locationId: 1,
+            description: '123',
+            agencyName: '123',
+          },
+        },
+      },
+    })
+  },
+  stubGetStaffDetails: (staff): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        url: `/prisonApi/api/users/${staff.staffId}`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: staff.json,
+      },
+    })
+  },
+  stubGetAgency: (agency): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        url: `/prisonApi/api/agencies/${agency.agencyId}?activeOnly=true`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: agency.json,
+      },
+    })
+  },
 }

@@ -48,10 +48,6 @@
       margin-right: govuk-spacing(3);
     }
 
-    .date-picker-container input {
-      width: 130px !important;
-    }
-
     label {
       margin-bottom: govuk-spacing(1);
     }
@@ -71,28 +67,4 @@
     }
 
   }
-}
-
-.horizontal-links {
-  > a {
-    margin-right: govuk-spacing(2);
-  }
-
-  @include govuk-media-query($from: desktop) {
-    display: flex;
-
-    * {
-      width: auto;
-      margin-bottom: 0;
-    }
-
-    > a {
-      margin-right: govuk-spacing(3);
-    }
-  }
-}
-
-.no-label-form-clear-link {
-  margin-bottom: 10px;
-  margin-top: 0 !important;
 }

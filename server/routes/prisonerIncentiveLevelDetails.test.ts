@@ -2,12 +2,12 @@ import type { Express } from 'express'
 import request from 'supertest'
 
 import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
-import createUserToken from './testutils/createUserToken'
 import { PrisonApi, type Offender, type Staff, type Agency } from '../data/prisonApi'
 import { IncentivesApi, type IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
 import { OffenderSearchClient, type OffenderSearchResult } from '../data/offenderSearch'
 import { getAgencyMockImplementation } from '../testData/prisonApi'
 import { SanitisedError } from '../sanitisedError'
+import { makeMockUser } from './testutils/mockUsers'
 
 jest.mock('../data/prisonApi')
 jest.mock('../data/incentivesApi')
@@ -20,9 +20,6 @@ let app: Express
 
 const bookingId = 12345
 const prisonerNumber = 'A8083DY'
-
-const tokenWithMissingRole = createUserToken([])
-const tokenWithNecessaryRole = createUserToken(['ROLE_MAINTAIN_IEP'])
 
 const incentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
   bookingId,
@@ -130,13 +127,17 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
+const mockMoorlandUserWithRole = makeMockUser({ caseloads: ['MDI'], roles: ['MAINTAIN_IEP'] })
+const mockMoorlandUserWithoutRole = makeMockUser({ caseloads: ['MDI'], roles: [] })
+const mockLeedsUserWithRole = makeMockUser({ caseloads: ['LEI'], roles: ['MAINTAIN_IEP'] })
+
 describe('GET /incentive-reviews/prisoner/', () => {
   it('should make the expected API calls', () => {
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
       .expect(200)
       .expect('Content-Type', /html/)
-      .expect(res => {
+      .expect(() => {
         expect(prisonApi.getPrisonerDetails).toHaveBeenCalledWith(prisonerNumber)
         expect(prisonApi.getAgency).toHaveBeenCalledWith(agencyDetails.agencyId)
         expect(prisonApi.getStaffDetails).toHaveBeenCalledWith('SYSTEM_USER')
@@ -159,26 +160,27 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should allow user to update iep if user is in case load and has correct role', async () => {
+  it('should allow user to update iep if user is in case load and has CORRECT role', async () => {
     app = appWithAllRoutes({
-      mockUserService: MockUserService.withRoles(['ROLE_MAINTAIN_IEP']),
+      mockUserService: new MockUserService(mockMoorlandUserWithRole),
     })
 
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Record incentive level')
         expect(res.text).toContain('Record incentive level')
       })
   })
 
   it('should NOT allow user to update iep if user is in case load and has INCORRECT role', async () => {
+    app = appWithAllRoutes({
+      mockUserService: new MockUserService(mockMoorlandUserWithoutRole),
+    })
+
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .set('authorization', `bearer ${tokenWithMissingRole}`)
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -187,14 +189,13 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  // TODO: Check setup of caseloads and role. Dont think set authorization is used here
   it('should NOT allow user to update iep if user is NOT in case load and has CORRECT role', async () => {
     app = appWithAllRoutes({
-      mockUserService: MockUserService.withCaseloads('LEI'),
+      mockUserService: new MockUserService(mockLeedsUserWithRole),
     })
+
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -274,6 +275,22 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('John Smith has no incentive level history')
+      })
+  })
+
+  it('should return default message when no level history is returned for supplied filters', async () => {
+    const establishment = 'MDI'
+    const fromDate = '15%2F08%2F1990'
+    const toDate = '15%2F08%2F1991'
+    const level = 'Standard'
+    return request(app)
+      .get(
+        `/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}&fromDate=${toDate}&toDate=${fromDate}&level=${level}`,
+      )
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('There is no incentive level history for the selections you have made')
+        expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
       })
   })
 

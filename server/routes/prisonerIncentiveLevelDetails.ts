@@ -153,31 +153,16 @@ export default function routes(router: Router): Router {
       const prisoner = await offenderSearchClient.getPrisoner(prisonerNumber)
       const prisonerName = nameOfPerson(prisoner)
       const { firstName, lastName } = prisoner
-      let incentiveSummary
       const errors: { href: string; text: string }[] = []
-      const noResultsFoundMessage = `${prisonerName} has no incentive level history`
-      try {
-        incentiveSummary = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-      } catch (error) {
-        if (error.response.status === 404) {
-          res.render('pages/prisonerIncentiveLevelDetails.njk', {
-            breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
-            currentIepDate: 'Not entered',
-            currentIepLevel: 'Not entered',
-            errors,
-            formValues: req.query,
-            incentiveSummary,
-            noResultsFoundMessage,
-            nextReviewDate: 'Not entered',
-            prisonerNumber,
-            prisonerName,
-            profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
-            results: null,
-            userCanUpdateIEP: Boolean(prisonerWithinCaseloads && userCanMaintainIncentives),
-          })
-          return
-        }
-      }
+
+      const noFiltersSupplied = Boolean(!agencyId && !incentiveLevel && !fromDate && !toDate)
+
+      const noResultsFoundMessage =
+        (!filteredResults.length &&
+          (noFiltersSupplied
+            ? `${formatName(firstName, lastName)} has no incentive level history`
+            : 'There is no incentive level history for the selections you have made')) ||
+        ''
 
       if (fromDate && toDate && fromDateFormatted.isAfter(toDateFormatted, 'day')) {
         errors.push({ href: '#fromDate', text: 'Enter a from date which is not after the to date' })
@@ -185,7 +170,6 @@ export default function routes(router: Router): Router {
       }
 
       res.render('pages/prisonerIncentiveLevelDetails.njk', {
-        messages: req.flash(),
         breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
         currentIncentiveLevel,
         establishments: establishments
@@ -196,7 +180,6 @@ export default function routes(router: Router): Router {
           })),
         errors,
         formValues: req.query,
-        incentiveLevelDetails,
         levels: levels.map(level => ({
           text: level,
           value: level,
@@ -205,14 +188,13 @@ export default function routes(router: Router): Router {
         noResultsFoundMessage,
         prisonerName,
         profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
-        recordIncentiveUrl: `${prisonerNumber}/change-incentive-level`,
+        recordIncentiveUrl: `/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`,
         reviewDaysOverdue,
         results: filteredResults,
         userCanUpdateIEP: Boolean(prisonerWithinCaseloads && userCanMaintainIncentives),
       })
     } catch (error) {
-      res.locals.redirectUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
-      throw error
+      res.redirect(`${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`)
     }
   })
 

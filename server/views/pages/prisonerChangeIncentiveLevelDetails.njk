@@ -13,18 +13,20 @@
     items: [
       {
         text: "Home",
-        href: "/"
+        href: '/'
       },
       {
         text: breadcrumbPrisonerName,
         href: profileUrl
       }
     ],
-    classes: "govuk-!-display-none-print"
+    classes: 'govuk-!-display-none-print'
   }) }}
 {% endblock %}
 
 {% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
   {% if errors.length > 0 %}
     {{ govukErrorSummary({
       titleText: "There is a problem",
@@ -42,14 +44,11 @@
 
   <form method="POST" novalidate="novalidate">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
-    <input type="hidden" name="agencyId" value="{{ agencyId }}"/>
-    <input type="hidden" name="bookingId" value="{{ bookingId }}"/>
-    <input type="hidden" name="iepLevel" value="{{ currentIncentiveLevel }}"/>
 
     {{ govukRadios({
       idPrefix: "newIepLevel",
       name: "newIepLevel",
-      errorMessage: errors | findError("newIepLevel"),
+      errorMessage: errors | findError('newIepLevel'),
       fieldset: {
         legend: {
           text: "Record an incentive level",
@@ -67,8 +66,8 @@
       name: "reason",
       id: "reason",
       value: formValues.reason,
-      errorMessage: errors | findError("reason"),
-      classes: "govuk-!-width-one-half",
+      errorMessage: errors | findError('reason'),
+      classes: 'govuk-!-width-one-half',
       maxlength: 240,
       label: {
         text: "Reason for recording",
@@ -89,10 +88,12 @@
 
     {{ govukButton({
       text: "Cancel",
-      element: "a",
-      href: "/" ,
+      element: 'a',
+      href: cancelUrl ,
       classes: "govuk-button--secondary",
       attributes: { "data-test": "cancel-change" }
     }) }}
   </form>
 {% endblock %}
+  </div>
+</div>

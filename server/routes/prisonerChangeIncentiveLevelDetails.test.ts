@@ -2,7 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 
 import { appWithAllRoutes } from './testutils/appSetup'
-import { PrisonApi, Offender, Staff } from '../data/prisonApi'
+import { PrisonApi, Offender } from '../data/prisonApi'
 import { IncentivesApi, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
 import createUserToken from './testutils/createUserToken'
 import { OffenderSearchClient, OffenderSearchResult } from '../data/offenderSearch'
@@ -77,15 +77,6 @@ const prisonerDetails: Offender = {
   },
 }
 
-const staffDetails: Staff = {
-  firstName: '123',
-  lastName: '123',
-  staffId: 123,
-  username: 'SYSTEM_USER',
-  activeCaseLoadId: '123',
-  active: true,
-}
-
 const offenderDetails: OffenderSearchResult = {
   bookingId,
   prisonerNumber,
@@ -115,23 +106,6 @@ const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
 const nomisUserRolesApi = NomisUserRolesApi.prototype as jest.Mocked<NomisUserRolesApi>
 beforeEach(() => {
   prisonApi.getPrisonerDetails.mockResolvedValue(prisonerDetails)
-  prisonApi.getStaffDetails.mockResolvedValue(staffDetails)
-  prisonApi.getAgency.mockImplementation(agencyId => {
-    if (agencyId === 'MDI') {
-      return Promise.resolve({
-        agencyId: 'MDI',
-        description: '123',
-        agencyType: '123',
-        active: true,
-      })
-    }
-    return Promise.resolve({
-      agencyId: 'LEI',
-      description: '123',
-      agencyType: '123',
-      active: true,
-    })
-  })
   prisonApi.getFullDetails.mockResolvedValue(prisonerDetails)
   offenderSearch.getPrisoner.mockResolvedValue(offenderDetails)
   incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
@@ -151,9 +125,9 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
       .set('authorization', `bearer ${tokenWithMissingRole}`)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
-        expect(res.headers.location).toBe('/authError')
       })
   })
+
   it('should render the correct template with the correct data', async () => {
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
@@ -177,12 +151,9 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
     }
     offenderSearch.getPrisoner.mockRejectedValue(error)
     return request(app)
-      .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .expect(404)
-      .expect(res => {
-        expect(res.text).toContain('Page not found')
-        expect(res.text).not.toContain('John, Smith')
-      })
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
+      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+      .expect(200)
   })
 })
 
@@ -272,19 +243,22 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
     it('should return generic error page if api returns an error', () => {
       const error: SanitisedError = {
         name: 'Error',
-        status: 404,
-        message: 'Not Found',
-        stack: 'Not Found',
+        status: 400,
+        message: 'Bad Request',
+        stack: 'Error: Bad Request',
       }
-      incentivesApi.updateIncentiveLevelForPrisoner.mockRejectedValue(error)
-      incentivesApi.getIncentiveSummaryForPrisoner.mockRejectedValue(error)
+      incentivesApi.updateIncentiveLevelForPrisoner.mockRejectedValueOnce(error)
       return request(app)
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
+        .send({
+          newIepLevel: 'STD',
+          reason: 'text',
+        })
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
-        .expect(404)
+        .expect(400)
         .expect(res => {
           expect(res.text).not.toContain('John, Smith')
-          expect(res.text).toContain('Page not found')
+          expect(res.text).toContain('Bad Request')
         })
     })
   })

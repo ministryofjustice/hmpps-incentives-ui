@@ -3,6 +3,7 @@ import request from 'supertest'
 
 import config from '../config'
 import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
+import { makeMockUser } from './testutils/mockUsers'
 import { getTestLocation } from '../testData/prisonApi'
 import { mockSdkS3ClientResponse } from '../testData/s3Bucket'
 import type { AboutPageFeedbackData } from './forms/aboutPageFeedbackForm'
@@ -138,7 +139,7 @@ describe('Home page', () => {
 
     it('shows tile to manage incentive levels if user has appropriate role', () => {
       app = appWithAllRoutes({
-        mockUserService: MockUserService.withRoles(['ROLE_MAINTAIN_INCENTIVE_LEVELS']),
+        mockUserService: new MockUserService(makeMockUser({ roles: ['MAINTAIN_INCENTIVE_LEVELS'] })),
       })
 
       return request(app)
@@ -152,7 +153,7 @@ describe('Home page', () => {
 
     it('shows tile to manage incentive levels if user has appropriate role even without having any locations in active case load', () => {
       app = appWithAllRoutes({
-        mockUserService: MockUserService.withRoles(['ROLE_MAINTAIN_INCENTIVE_LEVELS']),
+        mockUserService: new MockUserService(makeMockUser({ roles: ['MAINTAIN_INCENTIVE_LEVELS'] })),
       })
       prisonApi.getUserLocations.mockResolvedValue([])
 
@@ -167,7 +168,7 @@ describe('Home page', () => {
 
     it('shows tile to manage prison incentive levels if user has appropriate role and there are locations in active case load', () => {
       app = appWithAllRoutes({
-        mockUserService: MockUserService.withRoles(['ROLE_MAINTAIN_PRISON_IEP_LEVELS']),
+        mockUserService: new MockUserService(makeMockUser({ roles: ['MAINTAIN_PRISON_IEP_LEVELS'] })),
       })
 
       return request(app)
@@ -181,7 +182,7 @@ describe('Home page', () => {
 
     it('does not show tile to manage prison incentive levels if active case load does not have locations even if user has appropriate role', () => {
       app = appWithAllRoutes({
-        mockUserService: MockUserService.withRoles(['ROLE_MAINTAIN_PRISON_IEP_LEVELS']),
+        mockUserService: new MockUserService(makeMockUser({ roles: ['MAINTAIN_PRISON_IEP_LEVELS'] })),
       })
       prisonApi.getUserLocations.mockResolvedValue([])
 

@@ -8,7 +8,6 @@ import manageUsersApi from '../mockApis/manageUsersApi'
 import nomisUserRolesApi from '../mockApis/nomisUserRolesApi'
 import zendeskApi from '../mockApis/zendeskApi'
 import frontendComponents from '../mockApis/frontendComponents'
-import offenderSearch from '../mockApis/offenderSearch'
 
 export default (on: (string, Record) => void): void => {
   on('task', {
@@ -23,7 +22,6 @@ export default (on: (string, Record) => void): void => {
     stubGetIncentivesLevelBasic: incentivesApi.stubGetIncentivesLevelBasic,
     stubGetIncentivesLevelStandard: incentivesApi.stubGetIncentivesLevelStandard,
     stubGetIncentivesSorted: incentivesApi.stubGetIncentivesSorted,
-    stubGetIncentiveSummaryForPrisoner: incentivesApi.stubGetIncentiveSummaryForPrisoner,
 
     stubIncentiveLevels: incentivesApi.stubIncentiveLevels,
     stubIncentiveLevel: incentivesApi.stubIncentiveLevel,
@@ -40,11 +38,6 @@ export default (on: (string, Record) => void): void => {
     stubPrisonApiPing: prisonApi.stubPing,
     stubPrisonApiImages: prisonApi.stubGetImage,
     stubPrisonApiLocations: prisonApi.stubGetUserLocations,
-    stubGetPrisonerDetails: prisonApi.stubGetPrisonerDetails,
-    stubGetStaffDetails: prisonApi.stubGetStaffDetails,
-    stubGetAgency: prisonApi.stubGetAgency,
-
-    stubGetPrisoner: offenderSearch.stubGetPrisoner,
 
     stubCreateZendeskTicket: zendeskApi.stubCreateTicket,
   })

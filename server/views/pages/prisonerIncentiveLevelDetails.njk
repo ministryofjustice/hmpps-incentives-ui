@@ -72,7 +72,7 @@
     {% endif %}
   </div>
 
-{#  {% if results != null %}#}
+  {% if results != null %}
     <div class="govuk-!-padding-3 govuk-!-margin-bottom-5 form-background">
       <h2 class="govuk-heading-m">View by</h2>
       <form class="horizontal-form govuk-body govuk-!-margin-bottom-3" method="GET">
@@ -128,7 +128,7 @@
         <a href="?" class="govuk-link govuk-link--no-visited-state">Clear</a>
       </form>
     </div>
-{#  {% endif %}#}
+  {% endif %}
 
   {% if results == null or results.length == 0 %}
     <p class="govuk-body" data-test="no-incentive-level-history-message">{{ noResultsFoundMessage }}</p>

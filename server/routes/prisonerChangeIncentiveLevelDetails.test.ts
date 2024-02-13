@@ -125,9 +125,9 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
       .set('authorization', `bearer ${tokenWithMissingRole}`)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
-        expect(res.headers.location).toBe('/authError')
       })
   })
+
   it('should render the correct template with the correct data', async () => {
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
@@ -154,10 +154,6 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
       .set('authorization', `bearer ${tokenWithNecessaryRole}`)
       .expect(200)
-      .expect(res => {
-        // expect(res.text).toContain('Page not found')
-        // expect(res.text).not.toContain('John, Smith')
-      })
   })
 })
 

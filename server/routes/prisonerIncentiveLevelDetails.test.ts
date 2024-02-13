@@ -2,7 +2,6 @@ import type { Express } from 'express'
 import request from 'supertest'
 
 import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
-import createUserToken from './testutils/createUserToken'
 import { PrisonApi, type Offender, type Staff, type Agency } from '../data/prisonApi'
 import { IncentivesApi, type IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
 import { OffenderSearchClient, type OffenderSearchResult } from '../data/offenderSearch'
@@ -21,9 +20,6 @@ let app: Express
 
 const bookingId = 12345
 const prisonerNumber = 'A8083DY'
-
-const tokenWithMissingRole = createUserToken([])
-const tokenWithNecessaryRole = createUserToken(['ROLE_MAINTAIN_IEP'])
 
 const incentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
   bookingId,
@@ -164,14 +160,13 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should allow user to update iep if user is in case load and has correct role', async () => {
+  it('should allow user to update iep if user is in case load and has CORRECT role', async () => {
     app = appWithAllRoutes({
       mockUserService: new MockUserService(mockMoorlandUserWithRole),
     })
 
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -186,7 +181,6 @@ describe('GET /incentive-reviews/prisoner/', () => {
 
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .set('authorization', `bearer ${tokenWithMissingRole}`)
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -202,7 +196,6 @@ describe('GET /incentive-reviews/prisoner/', () => {
 
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(res => {

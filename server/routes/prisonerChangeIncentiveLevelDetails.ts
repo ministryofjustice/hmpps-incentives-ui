@@ -13,48 +13,53 @@ const hmppsAuthClient = new HmppsAuthClient(
   new TokenStore(createRedisClient('routes/prisonerChangeIncentiveLevelDetails.ts')),
 )
 
-/*
-TODO: missing the same role and caseload verification as incentive history page
-*/
-
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
+
   const renderTemplate = async (req, res, pageData) => {
+    const userRoles = res.locals.user.roles
     const { prisonerNumber } = req.params
-    const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
-    const prisonApi = new PrisonApi(systemToken)
-    const incentivesApi = new IncentivesApi(systemToken)
-    const { errors, formValues = {} } = pageData || {}
 
-    try {
-      const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
-      const { agencyId, firstName, lastName } = prisonerDetails
-      const incentiveLevelDetails: IncentiveSummaryForBookingWithDetails =
-        await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-      const currentIncentiveLevel: string = incentiveLevelDetails.iepLevel
-      const prisonIncentiveLevels = await incentivesApi.getPrisonIncentiveLevels(agencyId)
-      const selectableLevels = prisonIncentiveLevels.map(level => ({
-        text: currentIncentiveLevel === level.levelName ? `${level.levelName} (current level)` : level.levelName,
-        value: level.levelCode,
-        checked: level.levelCode === formValues.newIepLevel,
-      }))
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    if (userRoles.find(role => role === 'ROLE_MAINTAIN_IEP')) {
+      try {
+        const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
+        const prisonApi = new PrisonApi(systemToken)
+        const incentivesApi = new IncentivesApi(systemToken)
+        const { errors, formValues = {} } = pageData || {}
 
-      return res.render('pages/prisonerChangeIncentiveLevelDetails.njk', {
-        breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
-        currentIncentiveLevel,
-        cancelUrl: `/incentive-reviews/prisoner/${prisonerNumber}`,
-        errors,
-        formValues,
-        prisonerNumber,
-        prisonerName: formatName(firstName, lastName),
-        profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
-        selectableLevels,
-      })
-    } catch (error) {
+        const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
+        const { agencyId, firstName, lastName } = prisonerDetails
+        const incentiveLevelDetails: IncentiveSummaryForBookingWithDetails =
+          await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
+        const currentIncentiveLevel: string = incentiveLevelDetails.iepLevel
+        const prisonIncentiveLevels = await incentivesApi.getPrisonIncentiveLevels(agencyId)
+        const selectableLevels = prisonIncentiveLevels.map(level => ({
+          text: currentIncentiveLevel === level.levelName ? `${level.levelName} (current level)` : level.levelName,
+          value: level.levelCode,
+          checked: level.levelCode === formValues.newIepLevel,
+        }))
+
+        return res.render('pages/prisonerChangeIncentiveLevelDetails.njk', {
+          breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
+          currentIncentiveLevel,
+          cancelUrl: `/incentive-reviews/prisoner/${prisonerNumber}`,
+          errors,
+          formValues,
+          prisonerNumber,
+          prisonerName: formatName(firstName, lastName),
+          profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
+          selectableLevels,
+        })
+      } catch (error) {
+        res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
+      }
+    } else {
       res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
     }
   }
@@ -132,7 +137,6 @@ export default function routes(router: Router): Router {
       res.redirect(`${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`)
     }
   }
-
   get('/', index)
   post('/', postForm)
 

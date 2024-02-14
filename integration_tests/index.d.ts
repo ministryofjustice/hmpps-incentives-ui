@@ -11,6 +11,8 @@ declare namespace Cypress {
      */
 
     navigateToPrisonerIncentiveLevelDetails(): Chainable<ListPage>
+
+    navigateToChangePrisonerIncentiveLevelDetails(): Chainable<ListPage>
   }
 
   /**

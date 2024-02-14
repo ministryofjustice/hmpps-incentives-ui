@@ -132,4 +132,19 @@ export default {
       },
     })
   },
+  stubGetPrisonIncentiveLevels: (prisonId): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        url: `/incentive/prison-levels/${prisonId}`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: prisonId.json,
+      },
+    })
+  }
 }

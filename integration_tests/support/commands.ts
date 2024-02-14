@@ -52,3 +52,14 @@ Cypress.Commands.add('navigateToPrisonerIncentiveLevelDetails', () => {
 
   cy.visit('/incentive-reviews/prisoner/A1234A')
 })
+
+Cypress.Commands.add('navigateToChangePrisonerIncentiveLevelDetails', () => {
+  cy.signIn()
+  cy.task('stubGetPrisonerDetails')
+  cy.task('stubPrisonIncentiveLevels')
+  cy.task('stubGetPrisoner')
+
+  cy.visit('/incentive-reviews/prisoner/A1234A/change-incentive-level')
+})
+
+

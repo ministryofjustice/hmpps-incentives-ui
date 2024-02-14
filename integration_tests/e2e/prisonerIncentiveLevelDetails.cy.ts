@@ -1,6 +1,6 @@
 import moment from 'moment'
 import Page from '../pages/page'
-import PrisonerIncentiveDetailsPage from '../pages/prisonerIncentiveLevel/details'
+import PrisonerIncentiveLevelDetailsPage from '../pages/prisonerIncentiveLevels/prisonerIncentiveLevelDetailsPage'
 
 const iepSummaryResponse = {
   bookingId: -1,
@@ -34,7 +34,7 @@ context('Prisoner incentive level details', () => {
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
         return result
       })
-      const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
+      const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
       page.recordIncentiveLevelButton.click()
     })
 
@@ -43,7 +43,7 @@ context('Prisoner incentive level details', () => {
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
         return result
       })
-      const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
+      const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
       page.nextReviewDate.should('contain.text', '15 August 2018')
       page.nextReviewOverdue.should('exist').should('contain.text', 'days overdue')
     })
@@ -62,7 +62,7 @@ context('Prisoner incentive level details', () => {
         return result
       })
       cy.visit('/incentive-reviews/prisoner/A1234A')
-      const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
+      const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
       page.nextReviewOverdue.should('not.exist')
     })
 
@@ -71,7 +71,7 @@ context('Prisoner incentive level details', () => {
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
         return result
       })
-      const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
+      const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
       page.incentiveLevelHistoryTable.then($table => {
         // @ts-expect-error ignore-error
         cy.get($table)
@@ -106,7 +106,7 @@ context('Prisoner incentive level details', () => {
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
         return result
       })
-      const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
+      const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
       page.establishmentSelect.select('LEI')
       page.incentiveLevelSelect.select('Basic')
       page.filterSubmit.click()
@@ -132,7 +132,7 @@ context('Prisoner incentive level details', () => {
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
         return result
       })
-      const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
+      const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
       page.fromDate.type('01/01/2023', { force: true })
       page.filterSubmit.click()
       page.noIncentiveLevelHistory.should('exist')
@@ -145,7 +145,7 @@ context('Prisoner incentive level details', () => {
       cy.navigateToPrisonerIncentiveLevelDetails().then(result => {
         return result
       })
-      const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
+      const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
       page.noIncentiveLevelHistory.should('exist')
     })
   })
@@ -161,7 +161,7 @@ context('Prisoner incentive level details', () => {
     })
 
     it('should NOT display the change incentive level link', () => {
-      const page = Page.verifyOnPage(PrisonerIncentiveDetailsPage)
+      const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
       page.recordIncentiveLevelButton.should('not.exist')
     })
   })

@@ -32,7 +32,8 @@
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "cypress run",
     "int-test-ui": "cypress open --e2e",
-    "clean": "rm -rf assets/stylesheets build dist node_modules"
+    "clean": "rm -rf assets/stylesheets build dist node_modules",
+    "rebuild": "npm run clean && npm i && npm run build"
   },
   "engines": {
     "node": "^20"

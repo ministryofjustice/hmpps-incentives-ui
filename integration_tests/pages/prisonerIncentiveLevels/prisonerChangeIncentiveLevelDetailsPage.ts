@@ -8,6 +8,7 @@ export default class PrisonerChangeIncentiveLevelDetailsPage extends Page {
   get pageHeading() {
     return cy.get('h1')
   }
+
   get currentIncentiveLevel() {
     return cy.get('[data-test="current-incentive-level"]')
   }

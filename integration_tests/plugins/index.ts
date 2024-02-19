@@ -24,7 +24,7 @@ export default (on: (string, Record) => void): void => {
     stubGetIncentivesLevelStandard: incentivesApi.stubGetIncentivesLevelStandard,
     stubGetIncentivesSorted: incentivesApi.stubGetIncentivesSorted,
     stubGetIncentiveSummaryForPrisoner: incentivesApi.stubGetIncentiveSummaryForPrisoner,
-
+    stubUpdateIncentiveLevelForPrisoner: incentivesApi.stubUpdateIncentiveLevelForPrisoner,
 
     stubIncentiveLevels: incentivesApi.stubIncentiveLevels,
     stubIncentiveLevel: incentivesApi.stubIncentiveLevel,
@@ -42,6 +42,7 @@ export default (on: (string, Record) => void): void => {
     stubPrisonApiImages: prisonApi.stubGetImage,
     stubPrisonApiLocations: prisonApi.stubGetUserLocations,
     stubGetPrisonerDetails: prisonApi.stubGetPrisonerDetails,
+    stubGetPrisonerFullDetails: prisonApi.stubGetPrisonerFullDetails,
     stubGetStaffDetails: prisonApi.stubGetStaffDetails,
     stubGetAgency: prisonApi.stubGetAgency,
 

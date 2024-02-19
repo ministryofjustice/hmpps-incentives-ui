@@ -102,6 +102,33 @@ export default {
       },
     })
   },
+  stubGetPrisonerFullDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=true&csraSummary=true`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: {
+          offenderNo: 'A1234A',
+          agencyId: 'MDI',
+          bookingId: -1,
+          firstName: 'John',
+          lastName: 'Smith',
+          assignedLivingUnit: {
+            agencyId: 'MDI',
+            locationId: 1,
+            description: '123',
+            agencyName: '123',
+          },
+        },
+      },
+    })
+  },
   stubGetStaffDetails: (staff): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -146,5 +173,5 @@ export default {
         jsonBody: prisonId.json,
       },
     })
-  }
+  },
 }

@@ -79,7 +79,6 @@ export default function routes(router: Router): Router {
       const incentiveSummary = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
       const nextReviewDate =
         incentiveSummary?.nextReviewDate && moment(incentiveSummary.nextReviewDate, 'YYYY-MM-DD HH:mm')
-
       return res.render('pages/prisonerChangeIncentiveLevelConfirmation.njk', {
         breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
         incentiveSummary,

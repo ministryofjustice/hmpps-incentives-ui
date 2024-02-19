@@ -13,7 +13,6 @@ const iepSummaryResponse = {
 }
 
 context('Prisoner incentive level details', () => {
-
   beforeEach(() => {
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')

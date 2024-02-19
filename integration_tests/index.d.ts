@@ -7,6 +7,11 @@ declare namespace Cypress {
     signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
 
     /**
+     * Installs a spy to track calls to global `gtag()`
+     */
+    trackGoogleAnalyticsCalls(): Chainable<GoogleAnalyticsTracker>
+
+    /**
      * Set up stubs needed for listing prisoner incentive levels
      */
 

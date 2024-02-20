@@ -3,10 +3,12 @@ import request from 'supertest'
 
 import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
-import { PrisonApi, type Offender, type Staff, type Agency } from '../data/prisonApi'
-import { IncentivesApi, type IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
-import { OffenderSearchClient, type OffenderSearchResult } from '../data/offenderSearch'
-import { getAgencyMockImplementation } from '../testData/prisonApi'
+import { PrisonApi } from '../data/prisonApi'
+import { IncentivesApi } from '../data/incentivesApi'
+import { OffenderSearchClient } from '../data/offenderSearch'
+import { getAgencyMockImplementation, prisonerDetails, staffDetails, agencyDetails } from '../testData/prisonApi'
+import { incentiveSummaryForBooking, emptyIncentiveSummaryForBooking } from '../testData/incentivesApi'
+import offenderDetails from '../testData/offenderSearch'
 import { SanitisedError } from '../sanitisedError'
 import { makeMockUser } from './testutils/mockUsers'
 
@@ -19,96 +21,7 @@ jest.mock('../data/nomisUserRolesApi')
 
 let app: Express
 
-const bookingId = 12345
 const prisonerNumber = 'A8083DY'
-
-const incentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
-  bookingId,
-  iepDate: '2017-08-15',
-  iepTime: '2017-08-15T16:04:35',
-  iepLevel: 'Standard',
-  daysSinceReview: 1868,
-  nextReviewDate: '2018-08-15',
-  iepDetails: [
-    {
-      bookingId,
-      iepDate: '2017-08-15',
-      iepTime: '2017-08-15T16:04:35',
-      agencyId: 'MDI',
-      iepLevel: 'Standard',
-      userId: 'NOMIS_USER',
-      comments: 'STANDARD_NOMIS_USER_COMMENT',
-    },
-    {
-      bookingId,
-      iepDate: '2017-08-10',
-      iepTime: '2017-08-10T16:04:35',
-      agencyId: 'LEI',
-      iepLevel: 'Basic',
-      userId: 'SYSTEM_USER',
-      comments: 'BASIC_SYSTEM_USER_COMMENT',
-    },
-    {
-      bookingId,
-      iepDate: '2017-08-07',
-      iepTime: '2017-08-07T16:04:35',
-      agencyId: 'MDI',
-      iepLevel: 'Enhanced',
-      userId: 'UNKNOWN_USER',
-      comments: 'ENHANCED_UNKNOWN_USER_COMMENT',
-    },
-  ],
-}
-
-const emptyIncentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
-  bookingId,
-  iepDate: '2017-08-15',
-  iepTime: '2017-08-15T16:04:35',
-  iepLevel: 'Standard',
-  daysSinceReview: 1868,
-  nextReviewDate: '2018-08-15',
-  iepDetails: [],
-}
-
-const prisonerDetails: Offender = {
-  offenderNo: prisonerNumber,
-  agencyId: 'MDI',
-  bookingId,
-  firstName: 'John',
-  lastName: 'Smith',
-  assignedLivingUnit: {
-    agencyId: 'MDI',
-    locationId: 1,
-    description: '123',
-    agencyName: '123',
-  },
-}
-
-const staffDetails: Staff = {
-  firstName: '123',
-  lastName: '123',
-  staffId: 123,
-  username: 'SYSTEM_USER',
-  activeCaseLoadId: '123',
-  active: true,
-}
-
-const agencyDetails: Agency = {
-  agencyId: 'MDI',
-  description: '123',
-  agencyType: '123',
-  active: true,
-}
-
-const offenderDetails: OffenderSearchResult = {
-  bookingId,
-  prisonerNumber,
-  firstName: 'John',
-  lastName: 'Smith',
-  prisonId: 'MDI',
-  prisonName: 'Moorland',
-  cellLocation: '123',
-}
 
 const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
 const offenderSearch = OffenderSearchClient.prototype as jest.Mocked<OffenderSearchClient>

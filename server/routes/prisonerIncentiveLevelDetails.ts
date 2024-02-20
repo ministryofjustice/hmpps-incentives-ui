@@ -65,7 +65,7 @@ const hmppsAuthClient = new HmppsAuthClient(
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  get('/:prisonerNumber', async (req, res) => {
+  get('/', async (req, res) => {
     const { prisonerNumber } = req.params
     const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
 

@@ -8,7 +8,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "components/datePicker/datePicker.njk" import datePicker %}
 
-{% set title =  "Incentive details" %}
+{% set pageTitle = applicationName + " – Incentive details" %}
 
 {% block beforeContent %}
   {{ govukBreadcrumbs({

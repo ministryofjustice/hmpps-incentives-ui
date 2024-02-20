@@ -11,6 +11,7 @@ const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
  * @param name name to be converted.
  * @returns name converted to proper case.
  */
+export const properCaseName = (name: string): string => (isBlank(name) ? '' : name.split('-').map(properCase).join('-'))
 
 export const convertToTitleCase = (sentence: string): string =>
   isBlank(sentence) ? '' : sentence.split(' ').map(properCaseName).join(' ')
@@ -35,8 +36,6 @@ export const possessive = (string: string): string => {
   return `${string}${string.toLowerCase().endsWith('s') ? '’' : '’s'}`
 }
 
-export const properCaseName = (name: string): string => (isBlank(name) ? '' : name.split('-').map(properCase).join('-'))
-
 export const putLastNameFirst = (firstName: string, lastName: string): string => {
   if (!firstName && !lastName) return null
   if (!firstName && lastName) return properCaseName(lastName)
@@ -45,10 +44,10 @@ export const putLastNameFirst = (firstName: string, lastName: string): string =>
   return `${properCaseName(lastName)}, ${properCaseName(firstName)}`
 }
 
-/** Number of days elapsed, ignoring time of day, since `date`; 0 for today or any time in future */
 export const newDaysSince = (date: moment.MomentInput): number =>
   Math.max(Math.floor(moment.duration(moment().startOf('day').diff(moment(date).startOf('day'))).asDays()), 0)
 
+/** Number of days elapsed, ignoring time of day, since `date`; 0 for today or any time in future */
 export const daysSince = (date: Date): number => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)

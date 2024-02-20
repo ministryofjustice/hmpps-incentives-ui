@@ -6,7 +6,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "components/datePicker/datePicker.njk" import datePicker %}
+{% from "../components/datepicker/marco.njk" import hmppsDatepicker %}
 
 {% set title =  "Incentive details" %}
 
@@ -100,20 +100,30 @@
           }
         }) }}
 
-        {{ datePicker({
+        {{ hmppsDatepicker({
           id: 'fromDate',
-          label: 'Date from',
           name: 'fromDate',
-          date: formValues.fromDate,
-          errorMessage: errors | findError('fromDate')
+          label: {
+            text: 'From'
+          },
+          classes: 'hmpps-datepicker datePickerWithinHorizontalForm',
+          value: formValues.fromDate,
+          maxDate: maxDate,
+          errorMessage: errors | findError('fromDate'),
+          dataQa: 'fromDate'
         }) }}
 
-        {{ datePicker({
+        {{ hmppsDatepicker({
           id: 'toDate',
-          label: 'Date to',
           name: 'toDate',
-          date: formValues.toDate,
-          errorMessage: errors | findError('toDate')
+          label: {
+            text: 'To'
+          },
+          classes: 'hmpps-datepicker datePickerWithinHorizontalForm',
+          value: formValues.toDate,
+          maxDate: maxDate,
+          errorMessage: errors | findError('toDate'),
+          dataQa: 'toDate'
         }) }}
 
         {{ govukButton({
@@ -174,3 +184,11 @@
 
 
 {% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/assets/date-picker.js"></script>
+{% endblock bodyEnd %}
+
+
+

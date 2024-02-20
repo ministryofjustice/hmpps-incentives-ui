@@ -61,6 +61,15 @@ export const daysSince = (date: Date): number => {
   return Math.round((todayUnix - dateUnix) / (1000 * 60 * 60 * 24))
 }
 
+export const formatDateForDatePicker = (
+  isoDate: string,
+  style: 'short' | 'full' | 'long' | 'medium' = 'long',
+): string => {
+  if (!isoDate) return ''
+
+  return new Date(isoDate).toLocaleDateString('en-gb', { dateStyle: style })
+}
+
 /**
  * Converts a numeric amount of pence into a string of pounds and pence, excluding the £ symbol.
  * Used to pre-fill currency text inputs from internal money representation.

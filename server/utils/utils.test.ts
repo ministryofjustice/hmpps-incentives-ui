@@ -1,37 +1,134 @@
 import {
   convertToTitleCase,
   daysSince,
+  formatName,
   initialiseName,
-  penceAmountToInputString,
   inputStringToPenceAmount,
+  penceAmountToInputString,
+  possessive,
+  properCaseName,
+  putLastNameFirst,
+  nameOfPerson,
+  newDaysSince,
 } from './utils'
 
-describe('convert to title case', () => {
-  it.each([
-    [null, null, ''],
-    ['empty string', '', ''],
-    ['Lower case', 'robert', 'Robert'],
-    ['Upper case', 'ROBERT', 'Robert'],
-    ['Mixed case', 'RoBErT', 'Robert'],
-    ['Multiple words', 'RobeRT SMiTH', 'Robert Smith'],
-    ['Leading spaces', '  RobeRT', '  Robert'],
-    ['Trailing spaces', 'RobeRT  ', 'Robert  '],
-    ['Hyphenated', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
-  ])('%s convertToTitleCase(%s, %s)', (_: string, a: string, expected: string) => {
-    expect(convertToTitleCase(a)).toEqual(expected)
+describe('name formatting', () => {
+  describe('convert to title case', () => {
+    it.each([
+      [null, null, ''],
+      ['empty string', '', ''],
+      ['Lower case', 'robert', 'Robert'],
+      ['Upper case', 'ROBERT', 'Robert'],
+      ['Mixed case', 'RoBErT', 'Robert'],
+      ['Multiple words', 'RobeRT SMiTH', 'Robert Smith'],
+      ['Leading spaces', '  RobeRT', '  Robert'],
+      ['Trailing spaces', 'RobeRT  ', 'Robert  '],
+      ['Hyphenated', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
+    ])('%s convertToTitleCase(%s, %s)', (_: string, a: string, expected: string) => {
+      expect(convertToTitleCase(a)).toEqual(expected)
+    })
   })
-})
 
-describe('initialise name', () => {
-  it.each([
-    [null, null, null],
-    ['Empty string', '', null],
-    ['One word', 'robert', 'r. robert'],
-    ['Two words', 'Robert James', 'R. James'],
-    ['Three words', 'Robert James Smith', 'R. Smith'],
-    ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
-  ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
-    expect(initialiseName(a)).toEqual(expected)
+  describe('format name', () => {
+    it('can format name', () => {
+      expect(formatName('david', 'jones')).toEqual('David Jones')
+    })
+    it('can format first name only', () => {
+      expect(formatName('DAVID', '')).toEqual('David')
+    })
+    it('can format last name only', () => {
+      expect(formatName(undefined, 'Jones')).toEqual('Jones')
+    })
+    it('can format empty name', () => {
+      expect(formatName('', '')).toEqual('')
+    })
+    it('can format no name', () => {
+      expect(formatName(undefined, undefined)).toEqual('')
+    })
+  })
+
+  describe('initialise name', () => {
+    it.each([
+      [null, null, null],
+      ['Empty string', '', null],
+      ['One word', 'robert', 'r. robert'],
+      ['Two words', 'Robert James', 'R. James'],
+      ['Three words', 'Robert James Smith', 'R. Smith'],
+      ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
+    ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
+      expect(initialiseName(a)).toEqual(expected)
+    })
+  })
+
+  describe('possessive', () => {
+    it('No string', () => {
+      expect(possessive(null)).toEqual('')
+    })
+    it('Converts name with no S correctly', () => {
+      expect(possessive('David Smith')).toEqual('David Smith’s')
+    })
+    it('Converts name with S correctly', () => {
+      expect(possessive('David Jones')).toEqual('David Jones’')
+    })
+  })
+
+  describe('properCaseName', () => {
+    it('null string', () => {
+      expect(properCaseName(null)).toEqual('')
+    })
+    it('empty string', () => {
+      expect(properCaseName('')).toEqual('')
+    })
+    it('Lower Case', () => {
+      expect(properCaseName('david')).toEqual('David')
+    })
+    it('Mixed Case', () => {
+      expect(properCaseName('DaVId')).toEqual('David')
+    })
+    it('Multiple words', () => {
+      expect(properCaseName('DAVID JONES')).toEqual('David jones')
+    })
+    it('Hyphenated', () => {
+      expect(properCaseName('DAVID-JONES-BART-LISA')).toEqual('David-Jones-Bart-Lisa')
+    })
+  })
+
+  describe('putLastNameFirst()', () => {
+    it('should return null if no names specified', () => {
+      // @ts-expect-error: Test requires invalid types passed in
+      expect(putLastNameFirst()).toEqual(null)
+    })
+
+    it('should return correctly formatted last name if no first name specified', () => {
+      expect(putLastNameFirst('', 'LASTNAME')).toEqual('Lastname')
+    })
+
+    it('should return correctly formatted first name if no last name specified', () => {
+      // @ts-expect-error: Test requires invalid types passed in
+      expect(putLastNameFirst('FIRSTNAME')).toEqual('Firstname')
+    })
+
+    it('should return correctly formatted last name and first name if both specified', () => {
+      expect(putLastNameFirst('FIRSTNAME', 'LASTNAME')).toEqual('Lastname, Firstname')
+    })
+  })
+
+  describe('name of person', () => {
+    it('can format name', () => {
+      expect(nameOfPerson({ firstName: 'DAVID', lastName: 'JONES' })).toEqual('David Jones')
+    })
+    it('can format first name only', () => {
+      expect(nameOfPerson({ firstName: 'DAVID', lastName: '' })).toEqual('David')
+    })
+    it('can format last name only', () => {
+      expect(nameOfPerson({ firstName: undefined, lastName: 'Jones' })).toEqual('Jones')
+    })
+    it('can format empty name ', () => {
+      expect(nameOfPerson({ firstName: '', lastName: '' })).toEqual('')
+    })
+    it('can format no name ', () => {
+      expect(nameOfPerson({ firstName: undefined, lastName: undefined })).toEqual('')
+    })
   })
 })
 
@@ -94,6 +191,35 @@ describe('counting days since a date', () => {
       expect(daysSince(date)).toEqual<number>(81)
     })
   })
+})
+
+describe('days since', () => {
+  beforeAll(() => {
+    jest.spyOn(Date, 'now').mockImplementation(() => 1664192096000) // 2022-09-26T12:34:56.000+01:00
+  })
+
+  afterAll(() => {
+    const spy = jest.spyOn(Date, 'now')
+    spy.mockRestore()
+  })
+
+  it.each(['2022-09-25', '2022-09-25T17:00:00Z', '2022-09-25T23:59:59+01:00'])(
+    'returns 1 when date is yesterday',
+    date => expect(newDaysSince(date)).toEqual<number>(1),
+  )
+
+  it.each([
+    ['2022-09-24', 2],
+    ['2021-09-26', 365],
+  ])('returns days elapsed since date', (date, expected) => expect(newDaysSince(date)).toEqual<number>(expected))
+
+  it.each(['2022-09-26', '2022-09-26T00:00:00Z', '2022-09-26T23:59:59+01:00'])('returns 0 when date is today', date =>
+    expect(newDaysSince(date)).toEqual<number>(0),
+  )
+
+  it.each(['2022-09-27', '2023-09-26', '2022-09-27T00:00:00Z'])('returns 0 for dates in future', date =>
+    expect(newDaysSince(date)).toEqual<number>(0),
+  )
 })
 
 describe('convert between numeric pence and pound-pence string representations', () => {

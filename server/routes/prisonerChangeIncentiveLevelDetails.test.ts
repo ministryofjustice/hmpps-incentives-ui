@@ -5,7 +5,6 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import { PrisonApi, Offender } from '../data/prisonApi'
 import { IncentivesApi, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
 import createUserToken from './testutils/createUserToken'
-import { OffenderSearchClient, OffenderSearchResult } from '../data/offenderSearch'
 import { NomisUserRolesApi, UserCaseload } from '../data/nomisUserRolesApi'
 import { samplePrisonIncentiveLevels } from '../testData/incentivesApi'
 import { SanitisedError } from '../sanitisedError'
@@ -14,7 +13,6 @@ jest.mock('../data/prisonApi')
 jest.mock('../data/incentivesApi')
 jest.mock('../services/userService')
 jest.mock('../data/hmppsAuthClient')
-jest.mock('../data/offenderSearch')
 jest.mock('../data/nomisUserRolesApi')
 
 let app: Express
@@ -77,16 +75,6 @@ const prisonerDetails: Offender = {
   },
 }
 
-const offenderDetails: OffenderSearchResult = {
-  bookingId,
-  prisonerNumber,
-  firstName: 'John',
-  lastName: 'Smith',
-  prisonId: 'MDI',
-  prisonName: 'Moorland',
-  cellLocation: '123',
-}
-
 const userCaseload: UserCaseload = {
   activeCaseload: {
     id: 'MDI',
@@ -101,13 +89,11 @@ const userCaseload: UserCaseload = {
 }
 
 const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-const offenderSearch = OffenderSearchClient.prototype as jest.Mocked<OffenderSearchClient>
 const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
 const nomisUserRolesApi = NomisUserRolesApi.prototype as jest.Mocked<NomisUserRolesApi>
 beforeEach(() => {
   prisonApi.getPrisonerDetails.mockResolvedValue(prisonerDetails)
   prisonApi.getFullDetails.mockResolvedValue(prisonerDetails)
-  offenderSearch.getPrisoner.mockResolvedValue(offenderDetails)
   incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
   incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(samplePrisonIncentiveLevels)
   nomisUserRolesApi.getUserCaseloads.mockResolvedValue(userCaseload)
@@ -142,18 +128,22 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
       })
   })
 
-  it('should return 404 if prisoner is not found', () => {
+  it('should return 302 and redirect if prisoner is not found', () => {
     const error: SanitisedError = {
       name: 'Error',
-      status: 404,
-      message: 'Not Found',
-      stack: 'Not Found',
+      status: 302,
+      message: 'Found',
+      stack: 'Found',
     }
-    offenderSearch.getPrisoner.mockRejectedValue(error)
+    prisonApi.getPrisonerDetails.mockRejectedValue(error)
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
       .set('authorization', `bearer ${tokenWithNecessaryRole}`)
-      .expect(200)
+      .expect(302)
+      .expect(res => {
+        expect(res.text).not.toContain('John, Smith')
+        expect(res.text).toContain('Found. Redirecting to /incentive-reviews/prisoner/A8083DY')
+      })
   })
 })
 
@@ -240,12 +230,12 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
         })
     })
 
-    it('should return generic error page if api returns an error', () => {
+    it('should return 302 and redirect if api returns an error', () => {
       const error: SanitisedError = {
         name: 'Error',
-        status: 400,
-        message: 'Bad Request',
-        stack: 'Error: Bad Request',
+        status: 302,
+        message: 'Found',
+        stack: 'Found',
       }
       incentivesApi.updateIncentiveLevelForPrisoner.mockRejectedValueOnce(error)
       return request(app)
@@ -255,10 +245,10 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
           reason: 'text',
         })
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
-        .expect(400)
+        .expect(302)
         .expect(res => {
           expect(res.text).not.toContain('John, Smith')
-          expect(res.text).toContain('Bad Request')
+          expect(res.text).toContain('Found. Redirecting')
         })
     })
   })

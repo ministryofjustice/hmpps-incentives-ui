@@ -127,7 +127,6 @@
     "prom-client": "^15.1.0",
     "redis": "^4.6.13",
     "superagent": "^8.1.2",
-    "universal-analytics": "^0.5.3",
     "url-value-parser": "^2.2.0",
     "uuid": "^9.0.1"
   },

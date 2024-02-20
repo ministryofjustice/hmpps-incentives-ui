@@ -8,22 +8,6 @@
 
 {% set pageTitle = applicationName + " – Record incentive level" %}
 
-{% block beforeContent %}
-  {{ govukBreadcrumbs({
-    items: [
-      {
-        text: "Home",
-        href: '/'
-      },
-      {
-        text: breadcrumbPrisonerName,
-        href: profileUrl
-      }
-    ],
-    classes: 'govuk-!-display-none-print'
-  }) }}
-{% endblock %}
-
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">

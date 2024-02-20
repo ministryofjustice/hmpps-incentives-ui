@@ -66,6 +66,8 @@ export default function routes(router: Router): Router {
 
   get('/:prisonerNumber', async (req, res) => {
     const { prisonerNumber } = req.params
+    const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
+
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
     const userRoles = res.locals.user.roles
     const prisonApi = new PrisonApi(systemToken)
@@ -169,8 +171,13 @@ export default function routes(router: Router): Router {
         errors.push({ href: '#toDate', text: 'Enter a to date which is not before the from date' })
       }
 
+      res.locals.breadcrumbs.popLastItem()
+      res.locals.breadcrumbs.addItems({
+        text: putLastNameFirst(firstName, lastName),
+        href: profileUrl,
+      })
+
       res.render('pages/prisonerIncentiveLevelDetails.njk', {
-        breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
         currentIncentiveLevel,
         establishments: establishments
           .sort((a, b) => a.description.localeCompare(b.description))
@@ -187,14 +194,13 @@ export default function routes(router: Router): Router {
         nextReviewDate: nextReviewDate.format('D MMMM YYYY'),
         noResultsFoundMessage,
         prisonerName,
-        profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
         recordIncentiveUrl: `/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`,
         reviewDaysOverdue,
         results: filteredResults,
         userCanUpdateIEP: Boolean(prisonerWithinCaseloads && userCanMaintainIncentives),
       })
     } catch (error) {
-      res.redirect(`${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`)
+      res.redirect(profileUrl)
     }
   })
 

@@ -31,6 +31,7 @@ async function renderTemplate(
 ): Promise<void> {
   const userRoles = res.locals.user.roles
   const { prisonerNumber } = req.params
+  const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
 
   if (userRoles.find(role => role === 'ROLE_MAINTAIN_IEP')) {
     try {
@@ -50,15 +51,25 @@ async function renderTemplate(
         checked: level.levelCode === formValues.newIepLevel,
       }))
 
+      res.locals.breadcrumbs.popLastItem()
+      res.locals.breadcrumbs.addItems(
+        {
+          text: putLastNameFirst(firstName, lastName),
+          href: profileUrl,
+        },
+        {
+          text: 'Incentive details',
+          href: `/incentive-reviews/prisoner/${prisonerNumber}`,
+        },
+      )
+
       res.render('pages/prisonerChangeIncentiveLevelDetails.njk', {
-        breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
         currentIncentiveLevel,
         cancelUrl: `/incentive-reviews/prisoner/${prisonerNumber}`,
         errors,
         formValues,
         prisonerNumber,
         prisonerName: formatName(firstName, lastName),
-        profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
         selectableLevels,
       })
     } catch (error) {
@@ -71,6 +82,8 @@ async function renderTemplate(
 
 async function renderConfirmation(req: Request, res: Response): Promise<void> {
   const { prisonerNumber } = req.params
+  const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
+
   const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
   const prisonApi = new PrisonApi(systemToken)
   const incentivesApi = new IncentivesApi(systemToken)
@@ -83,8 +96,19 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
     const nextReviewDate =
       incentiveSummary?.nextReviewDate && moment(incentiveSummary.nextReviewDate, 'YYYY-MM-DD HH:mm')
 
+    res.locals.breadcrumbs.popLastItem()
+    res.locals.breadcrumbs.addItems(
+      {
+        text: putLastNameFirst(firstName, lastName),
+        href: profileUrl,
+      },
+      {
+        text: 'Incentive details',
+        href: `/incentive-reviews/prisoner/${prisonerNumber}`,
+      },
+    )
+
     res.render('pages/prisonerChangeIncentiveLevelConfirmation.njk', {
-      breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
       incentiveSummary,
       manageIncentivesUrl:
         agencyId && locationId && locationId.includes('-')
@@ -93,7 +117,7 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
       nextReviewDate: nextReviewDate?.format('D MMMM YYYY'),
       prisonerNumber,
       prisonerName: formatName(firstName, lastName),
-      profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
+      profileUrl,
     })
   } catch (error) {
     res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
@@ -137,7 +161,7 @@ export default function routes(router: Router): Router {
       })
       await renderConfirmation(req, res)
     } catch (error) {
-      res.redirect(`${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`)
+      res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
     }
   })
 

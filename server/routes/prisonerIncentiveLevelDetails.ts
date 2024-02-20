@@ -7,6 +7,7 @@ import { PrisonApi, Staff } from '../data/prisonApi'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, IncentiveSummaryDetail, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
 
+import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
 import { OffenderSearchClient } from '../data/offenderSearch'
@@ -93,10 +94,10 @@ export default function routes(router: Router): Router {
       const nextReviewDate = moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
       const reviewDaysOverdue = newDaysSince(nextReviewDate)
 
-      const prisonerWithinCaseloads = res.locals.user.caseloads.find(
+      const prisonerWithinCaseloads = res.locals.user.caseloads.some(
         caseload => caseload.id === prisonerDetails.agencyId,
       )
-      const userCanMaintainIncentives = userRoles.find(role => role === 'ROLE_MAINTAIN_IEP')
+      const userCanMaintainIncentives = userRoles.includes(maintainPrisonerIncentiveLevelRole)
       const fromDateFormatted = moment(fromDate, 'DD/MM/YYYY')
       const toDateFormatted = moment(toDate, 'DD/MM/YYYY')
 
@@ -197,7 +198,7 @@ export default function routes(router: Router): Router {
         recordIncentiveUrl: `/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`,
         reviewDaysOverdue,
         results: filteredResults,
-        userCanUpdateIEP: Boolean(prisonerWithinCaseloads && userCanMaintainIncentives),
+        userCanUpdateIEP: prisonerWithinCaseloads && userCanMaintainIncentives,
       })
     } catch (error) {
       res.redirect(profileUrl)

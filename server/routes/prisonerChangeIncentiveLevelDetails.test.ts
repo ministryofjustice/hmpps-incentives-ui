@@ -1,6 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 
+import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { PrisonApi, Offender } from '../data/prisonApi'
 import { IncentivesApi, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
@@ -21,7 +22,7 @@ const bookingId = 12345
 const prisonerNumber = 'A8083DY'
 
 const tokenWithMissingRole = createUserToken([])
-const tokenWithNecessaryRole = createUserToken(['ROLE_MAINTAIN_IEP'])
+const tokenWithNecessaryRole = createUserToken([maintainPrisonerIncentiveLevelRole])
 
 const incentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
   bookingId,

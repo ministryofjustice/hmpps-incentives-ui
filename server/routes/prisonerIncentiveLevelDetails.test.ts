@@ -1,6 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 
+import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
 import { PrisonApi, type Offender, type Staff, type Agency } from '../data/prisonApi'
 import { IncentivesApi, type IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
@@ -127,9 +128,9 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-const mockMoorlandUserWithRole = makeMockUser({ caseloads: ['MDI'], roles: ['MAINTAIN_IEP'] })
+const mockMoorlandUserWithRole = makeMockUser({ caseloads: ['MDI'], roles: [maintainPrisonerIncentiveLevelRole] })
 const mockMoorlandUserWithoutRole = makeMockUser({ caseloads: ['MDI'], roles: [] })
-const mockLeedsUserWithRole = makeMockUser({ caseloads: ['LEI'], roles: ['MAINTAIN_IEP'] })
+const mockLeedsUserWithRole = makeMockUser({ caseloads: ['LEI'], roles: [maintainPrisonerIncentiveLevelRole] })
 
 describe('GET /incentive-reviews/prisoner/', () => {
   it('should make the expected API calls', () => {

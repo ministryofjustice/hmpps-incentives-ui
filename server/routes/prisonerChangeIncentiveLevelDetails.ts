@@ -1,6 +1,7 @@
 import moment from 'moment'
 import type { RequestHandler, Request, Response, Router } from 'express'
 
+import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import { formatName, putLastNameFirst } from '../utils/utils'
 import { PrisonApi } from '../data/prisonApi'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -33,49 +34,50 @@ async function renderTemplate(
   const { prisonerNumber } = req.params
   const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
 
-  if (userRoles.find(role => role === 'ROLE_MAINTAIN_IEP')) {
-    try {
-      const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
-      const prisonApi = new PrisonApi(systemToken)
-      const incentivesApi = new IncentivesApi(systemToken)
+  if (!userRoles.includes(maintainPrisonerIncentiveLevelRole)) {
+    res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
+    return
+  }
 
-      const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
-      const { agencyId, firstName, lastName } = prisonerDetails
-      const incentiveLevelDetails: IncentiveSummaryForBookingWithDetails =
-        await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-      const currentIncentiveLevel: string = incentiveLevelDetails.iepLevel
-      const prisonIncentiveLevels = await incentivesApi.getPrisonIncentiveLevels(agencyId)
-      const selectableLevels = prisonIncentiveLevels.map(level => ({
-        text: currentIncentiveLevel === level.levelName ? `${level.levelName} (current level)` : level.levelName,
-        value: level.levelCode,
-        checked: level.levelCode === formValues.newIepLevel,
-      }))
+  try {
+    const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
+    const prisonApi = new PrisonApi(systemToken)
+    const incentivesApi = new IncentivesApi(systemToken)
 
-      res.locals.breadcrumbs.popLastItem()
-      res.locals.breadcrumbs.addItems(
-        {
-          text: putLastNameFirst(firstName, lastName),
-          href: profileUrl,
-        },
-        {
-          text: 'Incentive details',
-          href: `/incentive-reviews/prisoner/${prisonerNumber}`,
-        },
-      )
+    const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
+    const { agencyId, firstName, lastName } = prisonerDetails
+    const incentiveLevelDetails: IncentiveSummaryForBookingWithDetails =
+      await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
+    const currentIncentiveLevel: string = incentiveLevelDetails.iepLevel
+    const prisonIncentiveLevels = await incentivesApi.getPrisonIncentiveLevels(agencyId)
+    const selectableLevels = prisonIncentiveLevels.map(level => ({
+      text: currentIncentiveLevel === level.levelName ? `${level.levelName} (current level)` : level.levelName,
+      value: level.levelCode,
+      checked: level.levelCode === formValues.newIepLevel,
+    }))
 
-      res.render('pages/prisonerChangeIncentiveLevelDetails.njk', {
-        currentIncentiveLevel,
-        cancelUrl: `/incentive-reviews/prisoner/${prisonerNumber}`,
-        errors,
-        formValues,
-        prisonerNumber,
-        prisonerName: formatName(firstName, lastName),
-        selectableLevels,
-      })
-    } catch (error) {
-      res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
-    }
-  } else {
+    res.locals.breadcrumbs.popLastItem()
+    res.locals.breadcrumbs.addItems(
+      {
+        text: putLastNameFirst(firstName, lastName),
+        href: profileUrl,
+      },
+      {
+        text: 'Incentive details',
+        href: `/incentive-reviews/prisoner/${prisonerNumber}`,
+      },
+    )
+
+    res.render('pages/prisonerChangeIncentiveLevelDetails.njk', {
+      currentIncentiveLevel,
+      cancelUrl: `/incentive-reviews/prisoner/${prisonerNumber}`,
+      errors,
+      formValues,
+      prisonerNumber,
+      prisonerName: formatName(firstName, lastName),
+      selectableLevels,
+    })
+  } catch (error) {
     res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
   }
 }

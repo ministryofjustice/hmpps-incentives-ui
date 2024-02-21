@@ -7,7 +7,7 @@ import nunjucks from 'nunjucks'
 import config from '../config'
 import { calculateTrendsRange, makeChartPalette } from './analytics'
 import format from './format'
-import { daysSince, initialiseName } from './utils'
+import { daysSince, initialiseName, possessive } from './utils'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -58,6 +58,56 @@ export default function nunjucksSetup(app: express.Express): void {
 
     return encodeURI(`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`)
   })
+
+  njkEnv.addFilter('findError', (array, formFieldId) => {
+    if (!array) return null
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const item = array.find(error => error.href === `#${formFieldId}`)
+    if (item) {
+      return {
+        text: item.text,
+      }
+    }
+    return null
+  })
+
+  njkEnv.addFilter('showDefault', (value, specifiedText) => {
+    if (value === 0) return value
+
+    return value || specifiedText || '--'
+  })
+
+  njkEnv.addFilter('addDefaultSelectedValue', (items, text, show) => {
+    if (!items) return null
+    const attributes: { hidden?: string } = {}
+    if (!show) attributes.hidden = ''
+
+    return [
+      {
+        text,
+        value: '',
+        selected: true,
+        attributes,
+      },
+      ...items,
+    ]
+  })
+
+  njkEnv.addFilter(
+    'setSelected',
+    (items, selected) =>
+      items &&
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      items.map(entry => ({
+        ...entry,
+        selected: entry && entry.value === selected,
+      })),
+  )
+
+  // name formatting
+  njkEnv.addFilter('possessive', possessive)
 
   // date & number formatting
   njkEnv.addFilter('date', format.date)

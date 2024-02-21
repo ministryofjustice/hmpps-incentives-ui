@@ -1,0 +1,22 @@
+// adapted from https://github.com/ministryofjustice/hmpps-prisoner-profile/blob/95a1c270741daba2cdb650b6087e539e2e19009b/assets/scss/components/_hmpps-action-button.scss
+.hmpps-action-button {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid govuk-colour('dark-grey');
+  box-shadow: 0 5px govuk-colour('mid-grey');
+
+  img {
+    margin-right: 10px;
+
+    @media (max-width: 1000px) {
+      display: none;
+    }
+  }
+
+  a {
+    font-weight: bold;
+  }
+}

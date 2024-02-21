@@ -20,6 +20,31 @@ export interface Agency {
   active: boolean
 }
 
+export interface Staff {
+  firstName: string
+  lastName: string
+  staffId: number
+  username: string
+  activeCaseLoadId: string
+  active: boolean
+}
+
+export interface AssignedLivingUnit {
+  agencyId: string
+  locationId: number
+  description: string
+  agencyName: string
+}
+
+export interface Offender {
+  offenderNo: string
+  bookingId: number
+  firstName: string
+  lastName: string
+  agencyId: string
+  assignedLivingUnit: AssignedLivingUnit
+}
+
 export class PrisonApi extends RestClient {
   constructor(token: string) {
     super('HMPPS Prison API', config.apis.hmppsPrisonApi, token)
@@ -52,8 +77,27 @@ export class PrisonApi extends RestClient {
 
   getAgency(agencyId: string, activeOnly = true): Promise<Agency> {
     return this.get<Agency>({
-      path: `/api/agencies/${encodeURIComponent(agencyId)}}`,
+      path: `/api/agencies/${encodeURIComponent(agencyId)}`,
       query: { activeOnly: activeOnly.toString() },
+    })
+  }
+
+  getStaffDetails(staffId: string): Promise<Staff> {
+    return this.get<Staff>({
+      path: `/api/users/${encodeURIComponent(staffId)}`,
+    })
+  }
+
+  getPrisonerDetails(prisonerNumber: string): Promise<Offender> {
+    return this.get<Offender>({
+      path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}`,
+    })
+  }
+
+  getFullDetails(prisonerNumber: string, fullInfo: boolean): Promise<Offender> {
+    return this.get<Offender>({
+      path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}`,
+      query: { fullInfo: fullInfo.toString(), csraSummary: fullInfo.toString() },
     })
   }
 }

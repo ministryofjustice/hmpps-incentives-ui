@@ -6,7 +6,7 @@ import request from 'supertest'
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels } from '../testData/incentivesApi'
-import { sampleAgencies } from '../testData/prisonApi'
+import { getAgencyMockImplementation } from '../testData/prisonApi'
 import { IncentivesApi, type ErrorResponse, type IncentiveLevel } from '../data/incentivesApi'
 import { PrisonApi } from '../data/prisonApi'
 import type { SanitisedError } from '../sanitisedError'
@@ -27,17 +27,7 @@ let prisonApi: jest.Mocked<PrisonApi>
 
 beforeAll(() => {
   prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getAgency.mockImplementation(
-    (agencyId: string) =>
-      new Promise((resolve, reject) => {
-        if (agencyId in sampleAgencies) {
-          resolve(sampleAgencies[agencyId])
-        } else {
-          // eslint-disable-next-line prefer-promise-reject-errors
-          reject({ status: 404, message: 'Not Found' })
-        }
-      }),
-  )
+  prisonApi.getAgency.mockImplementation(getAgencyMockImplementation)
 })
 
 let app: Express

@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -9,10 +11,13 @@ const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
  * @param name name to be converted.
  * @returns name converted to proper case.
  */
-const properCaseName = (name: string): string => (isBlank(name) ? '' : name.split('-').map(properCase).join('-'))
+export const properCaseName = (name: string): string => (isBlank(name) ? '' : name.split('-').map(properCase).join('-'))
 
 export const convertToTitleCase = (sentence: string): string =>
   isBlank(sentence) ? '' : sentence.split(' ').map(properCaseName).join(' ')
+
+export const formatName = (firstName: string, lastName: string): string =>
+  [properCaseName(firstName), properCaseName(lastName)].filter(Boolean).join(' ')
 
 export const initialiseName = (fullName?: string): string | null => {
   // this check is for the authError page
@@ -21,6 +26,26 @@ export const initialiseName = (fullName?: string): string | null => {
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
+
+export const nameOfPerson = (prisoner: { firstName: string; lastName: string }): string =>
+  `${convertToTitleCase(prisoner.firstName)} ${convertToTitleCase(prisoner.lastName)}`.trim()
+
+export const possessive = (string: string): string => {
+  if (!string) return ''
+
+  return `${string}${string.toLowerCase().endsWith('s') ? '’' : '’s'}`
+}
+
+export const putLastNameFirst = (firstName: string, lastName: string): string => {
+  if (!firstName && !lastName) return null
+  if (!firstName && lastName) return properCaseName(lastName)
+  if (firstName && !lastName) return properCaseName(firstName)
+
+  return `${properCaseName(lastName)}, ${properCaseName(firstName)}`
+}
+
+export const newDaysSince = (date: moment.MomentInput): number =>
+  Math.max(Math.floor(moment.duration(moment().startOf('day').diff(moment(date).startOf('day'))).asDays()), 0)
 
 /** Number of days elapsed, ignoring time of day, since `date`; 0 for today or any time in future */
 export const daysSince = (date: Date): number => {

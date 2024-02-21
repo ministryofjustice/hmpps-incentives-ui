@@ -122,9 +122,50 @@ export interface IncentivesReview {
   isNewToPrison: boolean
 }
 
+export type IncentiveSummaryForBooking = {
+  bookingId: number
+  iepLevel: string
+  iepDate: string
+  iepTime: string
+  daysSinceReview: number
+  nextReviewDate: string
+}
+
+export type IncentiveSummaryDetail = {
+  bookingId: number
+  iepLevel: string
+  iepDate: string
+  iepTime: string
+  comments: string
+  agencyId: string
+  userId: string | null
+  // also available
+  // auditModuleName: string
+}
+
+export type IncentiveSummaryForBookingWithDetails = IncentiveSummaryForBooking & {
+  iepDetails: IncentiveSummaryDetail[]
+}
+
+export type IepLevelChangeRequest = {
+  iepLevel: string
+  comment: string
+}
+
 export class IncentivesApi extends RestClient {
   constructor(systemToken: string) {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
+  }
+
+  getIncentiveSummaryForPrisoner(prisonerNumber: string): Promise<IncentiveSummaryForBookingWithDetails> {
+    return this.get({ path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}` })
+  }
+
+  updateIncentiveLevelForPrisoner(prisonerNumber: string, data: IepLevelChangeRequest): Promise<IepLevelChangeRequest> {
+    return this.post({
+      path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
+      data: data as unknown as Record<string, unknown>,
+    })
   }
 
   getIncentiveLevels(withInactive = false): Promise<IncentiveLevel[]> {

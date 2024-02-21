@@ -10,23 +10,11 @@ import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import UserService from '../../services/userService'
 import * as auth from '../../authentication/auth'
-import { Location, PrisonApi } from '../../data/prisonApi'
+import { type Location, PrisonApi } from '../../data/prisonApi'
 import { getTestLocation } from '../../testData/prisonApi'
+import { mockUser } from './mockUsers'
 
 jest.mock('../../data/prisonApi')
-
-const user = {
-  name: 'john smith',
-  firstName: 'john',
-  lastName: 'smith',
-  username: 'user1',
-  displayName: 'John Smith',
-}
-
-const activeCaseload = {
-  id: 'MDI',
-  name: 'Moorland (HMP & YOI)',
-}
 
 const testLocation: Location = getTestLocation({
   agencyId: 'MDI',
@@ -35,22 +23,24 @@ const testLocation: Location = getTestLocation({
   subLocations: true,
 })
 
-class MockUserService extends UserService {
-  constructor() {
+export class MockUserService extends UserService {
+  constructor(readonly user: Express.User = mockUser) {
     super(undefined)
+    this.getUser = jest.fn()
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    this.getUser.mockResolvedValue(this.user)
   }
 
-  async getUser(token: string) {
+  getFullUserObject(token: string): Express.User {
     return {
+      ...this.user,
       token,
-      ...user,
-      activeCaseload,
-      caseloads: [activeCaseload],
     }
   }
 }
 
-function makeTestSession(sessionData: Partial<SessionData> = {}): Session & Partial<SessionData> {
+export function makeTestSession(sessionData: Partial<SessionData> = {}): Session & Partial<SessionData> {
   return {
     ...sessionData,
     cookie: new Cookie(),
@@ -67,7 +57,7 @@ function makeTestSession(sessionData: Partial<SessionData> = {}): Session & Part
 function appSetup(
   production: boolean,
   testSession: Session,
-  mockUserService: UserService,
+  mockUserService: MockUserService,
   testRouter?: Router,
 ): Express {
   const app = express()
@@ -80,10 +70,10 @@ function appSetup(
   app.use((req, res, next) => {
     req.session = testSession
 
-    res.locals = {}
+    res.locals = {} as Express.Locals
     const authHeader = req.header('authorization')
     const token = /^Bearer\s+(?<token>.*)\s*$/i.exec(authHeader)?.groups?.token
-    res.locals.user = { ...user, token }
+    res.locals.user = mockUserService.getFullUserObject(token)
 
     next()
   })
@@ -109,7 +99,7 @@ function appSetup(
   return app
 }
 
-function appWithAllRoutes({
+export function appWithAllRoutes({
   production = false,
   testSession = makeTestSession(),
   mockUserService = new MockUserService(),
@@ -117,11 +107,9 @@ function appWithAllRoutes({
 }: {
   production?: boolean
   testSession?: Session
-  mockUserService?: UserService
+  mockUserService?: MockUserService
   testRouter?: Router
 }): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
   return appSetup(production, testSession, mockUserService, testRouter)
 }
-
-export { appWithAllRoutes, makeTestSession }

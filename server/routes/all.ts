@@ -24,7 +24,7 @@ export default function routes(userService: UserService): Router {
   router.use('/incentive-summary/:locationPrefix', reviewsTableRoutes(standardRouter(userService)))
 
   // prisoner incentive level history and update page
-  router.use('/incentive-reviews/prisoner', prisonerIncentiveLevels(standardRouter(userService)))
+  router.use('/incentive-reviews/prisoner/:prisonerNumber', prisonerIncentiveLevels(standardRouter(userService)))
   router.use(
     '/incentive-reviews/prisoner/:prisonerNumber/change-incentive-level',
     authorisationMiddleware([maintainPrisonerIncentiveLevelRole]),

@@ -1,12 +1,15 @@
 import type { Express } from 'express'
 import request from 'supertest'
 
+import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import { appWithAllRoutes } from './testutils/appSetup'
-import { PrisonApi, Offender } from '../data/prisonApi'
-import { IncentivesApi, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
+import { PrisonApi } from '../data/prisonApi'
+import { IncentivesApi } from '../data/incentivesApi'
 import createUserToken from './testutils/createUserToken'
-import { NomisUserRolesApi, UserCaseload } from '../data/nomisUserRolesApi'
-import { samplePrisonIncentiveLevels } from '../testData/incentivesApi'
+import { NomisUserRolesApi } from '../data/nomisUserRolesApi'
+import { samplePrisonIncentiveLevels, incentiveSummaryForBooking } from '../testData/incentivesApi'
+import { prisonerDetails } from '../testData/prisonApi'
+import { userCaseload } from '../testData/nomisIUserRolesApi'
 import { SanitisedError } from '../sanitisedError'
 
 jest.mock('../data/prisonApi')
@@ -17,76 +20,10 @@ jest.mock('../data/nomisUserRolesApi')
 
 let app: Express
 
-const bookingId = 12345
 const prisonerNumber = 'A8083DY'
 
 const tokenWithMissingRole = createUserToken([])
-const tokenWithNecessaryRole = createUserToken(['ROLE_MAINTAIN_IEP'])
-
-const incentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
-  bookingId,
-  iepDate: '2017-08-15',
-  iepTime: '2017-08-15T16:04:35',
-  iepLevel: 'Standard',
-  daysSinceReview: 1868,
-  nextReviewDate: '2018-08-15',
-  iepDetails: [
-    {
-      bookingId,
-      iepDate: '2017-08-15',
-      iepTime: '2017-08-15T16:04:35',
-      agencyId: 'MDI',
-      iepLevel: 'Standard',
-      userId: 'NOMIS_USER',
-      comments: 'STANDARD_NOMIS_USER_COMMENT',
-    },
-    {
-      bookingId,
-      iepDate: '2017-08-10',
-      iepTime: '2017-08-10T16:04:35',
-      agencyId: 'LEI',
-      iepLevel: 'Basic',
-      userId: 'SYSTEM_USER',
-      comments: 'BASIC_SYSTEM_USER_COMMENT',
-    },
-    {
-      bookingId,
-      iepDate: '2017-08-07',
-      iepTime: '2017-08-07T16:04:35',
-      agencyId: 'MDI',
-      iepLevel: 'Enhanced',
-      userId: 'UNKNOWN_USER',
-      comments: 'ENHANCED_UNKNOWN_USER_COMMENT',
-    },
-  ],
-}
-
-const prisonerDetails: Offender = {
-  offenderNo: prisonerNumber,
-  agencyId: 'MDI',
-  bookingId,
-  firstName: 'John',
-  lastName: 'Smith',
-  assignedLivingUnit: {
-    agencyId: 'MDI',
-    locationId: 1,
-    description: '123',
-    agencyName: '123',
-  },
-}
-
-const userCaseload: UserCaseload = {
-  activeCaseload: {
-    id: 'MDI',
-    name: 'MDI',
-  },
-  caseloads: [
-    {
-      id: 'MDI',
-      name: 'MDI',
-    },
-  ],
-}
+const tokenWithNecessaryRole = createUserToken([maintainPrisonerIncentiveLevelRole])
 
 const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
 const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
@@ -260,7 +197,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
         comment: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.',
       })
       incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue({
-        bookingId,
+        bookingId: 12345,
         iepDate: '2017-08-15',
         iepTime: '2017-08-15T16:04:35',
         iepLevel: 'Enhanced',

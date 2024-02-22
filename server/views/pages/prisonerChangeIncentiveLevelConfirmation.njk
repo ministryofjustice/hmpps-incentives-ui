@@ -4,23 +4,7 @@
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-{% set title = 'Incentive level recorded' %}
-
-{% block beforeContent %}
-  {{ govukBreadcrumbs({
-    items: [
-      {
-        text: 'Digital Prison Services',
-        href: '/'
-      },
-      {
-        text: breadcrumbPrisonerName,
-        href: profileUrl
-      }
-    ],
-    classes: 'govuk-!-display-none-print'
-  }) }}
-{% endblock %}
+{% set pageTitle = applicationName + " – Incentive level recorded" %}
 
 {% block content %}
   <div class="govuk-grid-row">

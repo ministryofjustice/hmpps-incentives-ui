@@ -95,3 +95,13 @@ export function inputStringToPenceAmount(pounds: string): number {
   }
   return pence
 }
+
+/** Format dates to be used in the datepicker component. */
+
+export const formatDateForDatePicker = (
+  isoDate: string,
+  style: 'short' | 'full' | 'long' | 'medium' = 'long',
+): string => {
+  if (!isoDate) return ''
+  return new Date(isoDate).toLocaleDateString('en-gb', { dateStyle: style })
+}

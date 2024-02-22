@@ -11,7 +11,7 @@ import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
 import { OffenderSearchClient } from '../data/offenderSearch'
-import { nameOfPerson, putLastNameFirst, newDaysSince, formatName } from '../utils/utils'
+import { nameOfPerson, putLastNameFirst, newDaysSince, formatName, formatDateForDatePicker } from '../utils/utils'
 
 type HistoryDetail = IncentiveSummaryDetail & {
   iepEstablishment: string
@@ -192,6 +192,7 @@ export default function routes(router: Router): Router {
           text: level,
           value: level,
         })),
+        maxDate: formatDateForDatePicker(new Date().toISOString(), 'short'),
         nextReviewDate: nextReviewDate.format('D MMMM YYYY'),
         noResultsFoundMessage,
         prisonerName,

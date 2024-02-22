@@ -1,5 +1,9 @@
-import type { IncentivesReviewsResponse, IncentiveLevel, PrisonIncentiveLevel } from '../data/incentivesApi'
-import { IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
+import type {
+  IncentivesReviewsResponse,
+  IncentiveSummaryForBookingWithDetails,
+  IncentiveLevel,
+  PrisonIncentiveLevel,
+} from '../data/incentivesApi'
 
 export const sampleIncentiveLevels: IncentiveLevel[] = [
   { code: 'BAS', name: 'Basic', active: true, required: true },

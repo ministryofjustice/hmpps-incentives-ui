@@ -194,7 +194,12 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
     it('should return confirmation page', () => {
       incentivesApi.updateIncentiveLevelForPrisoner.mockResolvedValue({
         iepLevel: 'BAS',
-        comment: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.',
+        comments: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.',
+        bookingId: 12345,
+        iepDate: '2017-08-15',
+        iepTime: '2017-08-15T16:04:35',
+        userId: 'user1',
+        agencyId: 'MDI',
       })
       incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue({
         bookingId: 12345,

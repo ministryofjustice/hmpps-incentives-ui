@@ -6,7 +6,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "components/datePicker/datePicker.njk" import datePicker %}
+{% from "components/datepicker/marco.njk" import hmppsDatepicker %}
 
 {% set pageTitle = applicationName + " – Incentive details" %}
 
@@ -19,7 +19,7 @@
     }) }}
   {% endif %}
 
-  <h1 class="govuk-heading-l">Incentive level details for {{ prisonerName }}</h1>
+  <h1 class="govuk-heading-l">{{ prisonerName | possessive }} incentive details</h1>
 
   <div class="horizontal-information govuk-!-margin-bottom-3">
     <div class="horizontal-information__item">
@@ -56,6 +56,8 @@
     {% endif %}
   </div>
 
+  <h3 class="govuk-heading-l">Incentive level history</h3>
+
   {% if results != null %}
     <div class="govuk-!-padding-3 govuk-!-margin-bottom-5 form-background">
       <h2 class="govuk-heading-m">View by</h2>
@@ -84,20 +86,30 @@
           }
         }) }}
 
-        {{ datePicker({
+        {{ hmppsDatepicker({
           id: 'fromDate',
-          label: 'Date from',
           name: 'fromDate',
-          date: formValues.fromDate,
-          errorMessage: errors | findError('fromDate')
+          label: {
+            text: 'From'
+          },
+          classes: 'hmpps-datepicker datePickerWithinHorizontalForm',
+          value: formValues.fromDate,
+          maxDate: maxDate,
+          errorMessage: errors | findError('fromDate'),
+          dataQa: 'fromDate'
         }) }}
 
-        {{ datePicker({
+        {{ hmppsDatepicker({
           id: 'toDate',
-          label: 'Date to',
           name: 'toDate',
-          date: formValues.toDate,
-          errorMessage: errors | findError('toDate')
+          label: {
+            text: 'To'
+          },
+          classes: 'hmpps-datepicker datePickerWithinHorizontalForm',
+          value: formValues.toDate,
+          maxDate: maxDate,
+          errorMessage: errors | findError('toDate'),
+          dataQa: 'toDate'
         }) }}
 
         {{ govukButton({
@@ -129,7 +141,7 @@
       ]), resultsRows) %}
     {% endfor %}
 
-    <h3 class="govuk-heading-l">Incentive level history</h3>
+
 
     {{ govukTable({
       head: [
@@ -158,3 +170,8 @@
 
 
 {% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/assets/date-picker.js"></script>
+{% endblock bodyEnd %}

@@ -1,7 +1,7 @@
 import type { RequestHandler, Router } from 'express'
 import moment from 'moment'
 
-import { formatName, nameOfPerson, newDaysSince, putLastNameFirst } from '../utils/utils'
+import { formatName, formatDateForDatePicker, nameOfPerson, newDaysSince, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { maintainPrisonerIncentiveLevelRole, SYSTEM_USERS } from '../data/constants'
 import TokenStore from '../data/tokenStore'
@@ -188,6 +188,7 @@ export default function routes(router: Router): Router {
           text: level,
           value: level,
         })),
+        maxDate: formatDateForDatePicker(new Date().toISOString(), 'short'),
         nextReviewDate: nextReviewDate.format('D MMMM YYYY'),
         noResultsFoundMessage,
         prisonerName,

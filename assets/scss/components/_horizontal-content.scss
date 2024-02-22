@@ -31,16 +31,13 @@
 }
 
 .horizontal-form {
-  * {
-    width: 100%;
-  }
 
   @include govuk-media-query($from: desktop) {
     display: flex;
     flex-flow: row wrap;
 
     * {
-      width: auto;
+      //width: auto;
       margin-bottom: 0;
     }
 
@@ -66,5 +63,9 @@
       align-self: flex-end;
     }
 
+  }
+
+  .govuk-select {
+    width: 100%;
   }
 }

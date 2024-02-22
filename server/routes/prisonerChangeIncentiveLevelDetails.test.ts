@@ -93,8 +93,8 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)
         .send({
-          iepLevel: '',
-          comment: '',
+          newIepLevel: '',
+          reason: '',
         })
         .expect(200)
         .expect(res => {

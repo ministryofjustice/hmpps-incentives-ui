@@ -40,7 +40,7 @@ async function renderForm(
     const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
     const { agencyId, firstName, lastName } = prisonerDetails
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-    const currentIncentiveLevel: string = incentiveLevelDetails.iepLevel
+    const currentIncentiveLevel = incentiveLevelDetails.iepLevel
     const prisonIncentiveLevels = await incentivesApi.getPrisonIncentiveLevels(agencyId)
     const selectableLevels = prisonIncentiveLevels.map(level => ({
       text: currentIncentiveLevel === level.levelName ? `${level.levelName} (current level)` : level.levelName,
@@ -86,9 +86,10 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
     const prisonerDetails = await prisonApi.getFullDetails(prisonerNumber, true)
     const { agencyId, firstName, lastName, assignedLivingUnit } = prisonerDetails
     const locationId: string | undefined = assignedLivingUnit?.description
-    const incentiveSummary = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
+    const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
+    const currentIncentiveLevel = incentiveLevelDetails.iepLevel
     const nextReviewDate =
-      incentiveSummary?.nextReviewDate && moment(incentiveSummary.nextReviewDate, 'YYYY-MM-DD HH:mm')
+      incentiveLevelDetails.nextReviewDate && moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
 
     res.locals.breadcrumbs.popLastItem()
     res.locals.breadcrumbs.addItems(
@@ -103,7 +104,7 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
     )
 
     res.render('pages/prisonerChangeIncentiveLevelConfirmation.njk', {
-      incentiveSummary,
+      currentIncentiveLevel,
       manageIncentivesUrl:
         agencyId && locationId && locationId.includes('-')
           ? `/incentive-summary/${agencyId}-${locationId.split('-')[0]}`

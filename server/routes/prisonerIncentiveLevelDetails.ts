@@ -47,8 +47,10 @@ const filterData = (data: HistoryDetail[], fields: HistoryFilters): HistoryDetai
   return filteredResults
 }
 
-function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined
+function resolvedToConcreteValue<T>(
+  promise: PromiseSettledResult<T | null | undefined>,
+): promise is PromiseFulfilledResult<T> {
+  return promise.status === 'fulfilled' && promise.value !== undefined && promise.value !== null
 }
 
 const hmppsAuthClient = new HmppsAuthClient(
@@ -105,22 +107,23 @@ export default function routes(router: Router): Router {
         await Promise.allSettled(
           uniqueUserIds
             .filter(userId => Boolean(userId))
-            .map((userId: string) => {
+            .map(userId => {
               if (SYSTEM_USERS.includes(userId)) {
                 return {
-                  username: userId,
                   firstName: 'System',
                   lastName: '',
+                  username: userId,
+                  staffId: undefined,
+                  activeCaseLoadId: undefined,
+                  active: undefined,
                 }
               }
               return prisonApi.getStaffDetails(userId)
             }),
         )
       )
-        .filter(promise => {
-          return promise.status === 'fulfilled' && notEmpty(promise.value)
-        })
-        .map((promise: PromiseFulfilledResult<Staff>) => promise.value)
+        .filter(resolvedToConcreteValue)
+        .map(promise => promise.value)
 
       const establishments = await Promise.all(
         uniqueAgencyIds.filter(id => Boolean(id)).map(id => prisonApi.getAgency(id)),

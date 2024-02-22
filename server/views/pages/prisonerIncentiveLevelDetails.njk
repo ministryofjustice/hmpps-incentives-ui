@@ -19,7 +19,7 @@
     }) }}
   {% endif %}
 
-  <h1 class="govuk-heading-l">Incentive level details for {{ prisonerName }}</h1>
+  <h1 class="govuk-heading-l"> {{ prisonerName | possessive }} incentive details</h1>
 
   <div class="horizontal-information govuk-!-margin-bottom-3">
     <div class="horizontal-information__item">
@@ -55,6 +55,8 @@
         </div>
     {% endif %}
   </div>
+
+  <h3 class="govuk-heading-l">Incentive level history</h3>
 
   {% if results != null %}
     <div class="govuk-!-padding-3 govuk-!-margin-bottom-5 form-background">
@@ -139,7 +141,7 @@
       ]), resultsRows) %}
     {% endfor %}
 
-    <h3 class="govuk-heading-l">Incentive level history</h3>
+
 
     {{ govukTable({
       head: [

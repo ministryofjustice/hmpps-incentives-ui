@@ -8,23 +8,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "../components/datepicker/marco.njk" import hmppsDatepicker %}
 
-{% set title =  "Incentive details" %}
-
-{% block beforeContent %}
-  {{ govukBreadcrumbs({
-    items: [
-      {
-        text: "Home",
-        href: '/'
-      },
-      {
-        text: breadcrumbPrisonerName,
-        href: profileUrl
-      }
-    ],
-    classes: 'govuk-!-display-none-print'
-  }) }}
-{% endblock %}
+{% set pageTitle = applicationName + " – Incentive details" %}
 
 {% block content %}
   {% if errors.length > 0 %}
@@ -189,6 +173,3 @@
   {{ super() }}
   <script src="/assets/date-picker.js"></script>
 {% endblock bodyEnd %}
-
-
-

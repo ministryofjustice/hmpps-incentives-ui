@@ -19,6 +19,8 @@
  * @param {DatepickerConfig} config - Datepicker config
  * @constructor
  */
+
+/* eslint-disable */
 function Datepicker($module, config) {
   if (!$module) {
     return this
@@ -141,7 +143,7 @@ Datepicker.prototype.initControls = function () {
   this.okButton.addEventListener('click', () => this.selectDate(this.currentDate))
 
   const dialogButtons = this.dialogElement.querySelectorAll('button:not([disabled="true"])')
-  // eslint-disable-next-line prefer-destructuring
+
   this.firstButtonInDialog = dialogButtons[0]
   this.lastButtonInDialog = dialogButtons[dialogButtons.length - 1]
   this.firstButtonInDialog.addEventListener('keydown', event => this.firstButtonKeyup(event))
@@ -572,11 +574,9 @@ DSCalendarDay.prototype.keyPress = function (event) {
       this.picker.focusLastDayOfWeek()
       break
     case this.picker.keycodes.pageup:
-      // eslint-disable-next-line no-unused-expressions
       event.shiftKey ? this.picker.focusPreviousYear(event) : this.picker.focusPreviousMonth(event)
       break
     case this.picker.keycodes.pagedown:
-      // eslint-disable-next-line no-unused-expressions
       event.shiftKey ? this.picker.focusNextYear(event) : this.picker.focusNextMonth(event)
       break
     case this.picker.keycodes.esc:

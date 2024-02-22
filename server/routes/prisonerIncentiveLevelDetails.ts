@@ -7,6 +7,7 @@ import { PrisonApi, Staff } from '../data/prisonApi'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, IncentiveSummaryDetail, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
 
+import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
 import { OffenderSearchClient } from '../data/offenderSearch'
@@ -64,8 +65,10 @@ const hmppsAuthClient = new HmppsAuthClient(
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  get('/:prisonerNumber', async (req, res) => {
+  get('/', async (req, res) => {
     const { prisonerNumber } = req.params
+    const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
+
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
     const userRoles = res.locals.user.roles
     const prisonApi = new PrisonApi(systemToken)
@@ -91,10 +94,10 @@ export default function routes(router: Router): Router {
       const nextReviewDate = moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
       const reviewDaysOverdue = newDaysSince(nextReviewDate)
 
-      const prisonerWithinCaseloads = res.locals.user.caseloads.find(
+      const prisonerWithinCaseloads = res.locals.user.caseloads.some(
         caseload => caseload.id === prisonerDetails.agencyId,
       )
-      const userCanMaintainIncentives = userRoles.find(role => role === 'ROLE_MAINTAIN_IEP')
+      const userCanMaintainIncentives = userRoles.includes(maintainPrisonerIncentiveLevelRole)
       const fromDateFormatted = moment(fromDate, 'DD/MM/YYYY')
       const toDateFormatted = moment(toDate, 'DD/MM/YYYY')
 
@@ -169,8 +172,13 @@ export default function routes(router: Router): Router {
         errors.push({ href: '#toDate', text: 'Enter a to date which is not before the from date' })
       }
 
+      res.locals.breadcrumbs.popLastItem()
+      res.locals.breadcrumbs.addItems({
+        text: putLastNameFirst(firstName, lastName),
+        href: profileUrl,
+      })
+
       res.render('pages/prisonerIncentiveLevelDetails.njk', {
-        breadcrumbPrisonerName: putLastNameFirst(firstName, lastName),
         currentIncentiveLevel,
         establishments: establishments
           .sort((a, b) => a.description.localeCompare(b.description))
@@ -188,14 +196,13 @@ export default function routes(router: Router): Router {
         nextReviewDate: nextReviewDate.format('D MMMM YYYY'),
         noResultsFoundMessage,
         prisonerName,
-        profileUrl: `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`,
         recordIncentiveUrl: `/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`,
         reviewDaysOverdue,
         results: filteredResults,
-        userCanUpdateIEP: Boolean(prisonerWithinCaseloads && userCanMaintainIncentives),
+        userCanUpdateIEP: prisonerWithinCaseloads && userCanMaintainIncentives,
       })
     } catch (error) {
-      res.redirect(`${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`)
+      res.redirect(profileUrl)
     }
   })
 

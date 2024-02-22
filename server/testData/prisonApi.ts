@@ -30,25 +30,25 @@ export const prisonerDetails: Offender = {
   lastName: 'Smith',
   assignedLivingUnit: {
     agencyId: 'MDI',
-    locationId: 1,
-    description: '123',
-    agencyName: '123',
+    locationId: 161863,
+    description: '1-2-003',
+    agencyName: 'Moorland (HMP & YOI)',
   },
 }
 
 export const staffDetails: Staff = {
-  firstName: '123',
-  lastName: '123',
-  staffId: 123,
-  username: 'SYSTEM_USER',
-  activeCaseLoadId: '123',
+  firstName: 'Mary',
+  lastName: 'Scott',
+  staffId: 4826,
+  username: 'NOMIS_USER',
+  activeCaseLoadId: 'MDI',
   active: true,
 }
 
 export const agencyDetails: Agency = {
   agencyId: 'MDI',
-  description: '123',
-  agencyType: '123',
+  description: 'Moorland (HMP & YOI)',
+  agencyType: 'INST',
   active: true,
 }
 

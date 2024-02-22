@@ -28,6 +28,7 @@ const tokenWithNecessaryRole = createUserToken([maintainPrisonerIncentiveLevelRo
 const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
 const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
 const nomisUserRolesApi = NomisUserRolesApi.prototype as jest.Mocked<NomisUserRolesApi>
+
 beforeEach(() => {
   prisonApi.getPrisonerDetails.mockResolvedValue(prisonerDetails)
   prisonApi.getFullDetails.mockResolvedValue(prisonerDetails)
@@ -41,8 +42,9 @@ beforeEach(() => {
 afterEach(() => {
   jest.resetAllMocks()
 })
+
 describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
-  it('should NOT allow user to update incentive level without role', async () => {
+  it('should NOT allow user to update incentive level without role', () => {
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
       .set('authorization', `bearer ${tokenWithMissingRole}`)
@@ -51,7 +53,7 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
       })
   })
 
-  it('should render the correct template with the correct data', async () => {
+  it('should render the correct template with the correct data', () => {
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
       .set('authorization', `bearer ${tokenWithNecessaryRole}`)

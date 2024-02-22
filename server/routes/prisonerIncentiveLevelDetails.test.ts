@@ -74,7 +74,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should allow user to update iep if user is in case load and has CORRECT role', async () => {
+  it('should allow user to update iep if user is in case load and has CORRECT role', () => {
     app = appWithAllRoutes({
       mockUserService: new MockUserService(mockMoorlandUserWithRole),
     })
@@ -88,7 +88,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should NOT allow user to update iep if user is in case load and has INCORRECT role', async () => {
+  it('should NOT allow user to update iep if user is in case load and has INCORRECT role', () => {
     app = appWithAllRoutes({
       mockUserService: new MockUserService(mockMoorlandUserWithoutRole),
     })
@@ -103,7 +103,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should NOT allow user to update iep if user is NOT in case load and has CORRECT role', async () => {
+  it('should NOT allow user to update iep if user is NOT in case load and has CORRECT role', () => {
     app = appWithAllRoutes({
       mockUserService: new MockUserService(mockLeedsUserWithRole),
     })
@@ -118,7 +118,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should filter by level', async () => {
+  it('should filter by level', () => {
     const level = 'Basic'
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?incentiveLevel=${level}`)
@@ -129,7 +129,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should filter by date', async () => {
+  it('should filter by date', () => {
     const date = '07%2F08%2F2017'
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?fromDate=${date}&toDate=${date}`)
@@ -140,7 +140,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should filter by establishment', async () => {
+  it('should filter by establishment', () => {
     const establishment = 'LEI'
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}`)
@@ -151,7 +151,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should filter by all filters', async () => {
+  it('should filter by all filters', () => {
     const establishment = 'MDI'
     const date = '15%2F08%2F2017'
     const level = 'Standard'
@@ -166,7 +166,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should show error when dates are incorrect', async () => {
+  it('should show error when dates are incorrect', () => {
     const establishment = 'MDI'
     const fromDate = '16%2F08%2F2017'
     const toDate = '15%2F08%2F2017'
@@ -182,7 +182,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should return default message for no incentive level history', async () => {
+  it('should return default message for no incentive level history', () => {
     incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(emptyIncentiveSummaryForBooking)
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
@@ -192,7 +192,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should return default message when no level history is returned for supplied filters', async () => {
+  it('should return default message when no level history is returned for supplied filters', () => {
     const establishment = 'MDI'
     const fromDate = '15%2F08%2F1990'
     const toDate = '15%2F08%2F1991'

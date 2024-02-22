@@ -30,7 +30,6 @@ async function renderForm(
   errors: FormError[] = [],
 ): Promise<void> {
   const { prisonerNumber } = req.params
-  const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
 
   const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
   const prisonApi = new PrisonApi(systemToken)
@@ -47,18 +46,6 @@ async function renderForm(
       value: level.levelCode,
       checked: level.levelCode === formValues.newIepLevel,
     }))
-
-    res.locals.breadcrumbs.popLastItem()
-    res.locals.breadcrumbs.addItems(
-      {
-        text: putLastNameFirst(firstName, lastName),
-        href: profileUrl,
-      },
-      {
-        text: 'Incentive details',
-        href: `/incentive-reviews/prisoner/${prisonerNumber}`,
-      },
-    )
 
     res.render('pages/prisonerChangeIncentiveLevelDetails.njk', {
       currentIncentiveLevel,
@@ -91,18 +78,6 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
     const nextReviewDate =
       incentiveLevelDetails.nextReviewDate && moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
 
-    res.locals.breadcrumbs.popLastItem()
-    res.locals.breadcrumbs.addItems(
-      {
-        text: putLastNameFirst(firstName, lastName),
-        href: profileUrl,
-      },
-      {
-        text: 'Incentive details',
-        href: `/incentive-reviews/prisoner/${prisonerNumber}`,
-      },
-    )
-
     res.render('pages/prisonerChangeIncentiveLevelConfirmation.njk', {
       currentIncentiveLevel,
       manageIncentivesUrl:
@@ -126,21 +101,36 @@ export default function routes(router: Router): Router {
   router.use(
     asyncMiddleware(async (req, res, next) => {
       const { prisonerNumber } = req.params
+      const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
+      const incentiveHistoryUrl = `/incentive-reviews/prisoner/${prisonerNumber}`
 
       const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
       const prisonApi = new PrisonApi(systemToken)
 
       // load prisoner info; propagates 404 if not found
       const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
+      const { firstName, lastName } = prisonerDetails
 
       // require prisoner to be in user’s caseloads (role is already checked by `authorisationMiddleware`)
       const prisonerWithinCaseloads = res.locals.user.caseloads.some(
         caseload => caseload.id === prisonerDetails.agencyId,
       )
       if (!prisonerWithinCaseloads) {
-        res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
+        res.redirect(incentiveHistoryUrl)
         return
       }
+
+      res.locals.breadcrumbs.popLastItem()
+      res.locals.breadcrumbs.addItems(
+        {
+          text: putLastNameFirst(firstName, lastName),
+          href: profileUrl,
+        },
+        {
+          text: 'Incentive details',
+          href: incentiveHistoryUrl,
+        },
+      )
 
       next()
     }),

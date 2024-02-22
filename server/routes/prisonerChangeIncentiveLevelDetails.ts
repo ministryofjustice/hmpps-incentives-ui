@@ -13,7 +13,7 @@ const hmppsAuthClient = new HmppsAuthClient(
   new TokenStore(createRedisClient('routes/prisonerChangeIncentiveLevelDetails.ts')),
 )
 
-interface FormData {
+export interface FormData {
   newIepLevel?: string
   reason?: string
 }
@@ -23,20 +23,20 @@ interface FormError {
   text: string
 }
 
-async function renderTemplate(
+async function renderForm(
   req: Request,
   res: Response,
   formValues: FormData = {},
-  errors: FormError[] = undefined,
+  errors: FormError[] = [],
 ): Promise<void> {
   const { prisonerNumber } = req.params
   const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
 
-  try {
-    const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
-    const prisonApi = new PrisonApi(systemToken)
-    const incentivesApi = new IncentivesApi(systemToken)
+  const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
+  const prisonApi = new PrisonApi(systemToken)
+  const incentivesApi = new IncentivesApi(systemToken)
 
+  try {
     const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
     const { agencyId, firstName, lastName } = prisonerDetails
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
@@ -122,7 +122,30 @@ export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
   const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
 
-  get('/', async (req, res) => renderTemplate(req, res))
+  router.use(
+    asyncMiddleware(async (req, res, next) => {
+      const { prisonerNumber } = req.params
+
+      const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
+      const prisonApi = new PrisonApi(systemToken)
+
+      // load prisoner info; propagates 404 if not found
+      const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
+
+      // require prisoner to be in user’s caseloads (role is already checked by `authorisationMiddleware`)
+      const prisonerWithinCaseloads = res.locals.user.caseloads.some(
+        caseload => caseload.id === prisonerDetails.agencyId,
+      )
+      if (!prisonerWithinCaseloads) {
+        res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
+        return
+      }
+
+      next()
+    }),
+  )
+
+  get('/', async (req, res) => renderForm(req, res))
 
   post('/', async (req, res) => {
     const { prisonerNumber } = req.params
@@ -142,7 +165,7 @@ export default function routes(router: Router): Router {
     }
 
     if (errors.length > 0) {
-      await renderTemplate(req, res, { newIepLevel, reason }, errors)
+      await renderForm(req, res, { newIepLevel, reason }, errors)
       return
     }
 

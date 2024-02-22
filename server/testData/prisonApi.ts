@@ -35,6 +35,19 @@ export const prisonerDetails: Offender = {
     agencyName: 'Moorland (HMP & YOI)',
   },
 }
+export const prisonerInLeedsDetails: Offender = {
+  offenderNo: 'A2409AE',
+  agencyId: 'LEI',
+  bookingId: 12367,
+  firstName: 'Fred',
+  lastName: 'Mills',
+  assignedLivingUnit: {
+    agencyId: 'LEI',
+    locationId: 75192,
+    description: '4-2-013',
+    agencyName: 'Leeds (HMP)',
+  },
+}
 
 export const staffDetails: Staff = {
   firstName: 'Mary',

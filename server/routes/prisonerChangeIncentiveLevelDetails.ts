@@ -3,7 +3,6 @@ import moment from 'moment'
 
 import { formatName, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -30,14 +29,8 @@ async function renderTemplate(
   formValues: FormData = {},
   errors: FormError[] = undefined,
 ): Promise<void> {
-  const userRoles = res.locals.user.roles
   const { prisonerNumber } = req.params
   const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
-
-  if (!userRoles.includes(maintainPrisonerIncentiveLevelRole)) {
-    res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
-    return
-  }
 
   try {
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)

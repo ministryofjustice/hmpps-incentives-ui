@@ -1,17 +1,15 @@
-import moment from 'moment'
 import type { RequestHandler, Router } from 'express'
+import moment from 'moment'
 
-import HmppsAuthClient from '../data/hmppsAuthClient'
-import { PrisonApi, Staff } from '../data/prisonApi'
-
+import { formatName, nameOfPerson, newDaysSince, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { IncentivesApi, IncentiveSummaryDetail, IncentiveSummaryForBookingWithDetails } from '../data/incentivesApi'
-
-import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
+import { maintainPrisonerIncentiveLevelRole, SYSTEM_USERS } from '../data/constants'
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
+import HmppsAuthClient from '../data/hmppsAuthClient'
+import { PrisonApi, type Staff } from '../data/prisonApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
-import { nameOfPerson, putLastNameFirst, newDaysSince, formatName } from '../utils/utils'
+import { IncentivesApi, type IncentiveSummaryDetail } from '../data/incentivesApi'
 
 type HistoryDetail = IncentiveSummaryDetail & {
   iepEstablishment: string
@@ -53,11 +51,6 @@ function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined
 }
 
-/**
- * Usernames that will be displayed as "System" in the "Recorded by" column
- */
-const SYSTEM_USERS = ['INCENTIVES_API']
-
 const hmppsAuthClient = new HmppsAuthClient(
   new TokenStore(createRedisClient('routes/prisonerIncentiveLevelDetails.ts')),
 )
@@ -69,16 +62,16 @@ export default function routes(router: Router): Router {
     const { prisonerNumber } = req.params
     const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
 
-    const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
     const userRoles = res.locals.user.roles
+
+    const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
     const prisonApi = new PrisonApi(systemToken)
+    const offenderSearchClient = new OffenderSearchClient(systemToken)
     const incentivesApi = new IncentivesApi(systemToken)
-    const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
 
     try {
-      const offenderSearchClient = new OffenderSearchClient(systemToken)
-      const incentiveLevelDetails: IncentiveSummaryForBookingWithDetails =
-        await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
+      const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
+      const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
       const currentIncentiveLevel = incentiveLevelDetails.iepLevel
       const {
         agencyId,

@@ -1,14 +1,14 @@
-import moment from 'moment'
 import type { RequestHandler, Request, Response, Router } from 'express'
+import moment from 'moment'
 
-import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import { formatName, putLastNameFirst } from '../utils/utils'
-import { PrisonApi } from '../data/prisonApi'
-import HmppsAuthClient from '../data/hmppsAuthClient'
+import asyncMiddleware from '../middleware/asyncMiddleware'
+import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
-import { IncentiveSummaryForBookingWithDetails, IncentivesApi } from '../data/incentivesApi'
-import asyncMiddleware from '../middleware/asyncMiddleware'
+import HmppsAuthClient from '../data/hmppsAuthClient'
+import { PrisonApi } from '../data/prisonApi'
+import { IncentivesApi } from '../data/incentivesApi'
 
 const hmppsAuthClient = new HmppsAuthClient(
   new TokenStore(createRedisClient('routes/prisonerChangeIncentiveLevelDetails.ts')),
@@ -46,8 +46,7 @@ async function renderTemplate(
 
     const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
     const { agencyId, firstName, lastName } = prisonerDetails
-    const incentiveLevelDetails: IncentiveSummaryForBookingWithDetails =
-      await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
+    const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
     const currentIncentiveLevel: string = incentiveLevelDetails.iepLevel
     const prisonIncentiveLevels = await incentivesApi.getPrisonIncentiveLevels(agencyId)
     const selectableLevels = prisonIncentiveLevels.map(level => ({

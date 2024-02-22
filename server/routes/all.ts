@@ -6,11 +6,15 @@ import homeRoutes from './home'
 import analyticsRouter from './analyticsRouter'
 import throwTestErrorRouter from './throwTestErrorRouter'
 import imageRouter from './imageRouter'
-import incentiveLevelRoutes, { manageIncentiveLevelsRole } from './incentiveLevels'
+import incentiveLevelRoutes from './incentiveLevels'
 import prisonerIncentiveLevels from './prisonerIncentiveLevelDetails'
 import prisonerChangeIncentiveLevelDetails from './prisonerChangeIncentiveLevelDetails'
-import prisonIncentiveLevelRoutes, { managePrisonIncentiveLevelsRole } from './prisonIncentiveLevels'
-import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
+import prisonIncentiveLevelRoutes from './prisonIncentiveLevels'
+import {
+  maintainPrisonerIncentiveLevelRole,
+  managePrisonIncentiveLevelsRole,
+  manageIncentiveLevelsRole,
+} from '../data/constants'
 import prisonerImagesRoutes from './prisonerImages'
 import selectLocationRoutes from './selectLocation'
 import reviewsTableRoutes from './reviewsTable'

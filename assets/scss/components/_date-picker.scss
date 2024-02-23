@@ -215,6 +215,14 @@
     }
   }
 
+  .govuk-label[for="toDate"] {
+    font-weight: bold;
+  }
+
+  .govuk-label[for="fromDate"] {
+    font-weight: bold;
+  }
+
   .govuk-label--m {
     margin-bottom: 5px;
   }

@@ -49,16 +49,6 @@ export default function nunjucksSetup(app: express.Express): void {
     },
   )
 
-  njkEnv.addFilter('initialiseName', initialiseName)
-
-  njkEnv.addFilter('dateParam', (date: Date) => {
-    if (!date) {
-      return ''
-    }
-
-    return encodeURI(`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`)
-  })
-
   njkEnv.addFilter('findError', (array, formFieldId) => {
     if (!array) return null
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -107,6 +97,7 @@ export default function nunjucksSetup(app: express.Express): void {
   )
 
   // name formatting
+  njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('possessive', possessive)
 
   // date & number formatting

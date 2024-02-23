@@ -7,7 +7,7 @@ import nunjucks from 'nunjucks'
 import config from '../config'
 import { calculateTrendsRange, makeChartPalette } from './analytics'
 import format from './format'
-import { daysSince, initialiseName, possessive } from './utils'
+import { daysSince, findFieldInErrorSummary, initialiseName, possessive } from './utils'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -49,18 +49,8 @@ export default function nunjucksSetup(app: express.Express): void {
     },
   )
 
-  njkEnv.addFilter('findError', (array, formFieldId) => {
-    if (!array) return null
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const item = array.find(error => error.href === `#${formFieldId}`)
-    if (item) {
-      return {
-        text: item.text,
-      }
-    }
-    return null
-  })
+  // form helpers
+  njkEnv.addFilter('findFieldInErrorSummary', findFieldInErrorSummary)
 
   njkEnv.addFilter('addDefaultSelectedValue', (items, text, show) => {
     if (!items) return null

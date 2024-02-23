@@ -96,7 +96,7 @@
           },
           value: formValues.fromDate,
           maxDate: maxDate,
-          errorMessage: errors | findError('fromDate'),
+          errorMessage: errors | findFieldInErrorSummary('fromDate'),
           dataQa: 'fromDate'
         }) }}
 
@@ -109,7 +109,7 @@
           },
           value: formValues.toDate,
           maxDate: maxDate,
-          errorMessage: errors | findError('toDate'),
+          errorMessage: errors | findFieldInErrorSummary('toDate'),
           dataQa: 'toDate'
         }) }}
 

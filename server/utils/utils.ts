@@ -1,5 +1,7 @@
 import moment from 'moment'
 
+import type { ErrorSummaryItem } from '../routes/forms/forms'
+
 /** String solely of whitespace or falsey */
 const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
 
@@ -118,4 +120,16 @@ export const formatDateForDatePicker = (
 ): string => {
   if (!isoDate) return ''
   return new Date(isoDate).toLocaleDateString('en-gb', { dateStyle: style })
+}
+
+/** Find field error in error summary list */
+export const findFieldInErrorSummary = (list: ErrorSummaryItem[], formFieldId: string): { text: string } | null => {
+  if (!list) return null
+  const item = list.find(error => error.href === `#${formFieldId}`)
+  if (item) {
+    return {
+      text: item.text,
+    }
+  }
+  return null
 }

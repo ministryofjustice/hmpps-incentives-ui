@@ -1,6 +1,8 @@
+import type { ErrorSummaryItem } from '../routes/forms/forms'
 import {
   convertToTitleCase,
   daysSince,
+  findFieldInErrorSummary,
   formatName,
   initialiseName,
   inputStringToPenceAmount,
@@ -254,4 +256,27 @@ describe('convert between numeric pence and pound-pence string representations',
       expect(() => inputStringToPenceAmount(input as string)).toThrow()
     },
   )
+})
+
+describe('findFieldInErrorSummary', () => {
+  it.each([undefined, null])('should return null if error list is %p', list => {
+    expect(findFieldInErrorSummary(list, 'field')).toBeNull()
+  })
+
+  it('should return null if error list is empty', () => {
+    expect(findFieldInErrorSummary([], 'field')).toBeNull()
+  })
+
+  const errorList: ErrorSummaryItem[] = [
+    { text: 'Enter a number', href: '#field1' },
+    { text: 'Enter a date', href: '#field3' },
+  ]
+
+  it('should return null if field is not found', () => {
+    expect(findFieldInErrorSummary(errorList, 'field2')).toBeNull()
+  })
+
+  it('should return error message if field is found', () => {
+    expect(findFieldInErrorSummary(errorList, 'field3')).toStrictEqual({ text: 'Enter a date' })
+  })
 })

@@ -31,41 +31,38 @@
 }
 
 .horizontal-form {
-
   @include govuk-media-query($from: desktop) {
     display: flex;
     flex-flow: row wrap;
 
-    * {
-      //width: auto;
+    > * {
+      margin: govuk-spacing(3) govuk-spacing(3) 0 0;
+    }
+
+    .hmpps-datepicker-input__wrapper {
       margin-bottom: 0;
     }
 
-    > div {
-      margin-right: govuk-spacing(3);
-    }
-
-    label {
-      margin-bottom: govuk-spacing(1);
-    }
-
-    button {
-      margin-right: govuk-spacing(3);
-      margin-bottom: $govuk-border-width-form-element;
-    }
-
-    a {
-      margin-bottom: 10px;
-    }
-
-    button,
-    a {
+    > .govuk-button-group {
       align-self: flex-end;
+
+      .govuk-button {
+        margin-bottom: $govuk-border-width-form-element;
+      }
+
+      .govuk-link {
+        margin-bottom: 0;
+      }
     }
-
   }
 
-  .govuk-select {
-    width: 100%;
+  @include govuk-media-query($until: desktop) {
+    .govuk-select {
+      width: 100%;
+    }
   }
+}
+
+.form-background {
+  background-color: govuk-colour("light-grey");
 }

@@ -112,16 +112,18 @@
           dataQa: 'toDate'
         }) }}
 
-        {{ govukButton({
-          text: "View",
-          preventDoubleClick: true,
-          type: "submit",
-          attributes: {
-            "data-test": 'filter-submit'
-          }
-        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "View",
+            preventDoubleClick: true,
+            type: "submit",
+            attributes: {
+              "data-test": 'filter-submit'
+            }
+          }) }}
 
-        <a href="?" class="govuk-link govuk-link--no-visited-state">Clear</a>
+          <a href="?" class="govuk-link govuk-link--no-visited-state">Clear</a>
+        </div>
       </form>
     </div>
   {% endif %}

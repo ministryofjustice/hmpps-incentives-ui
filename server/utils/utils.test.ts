@@ -16,7 +16,7 @@ describe('name formatting', () => {
   describe('convert to title case', () => {
     it.each([
       [null, null, ''],
-      ['empty string', '', ''],
+      ['Empty string', '', ''],
       ['Lower case', 'robert', 'Robert'],
       ['Upper case', 'ROBERT', 'Robert'],
       ['Mixed case', 'RoBErT', 'Robert'],
@@ -24,7 +24,7 @@ describe('name formatting', () => {
       ['Leading spaces', '  RobeRT', '  Robert'],
       ['Trailing spaces', 'RobeRT  ', 'Robert  '],
       ['Hyphenated', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
-    ])('%s convertToTitleCase(%s, %s)', (_: string, a: string, expected: string) => {
+    ])('%s convertToTitleCase(%p, %p)', (_: string, a: string, expected: string) => {
       expect(convertToTitleCase(a)).toEqual(expected)
     })
   })
@@ -55,14 +55,14 @@ describe('name formatting', () => {
       ['Two words', 'Robert James', 'R. James'],
       ['Three words', 'Robert James Smith', 'R. Smith'],
       ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
-    ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
+    ])('%s initialiseName(%p, %p)', (_: string, a: string, expected: string) => {
       expect(initialiseName(a)).toEqual(expected)
     })
   })
 
   describe('possessive', () => {
-    it('No string', () => {
-      expect(possessive(null)).toEqual('')
+    it.each([undefined, null])('should return empty string for %p', input => {
+      expect(possessive(input)).toEqual('')
     })
     it('Converts name with no S correctly', () => {
       expect(possessive('David Smith')).toEqual('David Smith’s')
@@ -73,8 +73,8 @@ describe('name formatting', () => {
   })
 
   describe('properCaseName', () => {
-    it('null string', () => {
-      expect(properCaseName(null)).toEqual('')
+    it.each([undefined, null])('should return empty string for %p', input => {
+      expect(properCaseName(input)).toEqual('')
     })
     it('empty string', () => {
       expect(properCaseName('')).toEqual('')
@@ -93,7 +93,7 @@ describe('name formatting', () => {
     })
   })
 
-  describe('putLastNameFirst()', () => {
+  describe('putLastNameFirst', () => {
     it('should return null if no names specified', () => {
       // @ts-expect-error: Test requires invalid types passed in
       expect(putLastNameFirst()).toEqual(null)
@@ -113,7 +113,7 @@ describe('name formatting', () => {
     })
   })
 
-  describe('name of person', () => {
+  describe('nameOfPerson', () => {
     it('can format name', () => {
       expect(nameOfPerson({ firstName: 'DAVID', lastName: 'JONES' })).toEqual('David Jones')
     })
@@ -195,12 +195,12 @@ describe('counting days since a date', () => {
 
 describe('days since', () => {
   beforeAll(() => {
-    jest.spyOn(Date, 'now').mockImplementation(() => 1664192096000) // 2022-09-26T12:34:56.000+01:00
+    const today = new Date('2022-09-26T12:34:56.000+01:00')
+    jest.useFakeTimers({ now: today })
   })
 
   afterAll(() => {
-    const spy = jest.spyOn(Date, 'now')
-    spy.mockRestore()
+    jest.useRealTimers()
   })
 
   it.each(['2022-09-25', '2022-09-25T17:00:00Z', '2022-09-25T23:59:59+01:00'])(
@@ -229,11 +229,11 @@ describe('convert between numeric pence and pound-pence string representations',
     [100, '1.00'],
     [100_00, '100.00'],
     [1000_00, '1000.00'],
-  ])('penceAmountToInputString(%s) → %s', (input: number, expected: string) => {
+  ])('penceAmountToInputString(%p) → %p', (input: number, expected: string) => {
     expect(penceAmountToInputString(input)).toEqual(expected)
   })
 
-  it.each([NaN, null, undefined, '0.00', ''])('penceAmountToInputString(%s) throws an error', (input: unknown) => {
+  it.each([NaN, null, undefined, '0.00', ''])('penceAmountToInputString(%p) throws an error', (input: unknown) => {
     expect(() => penceAmountToInputString(input as number)).toThrow()
   })
   it.each([
@@ -244,12 +244,12 @@ describe('convert between numeric pence and pound-pence string representations',
     ['10.00', 10_00],
     ['10.99', 10_99],
     ['1000.01', 1000_01],
-  ])('inputStringToPenceAmount(%s) → %s', (input: string, expected: number) => {
+  ])('inputStringToPenceAmount(%p) → %p', (input: string, expected: number) => {
     expect(inputStringToPenceAmount(input)).toEqual(expected)
   })
 
   it.each(['', null, undefined, '£1', '£1.00', '1.', '1,000', '1,000.00'])(
-    'inputStringToPenceAmount(%s) throws an error',
+    'inputStringToPenceAmount(%p) throws an error',
     (input: unknown) => {
       expect(() => inputStringToPenceAmount(input as string)).toThrow()
     },

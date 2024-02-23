@@ -1,24 +1,34 @@
 import moment from 'moment'
 
-const properCase = (word: string): string =>
-  word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
-
+/** String solely of whitespace or falsey */
 const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
 
 /**
- * Converts a name (first name, last name, middle name, etc.) to proper case equivalent, handling double-barreled names
- * correctly (i.e. each part in a double-barreled is converted to proper case).
+ * Converts a name part (first name, last name, middle name, etc.) to title case equivalent,
+ * handling double-barreled names correctly (i.e. each part in a double-barreled is converted to title case).
  * @param name name to be converted.
- * @returns name converted to proper case.
+ * @returns name converted to title case.
  */
-export const properCaseName = (name: string): string => (isBlank(name) ? '' : name.split('-').map(properCase).join('-'))
+export const properCaseName = (name: string): string =>
+  isBlank(name)
+    ? ''
+    : name
+        .split('-')
+        .map(part => (part.length >= 1 ? part[0].toUpperCase() + part.toLowerCase().slice(1) : part))
+        .join('-')
 
+/**
+ * Converts a full name (or sentence) to title case
+ * handling double-barreled names correctly (i.e. each part in a double-barreled is converted to title case).
+ */
 export const convertToTitleCase = (sentence: string): string =>
   isBlank(sentence) ? '' : sentence.split(' ').map(properCaseName).join(' ')
 
+/** Converts a first name and surname to title case */
 export const formatName = (firstName: string, lastName: string): string =>
   [properCaseName(firstName), properCaseName(lastName)].filter(Boolean).join(' ')
 
+/** Convert a full name to initials and final surname */
 export const initialiseName = (fullName?: string): string | null => {
   // this check is for the authError page
   if (!fullName) return null
@@ -27,15 +37,18 @@ export const initialiseName = (fullName?: string): string | null => {
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
 
+/** Converts an object with `firstName` and `lastName` to title case */
 export const nameOfPerson = (prisoner: { firstName: string; lastName: string }): string =>
   `${convertToTitleCase(prisoner.firstName)} ${convertToTitleCase(prisoner.lastName)}`.trim()
 
+/** Makes a possessive/genitive form of a name/word */
 export const possessive = (string: string): string => {
   if (!string) return ''
 
   return `${string}${string.toLowerCase().endsWith('s') ? '’' : '’s'}`
 }
 
+/** Converts a first name and surname to title case, with surname first */
 export const putLastNameFirst = (firstName: string, lastName: string): string => {
   if (!firstName && !lastName) return null
   if (!firstName && lastName) return properCaseName(lastName)
@@ -44,6 +57,7 @@ export const putLastNameFirst = (firstName: string, lastName: string): string =>
   return `${properCaseName(lastName)}, ${properCaseName(firstName)}`
 }
 
+/** Number of days elapsed, ignoring time of day */
 export const newDaysSince = (date: moment.MomentInput): number =>
   Math.max(Math.floor(moment.duration(moment().startOf('day').diff(moment(date).startOf('day'))).asDays()), 0)
 
@@ -73,6 +87,7 @@ export function penceAmountToInputString(pence: number): string {
   return `${pounds}.${fractional}`
 }
 
+/** Matches a currency amount (without £ sign) */
 export const currencyInputRE = /^(\d+)(\.\d\d)?$/
 
 /**
@@ -97,7 +112,6 @@ export function inputStringToPenceAmount(pounds: string): number {
 }
 
 /** Format dates to be used in the datepicker component. */
-
 export const formatDateForDatePicker = (
   isoDate: string,
   style: 'short' | 'full' | 'long' | 'medium' = 'long',

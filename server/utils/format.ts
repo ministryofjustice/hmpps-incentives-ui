@@ -1,4 +1,4 @@
-const notNumber = (n: unknown): n is number => typeof n !== 'number' || Number.isNaN(n)
+const isNumber = (n: unknown): n is number => typeof n === 'number' && !Number.isNaN(n)
 
 export default {
   date(date: Date) {
@@ -40,13 +40,13 @@ export default {
   },
 
   thousands(integer: number) {
-    if (notNumber(integer)) return '?'
+    if (!isNumber(integer)) return '?'
     return Math.round(integer).toLocaleString('en-GB')
   },
 
   percentage(value: number, total: number, roundToInteger = true) {
     if (value === 0 && total === 0) return '0%'
-    if (notNumber(total) || notNumber(value) || total === 0) return '?'
+    if (!isNumber(total) || !isNumber(value) || total === 0) return '?'
     let percentage = (value / total) * 100
     if (roundToInteger) {
       percentage = Math.round(percentage)
@@ -57,7 +57,7 @@ export default {
   },
 
   currencyFromPence(pence: number): string {
-    if (notNumber(pence)) return '?'
+    if (!isNumber(pence)) return '?'
     if (pence === 0) return '£0'
     if (pence < 100) return `${Math.floor(pence)}p`
     const formatted = Intl.NumberFormat('en-GB', {

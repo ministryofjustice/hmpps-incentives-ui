@@ -24,11 +24,11 @@
   <div class="horizontal-information govuk-!-margin-bottom-3">
     <div class="horizontal-information__item">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Current incentive level</h3>
-      <p class="govuk-body" data-test="current-iep">{{ currentIncentiveLevel }}</p>
+      <p data-test="current-iep">{{ currentIncentiveLevel }}</p>
     </div>
     <div class="horizontal-information__item">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Next review due by</h3>
-      <p class="govuk-body" data-test="next-review-date">
+      <p data-test="next-review-date">
         {{ nextReviewDate }}
         {% if reviewDaysOverdue > 0 %}
           <br/>
@@ -61,7 +61,8 @@
   {% if results != null %}
     <div class="horizontal-form__wrapper govuk-!-padding-3 govuk-!-margin-bottom-5">
       <h2 class="govuk-heading-m">View by</h2>
-      <form class="horizontal-form govuk-body govuk-!-margin-bottom-3" method="GET">
+
+      <form class="horizontal-form govuk-!-margin-bottom-3" method="GET">
         {{ govukSelect({
           name: 'agencyId',
           id: 'agencyId',
@@ -129,7 +130,7 @@
   {% endif %}
 
   {% if results == null or results.length == 0 %}
-    <p class="govuk-body" data-test="no-incentive-level-history-message">{{ noResultsFoundMessage }}</p>
+    <p data-test="no-incentive-level-history-message">{{ noResultsFoundMessage }}</p>
   {% else %}
     {% set resultsRows = [] %}
 

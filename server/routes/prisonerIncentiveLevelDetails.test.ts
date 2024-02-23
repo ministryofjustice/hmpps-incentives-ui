@@ -226,20 +226,19 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should return 302 and redirect if prisoner is not found', () => {
+  it('should return 404 if prisoner is not found', () => {
     const error: SanitisedError = {
       name: 'Error',
-      status: 302,
-      message: 'Found',
-      stack: 'Found',
+      status: 404,
+      message: 'Not Found',
+      stack: 'Not Found',
     }
     offenderSearch.getPrisoner.mockRejectedValue(error)
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .expect(302)
+      .expect(404)
       .expect(res => {
         expect(res.text).not.toContain('John, Smith')
-        expect(res.text).toContain('Found. Redirecting')
       })
   })
 })

@@ -283,18 +283,8 @@
   }
 }
 
-.datePickerWithinHorizontalForm {
-
-  button {
-    margin-bottom: 0 !important;
-    margin-right: 0 !important;
-    @media print {
-      display: none
-    }
-  }
-  @media print {
-    .hmpps-datepicker-input__wrapper {
-      width: 160px;
-    }
+@media print {
+  .hmpps-datepicker-button, .hmpps-datepicker__dialog {
+    display: none;
   }
 }

@@ -92,7 +92,6 @@
           label: {
             text: 'From'
           },
-          classes: 'hmpps-datepicker datePickerWithinHorizontalForm',
           value: formValues.fromDate,
           maxDate: maxDate,
           errorMessage: errors | findError('fromDate'),
@@ -105,7 +104,6 @@
           label: {
             text: 'To'
           },
-          classes: 'hmpps-datepicker datePickerWithinHorizontalForm',
           value: formValues.toDate,
           maxDate: maxDate,
           errorMessage: errors | findError('toDate'),
@@ -142,8 +140,6 @@
         { text: result.iepStaffMember | showDefault('Not entered') }
       ]), resultsRows) %}
     {% endfor %}
-
-
 
     {{ govukTable({
       head: [

@@ -62,12 +62,6 @@ export default function nunjucksSetup(app: express.Express): void {
     return null
   })
 
-  njkEnv.addFilter('showDefault', (value, specifiedText) => {
-    if (value === 0) return value
-
-    return value || specifiedText || '--'
-  })
-
   njkEnv.addFilter('addDefaultSelectedValue', (items, text, show) => {
     if (!items) return null
     const attributes: { hidden?: string } = {}

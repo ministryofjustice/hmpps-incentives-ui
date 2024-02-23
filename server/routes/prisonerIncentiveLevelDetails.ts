@@ -72,7 +72,10 @@ export default function routes(router: Router): Router {
     const incentivesApi = new IncentivesApi(systemToken)
 
     try {
-      const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
+      const prisoner = await offenderSearchClient.getPrisoner(prisonerNumber)
+      const prisonerName = nameOfPerson(prisoner)
+      const { firstName, lastName } = prisoner
+
       const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
       const currentIncentiveLevel = incentiveLevelDetails.iepLevel
       const {
@@ -89,9 +92,7 @@ export default function routes(router: Router): Router {
       const nextReviewDate = moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
       const reviewDaysOverdue = newDaysSince(nextReviewDate)
 
-      const prisonerWithinCaseloads = res.locals.user.caseloads.some(
-        caseload => caseload.id === prisonerDetails.agencyId,
-      )
+      const prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.prisonId)
       const userCanMaintainIncentives = userRoles.includes(maintainPrisonerIncentiveLevelRole)
 
       const todayAsShortDate = formatDateForDatePicker(new Date().toISOString(), 'short')
@@ -151,9 +152,6 @@ export default function routes(router: Router): Router {
         toDate: toDate && toDateFormatted.format('YYYY-MM-DD'),
       })
 
-      const prisoner = await offenderSearchClient.getPrisoner(prisonerNumber)
-      const prisonerName = nameOfPerson(prisoner)
-      const { firstName, lastName } = prisoner
       const errors: { href: string; text: string }[] = []
 
       const noFiltersSupplied = Boolean(!agencyId && !incentiveLevel && !fromDate && !toDate)
@@ -161,7 +159,7 @@ export default function routes(router: Router): Router {
       const noResultsFoundMessage =
         (!filteredResults.length &&
           (noFiltersSupplied
-            ? `${formatName(firstName, lastName)} has no incentive level history`
+            ? `${prisonerName} has no incentive level history`
             : 'There is no incentive level history for the selections you have made')) ||
         ''
 

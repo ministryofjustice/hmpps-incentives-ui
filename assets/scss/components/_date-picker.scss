@@ -2,15 +2,17 @@
   position: relative;
   font-family: $govuk-font-family;
 
-  &--fixed-width {
-    .hmpps-datepicker-input__wrapper {
-      width: 215px
+  @media (min-width: 768px) {
+    &--fixed-width {
+      .hmpps-datepicker-input__wrapper {
+        width: 215px
+      }
     }
-  }
 
-  &--shorter-width {
-    .hmpps-datepicker-input__wrapper {
-      width: 180px;
+    &--shorter-width {
+      .hmpps-datepicker-input__wrapper {
+        width: 180px;
+      }
     }
   }
 

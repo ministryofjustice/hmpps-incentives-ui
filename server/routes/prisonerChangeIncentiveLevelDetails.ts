@@ -70,7 +70,7 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
   const incentivesApi = new IncentivesApi(systemToken)
 
   try {
-    const prisonerDetails = await prisonApi.getFullDetails(prisonerNumber, true)
+    const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber, true)
     const { agencyId, firstName, lastName, assignedLivingUnit } = prisonerDetails
     const locationId: string | undefined = assignedLivingUnit?.description
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)

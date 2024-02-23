@@ -32,7 +32,6 @@ const nomisUserRolesApi = NomisUserRolesApi.prototype as jest.Mocked<NomisUserRo
 
 beforeEach(() => {
   prisonApi.getPrisonerDetails.mockResolvedValue(prisonerDetails)
-  prisonApi.getFullDetails.mockResolvedValue(prisonerDetails)
   incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
   incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(samplePrisonIncentiveLevels)
   nomisUserRolesApi.getUserCaseloads.mockResolvedValue(userCaseload)

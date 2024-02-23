@@ -9,6 +9,15 @@ export interface BaseFormData {
 }
 
 /**
+ * An item passed into the `errorList` property of a GOV.UK error summary component
+ * https://design-system.service.gov.uk/components/error-summary/
+ */
+export interface ErrorSummaryItem {
+  text: string
+  href: string
+}
+
+/**
  * Base form providing simple validation extension points and per-field error messages
  */
 export default abstract class Form<Data extends BaseFormData> {
@@ -76,7 +85,7 @@ export default abstract class Form<Data extends BaseFormData> {
   /**
    * List of errors in the form used by GOV.UK error summary component
    */
-  public get errorList(): Readonly<{ text: string; href: string }>[] {
+  public get errorList(): ReadonlyArray<ErrorSummaryItem> {
     return Object.entries(this.fieldErrors).map(([field, error]) => {
       return { text: error, href: `#${this.formId}-${field}` }
     })

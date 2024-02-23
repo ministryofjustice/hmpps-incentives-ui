@@ -10,6 +10,7 @@ import HmppsAuthClient from '../data/hmppsAuthClient'
 import { PrisonApi, type Staff } from '../data/prisonApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
 import { IncentivesApi, type IncentiveSummaryDetail } from '../data/incentivesApi'
+import type { ErrorSummaryItem } from './forms/forms'
 
 type HistoryDetail = IncentiveSummaryDetail & {
   iepEstablishment: string
@@ -152,7 +153,7 @@ export default function routes(router: Router): Router {
         toDate: toDate && toDateFormatted.format('YYYY-MM-DD'),
       })
 
-      const errors: { href: string; text: string }[] = []
+      const errors: ErrorSummaryItem[] = []
 
       const noFiltersSupplied = Boolean(!agencyId && !incentiveLevel && !fromDate && !toDate)
 

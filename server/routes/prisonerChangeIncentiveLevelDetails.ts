@@ -8,6 +8,7 @@ import { createRedisClient } from '../data/redisClient'
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import { PrisonApi } from '../data/prisonApi'
 import { IncentivesApi } from '../data/incentivesApi'
+import type { ErrorSummaryItem } from './forms/forms'
 
 const hmppsAuthClient = new HmppsAuthClient(
   new TokenStore(createRedisClient('routes/prisonerChangeIncentiveLevelDetails.ts')),
@@ -18,16 +19,11 @@ export interface FormData {
   reason?: string
 }
 
-interface FormError {
-  href: string
-  text: string
-}
-
 async function renderForm(
   req: Request,
   res: Response,
   formValues: FormData = {},
-  errors: FormError[] = [],
+  errors: ErrorSummaryItem[] = [],
 ): Promise<void> {
   const { prisonerNumber } = req.params
 
@@ -141,7 +137,7 @@ export default function routes(router: Router): Router {
   post('/', async (req, res) => {
     const { prisonerNumber } = req.params
     const { newIepLevel, reason }: FormData = req.body || {}
-    const errors: FormError[] = []
+    const errors: ErrorSummaryItem[] = []
 
     if (!newIepLevel) {
       errors.push({ text: 'Select an incentive level, even if it is the same as before', href: '#newIepLevel' })

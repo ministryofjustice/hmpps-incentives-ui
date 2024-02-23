@@ -120,7 +120,9 @@
             }
           }) }}
 
-          <a href="?" class="govuk-link govuk-link--no-visited-state">Clear</a>
+          {% if not noFiltersSupplied %}
+            <a href="?" class="govuk-link govuk-link--no-visited-state">Clear</a>
+          {% endif %}
         </div>
       </form>
     </div>

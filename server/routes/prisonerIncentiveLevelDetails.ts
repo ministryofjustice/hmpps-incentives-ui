@@ -195,6 +195,7 @@ export default function routes(router: Router): Router {
         recordIncentiveUrl: `/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`,
         reviewDaysOverdue,
         results: filteredResults,
+        noFiltersSupplied,
         userCanUpdateIEP: prisonerWithinCaseloads && userCanMaintainIncentives,
       })
     } catch (error) {

@@ -17,8 +17,6 @@ import PrisonIncentiveLevelDeactivateForm from './forms/prisonIncentiveLevelDeac
 import PrisonIncentiveLevelEditForm from './forms/prisonIncentiveLevelEditForm'
 import { penceAmountToInputString, inputStringToPenceAmount } from '../utils/utils'
 
-export const managePrisonIncentiveLevelsRole = 'ROLE_MAINTAIN_PRISON_IEP_LEVELS'
-
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 

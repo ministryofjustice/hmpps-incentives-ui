@@ -6,7 +6,7 @@ import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
 import { PrisonApi } from '../data/prisonApi'
 import { IncentivesApi } from '../data/incentivesApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
-import { getAgencyMockImplementation, prisonerDetails, staffDetails, agencyDetails } from '../testData/prisonApi'
+import { getAgencyMockImplementation, staffDetails, agencyDetails } from '../testData/prisonApi'
 import { incentiveSummaryForBooking, emptyIncentiveSummaryForBooking } from '../testData/incentivesApi'
 import offenderDetails from '../testData/offenderSearch'
 import { SanitisedError } from '../sanitisedError'
@@ -28,10 +28,9 @@ const offenderSearch = OffenderSearchClient.prototype as jest.Mocked<OffenderSea
 const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
 
 beforeEach(() => {
-  prisonApi.getPrisonerDetails.mockResolvedValue(prisonerDetails)
+  offenderSearch.getPrisoner.mockResolvedValue(offenderDetails)
   prisonApi.getStaffDetails.mockResolvedValue(staffDetails)
   prisonApi.getAgency.mockImplementation(getAgencyMockImplementation)
-  offenderSearch.getPrisoner.mockResolvedValue(offenderDetails)
   incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
 
   app = appWithAllRoutes({})
@@ -52,10 +51,9 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .expect(200)
       .expect('Content-Type', /html/)
       .expect(() => {
-        expect(prisonApi.getPrisonerDetails).toHaveBeenCalledWith(prisonerNumber)
+        expect(offenderSearch.getPrisoner).toHaveBeenCalledWith(prisonerNumber)
         expect(prisonApi.getAgency).toHaveBeenCalledWith(agencyDetails.agencyId)
         expect(prisonApi.getStaffDetails).toHaveBeenCalledWith('SYSTEM_USER')
-        expect(offenderSearch.getPrisoner).toHaveBeenCalledWith(prisonerNumber)
         expect(incentivesApi.getIncentiveSummaryForPrisoner).toHaveBeenCalledWith(prisonerNumber)
       })
   })
@@ -74,7 +72,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should allow user to update iep if user is in case load and has CORRECT role', async () => {
+  it('should allow user to update iep if user is in case load and has CORRECT role', () => {
     app = appWithAllRoutes({
       mockUserService: new MockUserService(mockMoorlandUserWithRole),
     })
@@ -88,7 +86,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should NOT allow user to update iep if user is in case load and has INCORRECT role', async () => {
+  it('should NOT allow user to update iep if user is in case load and has INCORRECT role', () => {
     app = appWithAllRoutes({
       mockUserService: new MockUserService(mockMoorlandUserWithoutRole),
     })
@@ -103,7 +101,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should NOT allow user to update iep if user is NOT in case load and has CORRECT role', async () => {
+  it('should NOT allow user to update iep if user is NOT in case load and has CORRECT role', () => {
     app = appWithAllRoutes({
       mockUserService: new MockUserService(mockLeedsUserWithRole),
     })
@@ -118,40 +116,43 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should filter by level', async () => {
+  it('should filter by level', () => {
     const level = 'Basic'
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?incentiveLevel=${level}`)
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('BASIC_SYSTEM_USER_COMMENT')
         expect(res.text).not.toContain('STANDARD_NOMIS_USER_COMMENT')
       })
   })
 
-  it('should filter by date', async () => {
+  it('should filter by date', () => {
     const date = '07%2F08%2F2017'
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?fromDate=${date}&toDate=${date}`)
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('ENHANCED_UNKNOWN_USER_COMMENT')
         expect(res.text).not.toContain('STANDARD_NOMIS_USER_COMMENT')
       })
   })
 
-  it('should filter by establishment', async () => {
+  it('should filter by establishment', () => {
     const establishment = 'LEI'
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}`)
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('LEI')
         expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
       })
   })
 
-  it('should filter by all filters', async () => {
+  it('should filter by all filters', () => {
     const establishment = 'MDI'
     const date = '15%2F08%2F2017'
     const level = 'Standard'
@@ -161,12 +162,26 @@ describe('GET /incentive-reviews/prisoner/', () => {
       )
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('STANDARD_NOMIS_USER_COMMENT')
         expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
       })
   })
 
-  it('should show error when dates are incorrect', async () => {
+  it.each([
+    ['fromDate', 'Enter a from date'],
+    ['toDate', 'Enter a to date'],
+  ])('should show error when a date is incorrect', (field, expectedError) => {
+    return request(app)
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}/?${field}=invalid-date`)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('There is a problem')
+        expect(res.text).toContain(expectedError)
+      })
+  })
+
+  it('should show error when dates are reversed', () => {
     const establishment = 'MDI'
     const fromDate = '16%2F08%2F2017'
     const toDate = '15%2F08%2F2017'
@@ -177,51 +192,53 @@ describe('GET /incentive-reviews/prisoner/', () => {
       )
       .expect(200)
       .expect(res => {
+        expect(res.text).toContain('There is a problem')
         expect(res.text).toContain('Enter a from date which is not after the to date')
         expect(res.text).toContain('Enter a to date which is not before the from date')
       })
   })
 
-  it('should return default message for no incentive level history', async () => {
+  it('should return default message for no incentive level history', () => {
     incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(emptyIncentiveSummaryForBooking)
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('John Smith has no incentive level history')
       })
   })
 
-  it('should return default message when no level history is returned for supplied filters', async () => {
+  it('should return default message when no level history is returned for supplied filters', () => {
     const establishment = 'MDI'
     const fromDate = '15%2F08%2F1990'
     const toDate = '15%2F08%2F1991'
     const level = 'Standard'
     return request(app)
       .get(
-        `/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}&fromDate=${toDate}&toDate=${fromDate}&level=${level}`,
+        `/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}&fromDate=${fromDate}&toDate=${toDate}&level=${level}`,
       )
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('There is no incentive level history for the selections you have made')
         expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
       })
   })
 
-  it('should return 302 and redirect if prisoner is not found', () => {
+  it('should return 404 if prisoner is not found', () => {
     const error: SanitisedError = {
       name: 'Error',
-      status: 302,
-      message: 'Found',
-      stack: 'Found',
+      status: 404,
+      message: 'Not Found',
+      stack: 'Not Found',
     }
     offenderSearch.getPrisoner.mockRejectedValue(error)
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .expect(302)
+      .expect(404)
       .expect(res => {
         expect(res.text).not.toContain('John, Smith')
-        expect(res.text).toContain('Found. Redirecting')
       })
   })
 })

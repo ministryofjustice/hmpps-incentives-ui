@@ -6,7 +6,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "../components/datepicker/marco.njk" import hmppsDatepicker %}
+{% from "components/datepicker/marco.njk" import hmppsDatepicker %}
 
 {% set pageTitle = applicationName + " – Incentive details" %}
 
@@ -19,16 +19,16 @@
     }) }}
   {% endif %}
 
-  <h1 class="govuk-heading-l"> {{ prisonerName | possessive }} incentive details</h1>
+  <h1 class="govuk-heading-l">{{ prisonerName | possessive }} incentive details</h1>
 
   <div class="horizontal-information govuk-!-margin-bottom-3">
     <div class="horizontal-information__item">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Current incentive level</h3>
-      <p class="govuk-body" data-test="current-iep">{{ currentIncentiveLevel }}</p>
+      <p data-test="current-iep">{{ currentIncentiveLevel }}</p>
     </div>
     <div class="horizontal-information__item">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Next review due by</h3>
-      <p class="govuk-body" data-test="next-review-date">
+      <p data-test="next-review-date">
         {{ nextReviewDate }}
         {% if reviewDaysOverdue > 0 %}
           <br/>
@@ -43,8 +43,8 @@
         {% endif %}
       </p>
     </div>
-    {% if userCanUpdateIEP %}
 
+    {% if userCanUpdateIEP %}
         <div class="dps-mini-profile-header--align-right">
           <p class="hmpps-action-button govuk-!-display-none-print" data-test="change-incentive-level-link">
             <img src="/assets/images/iconRecordIncentiveLevel.svg" alt="Icon representing an incentive level" aria-hidden="true" />
@@ -56,12 +56,13 @@
     {% endif %}
   </div>
 
-  <h3 class="govuk-heading-l">Incentive level history</h3>
+  <h3 class="govuk-heading-l govuk-!-margin-top-8">Incentive level history</h3>
 
   {% if results != null %}
-    <div class="govuk-!-padding-3 govuk-!-margin-bottom-5 form-background">
+    <div class="horizontal-form__wrapper govuk-!-padding-3 govuk-!-margin-bottom-5">
       <h2 class="govuk-heading-m">View by</h2>
-      <form class="horizontal-form govuk-body govuk-!-margin-bottom-3" method="GET">
+
+      <form class="horizontal-form {% if errors.length > 0 %}horizontal-form--with-errors{% endif %} govuk-!-margin-bottom-3" method="GET">
         {{ govukSelect({
           name: 'agencyId',
           id: 'agencyId',
@@ -89,10 +90,10 @@
         {{ hmppsDatepicker({
           id: 'fromDate',
           name: 'fromDate',
+          classes: "hmpps-datepicker--fixed-width",
           label: {
-            text: 'From'
+            text: 'Date from'
           },
-          classes: 'hmpps-datepicker datePickerWithinHorizontalForm',
           value: formValues.fromDate,
           maxDate: maxDate,
           errorMessage: errors | findError('fromDate'),
@@ -102,32 +103,36 @@
         {{ hmppsDatepicker({
           id: 'toDate',
           name: 'toDate',
+          classes: "hmpps-datepicker--fixed-width",
           label: {
-            text: 'To'
+            text: 'Date to'
           },
-          classes: 'hmpps-datepicker datePickerWithinHorizontalForm',
           value: formValues.toDate,
           maxDate: maxDate,
           errorMessage: errors | findError('toDate'),
           dataQa: 'toDate'
         }) }}
 
-        {{ govukButton({
-          text: "View",
-          preventDoubleClick: true,
-          type: "submit",
-          attributes: {
-            "data-test": 'filter-submit'
-          }
-        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "View",
+            preventDoubleClick: true,
+            type: "submit",
+            attributes: {
+              "data-test": 'filter-submit'
+            }
+          }) }}
 
-        <a href="?" class="govuk-link govuk-link--no-visited-state">Clear</a>
+          {% if not noFiltersSupplied %}
+            <a href="?" class="govuk-link govuk-link--no-visited-state">Clear</a>
+          {% endif %}
+        </div>
       </form>
     </div>
   {% endif %}
 
   {% if results == null or results.length == 0 %}
-    <p class="govuk-body" data-test="no-incentive-level-history-message">{{ noResultsFoundMessage }}</p>
+    <p data-test="no-incentive-level-history-message">{{ noResultsFoundMessage }}</p>
   {% else %}
     {% set resultsRows = [] %}
 
@@ -140,8 +145,6 @@
         { text: result.iepStaffMember | showDefault('Not entered') }
       ]), resultsRows) %}
     {% endfor %}
-
-
 
     {{ govukTable({
       head: [

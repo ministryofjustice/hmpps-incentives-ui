@@ -147,7 +147,7 @@ export type IncentiveSummaryForBookingWithDetails = IncentiveSummaryForBooking &
   iepDetails: IncentiveSummaryDetail[]
 }
 
-export type IepLevelChangeRequest = {
+export type UpdateIncentiveLevelRequest = {
   iepLevel: string
   comment: string
 }
@@ -161,7 +161,10 @@ export class IncentivesApi extends RestClient {
     return this.get({ path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}` })
   }
 
-  updateIncentiveLevelForPrisoner(prisonerNumber: string, data: IepLevelChangeRequest): Promise<IepLevelChangeRequest> {
+  updateIncentiveLevelForPrisoner(
+    prisonerNumber: string,
+    data: UpdateIncentiveLevelRequest,
+  ): Promise<IncentiveSummaryDetail> {
     return this.post({
       path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
       data: data as unknown as Record<string, unknown>,

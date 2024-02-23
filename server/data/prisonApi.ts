@@ -88,16 +88,11 @@ export class PrisonApi extends RestClient {
     })
   }
 
-  getPrisonerDetails(prisonerNumber: string): Promise<Offender> {
+  getPrisonerDetails(prisonerNumber: string, fullInfo: boolean = false): Promise<Offender> {
+    const query = { fullInfo: fullInfo.toString(), csraSummary: fullInfo.toString() }
     return this.get<Offender>({
       path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}`,
-    })
-  }
-
-  getFullDetails(prisonerNumber: string, fullInfo: boolean): Promise<Offender> {
-    return this.get<Offender>({
-      path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}`,
-      query: { fullInfo: fullInfo.toString(), csraSummary: fullInfo.toString() },
+      query,
     })
   }
 }

@@ -1,16 +1,18 @@
 .hmpps-datepicker {
   position: relative;
-  font-family: "GDS Transport",arial,sans-serif;
+  font-family: $govuk-font-family;
 
-  &--fixed-width {
-    .hmpps-datepicker-input__wrapper {
-      width: 215px
+  @media (min-width: 768px) {
+    &--fixed-width {
+      .hmpps-datepicker-input__wrapper {
+        width: 215px
+      }
     }
-  }
 
-  &--shorter-width {
-    .hmpps-datepicker-input__wrapper {
-      width: 180px;
+    &--shorter-width {
+      .hmpps-datepicker-input__wrapper {
+        width: 180px;
+      }
     }
   }
 
@@ -283,22 +285,8 @@
   }
 }
 
-.datePickerWithinHorizontalForm {
-
-  button {
-    margin-bottom: 0 !important;
-    margin-right: 0 !important;
-    @media print {
-      display: none
-    }
+@media print {
+  .hmpps-datepicker-button, .hmpps-datepicker__dialog {
+    display: none;
   }
-  @media print {
-    .hmpps-datepicker-input__wrapper {
-      width: 160px;
-    }
-  }
-}
-
-.form-background {
-  background-color: govuk-colour("light-grey");
 }

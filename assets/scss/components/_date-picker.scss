@@ -1,6 +1,6 @@
 .hmpps-datepicker {
   position: relative;
-  font-family: "GDS Transport",arial,sans-serif;
+  font-family: $govuk-font-family;
 
   &--fixed-width {
     .hmpps-datepicker-input__wrapper {

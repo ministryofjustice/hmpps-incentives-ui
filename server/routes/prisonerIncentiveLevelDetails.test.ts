@@ -124,6 +124,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?incentiveLevel=${level}`)
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('BASIC_SYSTEM_USER_COMMENT')
         expect(res.text).not.toContain('STANDARD_NOMIS_USER_COMMENT')
       })
@@ -135,6 +136,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?fromDate=${date}&toDate=${date}`)
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('ENHANCED_UNKNOWN_USER_COMMENT')
         expect(res.text).not.toContain('STANDARD_NOMIS_USER_COMMENT')
       })
@@ -146,6 +148,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}`)
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('LEI')
         expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
       })
@@ -161,12 +164,26 @@ describe('GET /incentive-reviews/prisoner/', () => {
       )
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('STANDARD_NOMIS_USER_COMMENT')
         expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
       })
   })
 
-  it('should show error when dates are incorrect', () => {
+  it.each([
+    ['fromDate', 'Enter a from date'],
+    ['toDate', 'Enter a to date'],
+  ])('should show error when a date is incorrect', (field, expectedError) => {
+    return request(app)
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}/?${field}=invalid-date`)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('There is a problem')
+        expect(res.text).toContain(expectedError)
+      })
+  })
+
+  it('should show error when dates are reversed', () => {
     const establishment = 'MDI'
     const fromDate = '16%2F08%2F2017'
     const toDate = '15%2F08%2F2017'
@@ -177,6 +194,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       )
       .expect(200)
       .expect(res => {
+        expect(res.text).toContain('There is a problem')
         expect(res.text).toContain('Enter a from date which is not after the to date')
         expect(res.text).toContain('Enter a to date which is not before the from date')
       })
@@ -188,6 +206,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('John Smith has no incentive level history')
       })
   })
@@ -199,10 +218,11 @@ describe('GET /incentive-reviews/prisoner/', () => {
     const level = 'Standard'
     return request(app)
       .get(
-        `/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}&fromDate=${toDate}&toDate=${fromDate}&level=${level}`,
+        `/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=${establishment}&fromDate=${fromDate}&toDate=${toDate}&level=${level}`,
       )
       .expect(200)
       .expect(res => {
+        expect(res.text).not.toContain('There is a problem')
         expect(res.text).toContain('There is no incentive level history for the selections you have made')
         expect(res.text).not.toContain('ENHANCED_UNKNOWN_USER_COMMENT')
       })

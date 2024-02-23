@@ -93,6 +93,8 @@ export default function routes(router: Router): Router {
         caseload => caseload.id === prisonerDetails.agencyId,
       )
       const userCanMaintainIncentives = userRoles.includes(maintainPrisonerIncentiveLevelRole)
+
+      const todayAsShortDate = formatDateForDatePicker(new Date().toISOString(), 'short')
       const fromDateFormatted = moment(fromDate, 'DD/MM/YYYY')
       const toDateFormatted = moment(toDate, 'DD/MM/YYYY')
 
@@ -163,7 +165,19 @@ export default function routes(router: Router): Router {
             : 'There is no incentive level history for the selections you have made')) ||
         ''
 
-      if (fromDate && toDate && fromDateFormatted.isAfter(toDateFormatted, 'day')) {
+      if (fromDate && !fromDateFormatted.isValid()) {
+        errors.push({ href: '#fromDate', text: `Enter a from date, for example ${todayAsShortDate}` })
+      }
+      if (toDate && !toDateFormatted.isValid()) {
+        errors.push({ href: '#toDate', text: `Enter a to date, for example ${todayAsShortDate}` })
+      }
+      if (
+        fromDate &&
+        toDate &&
+        fromDateFormatted.isValid() &&
+        toDateFormatted.isValid() &&
+        fromDateFormatted.isAfter(toDateFormatted, 'day')
+      ) {
         errors.push({ href: '#fromDate', text: 'Enter a from date which is not after the to date' })
         errors.push({ href: '#toDate', text: 'Enter a to date which is not before the from date' })
       }
@@ -188,7 +202,7 @@ export default function routes(router: Router): Router {
           text: level,
           value: level,
         })),
-        maxDate: formatDateForDatePicker(new Date().toISOString(), 'short'),
+        maxDate: todayAsShortDate,
         nextReviewDate: nextReviewDate.format('D MMMM YYYY'),
         noResultsFoundMessage,
         prisonerName,

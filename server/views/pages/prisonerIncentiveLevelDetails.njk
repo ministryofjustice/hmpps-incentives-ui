@@ -62,7 +62,7 @@
     <div class="horizontal-form__wrapper govuk-!-padding-3 govuk-!-margin-bottom-5">
       <h2 class="govuk-heading-m">View by</h2>
 
-      <form class="horizontal-form govuk-!-margin-bottom-3" method="GET">
+      <form class="horizontal-form {% if errors.length > 0 %}horizontal-form--with-errors{% endif %} govuk-!-margin-bottom-3" method="GET">
         {{ govukSelect({
           name: 'agencyId',
           id: 'agencyId',

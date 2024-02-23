@@ -61,6 +61,15 @@
       width: 100%;
     }
   }
+
+  &.horizontal-form--with-errors {
+    flex-flow: column;
+    gap: govuk-spacing(3);
+
+    > .govuk-button-group {
+      align-self: flex-start;
+    }
+  }
 }
 
 .horizontal-form__wrapper {

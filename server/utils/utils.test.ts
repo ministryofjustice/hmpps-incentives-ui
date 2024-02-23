@@ -1,9 +1,10 @@
-import type { ErrorSummaryItem } from '../routes/forms/forms'
+import type { ErrorSummaryItem, GovukSelectItem } from '../routes/forms/forms'
 import {
   convertToTitleCase,
   daysSince,
   findFieldInErrorSummary,
   formatName,
+  govukSelectInsertDefault,
   initialiseName,
   inputStringToPenceAmount,
   penceAmountToInputString,
@@ -278,5 +279,25 @@ describe('findFieldInErrorSummary', () => {
 
   it('should return error message if field is found', () => {
     expect(findFieldInErrorSummary(errorList, 'field3')).toStrictEqual({ text: 'Enter a date' })
+  })
+})
+
+describe('govukSelectInsertDefault', () => {
+  it.each([undefined, null])('should ignore item list %p', list => {
+    expect(govukSelectInsertDefault(list, 'Select an option…')).toStrictEqual(list)
+  })
+
+  it('should insert a blank item at the beginning', () => {
+    const list: GovukSelectItem[] = [{ text: 'Red' }, { text: 'Blue', value: 'blue' }]
+    const newList = govukSelectInsertDefault(list, 'Select an option…')
+    expect(newList).toHaveLength(3)
+    expect(newList[0]).toStrictEqual<GovukSelectItem>({ text: 'Select an option…', value: '', selected: true })
+  })
+
+  it('should insert a blank item into an empty list', () => {
+    const list: GovukSelectItem[] = []
+    const newList = govukSelectInsertDefault(list, 'Choose one')
+    expect(newList).toHaveLength(1)
+    expect(newList[0]).toStrictEqual<GovukSelectItem>({ text: 'Choose one', value: '', selected: true })
   })
 })

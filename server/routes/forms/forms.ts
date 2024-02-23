@@ -18,6 +18,18 @@ export interface ErrorSummaryItem {
 }
 
 /**
+ * An item passed into the `items` property of a GOV.UK select component
+ * https://design-system.service.gov.uk/components/select/
+ */
+export interface GovukSelectItem {
+  text: string
+  value?: string
+  selected?: boolean
+  disabled?: boolean
+  attributes?: object
+}
+
+/**
  * Base form providing simple validation extension points and per-field error messages
  */
 export default abstract class Form<Data extends BaseFormData> {

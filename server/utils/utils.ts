@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import type { ErrorSummaryItem } from '../routes/forms/forms'
+import type { ErrorSummaryItem, GovukSelectItem } from '../routes/forms/forms'
 
 /** String solely of whitespace or falsey */
 const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
@@ -132,4 +132,21 @@ export const findFieldInErrorSummary = (list: ErrorSummaryItem[], formFieldId: s
     }
   }
   return null
+}
+
+/** Insert an blank default value into a GOV.UK select component `items` list */
+export const govukSelectInsertDefault = (
+  items: GovukSelectItem[],
+  text: string,
+  selected = true,
+): GovukSelectItem[] => {
+  if (!items) return items
+  return [
+    {
+      text,
+      value: '',
+      selected,
+    },
+    ...items,
+  ]
 }

@@ -9,7 +9,6 @@ import {
   govukSelectSetSelected,
   initialiseName,
   inputStringToPenceAmount,
-  nameOfPerson,
   penceAmountToInputString,
   possessive,
   properCaseName,
@@ -114,24 +113,6 @@ describe('name formatting', () => {
 
     it('should return correctly formatted last name and first name if both specified', () => {
       expect(putLastNameFirst('FIRSTNAME', 'LASTNAME')).toEqual('Lastname, Firstname')
-    })
-  })
-
-  describe('nameOfPerson', () => {
-    it('can format name', () => {
-      expect(nameOfPerson({ firstName: 'DAVID', lastName: 'JONES' })).toEqual('David Jones')
-    })
-    it('can format first name only', () => {
-      expect(nameOfPerson({ firstName: 'DAVID', lastName: '' })).toEqual('David')
-    })
-    it('can format last name only', () => {
-      expect(nameOfPerson({ firstName: undefined, lastName: 'Jones' })).toEqual('Jones')
-    })
-    it('can format empty name ', () => {
-      expect(nameOfPerson({ firstName: '', lastName: '' })).toEqual('')
-    })
-    it('can format no name ', () => {
-      expect(nameOfPerson({ firstName: undefined, lastName: undefined })).toEqual('')
     })
   })
 })

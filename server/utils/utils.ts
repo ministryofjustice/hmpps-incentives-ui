@@ -39,10 +39,6 @@ export const initialiseName = (fullName?: string): string | null => {
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
 
-/** Converts an object with `firstName` and `lastName` to title case */
-export const nameOfPerson = (prisoner: { firstName: string; lastName: string }): string =>
-  `${convertToTitleCase(prisoner.firstName)} ${convertToTitleCase(prisoner.lastName)}`.trim()
-
 /** Makes a possessive/genitive form of a name/word */
 export const possessive = (string: string): string => {
   if (!string) return ''

@@ -2,18 +2,18 @@ import type { ErrorSummaryItem, GovukSelectItem } from '../routes/forms/forms'
 import {
   convertToTitleCase,
   daysSince,
+  daysSinceMoment,
   findFieldInErrorSummary,
   formatName,
   govukSelectInsertDefault,
   govukSelectSetSelected,
   initialiseName,
   inputStringToPenceAmount,
+  nameOfPerson,
   penceAmountToInputString,
   possessive,
   properCaseName,
   putLastNameFirst,
-  nameOfPerson,
-  newDaysSince,
 } from './utils'
 
 describe('name formatting', () => {
@@ -209,20 +209,20 @@ describe('days since', () => {
 
   it.each(['2022-09-25', '2022-09-25T17:00:00Z', '2022-09-25T23:59:59+01:00'])(
     'returns 1 when date is yesterday',
-    date => expect(newDaysSince(date)).toEqual<number>(1),
+    date => expect(daysSinceMoment(date)).toEqual<number>(1),
   )
 
   it.each([
     ['2022-09-24', 2],
     ['2021-09-26', 365],
-  ])('returns days elapsed since date', (date, expected) => expect(newDaysSince(date)).toEqual<number>(expected))
+  ])('returns days elapsed since date', (date, expected) => expect(daysSinceMoment(date)).toEqual<number>(expected))
 
   it.each(['2022-09-26', '2022-09-26T00:00:00Z', '2022-09-26T23:59:59+01:00'])('returns 0 when date is today', date =>
-    expect(newDaysSince(date)).toEqual<number>(0),
+    expect(daysSinceMoment(date)).toEqual<number>(0),
   )
 
   it.each(['2022-09-27', '2023-09-26', '2022-09-27T00:00:00Z'])('returns 0 for dates in future', date =>
-    expect(newDaysSince(date)).toEqual<number>(0),
+    expect(daysSinceMoment(date)).toEqual<number>(0),
   )
 })
 

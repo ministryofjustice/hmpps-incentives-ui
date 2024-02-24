@@ -60,7 +60,7 @@ export const putLastNameFirst = (firstName: string, lastName: string): string =>
 }
 
 /** Number of days elapsed, ignoring time of day */
-export const newDaysSince = (date: moment.MomentInput): number =>
+export const daysSinceMoment = (date: moment.MomentInput): number =>
   Math.max(Math.floor(moment.duration(moment().startOf('day').diff(moment(date).startOf('day'))).asDays()), 0)
 
 /** Number of days elapsed, ignoring time of day, since `date`; 0 for today or any time in future */

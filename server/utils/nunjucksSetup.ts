@@ -7,7 +7,14 @@ import nunjucks from 'nunjucks'
 import config from '../config'
 import { calculateTrendsRange, makeChartPalette } from './analytics'
 import format from './format'
-import { daysSince, findFieldInErrorSummary, govukSelectInsertDefault, initialiseName, possessive } from './utils'
+import {
+  daysSince,
+  findFieldInErrorSummary,
+  govukSelectInsertDefault,
+  govukSelectSetSelected,
+  initialiseName,
+  possessive,
+} from './utils'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -52,18 +59,7 @@ export default function nunjucksSetup(app: express.Express): void {
   // form helpers
   njkEnv.addFilter('findFieldInErrorSummary', findFieldInErrorSummary)
   njkEnv.addFilter('govukSelectInsertDefault', govukSelectInsertDefault)
-
-  njkEnv.addFilter(
-    'setSelected',
-    (items, selected) =>
-      items &&
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      items.map(entry => ({
-        ...entry,
-        selected: entry && entry.value === selected,
-      })),
-  )
+  njkEnv.addFilter('govukSelectSetSelected', govukSelectSetSelected)
 
   // name formatting
   njkEnv.addFilter('initialiseName', initialiseName)

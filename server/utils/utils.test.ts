@@ -5,6 +5,7 @@ import {
   findFieldInErrorSummary,
   formatName,
   govukSelectInsertDefault,
+  govukSelectSetSelected,
   initialiseName,
   inputStringToPenceAmount,
   penceAmountToInputString,
@@ -299,5 +300,31 @@ describe('govukSelectInsertDefault', () => {
     const newList = govukSelectInsertDefault(list, 'Choose one')
     expect(newList).toHaveLength(1)
     expect(newList[0]).toStrictEqual<GovukSelectItem>({ text: 'Choose one', value: '', selected: true })
+  })
+})
+
+describe('govukSelectSetSelected', () => {
+  it.each([undefined, null])('should ignore item list %p', list => {
+    expect(govukSelectSetSelected(list, 'red')).toStrictEqual(list)
+  })
+
+  it('should only leave `selected` as true for item that is found by-value', () => {
+    const list: GovukSelectItem[] = [
+      { text: 'Red', value: 'red' },
+      { text: 'Blue', value: 'blue' },
+    ]
+    const newList = govukSelectSetSelected(list, 'blue')
+    expect(newList).toHaveLength(2)
+    expect(newList.map(item => item.selected)).toEqual([false, true])
+  })
+
+  it('should set `selected` of all items to false if item is not found by-value', () => {
+    const list: GovukSelectItem[] = [
+      { text: 'Red', value: 'red' },
+      { text: 'Blue', value: 'blue' },
+    ]
+    const newList = govukSelectSetSelected(list, 'green')
+    expect(newList).toHaveLength(2)
+    expect(newList.map(item => item.selected)).toEqual([false, false])
   })
 })

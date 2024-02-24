@@ -150,3 +150,12 @@ export const govukSelectInsertDefault = (
     ...items,
   ]
 }
+
+/** Select an item inside a GOV.UK select component `items` list, by value */
+export const govukSelectSetSelected = (items: GovukSelectItem[], value: string): GovukSelectItem[] => {
+  if (!items) return items
+  return items.map(entry => ({
+    ...entry,
+    selected: entry.value === value,
+  }))
+}

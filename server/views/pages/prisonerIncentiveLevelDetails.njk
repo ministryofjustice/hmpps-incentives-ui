@@ -26,23 +26,26 @@
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Current incentive level</h3>
       <p data-test="current-iep">{{ currentIncentiveLevel }}</p>
     </div>
-    <div class="horizontal-information__item">
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Next review due by</h3>
-      <p data-test="next-review-date">
-        {{ nextReviewDate }}
-        {% if reviewDaysOverdue > 0 %}
-          <br/>
-          <span class="highlight highlight--alert" data-test="next-review-overdue">
-            {{ reviewDaysOverdue }}
-            {% if reviewDaysOverdue == 1 -%}
-              day
-            {%- else -%}
-              days
-            {%- endif %} overdue
-          </span>
-        {% endif %}
-      </p>
-    </div>
+    {% if nextReviewDate %}
+      <div class="horizontal-information__item">
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Next review due by</h3>
+        <p data-test="next-review-date">
+          {{ nextReviewDate | shortDate }}
+          {% set reviewDaysOverdue = nextReviewDate | daysSince %}
+          {% if reviewDaysOverdue > 0 %}
+            <br/>
+            <span class="highlight highlight--alert" data-test="next-review-overdue">
+              {{ reviewDaysOverdue }}
+              {% if reviewDaysOverdue == 1 -%}
+                day
+              {%- else -%}
+                days
+              {%- endif %} overdue
+            </span>
+          {% endif %}
+        </p>
+      </div>
+    {% endif %}
 
     {% if userCanUpdateIEP %}
         <div class="dps-mini-profile-header--align-right">

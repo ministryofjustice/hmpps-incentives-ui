@@ -1,7 +1,7 @@
 import type { RequestHandler, Router } from 'express'
 import moment from 'moment'
 
-import { daysSinceMoment, formatName, formatDateForDatePicker, putLastNameFirst } from '../utils/utils'
+import { formatName, formatDateForDatePicker, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { maintainPrisonerIncentiveLevelRole, SYSTEM_USERS } from '../data/constants'
 import TokenStore from '../data/tokenStore'
@@ -87,8 +87,8 @@ export default function routes(router: Router): Router {
       fromDate?: string
       toDate?: string
     } = req.query
-    const nextReviewDate = moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
-    const reviewDaysOverdue = daysSinceMoment(nextReviewDate)
+    const nextReviewDate: Date | undefined =
+      incentiveLevelDetails.nextReviewDate && new Date(`${incentiveLevelDetails.nextReviewDate}T12:00:00`)
 
     const prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.prisonId)
     const userCanMaintainIncentives = res.locals.user.roles.includes(maintainPrisonerIncentiveLevelRole)
@@ -199,11 +199,10 @@ export default function routes(router: Router): Router {
         value: level,
       })),
       maxDate: todayAsShortDate,
-      nextReviewDate: nextReviewDate.format('D MMMM YYYY'),
+      nextReviewDate,
       noResultsFoundMessage,
       prisonerName,
       recordIncentiveUrl: `/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`,
-      reviewDaysOverdue,
       results: filteredResults,
       noFiltersSupplied,
       userCanUpdateIEP: prisonerWithinCaseloads && userCanMaintainIncentives,

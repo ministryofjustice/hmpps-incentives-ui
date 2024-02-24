@@ -157,6 +157,6 @@ export const govukSelectSetSelected = (items: GovukSelectItem[], value: string):
   if (value === undefined) return items
   return items.map(entry => ({
     ...entry,
-    selected: entry.value === value,
+    selected: 'value' in entry ? entry.value === value : entry.text === value,
   }))
 }

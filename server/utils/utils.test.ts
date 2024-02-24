@@ -337,4 +337,11 @@ describe('govukSelectSetSelected', () => {
     expect(newList).toHaveLength(2)
     expect(newList.map(item => item.selected)).toStrictEqual([undefined, undefined])
   })
+
+  it('should fall back to matching on `text` property if item `value` is not set', () => {
+    const list: GovukSelectItem[] = [{ text: 'Red' }, { text: 'Blue' }]
+    const newList = govukSelectSetSelected(list, 'Blue')
+    expect(newList).toHaveLength(2)
+    expect(newList.map(item => item.selected)).toStrictEqual([false, true])
+  })
 })

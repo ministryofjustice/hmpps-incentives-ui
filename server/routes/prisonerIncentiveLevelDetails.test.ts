@@ -67,7 +67,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
         expect(res.request.url).toContain('/incentive-reviews/prisoner/A8083DY')
         expect(res.text).toContain('Incentive level history')
         expect(res.text).toContain('SYSTEM_USER_COMMENT')
-        expect(res.text).toContain('15 August 2017 - 16:04')
+        expect(res.text).toContain('15 August 2017, 16:04')
         expect(res.text).toContain('Smith, John')
       })
   })

@@ -15,7 +15,7 @@ import type { ErrorSummaryItem } from './forms/forms'
 type HistoryDetail = IncentiveSummaryDetail & {
   iepEstablishment: string
   iepStaffMember: string | undefined
-  formattedTime: string
+  iepTimeAsDate: Date
 }
 
 type HistoryFilters = {
@@ -136,10 +136,10 @@ export default function routes(router: Router): Router {
       const user = details.userId && users.find(u => u.username === details.userId)
 
       return {
+        ...details,
         iepEstablishment: description,
         iepStaffMember: user && `${formatName(user.firstName, user.lastName)}`.trim(),
-        formattedTime: moment(details.iepTime, 'YYYY-MM-DD HH:mm').format('D MMMM YYYY - HH:mm'),
-        ...details,
+        iepTimeAsDate: new Date(details.iepTime),
       }
     })
 

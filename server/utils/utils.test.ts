@@ -315,7 +315,7 @@ describe('govukSelectSetSelected', () => {
     ]
     const newList = govukSelectSetSelected(list, 'blue')
     expect(newList).toHaveLength(2)
-    expect(newList.map(item => item.selected)).toEqual([false, true])
+    expect(newList.map(item => item.selected)).toStrictEqual([false, true])
   })
 
   it('should set `selected` of all items to false if item is not found by-value', () => {
@@ -325,6 +325,16 @@ describe('govukSelectSetSelected', () => {
     ]
     const newList = govukSelectSetSelected(list, 'green')
     expect(newList).toHaveLength(2)
-    expect(newList.map(item => item.selected)).toEqual([false, false])
+    expect(newList.map(item => item.selected)).toStrictEqual([false, false])
+  })
+
+  it('should NOT set `selected` on any items if value being selected is undefined', () => {
+    const list: GovukSelectItem[] = [
+      { text: 'Red', value: 'red' },
+      { text: 'Blue', value: 'blue' },
+    ]
+    const newList = govukSelectSetSelected(list, undefined)
+    expect(newList).toHaveLength(2)
+    expect(newList.map(item => item.selected)).toStrictEqual([undefined, undefined])
   })
 })

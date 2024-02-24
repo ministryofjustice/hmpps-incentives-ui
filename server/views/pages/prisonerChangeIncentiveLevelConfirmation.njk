@@ -20,7 +20,7 @@
         {% if nextReviewDate %}
           Their next review is due by
           <br/>
-          <strong data-test="next-review-date">{{ nextReviewDate }}</strong>
+          <strong data-test="next-review-date">{{ nextReviewDate | shortDate }}</strong>
         {% endif %}
       {%- endset %}
 

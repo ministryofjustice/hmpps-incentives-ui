@@ -1,5 +1,4 @@
 import type { RequestHandler, Request, Response, Router } from 'express'
-import moment from 'moment'
 
 import { formatName, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
@@ -71,8 +70,8 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
     const locationId: string | undefined = assignedLivingUnit?.description
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
     const currentIncentiveLevel = incentiveLevelDetails.iepLevel
-    const nextReviewDate =
-      incentiveLevelDetails.nextReviewDate && moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
+    const nextReviewDate: Date | undefined =
+      incentiveLevelDetails.nextReviewDate && new Date(`${incentiveLevelDetails.nextReviewDate}T12:00:00`)
 
     res.render('pages/prisonerChangeIncentiveLevelConfirmation.njk', {
       currentIncentiveLevel,
@@ -80,7 +79,7 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
         agencyId && locationId && locationId.includes('-')
           ? `/incentive-summary/${agencyId}-${locationId.split('-')[0]}`
           : '/select-location',
-      nextReviewDate: nextReviewDate?.format('D MMMM YYYY'),
+      nextReviewDate,
       prisonerNumber,
       prisonerName: formatName(firstName, lastName),
       profileUrl,

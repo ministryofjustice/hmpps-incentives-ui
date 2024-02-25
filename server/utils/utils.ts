@@ -103,15 +103,6 @@ export function inputStringToPenceAmount(pounds: string): number {
   return pence
 }
 
-/** Format dates to be used in the datepicker component. */
-export const formatDateForDatePicker = (
-  isoDate: string,
-  style: 'short' | 'full' | 'long' | 'medium' = 'long',
-): string => {
-  if (!isoDate) return ''
-  return new Date(isoDate).toLocaleDateString('en-gb', { dateStyle: style })
-}
-
 /** Parse date in the form DD/MM/YYYY. Throws an error when invalid */
 export const parseDateInput = (input: string): Date => {
   const match = input && /^(?<day>\d{1,2})\/(?<month>\d{1,2})\/(?<year>\d{4})$/.exec(input.trim())

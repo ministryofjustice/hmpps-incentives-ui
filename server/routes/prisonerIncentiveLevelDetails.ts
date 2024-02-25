@@ -1,6 +1,7 @@
 import type { RequestHandler, Router } from 'express'
 
-import { formatName, formatDateForDatePicker, parseDateInput, putLastNameFirst } from '../utils/utils'
+import format from '../utils/format'
+import { formatName, parseDateInput, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { maintainPrisonerIncentiveLevelRole, SYSTEM_USERS } from '../data/constants'
 import TokenStore from '../data/tokenStore'
@@ -90,7 +91,7 @@ export default function routes(router: Router): Router {
     const prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.prisonId)
     const userCanMaintainIncentives = res.locals.user.roles.includes(maintainPrisonerIncentiveLevelRole)
 
-    const todayAsShortDate = formatDateForDatePicker(new Date().toISOString(), 'short')
+    const todayAsShortDate = format.formDate(new Date())
 
     // Offenders are likely to have multiple IEPs at the same agency.
     // By getting a unique list of users and agencies, we reduce the duplicate

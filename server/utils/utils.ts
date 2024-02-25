@@ -118,6 +118,21 @@ export const formatDateForDatePicker = (
   return new Date(isoDate).toLocaleDateString('en-gb', { dateStyle: style })
 }
 
+/** Parse date in the form DD/MM/YYYY. Throws an error when invalid */
+export const parseDateInput = (input: string): Date => {
+  const match = input && /^(?<day>\d{1,2})\/(?<month>\d{1,2})\/(?<year>\d{4})$/.exec(input.trim())
+  if (!match) throw new Error('Invalid date')
+  const { year, month, day } = match.groups
+  const y = parseInt(year, 10)
+  const m = parseInt(month, 10)
+  const d = parseInt(day, 10)
+  if (Number.isSafeInteger(y) && m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+    const date = new Date(y, m - 1, d)
+    if (date) return date
+  }
+  throw new Error('Invalid date')
+}
+
 /** Find field error in error summary list */
 export const findFieldInErrorSummary = (list: ErrorSummaryItem[], formFieldId: string): { text: string } | null => {
   if (!list) return null

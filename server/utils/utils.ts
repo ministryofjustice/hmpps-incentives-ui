@@ -1,5 +1,3 @@
-import moment from 'moment'
-
 import type { ErrorSummaryItem, GovukSelectItem } from '../routes/forms/forms'
 
 /** String solely of whitespace or falsey */
@@ -54,10 +52,6 @@ export const putLastNameFirst = (firstName: string, lastName: string): string =>
 
   return `${properCaseName(lastName)}, ${properCaseName(firstName)}`
 }
-
-/** Number of days elapsed, ignoring time of day */
-export const daysSinceMoment = (date: moment.MomentInput): number =>
-  Math.max(Math.floor(moment.duration(moment().startOf('day').diff(moment(date).startOf('day'))).asDays()), 0)
 
 /** Number of days elapsed, ignoring time of day, since `date`; 0 for today or any time in future */
 export const daysSince = (date: Date): number => {

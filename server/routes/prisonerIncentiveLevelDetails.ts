@@ -11,6 +11,13 @@ import { OffenderSearchClient } from '../data/offenderSearch'
 import { IncentivesApi, type IncentiveSummaryDetail } from '../data/incentivesApi'
 import type { ErrorSummaryItem } from './forms/forms'
 
+interface FormData {
+  agencyId?: string
+  incentiveLevel?: string
+  fromDate?: string
+  toDate?: string
+}
+
 type HistoryDetail = IncentiveSummaryDetail & {
   iepEstablishment: string
   iepStaffMember: string | undefined
@@ -26,6 +33,7 @@ type HistoryFilters = {
 
 const filterData = (data: HistoryDetail[], fields: HistoryFilters): HistoryDetail[] => {
   let filteredResults = data
+
   if (fields.agencyId) {
     filteredResults = filteredResults.filter(result => result.agencyId === fields.agencyId)
   }
@@ -62,6 +70,7 @@ export default function routes(router: Router): Router {
 
   get('/', async (req, res) => {
     const { prisonerNumber } = req.params
+    const { agencyId, incentiveLevel, fromDate: fromDateInput, toDate: toDateInput }: FormData = req.query
     const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
 
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
@@ -70,22 +79,11 @@ export default function routes(router: Router): Router {
     const incentivesApi = new IncentivesApi(systemToken)
 
     const prisoner = await offenderSearchClient.getPrisoner(prisonerNumber)
-    const prisonerName = formatName(prisoner.firstName, prisoner.lastName)
     const { firstName, lastName } = prisoner
+    const prisonerName = formatName(firstName, lastName)
 
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
     const currentIncentiveLevel = incentiveLevelDetails.iepLevel
-    const {
-      agencyId,
-      incentiveLevel,
-      fromDate: fromDateInput,
-      toDate: toDateInput,
-    }: {
-      agencyId?: string
-      incentiveLevel?: string
-      fromDate?: string
-      toDate?: string
-    } = req.query
     const nextReviewDate: Date | undefined =
       incentiveLevelDetails.nextReviewDate && new Date(`${incentiveLevelDetails.nextReviewDate}T12:00:00`)
 
@@ -181,6 +179,12 @@ export default function routes(router: Router): Router {
           })
         : []
 
+    const formValues: FormData = {
+      agencyId,
+      incentiveLevel,
+      fromDate: fromDateInput,
+      toDate: toDateInput,
+    }
     const noFiltersSupplied = Boolean(!agencyId && !incentiveLevel && !fromDate && !toDate)
     const noResultsFoundMessage =
       (!filteredResults.length &&
@@ -204,7 +208,7 @@ export default function routes(router: Router): Router {
           value: establishment.agencyId,
         })),
       errors,
-      formValues: req.query,
+      formValues,
       levels: levels.map(level => ({
         text: level,
         value: level,

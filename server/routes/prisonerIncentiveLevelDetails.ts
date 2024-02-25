@@ -1,7 +1,6 @@
 import type { RequestHandler, Router } from 'express'
-import moment from 'moment'
 
-import { formatName, formatDateForDatePicker, putLastNameFirst } from '../utils/utils'
+import { formatName, formatDateForDatePicker, parseDateInput, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { maintainPrisonerIncentiveLevelRole, SYSTEM_USERS } from '../data/constants'
 import TokenStore from '../data/tokenStore'
@@ -21,8 +20,8 @@ type HistoryDetail = IncentiveSummaryDetail & {
 type HistoryFilters = {
   agencyId?: string
   incentiveLevel?: string
-  fromDate?: string
-  toDate?: string
+  fromDate?: Date
+  toDate?: Date
 }
 
 const filterData = (data: HistoryDetail[], fields: HistoryFilters): HistoryDetail[] => {
@@ -36,13 +35,13 @@ const filterData = (data: HistoryDetail[], fields: HistoryFilters): HistoryDetai
   }
 
   if (fields.fromDate) {
-    const fromDate = moment(fields.fromDate)
-    filteredResults = filteredResults.filter(result => moment(result.iepDate).isSameOrAfter(fromDate))
+    filteredResults = filteredResults.filter(result => result.iepTimeAsDate >= fields.fromDate)
   }
 
   if (fields.toDate) {
-    const toDate = moment(fields.toDate)
-    filteredResults = filteredResults.filter(result => moment(result.iepDate).isSameOrBefore(toDate))
+    const { toDate } = fields
+    toDate.setDate(toDate.getDate() + 1)
+    filteredResults = filteredResults.filter(result => result.iepTimeAsDate < toDate)
   }
 
   return filteredResults
@@ -79,8 +78,8 @@ export default function routes(router: Router): Router {
     const {
       agencyId,
       incentiveLevel,
-      fromDate,
-      toDate,
+      fromDate: fromDateInput,
+      toDate: toDateInput,
     }: {
       agencyId?: string
       incentiveLevel?: string
@@ -94,8 +93,6 @@ export default function routes(router: Router): Router {
     const userCanMaintainIncentives = res.locals.user.roles.includes(maintainPrisonerIncentiveLevelRole)
 
     const todayAsShortDate = formatDateForDatePicker(new Date().toISOString(), 'short')
-    const fromDateFormatted = moment(fromDate, 'DD/MM/YYYY')
-    const toDateFormatted = moment(toDate, 'DD/MM/YYYY')
 
     // Offenders are likely to have multiple IEPs at the same agency.
     // By getting a unique list of users and agencies, we reduce the duplicate
@@ -143,40 +140,46 @@ export default function routes(router: Router): Router {
       }
     })
 
-    const filteredResults = filterData(iepHistoryDetails, {
-      agencyId,
-      incentiveLevel,
-      fromDate: fromDate && fromDateFormatted.format('YYYY-MM-DD'),
-      toDate: toDate && toDateFormatted.format('YYYY-MM-DD'),
-    })
-
     const errors: ErrorSummaryItem[] = []
 
-    const noFiltersSupplied = Boolean(!agencyId && !incentiveLevel && !fromDate && !toDate)
+    let fromDate: Date | undefined
+    let toDate: Date | undefined
+    try {
+      if (fromDateInput) {
+        fromDate = parseDateInput(fromDateInput)
+      }
+    } catch (e) {
+      errors.push({ href: '#fromDate', text: `Enter a from date, for example ${todayAsShortDate}` })
+    }
+    try {
+      if (toDateInput) {
+        toDate = parseDateInput(toDateInput)
+      }
+    } catch (e) {
+      errors.push({ href: '#toDate', text: `Enter a to date, for example ${todayAsShortDate}` })
+    }
+    if (fromDate && toDate && fromDateInput > toDateInput) {
+      errors.push({ href: '#fromDate', text: 'Enter a from date which is not after the to date' })
+      errors.push({ href: '#toDate', text: 'Enter a to date which is not before the from date' })
+    }
 
+    const filteredResults =
+      errors.length === 0
+        ? filterData(iepHistoryDetails, {
+            agencyId,
+            incentiveLevel,
+            fromDate,
+            toDate,
+          })
+        : []
+
+    const noFiltersSupplied = Boolean(!agencyId && !incentiveLevel && !fromDate && !toDate)
     const noResultsFoundMessage =
       (!filteredResults.length &&
         (noFiltersSupplied
           ? `${prisonerName} has no incentive level history`
           : 'There is no incentive level history for the selections you have made')) ||
       ''
-
-    if (fromDate && !fromDateFormatted.isValid()) {
-      errors.push({ href: '#fromDate', text: `Enter a from date, for example ${todayAsShortDate}` })
-    }
-    if (toDate && !toDateFormatted.isValid()) {
-      errors.push({ href: '#toDate', text: `Enter a to date, for example ${todayAsShortDate}` })
-    }
-    if (
-      fromDate &&
-      toDate &&
-      fromDateFormatted.isValid() &&
-      toDateFormatted.isValid() &&
-      fromDateFormatted.isAfter(toDateFormatted, 'day')
-    ) {
-      errors.push({ href: '#fromDate', text: 'Enter a from date which is not after the to date' })
-      errors.push({ href: '#toDate', text: 'Enter a to date which is not before the from date' })
-    }
 
     res.locals.breadcrumbs.popLastItem()
     res.locals.breadcrumbs.addItems({

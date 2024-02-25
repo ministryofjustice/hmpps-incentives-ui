@@ -142,6 +142,14 @@ export default function routes(router: Router): Router {
 
     const errors: ErrorSummaryItem[] = []
 
+    if (agencyId && !establishments.some(agency => agency.agencyId === agencyId)) {
+      errors.push({ href: '#agencyId', text: `Choose an establishment` })
+    }
+
+    if (incentiveLevel && !levels.some(level => level === incentiveLevel)) {
+      errors.push({ href: '#incentiveLevel', text: `Choose an incentive level` })
+    }
+
     let fromDate: Date | undefined
     let toDate: Date | undefined
     try {

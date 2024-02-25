@@ -73,6 +73,7 @@
             text: 'Establishment'
           },
           items: establishments | govukSelectInsertDefault('All') | govukSelectSetSelected(formValues.agencyId),
+          errorMessage: errors | findFieldInErrorSummary('agencyId'),
           attributes: {
             "data-test": 'establishment-select'
           }
@@ -85,6 +86,7 @@
             text: 'Incentive level'
           },
           items: levels  | govukSelectInsertDefault('All') | govukSelectSetSelected(formValues.incentiveLevel),
+          errorMessage: errors | findFieldInErrorSummary('incentiveLevel'),
           attributes: {
             "data-test": 'incentive-level-select'
           }

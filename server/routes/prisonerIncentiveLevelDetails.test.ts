@@ -181,6 +181,26 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
+  it('should show error if filtered by invalid establishment', () => {
+    return request(app)
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=FEI`)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('There is a problem')
+        expect(res.text).toContain('Choose an establishment')
+      })
+  })
+
+  it('should show error if filtered by invalid incentive level', () => {
+    return request(app)
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}/?incentiveLevel=EN4`)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('There is a problem')
+        expect(res.text).toContain('Choose an incentive level')
+      })
+  })
+
   it('should show error when dates are reversed', () => {
     const establishment = 'MDI'
     const fromDate = '16%2F08%2F2017'

@@ -1,7 +1,8 @@
-const notNumber = (n: unknown): n is number => typeof n !== 'number' || Number.isNaN(n)
+const isNumber = (n: unknown): n is number => typeof n === 'number' && !Number.isNaN(n)
 
 export default {
-  date(date: Date) {
+  /** Formats a date, e.g. 22 June 2022, 13:00 */
+  date(date: Date): string {
     const formatted = date.toLocaleDateString('en-GB', {
       hour: '2-digit',
       hour12: false,
@@ -14,7 +15,8 @@ export default {
     return formatted.replace(' at ', ', ')
   },
 
-  shortDate(date: Date) {
+  /** Formats a date, e.g. 31 October 2021 */
+  shortDate(date: Date): string {
     return date.toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'long',
@@ -23,12 +25,14 @@ export default {
     })
   },
 
-  splitYearAndMonth(yearAndMonth: string) {
+  /** Split year-month into parts, e.g. `'2022-05'` becomes `{ year: '2022', month: 'May' }` */
+  splitYearAndMonth(yearAndMonth: string): { year: number; month: string } {
     const [year, month] = (yearAndMonth ?? '').split('-')
     const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     return { year: parseInt(year, 10) || undefined, month: months[parseInt(month, 10)] }
   },
 
+  /** Formats number of days ago as a string */
   daysAgo(days: number | null): string | undefined {
     if (days === null || days === undefined) {
       return undefined
@@ -39,14 +43,16 @@ export default {
     return `${days} days ago`
   },
 
-  thousands(integer: number) {
-    if (notNumber(integer)) return '?'
+  /** Formats a whole number with comma-separated thousands */
+  thousands(integer: number): string {
+    if (!isNumber(integer)) return '?'
     return Math.round(integer).toLocaleString('en-GB')
   },
 
-  percentage(value: number, total: number, roundToInteger = true) {
+  /** Formats a ratio as a percentage string */
+  percentage(value: number, total: number, roundToInteger = true): string {
     if (value === 0 && total === 0) return '0%'
-    if (notNumber(total) || notNumber(value) || total === 0) return '?'
+    if (!isNumber(total) || !isNumber(value) || total === 0) return '?'
     let percentage = (value / total) * 100
     if (roundToInteger) {
       percentage = Math.round(percentage)
@@ -56,8 +62,9 @@ export default {
     return `${percentage}%`
   },
 
+  /** Format a currency amount into a £-prefixed string, dropping '.00' from the end */
   currencyFromPence(pence: number): string {
-    if (notNumber(pence)) return '?'
+    if (!isNumber(pence)) return '?'
     if (pence === 0) return '£0'
     if (pence < 100) return `${Math.floor(pence)}p`
     const formatted = Intl.NumberFormat('en-GB', {

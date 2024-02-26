@@ -1,7 +1,7 @@
 import type { RequestHandler, Router } from 'express'
 import moment from 'moment'
 
-import { formatName, formatDateForDatePicker, nameOfPerson, newDaysSince, putLastNameFirst } from '../utils/utils'
+import { daysSinceMoment, formatName, formatDateForDatePicker, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { maintainPrisonerIncentiveLevelRole, SYSTEM_USERS } from '../data/constants'
 import TokenStore from '../data/tokenStore'
@@ -71,7 +71,7 @@ export default function routes(router: Router): Router {
     const incentivesApi = new IncentivesApi(systemToken)
 
     const prisoner = await offenderSearchClient.getPrisoner(prisonerNumber)
-    const prisonerName = nameOfPerson(prisoner)
+    const prisonerName = formatName(prisoner.firstName, prisoner.lastName)
     const { firstName, lastName } = prisoner
 
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
@@ -88,7 +88,7 @@ export default function routes(router: Router): Router {
       toDate?: string
     } = req.query
     const nextReviewDate = moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
-    const reviewDaysOverdue = newDaysSince(nextReviewDate)
+    const reviewDaysOverdue = daysSinceMoment(nextReviewDate)
 
     const prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.prisonId)
     const userCanMaintainIncentives = res.locals.user.roles.includes(maintainPrisonerIncentiveLevelRole)

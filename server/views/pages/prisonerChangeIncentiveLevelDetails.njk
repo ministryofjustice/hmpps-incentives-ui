@@ -32,7 +32,7 @@
     {{ govukRadios({
       idPrefix: "newIepLevel",
       name: "newIepLevel",
-      errorMessage: errors | findError('newIepLevel'),
+      errorMessage: errors | findFieldInErrorSummary('newIepLevel'),
       fieldset: {
         legend: {
           text: "Record an incentive level",
@@ -50,7 +50,7 @@
       name: "reason",
       id: "reason",
       value: formValues.reason,
-      errorMessage: errors | findError('reason'),
+      errorMessage: errors | findFieldInErrorSummary('reason'),
       classes: "govuk-!-width-two-thirds",
       maxlength: 240,
       label: {

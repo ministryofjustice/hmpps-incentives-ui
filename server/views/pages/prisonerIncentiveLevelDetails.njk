@@ -69,7 +69,7 @@
           label: {
             text: 'Establishment'
           },
-          items: establishments | addDefaultSelectedValue('All', true) | setSelected(formValues.agencyId),
+          items: establishments | govukSelectInsertDefault('All') | govukSelectSetSelected(formValues.agencyId),
           attributes: {
             "data-test": 'establishment-select'
           }
@@ -81,7 +81,7 @@
           label: {
             text: 'Incentive level'
           },
-          items: levels  | addDefaultSelectedValue('All', true) | setSelected(formValues.incentiveLevel),
+          items: levels  | govukSelectInsertDefault('All') | govukSelectSetSelected(formValues.incentiveLevel),
           attributes: {
             "data-test": 'incentive-level-select'
           }
@@ -96,7 +96,7 @@
           },
           value: formValues.fromDate,
           maxDate: maxDate,
-          errorMessage: errors | findError('fromDate'),
+          errorMessage: errors | findFieldInErrorSummary('fromDate'),
           dataQa: 'fromDate'
         }) }}
 
@@ -109,7 +109,7 @@
           },
           value: formValues.toDate,
           maxDate: maxDate,
-          errorMessage: errors | findError('toDate'),
+          errorMessage: errors | findFieldInErrorSummary('toDate'),
           dataQa: 'toDate'
         }) }}
 
@@ -140,9 +140,9 @@
       {% set resultsRows = (resultsRows.push([
         { text: result.formattedTime },
         { text: result.iepLevel },
-        { html: result.comments | showDefault('Not entered'), classes: 'govuk-input--width-4 incentive-details-reason-text' },
+        { html: result.comments or 'Not entered', classes: 'govuk-input--width-4 incentive-details-reason-text' },
         { text: result.iepEstablishment },
-        { text: result.iepStaffMember | showDefault('Not entered') }
+        { text: result.iepStaffMember or 'Not entered' }
       ]), resultsRows) %}
     {% endfor %}
 

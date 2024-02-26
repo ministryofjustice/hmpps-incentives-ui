@@ -10,7 +10,7 @@ import HmppsAuthClient from '../data/hmppsAuthClient'
 import { PrisonApi, type Staff } from '../data/prisonApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
 import { IncentivesApi, type IncentiveSummaryDetail } from '../data/incentivesApi'
-import type { ErrorSummaryItem } from './forms/forms'
+import type { ErrorSummaryItem, GovukSelectItem } from './forms/forms'
 
 interface FormData {
   agencyId?: string
@@ -204,16 +204,22 @@ export default function routes(router: Router): Router {
       currentIncentiveLevel,
       establishments: establishments
         .sort((a, b) => a.description.localeCompare(b.description))
-        .map(establishment => ({
-          text: establishment.description,
-          value: establishment.agencyId,
-        })),
+        .map(
+          establishment =>
+            ({
+              text: establishment.description,
+              value: establishment.agencyId,
+            }) satisfies GovukSelectItem,
+        ),
       errors,
       formValues,
-      levels: levels.map(level => ({
-        text: level,
-        value: level,
-      })),
+      levels: levels.map(
+        level =>
+          ({
+            text: level,
+            value: level,
+          }) satisfies GovukSelectItem,
+      ),
       maxDate: todayAsShortDate,
       nextReviewDate,
       noResultsFoundMessage,

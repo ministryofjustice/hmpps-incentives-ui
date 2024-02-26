@@ -78,6 +78,7 @@ export default function routes(router: Router): Router {
     const offenderSearchClient = new OffenderSearchClient(systemToken)
     const incentivesApi = new IncentivesApi(systemToken)
 
+    // load prisoner info; propagates 404 if not found
     const prisoner = await offenderSearchClient.getPrisoner(prisonerNumber)
     const { firstName, lastName } = prisoner
     const prisonerName = formatName(firstName, lastName)
@@ -131,7 +132,7 @@ export default function routes(router: Router): Router {
       return {
         ...details,
         iepEstablishment: description,
-        iepStaffMember: user && `${formatName(user.firstName, user.lastName)}`.trim(),
+        iepStaffMember: user && formatName(user.firstName, user.lastName),
       }
     })
 

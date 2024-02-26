@@ -7,7 +7,7 @@ import createUserToken from './testutils/createUserToken'
 import { PrisonApi } from '../data/prisonApi'
 import { IncentivesApi } from '../data/incentivesApi'
 import { NomisUserRolesApi } from '../data/nomisUserRolesApi'
-import { samplePrisonIncentiveLevels, incentiveSummaryForBooking } from '../testData/incentivesApi'
+import { samplePrisonIncentiveLevels, sampleReviewHistory } from '../testData/incentivesApi'
 import { prisonerDetails, prisonerInLeedsDetails } from '../testData/prisonApi'
 import { userCaseload } from '../testData/nomisIUserRolesApi'
 import type { SanitisedError } from '../sanitisedError'
@@ -32,7 +32,7 @@ const nomisUserRolesApi = NomisUserRolesApi.prototype as jest.Mocked<NomisUserRo
 
 beforeEach(() => {
   prisonApi.getPrisonerDetails.mockResolvedValue(prisonerDetails)
-  incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
+  incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(sampleReviewHistory)
   incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(samplePrisonIncentiveLevels)
   nomisUserRolesApi.getUserCaseloads.mockResolvedValue(userCaseload)
 
@@ -214,8 +214,10 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
   describe('When there are no form errors', () => {
     it('should return confirmation page', () => {
       incentivesApi.updateIncentiveLevelForPrisoner.mockResolvedValue({
-        iepLevel: validFormData.newIepLevel,
         comments: validFormData.reason,
+        iepCode: 'ENH',
+        iepLevel: 'Enhanced',
+        prisonerNumber,
         bookingId: 12345,
         iepDate: '2017-08-15',
         iepTime: '2017-08-15T16:04:35',
@@ -223,9 +225,11 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
         agencyId: 'MDI',
       })
       incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue({
+        prisonerNumber,
         bookingId: 12345,
         iepDate: '2017-08-15',
         iepTime: '2017-08-15T16:04:35',
+        iepCode: 'ENH',
         iepLevel: 'Enhanced',
         daysSinceReview: 0,
         nextReviewDate: '2020-08-15',

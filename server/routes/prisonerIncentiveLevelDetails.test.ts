@@ -7,7 +7,7 @@ import { PrisonApi } from '../data/prisonApi'
 import { IncentivesApi } from '../data/incentivesApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
 import { getAgencyMockImplementation, staffDetails, agencyDetails } from '../testData/prisonApi'
-import { incentiveSummaryForBooking, emptyIncentiveSummaryForBooking } from '../testData/incentivesApi'
+import { sampleReviewHistory, emptyIncentiveSummaryForBooking } from '../testData/incentivesApi'
 import offenderDetails from '../testData/offenderSearch'
 import { SanitisedError } from '../sanitisedError'
 import { makeMockUser } from './testutils/mockUsers'
@@ -31,7 +31,7 @@ beforeEach(() => {
   offenderSearch.getPrisoner.mockResolvedValue(offenderDetails)
   prisonApi.getStaffDetails.mockResolvedValue(staffDetails)
   prisonApi.getAgency.mockImplementation(getAgencyMockImplementation)
-  incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
+  incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(sampleReviewHistory)
 
   app = appWithAllRoutes({})
 })

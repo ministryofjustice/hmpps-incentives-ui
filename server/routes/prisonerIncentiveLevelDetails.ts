@@ -9,7 +9,7 @@ import { createRedisClient } from '../data/redisClient'
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import { PrisonApi, type Staff } from '../data/prisonApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
-import { IncentivesApi, type IncentiveSummaryDetail } from '../data/incentivesApi'
+import { IncentivesApi, type IncentiveReviewHistoryItem } from '../data/incentivesApi'
 import type { ErrorSummaryItem, GovukSelectItem } from './forms/forms'
 
 interface FormData {
@@ -19,7 +19,7 @@ interface FormData {
   toDate?: string
 }
 
-type HistoryDetail = IncentiveSummaryDetail & {
+type HistoryDetail = IncentiveReviewHistoryItem & {
   iepEstablishment: string
   iepStaffMember: string | undefined
   iepTimeAsDate: Date

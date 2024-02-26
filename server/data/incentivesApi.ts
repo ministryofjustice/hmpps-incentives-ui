@@ -122,29 +122,34 @@ export interface IncentivesReview {
   isNewToPrison: boolean
 }
 
-export type IncentiveSummaryForBooking = {
+export interface IncentiveReviewHistoryItem {
+  prisonerNumber: string
   bookingId: number
+  iepCode: string
+  iepLevel: string
+  iepDate: string
+  iepTime: string
+  comments: string | null
+  agencyId: string
+  userId: string | null
+  // also available:
+  //   auditModuleName: string
+  //   locationId: string | null
+  //   reviewType: string
+}
+
+export type IncentiveReviewHistory = {
+  prisonerNumber: string
+  bookingId: number
+  iepCode: string
   iepLevel: string
   iepDate: string
   iepTime: string
   daysSinceReview: number
   nextReviewDate: string
-}
-
-export type IncentiveSummaryDetail = {
-  bookingId: number
-  iepLevel: string
-  iepDate: string
-  iepTime: string
-  comments: string
-  agencyId: string
-  userId: string | null
-  // also available
-  // auditModuleName: string
-}
-
-export type IncentiveSummaryForBookingWithDetails = IncentiveSummaryForBooking & {
-  iepDetails: IncentiveSummaryDetail[]
+  iepDetails: IncentiveReviewHistoryItem[]
+  // also available:
+  //   locationId: string | null
 }
 
 export type UpdateIncentiveLevelRequest = {
@@ -157,17 +162,20 @@ export class IncentivesApi extends RestClient {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
   }
 
-  getIncentiveSummaryForPrisoner(prisonerNumber: string): Promise<IncentiveSummaryForBookingWithDetails> {
+  getIncentiveSummaryForPrisoner(prisonerNumber: string): Promise<IncentiveReviewHistory> {
     return this.get({ path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}` })
   }
 
+  /**
+   * @throws SanitisedError<ErrorResponse>
+   */
   updateIncentiveLevelForPrisoner(
     prisonerNumber: string,
     data: UpdateIncentiveLevelRequest,
-  ): Promise<IncentiveSummaryDetail> {
+  ): Promise<IncentiveReviewHistoryItem> {
     return this.post({
       path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
-      data: data as unknown as Record<string, unknown>,
+      data,
     })
   }
 

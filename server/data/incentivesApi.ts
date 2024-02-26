@@ -260,18 +260,20 @@ export class IncentivesApi extends RestClient {
   }: IncentivesReviewsRequest): Promise<IncentivesReviewsResponse> {
     const prison = encodeURIComponent(agencyId)
     const location = encodeURIComponent(locationPrefix)
-    return this.get<IncentivesReviewsResponse>({
+    return this.get<DatesAsStrings<IncentivesReviewsResponse>>({
       path: `/incentives-reviews/prison/${prison}/location/${location}/level/${levelCode}`,
       query: { sort, order, page, pageSize },
     }).then(response => {
-      response.reviews = response.reviews.map(review => {
-        // convert string date to js _midday_ datetime to avoid timezone offsets
-        const nextReviewDate = review.nextReviewDate as unknown as string
-        // eslint-disable-next-line no-param-reassign
-        review.nextReviewDate = new Date(`${nextReviewDate}T12:00:00`)
-        return review
-      })
-      return response
+      return {
+        ...response,
+        reviews: response.reviews.map(review => {
+          return {
+            ...review,
+            // convert string date to js _midday_ datetime to avoid timezone offsets
+            nextReviewDate: new Date(`${review.nextReviewDate}T12:00:00`),
+          }
+        }),
+      }
     })
   }
 }

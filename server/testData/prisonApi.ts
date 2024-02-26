@@ -1,4 +1,5 @@
 import type { Agency, Location } from '../data/prisonApi'
+import { Offender, Staff } from '../data/prisonApi'
 
 export const sampleAgencies: Record<string, Agency> = {
   LEI: {
@@ -19,6 +20,49 @@ export const sampleAgencies: Record<string, Agency> = {
     agencyType: 'INST',
     active: true,
   },
+}
+
+export const prisonerDetails: Offender = {
+  offenderNo: 'A8083DY',
+  agencyId: 'MDI',
+  bookingId: 12345,
+  firstName: 'John',
+  lastName: 'Smith',
+  assignedLivingUnit: {
+    agencyId: 'MDI',
+    locationId: 161863,
+    description: '1-2-003',
+    agencyName: 'Moorland (HMP & YOI)',
+  },
+}
+export const prisonerInLeedsDetails: Offender = {
+  offenderNo: 'A2409AE',
+  agencyId: 'LEI',
+  bookingId: 12367,
+  firstName: 'Fred',
+  lastName: 'Mills',
+  assignedLivingUnit: {
+    agencyId: 'LEI',
+    locationId: 75192,
+    description: '4-2-013',
+    agencyName: 'Leeds (HMP)',
+  },
+}
+
+export const staffDetails: Staff = {
+  firstName: 'Mary',
+  lastName: 'Scott',
+  staffId: 4826,
+  username: 'NOMIS_USER',
+  activeCaseLoadId: 'MDI',
+  active: true,
+}
+
+export const agencyDetails: Agency = {
+  agencyId: 'MDI',
+  description: 'Moorland (HMP & YOI)',
+  agencyType: 'INST',
+  active: true,
 }
 
 export function getAgencyMockImplementation(agencyId: string): Promise<Agency> {

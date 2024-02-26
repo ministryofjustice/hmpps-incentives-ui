@@ -6,23 +6,7 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-{% set title =  "Record incentive level" %}
-
-{% block beforeContent %}
-  {{ govukBreadcrumbs({
-    items: [
-      {
-        text: "Home",
-        href: '/'
-      },
-      {
-        text: breadcrumbPrisonerName,
-        href: profileUrl
-      }
-    ],
-    classes: 'govuk-!-display-none-print'
-  }) }}
-{% endblock %}
+{% set pageTitle = applicationName + " – Record incentive level" %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -37,7 +21,7 @@
 
   <h1 class="govuk-heading-l">Record {{ prisonerName | possessive }} incentive level</h1>
 
-  <p class="govuk-body" data-test="current-incentive-level">
+  <p data-test="current-incentive-level">
     <span class="govuk-heading-m govuk-!-margin-bottom-3">Current incentive level</span>
     {{ currentIncentiveLevel }}
   </p>
@@ -48,7 +32,7 @@
     {{ govukRadios({
       idPrefix: "newIepLevel",
       name: "newIepLevel",
-      errorMessage: errors | findError('newIepLevel'),
+      errorMessage: errors | findFieldInErrorSummary('newIepLevel'),
       fieldset: {
         legend: {
           text: "Record an incentive level",
@@ -66,8 +50,8 @@
       name: "reason",
       id: "reason",
       value: formValues.reason,
-      errorMessage: errors | findError('reason'),
-      classes: 'govuk-!-width-one-half',
+      errorMessage: errors | findFieldInErrorSummary('reason'),
+      classes: "govuk-!-width-two-thirds",
       maxlength: 240,
       label: {
         text: "Reason for recording",
@@ -79,20 +63,19 @@
       attributes: { "data-test": "change-reason" }
     }) }}
 
-    {{ govukButton({
-      text: "Save",
-      type: "submit",
-      classes: "govuk-!-margin-right-2",
-      attributes: { "data-test": "submit-change" }
-    }) }}
+    <div class="govuk-button-group govuk-!-margin-top-8">
+      {{ govukButton({
+        text: "Save",
+        type: "submit",
+        classes: "govuk-!-margin-right-2",
+        preventDoubleClick: true,
+        attributes: { "data-test": "submit-change" }
+      }) }}
 
-    {{ govukButton({
-      text: "Cancel",
-      element: 'a',
-      href: cancelUrl ,
-      classes: "govuk-button--secondary",
-      attributes: { "data-test": "cancel-change" }
-    }) }}
+      <a href="{{ cancelUrl }}" class="govuk-link" data-test="cancel-change">
+        Cancel
+      </a>
+    </div>
   </form>
 {% endblock %}
   </div>

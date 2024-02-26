@@ -12,8 +12,6 @@ import IncentiveLevelEditForm from './forms/incentiveLevelEditForm'
 import IncentiveLevelReorderForm from './forms/incentiveLevelReorderForm'
 import IncentiveLevelStatusForm from './forms/incentiveLevelStatusForm'
 
-export const manageIncentiveLevelsRole = 'ROLE_MAINTAIN_INCENTIVE_LEVELS'
-
 export default function routes(router: Router): Router {
   const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 

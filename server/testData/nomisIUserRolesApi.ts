@@ -34,4 +34,17 @@ function getMultipleCaseload(): UserCaseload {
   }
 }
 
+export const userCaseload: UserCaseload = {
+  activeCaseload: {
+    id: 'MDI',
+    name: 'MDI',
+  },
+  caseloads: [
+    {
+      id: 'MDI',
+      name: 'MDI',
+    },
+  ],
+}
+
 export { getSingleCaseload, getMultipleCaseload }

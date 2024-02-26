@@ -22,7 +22,6 @@ interface FormData {
 type HistoryDetail = IncentiveReviewHistoryItem & {
   iepEstablishment: string
   iepStaffMember: string | undefined
-  iepTimeAsDate: Date
 }
 
 type HistoryFilters = {
@@ -44,13 +43,13 @@ const filterData = (data: HistoryDetail[], fields: HistoryFilters): HistoryDetai
   }
 
   if (fields.fromDate) {
-    filteredResults = filteredResults.filter(result => result.iepTimeAsDate >= fields.fromDate)
+    filteredResults = filteredResults.filter(result => result.iepTime >= fields.fromDate)
   }
 
   if (fields.toDate) {
-    const { toDate } = fields
+    const toDate = new Date(fields.toDate) // copy object rather than mutating in-place
     toDate.setDate(toDate.getDate() + 1)
-    filteredResults = filteredResults.filter(result => result.iepTimeAsDate < toDate)
+    filteredResults = filteredResults.filter(result => result.iepTime < toDate)
   }
 
   return filteredResults
@@ -84,9 +83,7 @@ export default function routes(router: Router): Router {
     const prisonerName = formatName(firstName, lastName)
 
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-    const currentIncentiveLevel = incentiveLevelDetails.iepLevel
-    const nextReviewDate: Date | undefined =
-      incentiveLevelDetails.nextReviewDate && new Date(`${incentiveLevelDetails.nextReviewDate}T12:00:00`)
+    const { iepLevel: currentIncentiveLevel, nextReviewDate } = incentiveLevelDetails
 
     const prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.prisonId)
     const userCanMaintainIncentives = res.locals.user.roles.includes(maintainPrisonerIncentiveLevelRole)
@@ -135,7 +132,6 @@ export default function routes(router: Router): Router {
         ...details,
         iepEstablishment: description,
         iepStaffMember: user && `${formatName(user.firstName, user.lastName)}`.trim(),
-        iepTimeAsDate: new Date(details.iepTime),
       }
     })
 

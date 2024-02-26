@@ -4,6 +4,7 @@ import type {
   IncentiveLevel,
   PrisonIncentiveLevel,
 } from '../data/incentivesApi'
+import { convertIncentiveReviewHistoryDates } from '../data/incentivesApiUtils'
 
 export const sampleIncentiveLevels: IncentiveLevel[] = [
   { code: 'BAS', name: 'Basic', active: true, required: true },
@@ -77,7 +78,7 @@ export const samplePrisonIncentiveLevels: PrisonIncentiveLevel[] = [
   },
 ]
 
-export const sampleReviewHistory: IncentiveReviewHistory = {
+export const sampleReviewHistory: IncentiveReviewHistory = convertIncentiveReviewHistoryDates({
   prisonerNumber: 'A8083DY',
   bookingId: 12345,
   iepDate: '2017-08-15',
@@ -121,9 +122,9 @@ export const sampleReviewHistory: IncentiveReviewHistory = {
       comments: 'ENHANCED_UNKNOWN_USER_COMMENT',
     },
   ],
-}
+})
 
-export const emptyIncentiveSummaryForBooking: IncentiveReviewHistory = {
+export const emptyIncentiveSummaryForBooking: IncentiveReviewHistory = convertIncentiveReviewHistoryDates({
   prisonerNumber: 'A8083DY',
   bookingId: 12345,
   iepDate: '2017-08-15',
@@ -133,7 +134,7 @@ export const emptyIncentiveSummaryForBooking: IncentiveReviewHistory = {
   daysSinceReview: 1868,
   nextReviewDate: '2018-08-15',
   iepDetails: [],
-}
+})
 
 export function getTestIncentivesReviews(): IncentivesReviewsResponse {
   return {

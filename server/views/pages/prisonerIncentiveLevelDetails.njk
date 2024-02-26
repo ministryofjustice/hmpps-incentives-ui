@@ -143,7 +143,7 @@
 
     {% for result in results %}
       {% set resultsRows = (resultsRows.push([
-        { text: result.iepTimeAsDate | date },
+        { text: result.iepTime | date },
         { text: result.iepLevel },
         { html: result.comments or 'Not entered', classes: 'govuk-input--width-4 incentive-details-reason-text' },
         { text: result.iepEstablishment },

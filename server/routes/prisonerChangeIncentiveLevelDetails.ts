@@ -34,7 +34,7 @@ async function renderForm(
     const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
     const { agencyId, firstName, lastName } = prisonerDetails
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-    const currentIncentiveLevel = incentiveLevelDetails.iepLevel
+    const { iepLevel: currentIncentiveLevel } = incentiveLevelDetails
     const prisonIncentiveLevels = await incentivesApi.getPrisonIncentiveLevels(agencyId)
     const selectableLevels = prisonIncentiveLevels.map(level => ({
       text: currentIncentiveLevel === level.levelName ? `${level.levelName} (current level)` : level.levelName,
@@ -69,9 +69,7 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
     const { agencyId, firstName, lastName, assignedLivingUnit } = prisonerDetails
     const locationId: string | undefined = assignedLivingUnit?.description
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-    const currentIncentiveLevel = incentiveLevelDetails.iepLevel
-    const nextReviewDate: Date | undefined =
-      incentiveLevelDetails.nextReviewDate && new Date(`${incentiveLevelDetails.nextReviewDate}T12:00:00`)
+    const { iepLevel: currentIncentiveLevel, nextReviewDate } = incentiveLevelDetails
 
     res.render('pages/prisonerChangeIncentiveLevelConfirmation.njk', {
       currentIncentiveLevel,

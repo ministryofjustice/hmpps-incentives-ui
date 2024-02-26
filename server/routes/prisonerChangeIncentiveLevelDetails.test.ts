@@ -6,6 +6,7 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { PrisonApi } from '../data/prisonApi'
 import { IncentivesApi } from '../data/incentivesApi'
+import { convertIncentiveReviewHistoryDates, convertIncentiveReviewItemDates } from '../data/incentivesApiUtils'
 import { NomisUserRolesApi } from '../data/nomisUserRolesApi'
 import { samplePrisonIncentiveLevels, sampleReviewHistory } from '../testData/incentivesApi'
 import { prisonerDetails, prisonerInLeedsDetails } from '../testData/prisonApi'
@@ -213,28 +214,32 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
 
   describe('When there are no form errors', () => {
     it('should return confirmation page', () => {
-      incentivesApi.updateIncentiveLevelForPrisoner.mockResolvedValue({
-        comments: validFormData.reason,
-        iepCode: 'ENH',
-        iepLevel: 'Enhanced',
-        prisonerNumber,
-        bookingId: 12345,
-        iepDate: '2017-08-15',
-        iepTime: '2017-08-15T16:04:35',
-        userId: 'user1',
-        agencyId: 'MDI',
-      })
-      incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue({
-        prisonerNumber,
-        bookingId: 12345,
-        iepDate: '2017-08-15',
-        iepTime: '2017-08-15T16:04:35',
-        iepCode: 'ENH',
-        iepLevel: 'Enhanced',
-        daysSinceReview: 0,
-        nextReviewDate: '2020-08-15',
-        iepDetails: [],
-      })
+      incentivesApi.updateIncentiveLevelForPrisoner.mockResolvedValue(
+        convertIncentiveReviewItemDates({
+          comments: validFormData.reason,
+          iepCode: 'ENH',
+          iepLevel: 'Enhanced',
+          prisonerNumber,
+          bookingId: 12345,
+          iepDate: '2017-08-15',
+          iepTime: '2017-08-15T16:04:35',
+          userId: 'user1',
+          agencyId: 'MDI',
+        }),
+      )
+      incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(
+        convertIncentiveReviewHistoryDates({
+          prisonerNumber,
+          bookingId: 12345,
+          iepDate: '2017-08-15',
+          iepTime: '2017-08-15T16:04:35',
+          iepCode: 'ENH',
+          iepLevel: 'Enhanced',
+          daysSinceReview: 0,
+          nextReviewDate: '2020-08-15',
+          iepDetails: [],
+        }),
+      )
       return request(app)
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
         .set('authorization', `bearer ${tokenWithNecessaryRole}`)

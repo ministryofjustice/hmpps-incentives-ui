@@ -16,6 +16,7 @@ export default {
       },
     })
   },
+
   stubGetPrisoner: (): SuperAgentRequest => {
     return stubFor({
       request: {

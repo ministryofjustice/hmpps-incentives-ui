@@ -2,7 +2,7 @@ import Page from '../page'
 
 export default class PrisonerChangeIncentiveLevelDetailsPage extends Page {
   constructor() {
-    super(`Record`)
+    super(`Record John Smith’s incentive level`)
   }
 
   get pageHeading() {

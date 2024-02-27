@@ -2,7 +2,7 @@ import Page, { type PageElement } from '../page'
 
 export default class PrisonerIncentiveLevelDetailsPage extends Page {
   constructor() {
-    super('Incentive level details')
+    super(`John Smith’s incentive details`)
   }
 
   get recordIncentiveLevelButton(): PageElement<HTMLAnchorElement> {
@@ -31,6 +31,10 @@ export default class PrisonerIncentiveLevelDetailsPage extends Page {
 
   get filterSubmit() {
     return cy.get('[data-test="filter-submit"]')
+  }
+
+  get clearFilter(): PageElement<HTMLElement> {
+    return cy.get('#clearFilter')
   }
 
   get noIncentiveLevelHistory() {

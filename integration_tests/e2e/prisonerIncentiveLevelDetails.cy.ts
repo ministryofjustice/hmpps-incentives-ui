@@ -106,9 +106,11 @@ context('Prisoner incentive level details', () => {
         return result
       })
       const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
+      page.clearFilter.should('not.exist')
       page.establishmentSelect.select('LEI')
       page.incentiveLevelSelect.select('Basic')
       page.filterSubmit.click()
+      page.clearFilter.should('exist')
       page.incentiveLevelHistoryTable.then($table => {
         // @ts-expect-error ignore-error
         cy.get($table)

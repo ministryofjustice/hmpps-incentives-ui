@@ -336,6 +336,7 @@ export default {
       },
     })
   },
+
   stubGetIncentiveSummaryForPrisoner: (incentiveSummary): SuperAgentRequest => {
     return stubFor({
       request: {

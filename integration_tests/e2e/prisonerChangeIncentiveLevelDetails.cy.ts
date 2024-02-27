@@ -23,6 +23,7 @@ const IncentiveSummary = {
 }
 context('Prisoner change incentive level details', () => {
   beforeEach(() => {
+    cy.task('reset')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
@@ -32,7 +33,6 @@ context('Prisoner change incentive level details', () => {
 
     const roles = ['ROLE_MAINTAIN_IEP']
     cy.task('stubSignIn', { roles })
-    cy.task('stubGetIncentiveSummaryForPrisoner')
     cy.navigateToChangePrisonerIncentiveLevelDetails().then(result => {
       return result
     })
@@ -51,11 +51,10 @@ context('Prisoner change incentive level details', () => {
       cy.task('stubGetIncentiveSummaryForPrisoner', IncentiveSummary)
       page.radioButton.first().click()
       page.changeReason.type('Test comment. ')
-      page.submitChange.click()
-
-      const confirmationPage = Page.verifyOnPage(PrisonerChangeIncentiveLevelConfirmationPage)
+      cy.task('stubGetPrisonerFullDetailsTrue')
       cy.task('stubUpdateIncentiveLevelForPrisoner')
-      cy.task('stubGetPrisonerFullDetails')
+      page.submitChange.click()
+      const confirmationPage = Page.verifyOnPage(PrisonerChangeIncentiveLevelConfirmationPage)
       confirmationPage.newIncentiveLevel.should('contain', 'Basic')
       confirmationPage.nextReviewDate.should('contain', '26 September 2022')
     })
@@ -84,13 +83,13 @@ context('Prisoner change incentive level details', () => {
       cy.task('stubGetIncentiveSummaryForPrisoner', IncentiveSummary)
       page.radioButton.first().click()
       page.changeReason.type('Test comment. ')
+      cy.task('stubGetPrisonerFullDetailsTrue')
+      cy.task('stubUpdateIncentiveLevelForPrisoner')
       page.submitChange.click()
     })
 
     it('click on manage reviews', () => {
       const confirmationPage = Page.verifyOnPage(PrisonerChangeIncentiveLevelConfirmationPage)
-      cy.task('stubUpdateIncentiveLevelForPrisoner')
-      cy.task('stubGetPrisonerFullDetails')
       confirmationPage.newIncentiveLevel.should('contain', 'Basic')
       confirmationPage.nextReviewDate.should('contain', '26 September 2022')
 
@@ -107,11 +106,8 @@ context('Prisoner change incentive level details', () => {
 
     it('click on prisoner profile', () => {
       const confirmationPage = Page.verifyOnPage(PrisonerChangeIncentiveLevelConfirmationPage)
-      cy.task('stubUpdateIncentiveLevelForPrisoner')
-      cy.task('stubGetPrisonerFullDetails')
       confirmationPage.newIncentiveLevel.should('contain', 'Basic')
       confirmationPage.nextReviewDate.should('contain', '26 September 2022')
-
       cy.trackGoogleAnalyticsCalls().then(googleAnalyticsTracker => {
         confirmationPage.goToPrisonerProfile.click()
         cy.then(() => {

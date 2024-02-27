@@ -19,6 +19,7 @@ export default {
       },
     })
   },
+
   stubGetImage: (): SuperAgentRequest => {
     const imagePath = path.join(__dirname, '..', '..', 'assets', 'images', 'prisoner.jpeg')
     const imageContents = fs.readFileSync(imagePath, { encoding: 'base64' })
@@ -37,6 +38,7 @@ export default {
       },
     })
   },
+
   stubGetUserLocations: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -75,6 +77,7 @@ export default {
       },
     })
   },
+
   stubGetPrisonerDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -102,7 +105,36 @@ export default {
       },
     })
   },
-  stubGetPrisonerFullDetails: (): SuperAgentRequest => {
+
+  stubGetPrisonerFullDetailsFalse: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=false&csraSummary=false`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: {
+          offenderNo: 'A1234A',
+          agencyId: 'MDI',
+          bookingId: -1,
+          firstName: 'John',
+          lastName: 'Smith',
+          assignedLivingUnit: {
+            agencyId: 'MDI',
+            locationId: 1,
+            description: '123',
+            agencyName: '123',
+          },
+        },
+      },
+    })
+  },
+
+  stubGetPrisonerFullDetailsTrue: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -129,6 +161,7 @@ export default {
       },
     })
   },
+
   stubGetStaffDetails: (staff): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -144,6 +177,7 @@ export default {
       },
     })
   },
+
   stubGetAgency: (agency): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -156,21 +190,6 @@ export default {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: agency.json,
-      },
-    })
-  },
-  stubGetPrisonIncentiveLevels: (prisonId): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        url: `/incentive/prison-levels/${prisonId}`,
-      },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: prisonId.json,
       },
     })
   },

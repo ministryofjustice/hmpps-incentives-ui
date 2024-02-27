@@ -57,52 +57,10 @@ Cypress.Commands.add('navigateToPrisonerIncentiveLevelDetails', () => {
 
 Cypress.Commands.add('navigateToChangePrisonerIncentiveLevelDetails', () => {
   cy.signIn()
-  cy.task('stubGetPrisonerDetails')
+  cy.task('stubGetIncentiveSummaryForPrisoner')
+  cy.task('stubGetPrisonerFullDetailsFalse')
   cy.task('stubPrisonIncentiveLevels')
-  cy.task('stubGetPrisoner')
-  cy.task('stubGetPrisonerFullDetails')
-  cy.task('stubGetAgency', {
-    agencyId: 'LEI',
-    json: {
-      agencyId: 'LEI',
-      description: 'Leeds (HMP)',
-      agencyType: 'INST',
-      active: true,
-    },
-  })
-  cy.task('stubGetAgency', {
-    agencyId: 'MDI',
-    json: {
-      agencyId: 'MDI',
-      description: 'Moorland (HMP & YOI)',
-      agencyType: 'INST',
-      active: true,
-    },
-  })
-  cy.task('stubGetStaffDetails', {
-    staffId: 'INCENTIVES_API',
-    json: {
-      username: 'INCENTIVES_API',
-      firstName: '',
-      lastName: '',
-    },
-  })
-  cy.task('stubGetStaffDetails', {
-    staffId: 'STAFF_USER',
-    json: {
-      username: 'STAFF_USER',
-      firstName: 'Staff',
-      lastName: 'User',
-    },
-  })
-  cy.task('stubGetStaffDetails', {
-    staffId: 'ANOTHER_USER',
-    json: {
-      username: 'ANOTHER_USER',
-      firstName: 'Another',
-      lastName: 'User',
-    },
-  })
+  cy.task('stubGetPrisonerDetails')
 
   cy.visit('/incentive-reviews/prisoner/A1234A/change-incentive-level')
 })

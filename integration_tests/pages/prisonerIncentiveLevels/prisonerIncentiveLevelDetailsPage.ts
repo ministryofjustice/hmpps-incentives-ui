@@ -9,39 +9,39 @@ export default class PrisonerIncentiveLevelDetailsPage extends Page {
     return cy.get('[data-test="change-incentive-level-link"] a')
   }
 
-  get nextReviewDate() {
+  get nextReviewDate(): PageElement<HTMLParagraphElement> {
     return cy.get('[data-test="next-review-date"]')
   }
 
-  get nextReviewOverdue() {
+  get nextReviewOverdue(): PageElement<HTMLSpanElement> {
     return cy.get('[data-test="next-review-overdue"]')
   }
 
-  get incentiveLevelHistoryTable() {
+  get incentiveLevelHistoryTable(): PageElement<HTMLTableElement> {
     return cy.get('[data-test="incentive-level-history"]')
   }
 
-  get establishmentSelect() {
+  get establishmentSelect(): PageElement<HTMLSelectElement> {
     return cy.get('[data-test="establishment-select"]')
   }
 
-  get incentiveLevelSelect() {
+  get incentiveLevelSelect(): PageElement<HTMLSelectElement> {
     return cy.get('[data-test="incentive-level-select"]')
   }
 
-  get filterSubmit() {
+  get filterSubmit(): PageElement<HTMLButtonElement> {
     return cy.get('[data-test="filter-submit"]')
   }
 
-  get clearFilter(): PageElement<HTMLElement> {
+  get clearFilter(): PageElement<HTMLAnchorElement> {
     return cy.get('#clearFilter')
   }
 
-  get noIncentiveLevelHistory() {
+  get noIncentiveLevelHistory(): PageElement<HTMLParagraphElement> {
     return cy.get('[data-test="no-incentive-level-history-message"]')
   }
 
-  get fromDate(): PageElement<HTMLElement> {
-    return cy.get('#fromDate')
+  get fromDate(): PageElement<HTMLAnchorElement> {
+    return cy.get('[data-qa="fromDate"]')
   }
 }

@@ -39,7 +39,6 @@ context('Prisoner change incentive level details', () => {
   context('When user has CORRECT role', () => {
     it('should display prisoner name and current level', () => {
       const page = Page.verifyOnPage(PrisonerChangeIncentiveLevelDetailsPage)
-      page.pageHeading.should('contain.text', 'Record John Smith’s incentive level')
       page.currentIncentiveLevel.should('contain.text', 'Standard')
       page.newLevel.should('contain.text', 'Standard (current level)')
     })
@@ -60,9 +59,9 @@ context('Prisoner change incentive level details', () => {
     it('should display missing form input errors', () => {
       const page = Page.verifyOnPage(PrisonerChangeIncentiveLevelDetailsPage)
       page.submitChange.click()
-      page.formErrors.should('contain.text', 'Select an incentive level, even if it is the same as before')
+      page.errorSummary.should('contain.text', 'Select an incentive level, even if it is the same as before')
       page.newLevelError.should('contain.text', 'Select an incentive level, even if it is the same as before')
-      page.formErrors.should('contain.text', 'Enter a reason for recording')
+      page.errorSummary.should('contain.text', 'Enter a reason for recording')
       page.reasonError.should('contain.text', 'Enter a reason for recording')
     })
 
@@ -71,7 +70,7 @@ context('Prisoner change incentive level details', () => {
       page.radioButton.first().click()
       page.changeReason.type('Test comment. '.repeat(18))
       page.submitChange.click()
-      page.formErrors.should('contain.text', 'Comments must be 240 characters or less')
+      page.errorSummary.should('contain.text', 'Comments must be 240 characters or less')
     })
   })
 

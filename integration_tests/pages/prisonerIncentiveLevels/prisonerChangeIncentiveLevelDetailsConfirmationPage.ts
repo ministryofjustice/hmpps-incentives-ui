@@ -1,23 +1,23 @@
-import Page from '../page'
+import Page, { PageElement } from '../page'
 
 export default class PrisonerChangeIncentiveLevelDetailsConfirmationPage extends Page {
   constructor() {
     super(`John Smith’s incentive level is set to Basic`)
   }
 
-  get newIncentiveLevel() {
+  get newIncentiveLevel(): PageElement {
     return cy.get('[data-test="current-incentive-level"]')
   }
 
-  get nextReviewDate() {
+  get nextReviewDate(): PageElement {
     return cy.get('[data-test="next-review-date"]')
   }
 
-  get goToManageIncentives() {
+  get goToManageIncentives(): PageElement<HTMLAnchorElement> {
     return cy.get('[data-test="goto-manage-incentives"]')
   }
 
-  get goToPrisonerProfile() {
+  get goToPrisonerProfile(): PageElement<HTMLAnchorElement> {
     return cy.get('[data-test="goto-prisoner-quicklook"]')
   }
 }

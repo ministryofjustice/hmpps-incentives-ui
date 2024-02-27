@@ -1,5 +1,3 @@
-import moment from 'moment'
-
 import type { ErrorSummaryItem, GovukSelectItem } from '../routes/forms/forms'
 
 /** String solely of whitespace or falsey */
@@ -55,10 +53,6 @@ export const putLastNameFirst = (firstName: string, lastName: string): string =>
   return `${properCaseName(lastName)}, ${properCaseName(firstName)}`
 }
 
-/** Number of days elapsed, ignoring time of day */
-export const daysSinceMoment = (date: moment.MomentInput): number =>
-  Math.max(Math.floor(moment.duration(moment().startOf('day').diff(moment(date).startOf('day'))).asDays()), 0)
-
 /** Number of days elapsed, ignoring time of day, since `date`; 0 for today or any time in future */
 export const daysSince = (date: Date): number => {
   const today = new Date()
@@ -109,13 +103,19 @@ export function inputStringToPenceAmount(pounds: string): number {
   return pence
 }
 
-/** Format dates to be used in the datepicker component. */
-export const formatDateForDatePicker = (
-  isoDate: string,
-  style: 'short' | 'full' | 'long' | 'medium' = 'long',
-): string => {
-  if (!isoDate) return ''
-  return new Date(isoDate).toLocaleDateString('en-gb', { dateStyle: style })
+/** Parse date in the form DD/MM/YYYY. Throws an error when invalid */
+export const parseDateInput = (input: string): Date => {
+  const match = input && /^(?<day>\d{1,2})\/(?<month>\d{1,2})\/(?<year>\d{4})$/.exec(input.trim())
+  if (!match) throw new Error('Invalid date')
+  const { year, month, day } = match.groups
+  const y = parseInt(year, 10)
+  const m = parseInt(month, 10)
+  const d = parseInt(day, 10)
+  if (Number.isSafeInteger(y) && m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+    const date = new Date(y, m - 1, d)
+    if (date) return date
+  }
+  throw new Error('Invalid date')
 }
 
 /** Find field error in error summary list */

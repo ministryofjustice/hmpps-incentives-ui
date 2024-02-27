@@ -1,7 +1,7 @@
 import type { RequestHandler, Router } from 'express'
-import moment from 'moment'
 
-import { daysSinceMoment, formatName, formatDateForDatePicker, putLastNameFirst } from '../utils/utils'
+import format from '../utils/format'
+import { formatName, parseDateInput, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { maintainPrisonerIncentiveLevelRole, SYSTEM_USERS } from '../data/constants'
 import TokenStore from '../data/tokenStore'
@@ -9,24 +9,31 @@ import { createRedisClient } from '../data/redisClient'
 import HmppsAuthClient from '../data/hmppsAuthClient'
 import { PrisonApi, type Staff } from '../data/prisonApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
-import { IncentivesApi, type IncentiveSummaryDetail } from '../data/incentivesApi'
-import type { ErrorSummaryItem } from './forms/forms'
+import { IncentivesApi, type IncentiveReviewHistoryItem } from '../data/incentivesApi'
+import type { ErrorSummaryItem, GovukSelectItem } from './forms/forms'
 
-type HistoryDetail = IncentiveSummaryDetail & {
-  iepEstablishment: string
-  iepStaffMember: string | undefined
-  formattedTime: string
-}
-
-type HistoryFilters = {
+interface FormData {
   agencyId?: string
   incentiveLevel?: string
   fromDate?: string
   toDate?: string
 }
 
+type HistoryDetail = IncentiveReviewHistoryItem & {
+  iepEstablishment: string
+  iepStaffMember: string | undefined
+}
+
+type HistoryFilters = {
+  agencyId?: string
+  incentiveLevel?: string
+  fromDate?: Date
+  toDate?: Date
+}
+
 const filterData = (data: HistoryDetail[], fields: HistoryFilters): HistoryDetail[] => {
   let filteredResults = data
+
   if (fields.agencyId) {
     filteredResults = filteredResults.filter(result => result.agencyId === fields.agencyId)
   }
@@ -36,13 +43,13 @@ const filterData = (data: HistoryDetail[], fields: HistoryFilters): HistoryDetai
   }
 
   if (fields.fromDate) {
-    const fromDate = moment(fields.fromDate)
-    filteredResults = filteredResults.filter(result => moment(result.iepDate).isSameOrAfter(fromDate))
+    filteredResults = filteredResults.filter(result => result.iepTime >= fields.fromDate)
   }
 
   if (fields.toDate) {
-    const toDate = moment(fields.toDate)
-    filteredResults = filteredResults.filter(result => moment(result.iepDate).isSameOrBefore(toDate))
+    const toDate = new Date(fields.toDate) // copy object rather than mutating in-place
+    toDate.setDate(toDate.getDate() + 1)
+    filteredResults = filteredResults.filter(result => result.iepTime < toDate)
   }
 
   return filteredResults
@@ -63,6 +70,7 @@ export default function routes(router: Router): Router {
 
   get('/', async (req, res) => {
     const { prisonerNumber } = req.params
+    const { agencyId, incentiveLevel, fromDate: fromDateInput, toDate: toDateInput }: FormData = req.query
     const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
 
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
@@ -70,32 +78,18 @@ export default function routes(router: Router): Router {
     const offenderSearchClient = new OffenderSearchClient(systemToken)
     const incentivesApi = new IncentivesApi(systemToken)
 
+    // load prisoner info; propagates 404 if not found
     const prisoner = await offenderSearchClient.getPrisoner(prisonerNumber)
-    const prisonerName = formatName(prisoner.firstName, prisoner.lastName)
     const { firstName, lastName } = prisoner
+    const prisonerName = formatName(firstName, lastName)
 
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-    const currentIncentiveLevel = incentiveLevelDetails.iepLevel
-    const {
-      agencyId,
-      incentiveLevel,
-      fromDate,
-      toDate,
-    }: {
-      agencyId?: string
-      incentiveLevel?: string
-      fromDate?: string
-      toDate?: string
-    } = req.query
-    const nextReviewDate = moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
-    const reviewDaysOverdue = daysSinceMoment(nextReviewDate)
+    const { iepLevel: currentIncentiveLevel, nextReviewDate } = incentiveLevelDetails
 
     const prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.prisonId)
     const userCanMaintainIncentives = res.locals.user.roles.includes(maintainPrisonerIncentiveLevelRole)
 
-    const todayAsShortDate = formatDateForDatePicker(new Date().toISOString(), 'short')
-    const fromDateFormatted = moment(fromDate, 'DD/MM/YYYY')
-    const toDateFormatted = moment(toDate, 'DD/MM/YYYY')
+    const todayAsShortDate = format.formDate(new Date())
 
     // Offenders are likely to have multiple IEPs at the same agency.
     // By getting a unique list of users and agencies, we reduce the duplicate
@@ -136,47 +130,66 @@ export default function routes(router: Router): Router {
       const user = details.userId && users.find(u => u.username === details.userId)
 
       return {
-        iepEstablishment: description,
-        iepStaffMember: user && `${formatName(user.firstName, user.lastName)}`.trim(),
-        formattedTime: moment(details.iepTime, 'YYYY-MM-DD HH:mm').format('D MMMM YYYY - HH:mm'),
         ...details,
+        iepEstablishment: description,
+        iepStaffMember: user && formatName(user.firstName, user.lastName),
       }
-    })
-
-    const filteredResults = filterData(iepHistoryDetails, {
-      agencyId,
-      incentiveLevel,
-      fromDate: fromDate && fromDateFormatted.format('YYYY-MM-DD'),
-      toDate: toDate && toDateFormatted.format('YYYY-MM-DD'),
     })
 
     const errors: ErrorSummaryItem[] = []
 
-    const noFiltersSupplied = Boolean(!agencyId && !incentiveLevel && !fromDate && !toDate)
+    if (agencyId && !establishments.some(agency => agency.agencyId === agencyId)) {
+      errors.push({ href: '#agencyId', text: `Choose an establishment` })
+    }
 
+    if (incentiveLevel && !levels.some(level => level === incentiveLevel)) {
+      errors.push({ href: '#incentiveLevel', text: `Choose an incentive level` })
+    }
+
+    let fromDate: Date | undefined
+    let toDate: Date | undefined
+    try {
+      if (fromDateInput) {
+        fromDate = parseDateInput(fromDateInput)
+      }
+    } catch (e) {
+      errors.push({ href: '#fromDate', text: `Enter a from date, for example ${todayAsShortDate}` })
+    }
+    try {
+      if (toDateInput) {
+        toDate = parseDateInput(toDateInput)
+      }
+    } catch (e) {
+      errors.push({ href: '#toDate', text: `Enter a to date, for example ${todayAsShortDate}` })
+    }
+    if (fromDate && toDate && fromDateInput > toDateInput) {
+      errors.push({ href: '#fromDate', text: 'Enter a from date which is not after the to date' })
+      errors.push({ href: '#toDate', text: 'Enter a to date which is not before the from date' })
+    }
+
+    const filteredResults =
+      errors.length === 0
+        ? filterData(iepHistoryDetails, {
+            agencyId,
+            incentiveLevel,
+            fromDate,
+            toDate,
+          })
+        : []
+
+    const formValues: FormData = {
+      agencyId,
+      incentiveLevel,
+      fromDate: fromDateInput,
+      toDate: toDateInput,
+    }
+    const noFiltersSupplied = Boolean(!agencyId && !incentiveLevel && !fromDate && !toDate)
     const noResultsFoundMessage =
       (!filteredResults.length &&
         (noFiltersSupplied
           ? `${prisonerName} has no incentive level history`
           : 'There is no incentive level history for the selections you have made')) ||
       ''
-
-    if (fromDate && !fromDateFormatted.isValid()) {
-      errors.push({ href: '#fromDate', text: `Enter a from date, for example ${todayAsShortDate}` })
-    }
-    if (toDate && !toDateFormatted.isValid()) {
-      errors.push({ href: '#toDate', text: `Enter a to date, for example ${todayAsShortDate}` })
-    }
-    if (
-      fromDate &&
-      toDate &&
-      fromDateFormatted.isValid() &&
-      toDateFormatted.isValid() &&
-      fromDateFormatted.isAfter(toDateFormatted, 'day')
-    ) {
-      errors.push({ href: '#fromDate', text: 'Enter a from date which is not after the to date' })
-      errors.push({ href: '#toDate', text: 'Enter a to date which is not before the from date' })
-    }
 
     res.locals.breadcrumbs.popLastItem()
     res.locals.breadcrumbs.addItems({
@@ -188,22 +201,27 @@ export default function routes(router: Router): Router {
       currentIncentiveLevel,
       establishments: establishments
         .sort((a, b) => a.description.localeCompare(b.description))
-        .map(establishment => ({
-          text: establishment.description,
-          value: establishment.agencyId,
-        })),
+        .map(
+          establishment =>
+            ({
+              text: establishment.description,
+              value: establishment.agencyId,
+            }) satisfies GovukSelectItem,
+        ),
       errors,
-      formValues: req.query,
-      levels: levels.map(level => ({
-        text: level,
-        value: level,
-      })),
+      formValues,
+      levels: levels.map(
+        level =>
+          ({
+            text: level,
+            value: level,
+          }) satisfies GovukSelectItem,
+      ),
       maxDate: todayAsShortDate,
-      nextReviewDate: nextReviewDate.format('D MMMM YYYY'),
+      nextReviewDate,
       noResultsFoundMessage,
       prisonerName,
       recordIncentiveUrl: `/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`,
-      reviewDaysOverdue,
       results: filteredResults,
       noFiltersSupplied,
       userCanUpdateIEP: prisonerWithinCaseloads && userCanMaintainIncentives,

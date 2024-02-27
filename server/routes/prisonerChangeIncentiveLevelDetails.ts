@@ -1,5 +1,4 @@
 import type { RequestHandler, Request, Response, Router } from 'express'
-import moment from 'moment'
 
 import { formatName, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
@@ -35,7 +34,7 @@ async function renderForm(
     const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
     const { agencyId, firstName, lastName } = prisonerDetails
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-    const currentIncentiveLevel = incentiveLevelDetails.iepLevel
+    const { iepLevel: currentIncentiveLevel } = incentiveLevelDetails
     const prisonIncentiveLevels = await incentivesApi.getPrisonIncentiveLevels(agencyId)
     const selectableLevels = prisonIncentiveLevels.map(level => ({
       text: currentIncentiveLevel === level.levelName ? `${level.levelName} (current level)` : level.levelName,
@@ -70,9 +69,7 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
     const { agencyId, firstName, lastName, assignedLivingUnit } = prisonerDetails
     const locationId: string | undefined = assignedLivingUnit?.description
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
-    const currentIncentiveLevel = incentiveLevelDetails.iepLevel
-    const nextReviewDate =
-      incentiveLevelDetails.nextReviewDate && moment(incentiveLevelDetails.nextReviewDate, 'YYYY-MM-DD HH:mm')
+    const { iepLevel: currentIncentiveLevel, nextReviewDate } = incentiveLevelDetails
 
     res.render('pages/prisonerChangeIncentiveLevelConfirmation.njk', {
       currentIncentiveLevel,
@@ -80,7 +77,7 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
         agencyId && locationId && locationId.includes('-')
           ? `/incentive-summary/${agencyId}-${locationId.split('-')[0]}`
           : '/select-location',
-      nextReviewDate: nextReviewDate?.format('D MMMM YYYY'),
+      nextReviewDate,
       prisonerNumber,
       prisonerName: formatName(firstName, lastName),
       profileUrl,

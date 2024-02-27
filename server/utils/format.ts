@@ -25,6 +25,16 @@ export default {
     })
   },
 
+  /** Formats a date, e.g. 31/10/2021 */
+  formDate(date: Date): string {
+    return date.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+      timeZone: 'Europe/London',
+    })
+  },
+
   /** Split year-month into parts, e.g. `'2022-05'` becomes `{ year: '2022', month: 'May' }` */
   splitYearAndMonth(yearAndMonth: string): { year: number; month: string } {
     const [year, month] = (yearAndMonth ?? '').split('-')

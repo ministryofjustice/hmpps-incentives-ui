@@ -1,9 +1,10 @@
 import type {
   IncentivesReviewsResponse,
-  IncentiveSummaryForBookingWithDetails,
+  IncentiveReviewHistory,
   IncentiveLevel,
   PrisonIncentiveLevel,
 } from '../data/incentivesApi'
+import { convertIncentiveReviewHistoryDates } from '../data/incentivesApiUtils'
 
 export const sampleIncentiveLevels: IncentiveLevel[] = [
   { code: 'BAS', name: 'Basic', active: true, required: true },
@@ -77,53 +78,63 @@ export const samplePrisonIncentiveLevels: PrisonIncentiveLevel[] = [
   },
 ]
 
-export const incentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
+export const sampleReviewHistory: IncentiveReviewHistory = convertIncentiveReviewHistoryDates({
+  prisonerNumber: 'A8083DY',
   bookingId: 12345,
   iepDate: '2017-08-15',
   iepTime: '2017-08-15T16:04:35',
   iepLevel: 'Standard',
+  iepCode: 'STD',
   daysSinceReview: 1868,
   nextReviewDate: '2018-08-15',
   iepDetails: [
     {
+      prisonerNumber: 'A8083DY',
       bookingId: 12345,
       iepDate: '2017-08-15',
       iepTime: '2017-08-15T16:04:35',
       agencyId: 'MDI',
       iepLevel: 'Standard',
+      iepCode: 'STD',
       userId: 'NOMIS_USER',
       comments: 'STANDARD_NOMIS_USER_COMMENT',
     },
     {
+      prisonerNumber: 'A8083DY',
       bookingId: 12345,
       iepDate: '2017-08-10',
       iepTime: '2017-08-10T16:04:35',
       agencyId: 'LEI',
       iepLevel: 'Basic',
+      iepCode: 'BAS',
       userId: 'SYSTEM_USER',
       comments: 'BASIC_SYSTEM_USER_COMMENT',
     },
     {
+      prisonerNumber: 'A8083DY',
       bookingId: 12345,
       iepDate: '2017-08-07',
       iepTime: '2017-08-07T16:04:35',
       agencyId: 'MDI',
       iepLevel: 'Enhanced',
+      iepCode: 'ENH',
       userId: 'UNKNOWN_USER',
       comments: 'ENHANCED_UNKNOWN_USER_COMMENT',
     },
   ],
-}
+})
 
-export const emptyIncentiveSummaryForBooking: IncentiveSummaryForBookingWithDetails = {
+export const emptyIncentiveSummaryForBooking: IncentiveReviewHistory = convertIncentiveReviewHistoryDates({
+  prisonerNumber: 'A8083DY',
   bookingId: 12345,
   iepDate: '2017-08-15',
   iepTime: '2017-08-15T16:04:35',
   iepLevel: 'Standard',
+  iepCode: 'STD',
   daysSinceReview: 1868,
   nextReviewDate: '2018-08-15',
   iepDetails: [],
-}
+})
 
 export function getTestIncentivesReviews(): IncentivesReviewsResponse {
   return {

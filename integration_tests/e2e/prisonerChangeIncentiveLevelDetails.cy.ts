@@ -33,9 +33,7 @@ context('Prisoner change incentive level details', () => {
 
     const roles = ['ROLE_MAINTAIN_IEP']
     cy.task('stubSignIn', { roles })
-    cy.navigateToChangePrisonerIncentiveLevelDetails().then(result => {
-      return result
-    })
+    cy.navigateToChangePrisonerIncentiveLevelDetails()
   })
 
   context('When user has CORRECT role', () => {

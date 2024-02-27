@@ -7,49 +7,37 @@ Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
 
 Cypress.Commands.add('navigateToPrisonerIncentiveLevelDetails', () => {
   cy.signIn()
-  cy.task('stubGetPrisonerDetails')
+  cy.task('stubGetPrisonerFullDetailsFalse')
   cy.task('stubGetPrisoner')
   cy.task('stubGetStaffDetails', {
     staffId: 'INCENTIVES_API',
-    json: {
-      username: 'INCENTIVES_API',
-      firstName: '',
-      lastName: '',
-    },
+    username: 'INCENTIVES_API',
+    firstName: '',
+    lastName: '',
   })
   cy.task('stubGetStaffDetails', {
     staffId: 'STAFF_USER',
-    json: {
-      username: 'STAFF_USER',
-      firstName: 'Staff',
-      lastName: 'User',
-    },
+    username: 'STAFF_USER',
+    firstName: 'Staff',
+    lastName: 'User',
   })
   cy.task('stubGetStaffDetails', {
     staffId: 'ANOTHER_USER',
-    json: {
-      username: 'ANOTHER_USER',
-      firstName: 'Another',
-      lastName: 'User',
-    },
+    username: 'ANOTHER_USER',
+    firstName: 'Another',
+    lastName: 'User',
   })
   cy.task('stubGetAgency', {
     agencyId: 'LEI',
-    json: {
-      agencyId: 'LEI',
-      description: 'Leeds (HMP)',
-      agencyType: 'INST',
-      active: true,
-    },
+    description: 'Leeds (HMP)',
+    agencyType: 'INST',
+    active: true,
   })
   cy.task('stubGetAgency', {
     agencyId: 'MDI',
-    json: {
-      agencyId: 'MDI',
-      description: 'Moorland (HMP & YOI)',
-      agencyType: 'INST',
-      active: true,
-    },
+    description: 'Moorland (HMP & YOI)',
+    agencyType: 'INST',
+    active: true,
   })
 
   cy.visit('/incentive-reviews/prisoner/A1234A')

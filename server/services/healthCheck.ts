@@ -64,6 +64,7 @@ const apiChecks = [
     `${config.apis.hmppsIncentivesApi.url}/health/ping`,
     config.apis.hmppsIncentivesApi.agent,
   ),
+  service('offenderSearchApi', `${config.apis.offenderSearchApi.url}/health/ping`, config.apis.offenderSearchApi.agent),
   ...(config.apis.tokenVerification.enabled
     ? [
         service(

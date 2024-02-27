@@ -4,6 +4,7 @@ import * as path from 'node:path'
 import { SuperAgentRequest } from 'superagent'
 
 import { stubFor } from './wiremock'
+import { Agency, Staff } from '../../server/data/prisonApi'
 
 export default {
   stubPing: (): SuperAgentRequest => {
@@ -162,7 +163,7 @@ export default {
     })
   },
 
-  stubGetStaffDetails: (staff): SuperAgentRequest => {
+  stubGetStaffDetails: (staff: Staff): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -173,12 +174,12 @@ export default {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: staff.json,
+        jsonBody: staff,
       },
     })
   },
 
-  stubGetAgency: (agency): SuperAgentRequest => {
+  stubGetAgency: (agency: Agency): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
@@ -189,7 +190,7 @@ export default {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: agency.json,
+        jsonBody: agency,
       },
     })
   },

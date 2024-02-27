@@ -99,9 +99,9 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.515.0",
+    "@aws-sdk/client-s3": "^3.521.0",
     "@ministryofjustice/frontend": "^2.1.1",
-    "@sentry/node": "^7.102.0",
+    "@sentry/node": "^7.102.1",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.4",
     "body-parser": "^1.20.2",
@@ -162,7 +162,7 @@
     "cypress": "^13.6.6",
     "cypress-multi-reporters": "^1.6.4",
     "dotenv": "^16.4.5",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",

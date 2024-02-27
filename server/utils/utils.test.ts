@@ -2,13 +2,13 @@ import type { ErrorSummaryItem, GovukSelectItem } from '../routes/forms/forms'
 import {
   convertToTitleCase,
   daysSince,
-  daysSinceMoment,
   findFieldInErrorSummary,
   formatName,
   govukSelectInsertDefault,
   govukSelectSetSelected,
   initialiseName,
   inputStringToPenceAmount,
+  parseDateInput,
   penceAmountToInputString,
   possessive,
   properCaseName,
@@ -178,33 +178,32 @@ describe('counting days since a date', () => {
   })
 })
 
-describe('days since', () => {
-  beforeAll(() => {
-    const today = new Date('2022-09-26T12:34:56.000+01:00')
-    jest.useFakeTimers({ now: today })
+describe('parseDateInput', () => {
+  it.each([
+    ['25/02/2024', [25, 2, 2024]],
+    ['01/01/2024 ', [1, 1, 2024]],
+    ['1/1/2024', [1, 1, 2024]],
+  ])('should work on valid date %s', (input, [day, month, year]) => {
+    const date = parseDateInput(input)
+    expect(date.getDate()).toEqual(day)
+    expect(date.getMonth()).toEqual(month - 1)
+    expect(date.getFullYear()).toEqual(year)
   })
-
-  afterAll(() => {
-    jest.useRealTimers()
-  })
-
-  it.each(['2022-09-25', '2022-09-25T17:00:00Z', '2022-09-25T23:59:59+01:00'])(
-    'returns 1 when date is yesterday',
-    date => expect(daysSinceMoment(date)).toEqual<number>(1),
-  )
 
   it.each([
-    ['2022-09-24', 2],
-    ['2021-09-26', 365],
-  ])('returns days elapsed since date', (date, expected) => expect(daysSinceMoment(date)).toEqual<number>(expected))
-
-  it.each(['2022-09-26', '2022-09-26T00:00:00Z', '2022-09-26T23:59:59+01:00'])('returns 0 when date is today', date =>
-    expect(daysSinceMoment(date)).toEqual<number>(0),
-  )
-
-  it.each(['2022-09-27', '2023-09-26', '2022-09-27T00:00:00Z'])('returns 0 for dates in future', date =>
-    expect(daysSinceMoment(date)).toEqual<number>(0),
-  )
+    undefined,
+    null,
+    '',
+    '1/1/24',
+    '32/01/2024',
+    '20-01-2024',
+    '01/01/2024 12:00',
+    '2024-01-01',
+    '2024-01-01T12:00:00Z',
+    'today',
+  ])('should throw an error on invalid date %p', input => {
+    expect(() => parseDateInput(input)).toThrow('Invalid date')
+  })
 })
 
 describe('convert between numeric pence and pound-pence string representations', () => {

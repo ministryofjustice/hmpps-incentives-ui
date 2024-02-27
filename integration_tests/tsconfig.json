@@ -8,5 +8,8 @@
     "skipLibCheck": true,
     "typeRoots": ["../server/@types", "../node_modules/@types", "../node_modules"],
   },
-  "include": ["**/*.ts"]
+  "include": [
+    "../server/@types/index.d.ts",
+    "**/*.ts"
+  ]
 }

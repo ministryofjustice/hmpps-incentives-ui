@@ -1,6 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import config from '../config'
 import RestClient from './restClient'
+import { convertIncentiveReviewHistoryDates, convertIncentiveReviewItemDates } from './incentivesApiUtils'
 
 /**
  * Structure representing an error response from the incentives api
@@ -122,29 +123,34 @@ export interface IncentivesReview {
   isNewToPrison: boolean
 }
 
-export type IncentiveSummaryForBooking = {
+export interface IncentiveReviewHistoryItem {
+  prisonerNumber: string
   bookingId: number
+  iepCode: string
   iepLevel: string
-  iepDate: string
-  iepTime: string
-  daysSinceReview: number
-  nextReviewDate: string
-}
-
-export type IncentiveSummaryDetail = {
-  bookingId: number
-  iepLevel: string
-  iepDate: string
-  iepTime: string
-  comments: string
+  iepDate: Date
+  iepTime: Date
+  comments: string | null
   agencyId: string
   userId: string | null
-  // also available
-  // auditModuleName: string
+  // also available:
+  //   auditModuleName: string
+  //   locationId: string | null
+  //   reviewType: string
 }
 
-export type IncentiveSummaryForBookingWithDetails = IncentiveSummaryForBooking & {
-  iepDetails: IncentiveSummaryDetail[]
+export type IncentiveReviewHistory = {
+  prisonerNumber: string
+  bookingId: number
+  iepCode: string
+  iepLevel: string
+  iepDate: Date
+  iepTime: Date
+  daysSinceReview: number
+  nextReviewDate: Date
+  iepDetails: IncentiveReviewHistoryItem[]
+  // also available:
+  //   locationId: string | null
 }
 
 export type UpdateIncentiveLevelRequest = {
@@ -157,18 +163,23 @@ export class IncentivesApi extends RestClient {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
   }
 
-  getIncentiveSummaryForPrisoner(prisonerNumber: string): Promise<IncentiveSummaryForBookingWithDetails> {
-    return this.get({ path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}` })
+  getIncentiveSummaryForPrisoner(prisonerNumber: string): Promise<IncentiveReviewHistory> {
+    return this.get<DatesAsStrings<IncentiveReviewHistory>>({
+      path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
+    }).then(response => convertIncentiveReviewHistoryDates(response))
   }
 
+  /**
+   * @throws SanitisedError<ErrorResponse>
+   */
   updateIncentiveLevelForPrisoner(
     prisonerNumber: string,
     data: UpdateIncentiveLevelRequest,
-  ): Promise<IncentiveSummaryDetail> {
-    return this.post({
+  ): Promise<IncentiveReviewHistoryItem> {
+    return this.post<DatesAsStrings<IncentiveReviewHistoryItem>>({
       path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
-      data: data as unknown as Record<string, unknown>,
-    })
+      data,
+    }).then(response => convertIncentiveReviewItemDates(response))
   }
 
   getIncentiveLevels(withInactive = false): Promise<IncentiveLevel[]> {
@@ -252,18 +263,20 @@ export class IncentivesApi extends RestClient {
   }: IncentivesReviewsRequest): Promise<IncentivesReviewsResponse> {
     const prison = encodeURIComponent(agencyId)
     const location = encodeURIComponent(locationPrefix)
-    return this.get<IncentivesReviewsResponse>({
+    return this.get<DatesAsStrings<IncentivesReviewsResponse>>({
       path: `/incentives-reviews/prison/${prison}/location/${location}/level/${levelCode}`,
       query: { sort, order, page, pageSize },
     }).then(response => {
-      response.reviews = response.reviews.map(review => {
-        // convert string date to js _midday_ datetime to avoid timezone offsets
-        const nextReviewDate = review.nextReviewDate as unknown as string
-        // eslint-disable-next-line no-param-reassign
-        review.nextReviewDate = new Date(`${nextReviewDate}T12:00:00`)
-        return review
-      })
-      return response
+      return {
+        ...response,
+        reviews: response.reviews.map(review => {
+          return {
+            ...review,
+            // convert string date to js _midday_ datetime to avoid timezone offsets
+            nextReviewDate: new Date(`${review.nextReviewDate}T12:00:00`),
+          }
+        }),
+      }
     })
   }
 }

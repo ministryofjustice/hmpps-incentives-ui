@@ -7,7 +7,7 @@ import { PrisonApi } from '../data/prisonApi'
 import { IncentivesApi } from '../data/incentivesApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
 import { getAgencyMockImplementation, staffDetails, agencyDetails } from '../testData/prisonApi'
-import { incentiveSummaryForBooking, emptyIncentiveSummaryForBooking } from '../testData/incentivesApi'
+import { sampleReviewHistory, emptyIncentiveSummaryForBooking } from '../testData/incentivesApi'
 import offenderDetails from '../testData/offenderSearch'
 import { SanitisedError } from '../sanitisedError'
 import { makeMockUser } from './testutils/mockUsers'
@@ -31,7 +31,7 @@ beforeEach(() => {
   offenderSearch.getPrisoner.mockResolvedValue(offenderDetails)
   prisonApi.getStaffDetails.mockResolvedValue(staffDetails)
   prisonApi.getAgency.mockImplementation(getAgencyMockImplementation)
-  incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(incentiveSummaryForBooking)
+  incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(sampleReviewHistory)
 
   app = appWithAllRoutes({})
 })
@@ -67,7 +67,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
         expect(res.request.url).toContain('/incentive-reviews/prisoner/A8083DY')
         expect(res.text).toContain('Incentive level history')
         expect(res.text).toContain('SYSTEM_USER_COMMENT')
-        expect(res.text).toContain('15 August 2017 - 16:04')
+        expect(res.text).toContain('15 August 2017, 16:04')
         expect(res.text).toContain('Smith, John')
       })
   })
@@ -178,6 +178,26 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .expect(res => {
         expect(res.text).toContain('There is a problem')
         expect(res.text).toContain(expectedError)
+      })
+  })
+
+  it('should show error if filtered by invalid establishment', () => {
+    return request(app)
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}/?agencyId=FEI`)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('There is a problem')
+        expect(res.text).toContain('Choose an establishment')
+      })
+  })
+
+  it('should show error if filtered by invalid incentive level', () => {
+    return request(app)
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}/?incentiveLevel=EN4`)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('There is a problem')
+        expect(res.text).toContain('Choose an incentive level')
       })
   })
 

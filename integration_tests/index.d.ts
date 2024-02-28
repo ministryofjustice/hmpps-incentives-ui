@@ -14,9 +14,12 @@ declare namespace Cypress {
     /**
      * Set up stubs needed for listing prisoner incentive levels
      */
-    navigateToPrisonerIncentiveLevelDetails(): Chainable<ListPage>
+    navigateToPrisonerIncentiveLevelDetails(): Chainable<PrisonerIncentiveLevelDetailsPage>
 
-    navigateToChangePrisonerIncentiveLevelDetails(): Chainable<ListPage>
+    /**
+     * Set up stubs needed for recording prisoner incentive level
+     */
+    navigateToChangePrisonerIncentiveLevelDetails(): Chainable<PrisonerChangeIncentiveLevelDetailsPage>
   }
 
   /**

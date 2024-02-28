@@ -7,7 +7,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/nomisUserRolesApi/health/ping',
+        urlPattern: '/offenderSearchApi/health/ping',
       },
       response: {
         status: 200,
@@ -17,11 +17,11 @@ export default {
     })
   },
 
-  stubGetUserCaseloads: (): SuperAgentRequest => {
+  stubGetPrisoner: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/nomisUserRolesApi/me/caseloads',
+        urlPattern: `/offenderSearchApi/prisoner/([A-Z0-9]+)`,
       },
       response: {
         status: 200,
@@ -29,16 +29,13 @@ export default {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: {
-          activeCaseload: {
-            id: 'MDI',
-            name: 'Moorland (HMP & YOI)',
-          },
-          caseloads: [
-            {
-              id: 'MDI',
-              name: 'Moorland (HMP & YOI)',
-            },
-          ],
+          bookingId: -1,
+          prisonerNumber: 'A1234A',
+          firstName: 'John',
+          lastName: 'Smith',
+          prisonId: 'MDI',
+          prisonName: 'Moorland',
+          cellLocation: '123',
         },
       },
     })

@@ -152,7 +152,6 @@ export default function routes(router: Router): Router {
       await renderForm(req, res, { newIepLevel, reason }, errors)
       return
     }
-
     const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
     const incentivesApi = new IncentivesApi(systemToken)
     try {

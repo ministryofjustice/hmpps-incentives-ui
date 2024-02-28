@@ -5,6 +5,21 @@ declare namespace Cypress {
      * @example cy.signIn({ failOnStatusCode: boolean })
      */
     signIn(options?: { failOnStatusCode: boolean }): Chainable<AUTWindow>
+
+    /**
+     * Installs a spy to track calls to global `gtag()`
+     */
+    trackGoogleAnalyticsCalls(): Chainable<GoogleAnalyticsTracker>
+
+    /**
+     * Set up stubs needed for listing prisoner incentive levels
+     */
+    navigateToPrisonerIncentiveLevelDetails(): Chainable<PrisonerIncentiveLevelDetailsPage>
+
+    /**
+     * Set up stubs needed for recording prisoner incentive level
+     */
+    navigateToChangePrisonerIncentiveLevelDetails(): Chainable<PrisonerChangeIncentiveLevelDetailsPage>
   }
 
   /**
@@ -12,6 +27,6 @@ declare namespace Cypress {
    */
   interface ApplicationWindow {
     /** Google Analytics version 4 */
-    gtag?: (...args: [string, string, Record<string, string>]) => void
+    gtag?: (...args: GtagCall) => void
   }
 }

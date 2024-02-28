@@ -6,6 +6,7 @@ import prisonApi from '../mockApis/prisonApi'
 import incentivesApi from '../mockApis/incentivesApi'
 import manageUsersApi from '../mockApis/manageUsersApi'
 import nomisUserRolesApi from '../mockApis/nomisUserRolesApi'
+import offenderSearchApi from '../mockApis/offenderSearchApi'
 import zendeskApi from '../mockApis/zendeskApi'
 import frontendComponents from '../mockApis/frontendComponents'
 
@@ -22,6 +23,8 @@ export default (on: (string, Record) => void): void => {
     stubGetIncentivesLevelBasic: incentivesApi.stubGetIncentivesLevelBasic,
     stubGetIncentivesLevelStandard: incentivesApi.stubGetIncentivesLevelStandard,
     stubGetIncentivesSorted: incentivesApi.stubGetIncentivesSorted,
+    stubGetIncentiveSummaryForPrisoner: incentivesApi.stubGetIncentiveSummaryForPrisoner,
+    stubUpdateIncentiveLevelForPrisoner: incentivesApi.stubUpdateIncentiveLevelForPrisoner,
 
     stubIncentiveLevels: incentivesApi.stubIncentiveLevels,
     stubIncentiveLevel: incentivesApi.stubIncentiveLevel,
@@ -38,6 +41,14 @@ export default (on: (string, Record) => void): void => {
     stubPrisonApiPing: prisonApi.stubPing,
     stubPrisonApiImages: prisonApi.stubGetImage,
     stubPrisonApiLocations: prisonApi.stubGetUserLocations,
+    stubGetPrisonerDetails: prisonApi.stubGetPrisonerDetails,
+    stubGetPrisonerFullDetailsTrue: prisonApi.stubGetPrisonerFullDetailsTrue,
+    stubGetPrisonerFullDetailsFalse: prisonApi.stubGetPrisonerFullDetailsFalse,
+    stubGetStaffDetails: prisonApi.stubGetStaffDetails,
+    stubGetAgency: prisonApi.stubGetAgency,
+
+    stubGetPrisoner: offenderSearchApi.stubGetPrisoner,
+    stubOffenderSearchApiPing: offenderSearchApi.stubPing,
 
     stubCreateZendeskTicket: zendeskApi.stubCreateTicket,
   })

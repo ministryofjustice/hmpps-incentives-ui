@@ -6,10 +6,7 @@
     "types": ["cypress", "express", "express-session"],
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "typeRoots": ["../server/@types", "../node_modules/@types", "../node_modules"],
+    "typeRoots": ["../server/@types", "../node_modules/@types", "../node_modules"]
   },
-  "include": [
-    "../server/@types/index.d.ts",
-    "**/*.ts"
-  ]
+  "include": ["../server/@types/index.d.ts", "**/*.ts"]
 }

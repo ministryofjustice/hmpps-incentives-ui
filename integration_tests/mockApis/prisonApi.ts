@@ -4,6 +4,7 @@ import * as path from 'node:path'
 import { SuperAgentRequest } from 'superagent'
 
 import { stubFor } from './wiremock'
+import { Agency, Staff } from '../../server/data/prisonApi'
 
 export default {
   stubPing: (): SuperAgentRequest => {
@@ -19,6 +20,7 @@ export default {
       },
     })
   },
+
   stubGetImage: (): SuperAgentRequest => {
     const imagePath = path.join(__dirname, '..', '..', 'assets', 'images', 'prisoner.jpeg')
     const imageContents = fs.readFileSync(imagePath, { encoding: 'base64' })
@@ -37,6 +39,7 @@ export default {
       },
     })
   },
+
   stubGetUserLocations: (): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -72,6 +75,122 @@ export default {
             subLocations: true,
           },
         ],
+      },
+    })
+  },
+
+  stubGetPrisonerDetails: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: {
+          offenderNo: 'A1234A',
+          agencyId: 'MDI',
+          bookingId: -1,
+          firstName: 'John',
+          lastName: 'Smith',
+          assignedLivingUnit: {
+            agencyId: 'MDI',
+            locationId: 1,
+            description: '123',
+            agencyName: '123',
+          },
+        },
+      },
+    })
+  },
+
+  stubGetPrisonerFullDetailsFalse: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=false&csraSummary=false`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: {
+          offenderNo: 'A1234A',
+          agencyId: 'MDI',
+          bookingId: -1,
+          firstName: 'John',
+          lastName: 'Smith',
+          assignedLivingUnit: {
+            agencyId: 'MDI',
+            locationId: 1,
+            description: '123',
+            agencyName: '123',
+          },
+        },
+      },
+    })
+  },
+
+  stubGetPrisonerFullDetailsTrue: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=true&csraSummary=true`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: {
+          offenderNo: 'A1234A',
+          agencyId: 'MDI',
+          bookingId: -1,
+          firstName: 'John',
+          lastName: 'Smith',
+          assignedLivingUnit: {
+            agencyId: 'MDI',
+            locationId: 1,
+            description: '123',
+            agencyName: '123',
+          },
+        },
+      },
+    })
+  },
+
+  stubGetStaffDetails: (staff: Staff): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        url: `/prisonApi/api/users/${staff.staffId}`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: staff,
+      },
+    })
+  },
+
+  stubGetAgency: (agency: Agency): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        url: `/prisonApi/api/agencies/${agency.agencyId}?activeOnly=true`,
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        jsonBody: agency,
       },
     })
   },

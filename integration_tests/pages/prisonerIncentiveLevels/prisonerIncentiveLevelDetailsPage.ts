@@ -41,7 +41,7 @@ export default class PrisonerIncentiveLevelDetailsPage extends Page {
     return cy.get('[data-test="no-incentive-level-history-message"]')
   }
 
-  get fromDate(): PageElement<HTMLAnchorElement> {
+  get fromDate(): PageElement<HTMLInputElement> {
     return cy.get('[data-qa="fromDate"]')
   }
 }

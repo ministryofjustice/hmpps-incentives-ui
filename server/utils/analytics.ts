@@ -76,9 +76,7 @@ export class TrendsRange {
 
 export function calculateTrendsRange(report: TrendsReport): TrendsReport & { range: TrendsRange } {
   let max = 0
-  // eslint-disable-next-line no-restricted-syntax
   for (const row of report.rows) {
-    // eslint-disable-next-line no-restricted-syntax
     for (const value of row.values) {
       if (report.plotPercentage) {
         if (row.total !== 0) {

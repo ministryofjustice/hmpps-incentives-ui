@@ -71,6 +71,7 @@
       }
     ],
     "no-use-before-define": 0,
+    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": ["error"],
     "semi": 0,

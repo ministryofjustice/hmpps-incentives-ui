@@ -483,7 +483,6 @@ describe('Reviews table', () => {
               .get()
               .slice(1, -1) // `photo` and `info` columns aren't sortable
 
-            // eslint-disable-next-line no-restricted-syntax
             for (const { href, ariaSortOrder } of columns) {
               const column = /sort=([^&]+)/.exec(href)[1]
               // level should be preserved

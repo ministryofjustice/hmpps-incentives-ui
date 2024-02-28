@@ -134,7 +134,6 @@ describe('AnalyticsView', () => {
 
   describe('linkTo()', () => {
     it('for National', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView('National', 'behaviour-entries', 'MDI')
         expect(analyticsView.linkTo(viewType)).toEqual(`/analytics/National/${viewType}`)
@@ -142,7 +141,6 @@ describe('AnalyticsView', () => {
     })
 
     it('for Regional', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView('LTHS', 'behaviour-entries', 'MDI')
         expect(analyticsView.linkTo(viewType)).toEqual(`/analytics/LTHS/${viewType}`)
@@ -150,7 +148,6 @@ describe('AnalyticsView', () => {
     })
 
     it('for a prison', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView(null, 'behaviour-entries', 'MDI')
         expect(analyticsView.linkTo(viewType)).toEqual(`/analytics/${viewType}`)
@@ -160,7 +157,6 @@ describe('AnalyticsView', () => {
 
   describe('getUrlFunction()', () => {
     it('for National, returns a function that links to regional level', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView('National', viewType, 'MDI')
         const urlFn = analyticsView.getUrlFunction()
@@ -169,7 +165,6 @@ describe('AnalyticsView', () => {
     })
 
     it('for Regional, returns a function which always returns null', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView('LTHS', viewType, 'MDI')
         const urlFn = analyticsView.getUrlFunction()
@@ -178,7 +173,6 @@ describe('AnalyticsView', () => {
     })
 
     it('for a prison, returns a function that links to Incentives table', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView(null, viewType, 'BWI')
         const urlFn = analyticsView.getUrlFunction()
@@ -187,7 +181,6 @@ describe('AnalyticsView', () => {
     })
 
     it('for a prison, does not link to Incentives table if the location is not a real wing', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView(null, viewType, 'BWI')
         const urlFn = analyticsView.getUrlFunction()

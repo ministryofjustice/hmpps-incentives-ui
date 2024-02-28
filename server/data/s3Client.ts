@@ -48,7 +48,6 @@ export default class S3Client {
     const response = await this.s3.send(command)
     const readableBody = response.Body as Readable
     const chunks: Uint8Array[] = []
-    // eslint-disable-next-line no-restricted-syntax
     for await (const chunk of readableBody) {
       chunks.push(chunk)
     }

@@ -1,5 +1,7 @@
 import type { SuperAgentRequest } from 'superagent'
 
+import type { OffenderSearchResult } from '../../server/data/offenderSearch'
+import { sampleOffenderDetails } from '../../server/testData/offenderSearch'
 import { stubFor } from './wiremock'
 
 export default {
@@ -7,7 +9,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/offenderSearchApi/health/ping',
+        urlPath: '/offenderSearchApi/health/ping',
       },
       response: {
         status: 200,
@@ -17,26 +19,19 @@ export default {
     })
   },
 
-  stubGetPrisoner: (): SuperAgentRequest => {
+  stubGetPrisoner: (data?: OffenderSearchResult): SuperAgentRequest => {
+    const body: OffenderSearchResult = data ?? sampleOffenderDetails
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/offenderSearchApi/prisoner/([A-Z0-9]+)`,
+        urlPattern: '/offenderSearchApi/prisoner/([A-Z0-9]+)',
       },
       response: {
         status: 200,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: {
-          bookingId: -1,
-          prisonerNumber: 'A1234A',
-          firstName: 'John',
-          lastName: 'Smith',
-          prisonId: 'MDI',
-          prisonName: 'Moorland',
-          cellLocation: '123',
-        },
+        jsonBody: body,
       },
     })
   },

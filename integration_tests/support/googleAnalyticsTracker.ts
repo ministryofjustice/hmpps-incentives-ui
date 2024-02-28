@@ -1,6 +1,6 @@
 export type GtagCall =
   | ['config', string, Record<string, string>?]
-  | ['get', string, string, ((string) => void)?]
+  | ['get', string, string, ((field: string) => void)?]
   | ['set', Record<string, string>]
   | ['event', string, Record<string, string>?]
 

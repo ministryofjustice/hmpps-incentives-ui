@@ -1,8 +1,7 @@
+import type { IncentiveReviewHistory } from '../../server/data/incentivesApi'
+import { emptyIncentiveSummaryForBooking } from '../../server/testData/incentivesApi'
 import Page from '../pages/page'
 import PrisonerIncentiveLevelDetailsPage from '../pages/prisonerIncentiveLevels/prisonerIncentiveLevelDetailsPage'
-import { emptyIncentiveSummaryForBooking } from '../../server/testData/incentivesApi'
-
-const date = new Date()
 
 context('Prisoner incentive level details', () => {
   beforeEach(() => {
@@ -36,17 +35,23 @@ context('Prisoner incentive level details', () => {
     })
 
     it('should NOT show that the next review is overdue', () => {
-      const lastReviewDate = date.getDate() - 10
-      const nextReviewDate = date.getFullYear() + 1
+      const today = new Date()
+      const lastReviewDate = new Date(today)
+      lastReviewDate.setDate(lastReviewDate.getDate() - 10)
+      const lastReviewDateIso = lastReviewDate.toISOString()
+      const nextReviewDate = new Date(today)
+      nextReviewDate.setFullYear(nextReviewDate.getFullYear() + 1)
+      const nextReviewDateIso = nextReviewDate.toISOString()
       // pretend the last review was 10 days ago
       cy.task('stubGetIncentiveSummaryForPrisoner', {
         ...emptyIncentiveSummaryForBooking,
-        iepDate: lastReviewDate,
-        iepTime: lastReviewDate,
-        nextReviewDate,
-      })
+        iepDetails: [],
+        iepDate: lastReviewDateIso.split('T')[0],
+        iepTime: lastReviewDateIso,
+        nextReviewDate: nextReviewDateIso,
+      } satisfies DatesAsStrings<IncentiveReviewHistory>)
       cy.navigateToPrisonerIncentiveLevelDetails()
-      cy.visit('/incentive-reviews/prisoner/A1234A')
+      cy.visit('/incentive-reviews/prisoner/A8083DY')
       const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
       page.nextReviewOverdue.should('not.exist')
     })

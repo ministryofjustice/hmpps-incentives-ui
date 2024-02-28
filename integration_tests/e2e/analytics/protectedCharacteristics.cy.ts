@@ -15,7 +15,6 @@ import PgdRegionSelection from '../../pages/analytics/pgdRegionSelection'
 type TestData = [ChartId, boolean, string[][]][]
 
 const assertTestData = (testData: TestData, page: AnalyticsPage) => {
-  // eslint-disable-next-line no-restricted-syntax
   for (const [chartId, removeLastRow, expectedData] of testData) {
     getTextFromTable(page.getChartTable(chartId)).then(rows => {
       const cleanedRows = cleanRows(rows, removeLastRow)

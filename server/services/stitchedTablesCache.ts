@@ -78,7 +78,6 @@ export class MemoryStitchedTablesCache extends StitchedTablesCache {
   > = {}
 
   clear(): void {
-    // eslint-disable-next-line no-restricted-syntax
     for (const key of Object.keys(this.cache)) {
       delete this.cache[key]
     }
@@ -135,7 +134,6 @@ export class FileStitchedTablesCache extends StitchedTablesCache {
   clear(): void {
     if (fs.existsSync(this.path)) {
       logger.debug('Clearing file system cache directory')
-      // eslint-disable-next-line no-restricted-syntax
       for (const fileName of fs.readdirSync(this.path)) {
         fs.rmSync(path.join(this.path, fileName))
       }

@@ -81,7 +81,6 @@ export function testDetailsOpenedGaEvents<PageClass extends AnalyticsPage>(
   const page = Page.verifyOnPage(pageClass)
 
   cy.trackGoogleAnalyticsCalls().then(googleAnalyticsTracker => {
-    // eslint-disable-next-line no-restricted-syntax
     for (const [chartId, gaCategory] of Object.entries(charts)) {
       page[detailsGetterMethod]
         .call(page, chartId)

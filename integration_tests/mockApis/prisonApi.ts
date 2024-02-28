@@ -11,7 +11,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/prisonApi/health/ping',
+        urlPath: '/prisonApi/health/ping',
       },
       response: {
         status: 200,
@@ -83,7 +83,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)`,
+        urlPattern: '/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)',
       },
       response: {
         status: 200,
@@ -91,9 +91,9 @@ export default {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: {
-          offenderNo: 'A1234A',
+          offenderNo: 'A8083DY',
           agencyId: 'MDI',
-          bookingId: -1,
+          bookingId: 12345,
           firstName: 'John',
           lastName: 'Smith',
           assignedLivingUnit: {
@@ -111,7 +111,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=false&csraSummary=false`,
+        urlPattern: '/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=false&csraSummary=false',
       },
       response: {
         status: 200,
@@ -119,9 +119,9 @@ export default {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: {
-          offenderNo: 'A1234A',
+          offenderNo: 'A8083DY',
           agencyId: 'MDI',
-          bookingId: -1,
+          bookingId: 12345,
           firstName: 'John',
           lastName: 'Smith',
           assignedLivingUnit: {
@@ -139,7 +139,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=true&csraSummary=true`,
+        urlPattern: '/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=true&csraSummary=true',
       },
       response: {
         status: 200,
@@ -147,9 +147,9 @@ export default {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: {
-          offenderNo: 'A1234A',
+          offenderNo: 'A8083DY',
           agencyId: 'MDI',
-          bookingId: -1,
+          bookingId: 12345,
           firstName: 'John',
           lastName: 'Smith',
           assignedLivingUnit: {
@@ -167,7 +167,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        url: `/prisonApi/api/users/${staff.staffId}`,
+        urlPath: `/prisonApi/api/users/${staff.username}`,
       },
       response: {
         status: 200,

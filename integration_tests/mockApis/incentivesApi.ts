@@ -1,7 +1,12 @@
 import type { SuperAgentRequest } from 'superagent'
 
 import { stubFor } from './wiremock'
-import type { IncentiveLevel, PrisonIncentiveLevel } from '../../server/data/incentivesApi'
+import {
+  IncentiveLevel,
+  IncentiveReviewHistory,
+  IncentiveReviewHistoryItem,
+  PrisonIncentiveLevel,
+} from '../../server/data/incentivesApi'
 import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../../server/testData/incentivesApi'
 
 export default {
@@ -9,7 +14,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/incentivesApi/health/ping',
+        urlPath: '/incentivesApi/health/ping',
       },
       response: {
         status: 200,
@@ -58,7 +63,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/incentivesApi/incentive/levels/${incentiveLevel.code}`,
+        urlPath: `/incentivesApi/incentive/levels/${incentiveLevel.code}`,
       },
       response: {
         status: 200,
@@ -74,7 +79,7 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        urlPattern: '/incentivesApi/incentive/levels',
+        urlPath: '/incentivesApi/incentive/levels',
       },
       response: {
         status: 201,
@@ -90,7 +95,7 @@ export default {
     return stubFor({
       request: {
         method: 'PATCH',
-        urlPattern: `/incentivesApi/incentive/levels/${incentiveLevel.code}`,
+        urlPath: `/incentivesApi/incentive/levels/${incentiveLevel.code}`,
       },
       response: {
         status: 200,
@@ -118,7 +123,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/incentivesApi/incentive/prison-levels/${options.prisonId}`,
+        urlPath: `/incentivesApi/incentive/prison-levels/${options.prisonId}`,
       },
       response: {
         status: 200,
@@ -136,7 +141,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/incentivesApi/incentive/prison-levels/${prisonIncentiveLevel.prisonId}/level/${prisonIncentiveLevel.levelCode}`,
+        urlPath: `/incentivesApi/incentive/prison-levels/${prisonIncentiveLevel.prisonId}/level/${prisonIncentiveLevel.levelCode}`,
       },
       response: {
         status: 200,
@@ -152,7 +157,7 @@ export default {
     return stubFor({
       request: {
         method: 'PATCH',
-        urlPattern: `/incentivesApi/incentive/prison-levels/${prisonIncentiveLevel.prisonId}/level/${prisonIncentiveLevel.levelCode}`,
+        urlPath: `/incentivesApi/incentive/prison-levels/${prisonIncentiveLevel.prisonId}/level/${prisonIncentiveLevel.levelCode}`,
       },
       response: {
         status: 200,
@@ -337,68 +342,90 @@ export default {
     })
   },
 
-  stubGetIncentiveSummaryForPrisoner: (incentiveSummary): SuperAgentRequest => {
+  stubGetIncentiveSummaryForPrisoner: (
+    incentiveSummary?: DatesAsStrings<IncentiveReviewHistory>,
+  ): SuperAgentRequest => {
+    const body: DatesAsStrings<IncentiveReviewHistory> = incentiveSummary ?? {
+      prisonerNumber: 'A8083DY',
+      bookingId: 12345,
+      iepDate: '2017-08-15',
+      iepTime: '2017-08-15T16:04:35',
+      iepCode: 'STD',
+      iepLevel: 'Standard',
+      daysSinceReview: 1868,
+      nextReviewDate: '2018-08-15',
+      iepDetails: [
+        {
+          prisonerNumber: 'A8083DY',
+          bookingId: 12345,
+          iepDate: '2017-08-15',
+          iepTime: '2017-08-15T16:04:35',
+          agencyId: 'MDI',
+          iepCode: 'STD',
+          iepLevel: 'Standard',
+          userId: 'INCENTIVES_API',
+          comments: 'INCENTIVES_API_COMMENT',
+        },
+        {
+          prisonerNumber: 'A8083DY',
+          bookingId: 12345,
+          iepDate: '2017-08-10',
+          iepTime: '2017-08-10T16:04:35',
+          agencyId: 'LEI',
+          iepCode: 'BAS',
+          iepLevel: 'Basic',
+          userId: 'STAFF_USER',
+          comments: 'BASIC_STAFF_USER_COMMENT',
+        },
+        {
+          prisonerNumber: 'A8083DY',
+          bookingId: 12345,
+          iepDate: '2017-08-07',
+          iepTime: '2017-08-07T16:04:35',
+          agencyId: 'MDI',
+          iepCode: 'ENH',
+          iepLevel: 'Enhanced',
+          userId: 'ANOTHER_USER',
+          comments: 'ENHANCED_ANOTHER_USER_COMMENT',
+        },
+      ],
+    }
     return stubFor({
       request: {
         method: 'GET',
-        url: '/incentivesApi/incentive-reviews/prisoner/A1234A',
+        urlPath: '/incentivesApi/incentive-reviews/prisoner/A8083DY',
       },
       response: {
         status: 200,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
         },
-        jsonBody: incentiveSummary || {
-          bookingId: -1,
-          iepDate: '2017-08-15',
-          iepTime: '2017-08-15T16:04:35',
-          iepLevel: 'Standard',
-          daysSinceReview: 1868,
-          nextReviewDate: '2018-08-15',
-          iepDetails: [
-            {
-              bookingId: -1,
-              iepDate: '2017-08-15',
-              iepTime: '2017-08-15T16:04:35',
-              agencyId: 'MDI',
-              iepLevel: 'Standard',
-              userId: 'INCENTIVES_API',
-              comments: 'INCENTIVES_API_COMMENT',
-            },
-            {
-              bookingId: -1,
-              iepDate: '2017-08-10',
-              iepTime: '2017-08-10T16:04:35',
-              agencyId: 'LEI',
-              iepLevel: 'Basic',
-              userId: 'STAFF_USER',
-              comments: 'BASIC_STAFF_USER_COMMENT',
-            },
-            {
-              bookingId: -1,
-              iepDate: '2017-08-07',
-              iepTime: '2017-08-07T16:04:35',
-              agencyId: 'MDI',
-              iepLevel: 'Enhanced',
-              userId: 'ANOTHER_USER',
-              comments: 'ENHANCED_ANOTHER_USER_COMMENT',
-            },
-          ],
-        },
+        jsonBody: body,
       },
     })
   },
 
-  stubUpdateIncentiveLevelForPrisoner: (data): SuperAgentRequest => {
+  stubUpdateIncentiveLevelForPrisoner: (data?: DatesAsStrings<IncentiveReviewHistoryItem>): SuperAgentRequest => {
+    const body: DatesAsStrings<IncentiveReviewHistoryItem> = data ?? {
+      prisonerNumber: 'A8083DY',
+      bookingId: 12345,
+      iepDate: '2017-08-10',
+      iepTime: '2017-08-10T16:04:35',
+      agencyId: 'LEI',
+      iepCode: 'BAS',
+      iepLevel: 'Basic',
+      userId: 'STAFF_USER',
+      comments: 'BASIC_STAFF_USER_COMMENT',
+    }
     return stubFor({
       request: {
         method: 'POST',
-        url: '/incentivesApi/incentive-reviews/prisoner/A1234A',
+        urlPath: '/incentivesApi/incentive-reviews/prisoner/A8083DY',
       },
       response: {
         status: 201,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: data,
+        jsonBody: body,
       },
     })
   },

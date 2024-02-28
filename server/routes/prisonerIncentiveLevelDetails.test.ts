@@ -8,7 +8,7 @@ import { IncentivesApi } from '../data/incentivesApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
 import { getAgencyMockImplementation, staffDetails, agencyDetails } from '../testData/prisonApi'
 import { sampleReviewHistory, emptyIncentiveSummaryForBooking } from '../testData/incentivesApi'
-import offenderDetails from '../testData/offenderSearch'
+import { sampleOffenderDetails } from '../testData/offenderSearch'
 import { SanitisedError } from '../sanitisedError'
 import { makeMockUser } from './testutils/mockUsers'
 
@@ -28,7 +28,7 @@ const offenderSearch = OffenderSearchClient.prototype as jest.Mocked<OffenderSea
 const incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
 
 beforeEach(() => {
-  offenderSearch.getPrisoner.mockResolvedValue(offenderDetails)
+  offenderSearch.getPrisoner.mockResolvedValue(sampleOffenderDetails)
   prisonApi.getStaffDetails.mockResolvedValue(staffDetails)
   prisonApi.getAgency.mockImplementation(getAgencyMockImplementation)
   incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(sampleReviewHistory)

@@ -47,7 +47,6 @@ export default class PgdRegionService {
   }
 
   static getPgdRegionByName(pgdRegionName: string): PgdRegion {
-    // eslint-disable-next-line no-restricted-syntax
     for (const [code, name] of Object.entries(pgdRegions)) {
       if (name === pgdRegionName) {
         return { code, name }

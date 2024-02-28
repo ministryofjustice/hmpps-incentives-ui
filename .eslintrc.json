@@ -38,6 +38,7 @@
         "@typescript-eslint/no-use-before-define": 0,
         "class-methods-use-this": 0,
         "no-useless-constructor": 0,
+        "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": false }],
         "@typescript-eslint/no-unused-vars": [
           1,
           {
@@ -71,6 +72,7 @@
       }
     ],
     "no-use-before-define": 0,
+    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": ["error"],
     "semi": 0,
@@ -99,7 +101,8 @@
         "printWidth": 120,
         "semi": false
       }
-    ]
+    ],
+    "no-empty-function": ["error", { "allow": ["constructors", "arrowFunctions"] }]
   },
 
   "reportUnusedDisableDirectives": true

@@ -44,7 +44,7 @@ describe('GET /prisoner-images/:prisonerNumber.jpeg', () => {
 
   it('does not trigger getUser()', () => {
     return request(app)
-      .get(`/prisoner-images/123.jpeg`)
+      .get('/prisoner-images/123.jpeg')
       .expect('Content-Type', /image\/jpeg/)
       .expect(res => {
         expect(mockUserService.getUser).not.toHaveBeenCalled()

@@ -24,7 +24,7 @@ describe('NomisUserRolesApi', () => {
     it('returns data from Nomis User Roles API for a user with a single caseload', async () => {
       const apiResponse = getSingleCaseload()
       nomisUserRolesApi
-        .get(`/me/caseloads`)
+        .get('/me/caseloads')
         .matchHeader('authorization', `Bearer ${accessToken}`)
         .reply(200, apiResponse)
 
@@ -38,7 +38,7 @@ describe('NomisUserRolesApi', () => {
     it('returns data from Nomis User Roles API for a user with multiple caseloads', async () => {
       const apiResponse = getMultipleCaseload()
       nomisUserRolesApi
-        .get(`/me/caseloads`)
+        .get('/me/caseloads')
         .matchHeader('authorization', `Bearer ${accessToken}`)
         .reply(200, apiResponse)
 

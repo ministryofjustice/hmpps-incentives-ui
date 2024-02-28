@@ -33,7 +33,6 @@ function getSystemClientTokenFromHmppsAuth(username?: string): Promise<superagen
 }
 
 export default class HmppsAuthClient {
-  // eslint-disable-next-line no-empty-function
   constructor(private readonly tokenStore: TokenStore) {}
 
   private static restClient(token: string): RestClient {

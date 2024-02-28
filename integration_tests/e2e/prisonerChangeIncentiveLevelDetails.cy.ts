@@ -1,20 +1,25 @@
+import type { IncentiveReviewHistory } from '../../server/data/incentivesApi'
 import Page from '../pages/page'
 import PrisonerChangeIncentiveLevelDetailsPage from '../pages/prisonerIncentiveLevels/prisonerChangeIncentiveLevelDetailsPage'
 import PrisonerChangeIncentiveLevelConfirmationPage from '../pages/prisonerIncentiveLevels/prisonerChangeIncentiveLevelDetailsConfirmationPage'
 
-const IncentiveSummary = {
-  bookingId: -1,
+const incentiveSummary: DatesAsStrings<IncentiveReviewHistory> = {
+  prisonerNumber: 'A8083DY',
+  bookingId: 12345,
   iepDate: '2017-08-15',
   iepTime: '2017-08-15T16:04:35',
+  iepCode: 'BAS',
   iepLevel: 'Basic',
   daysSinceReview: 1868,
   nextReviewDate: '2022-09-26',
   iepDetails: [
     {
-      bookingId: -1,
+      prisonerNumber: 'A8083DY',
+      bookingId: 12345,
       iepDate: '2017-08-15',
       iepTime: '2017-08-15T16:04:35',
       agencyId: 'MDI',
+      iepCode: 'BAS',
       iepLevel: 'Basic',
       userId: 'INCENTIVES_API',
       comments: 'INCENTIVES_API_COMMENT',
@@ -45,7 +50,7 @@ context('Prisoner change incentive level details', () => {
 
     it('should submit the form and display confirmation page', () => {
       const page = Page.verifyOnPage(PrisonerChangeIncentiveLevelDetailsPage)
-      cy.task('stubGetIncentiveSummaryForPrisoner', IncentiveSummary)
+      cy.task('stubGetIncentiveSummaryForPrisoner', incentiveSummary)
       page.radioButton.first().click()
       page.changeReason.type('Test comment. ')
       cy.task('stubGetPrisonerFullDetailsTrue')
@@ -77,7 +82,7 @@ context('Prisoner change incentive level details', () => {
   context('should track clicks', () => {
     beforeEach(() => {
       const page = Page.verifyOnPage(PrisonerChangeIncentiveLevelDetailsPage)
-      cy.task('stubGetIncentiveSummaryForPrisoner', IncentiveSummary)
+      cy.task('stubGetIncentiveSummaryForPrisoner', incentiveSummary)
       page.radioButton.first().click()
       page.changeReason.type('Test comment. ')
       cy.task('stubGetPrisonerFullDetailsTrue')

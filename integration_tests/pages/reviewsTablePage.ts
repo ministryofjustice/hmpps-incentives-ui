@@ -2,7 +2,7 @@ import Page, { type PageElement } from './page'
 
 export default class ReviewsTablePage extends Page {
   constructor() {
-    super(`Manage incentive reviews`)
+    super('Manage incentive reviews')
   }
 
   getReviewsTable(): PageElement<HTMLTableElement> {

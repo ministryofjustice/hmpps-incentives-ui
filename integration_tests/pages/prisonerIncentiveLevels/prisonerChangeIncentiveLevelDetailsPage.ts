@@ -1,8 +1,8 @@
-import Page, { PageElement } from '../page'
+import Page, { type PageElement } from '../page'
 
 export default class PrisonerChangeIncentiveLevelDetailsPage extends Page {
-  constructor() {
-    super(`Record John Smith’s incentive level`)
+  constructor(possessiveName: string = 'John Smith’s') {
+    super(`Record ${possessiveName} incentive level`)
   }
 
   get currentIncentiveLevel(): PageElement<HTMLParagraphElement> {
@@ -30,6 +30,6 @@ export default class PrisonerChangeIncentiveLevelDetailsPage extends Page {
   }
 
   get radioButton(): PageElement<HTMLInputElement> {
-    return cy.get(`label[for="newIepLevel"]`)
+    return cy.get('label[for="newIepLevel"]')
   }
 }

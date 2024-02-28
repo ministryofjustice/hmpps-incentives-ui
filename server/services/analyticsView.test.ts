@@ -34,21 +34,21 @@ describe('AnalyticsView', () => {
   })
 
   describe('pgdRegionName', () => {
-    it(`for regional, it returns the PGD region name`, () => {
+    it('for regional, it returns the PGD region name', () => {
       expect(regional.pgdRegionName).toEqual('Long-term and high security')
     })
 
-    it(`for national, returns null`, () => {
+    it('for national, returns null', () => {
       expect(national.pgdRegionName).toBeNull()
     })
 
-    it(`for a prison, returns null`, () => {
+    it('for a prison, returns null', () => {
       expect(prison.pgdRegionName).toBeNull()
     })
   })
 
   describe('getFiltering()', () => {
-    it(`for national, don't filter, group by PGD region`, () => {
+    it("for national, don't filter, group by PGD region", () => {
       expect(national.getFiltering()).toEqual({
         filterColumn: null,
         filterValue: null,
@@ -56,7 +56,7 @@ describe('AnalyticsView', () => {
       })
     })
 
-    it(`for regional, filters by PGD region, group by prison`, () => {
+    it('for regional, filters by PGD region, group by prison', () => {
       expect(regional.getFiltering()).toEqual({
         filterColumn: 'pgd_region',
         filterValue: 'Long-term and high security',
@@ -64,7 +64,7 @@ describe('AnalyticsView', () => {
       })
     })
 
-    it(`for a prison, filters by prison, group by wing`, () => {
+    it('for a prison, filters by prison, group by wing', () => {
       expect(prison.getFiltering()).toEqual({
         filterColumn: 'prison',
         filterValue: 'MDI',
@@ -74,49 +74,49 @@ describe('AnalyticsView', () => {
   })
 
   describe('isNational', () => {
-    it(`for national, returns true`, () => {
+    it('for national, returns true', () => {
       expect(national.isNational).toEqual(true)
     })
 
-    it(`for regional, returns false`, () => {
+    it('for regional, returns false', () => {
       expect(regional.isNational).toEqual(false)
     })
 
-    it(`for a prison, returns false`, () => {
+    it('for a prison, returns false', () => {
       expect(prison.isNational).toEqual(false)
     })
   })
 
   describe('isRegional', () => {
-    it(`for national, returns false`, () => {
+    it('for national, returns false', () => {
       expect(national.isRegional).toEqual(false)
     })
 
-    it(`for regional, returns true`, () => {
+    it('for regional, returns true', () => {
       expect(regional.isRegional).toEqual(true)
     })
 
-    it(`for a prison, returns false`, () => {
+    it('for a prison, returns false', () => {
       expect(prison.isRegional).toEqual(false)
     })
   })
 
   describe('isPrisonLevel', () => {
-    it(`for national, returns false`, () => {
+    it('for national, returns false', () => {
       expect(national.isPrisonLevel).toEqual(false)
     })
 
-    it(`for regional, returns false`, () => {
+    it('for regional, returns false', () => {
       expect(regional.isPrisonLevel).toEqual(false)
     })
 
-    it(`for a prison, returns true`, () => {
+    it('for a prison, returns true', () => {
       expect(prison.isPrisonLevel).toEqual(true)
     })
   })
 
   describe('levelForTitle', () => {
-    it(`for National, it return 'National'`, () => {
+    it("for National, it return 'National'", () => {
       const analyticsView = new AnalyticsView('National', 'behaviour-entries', 'MDI')
       expect(analyticsView.levelForTitle).toEqual('National')
     })
@@ -126,7 +126,7 @@ describe('AnalyticsView', () => {
       expect(analyticsView.levelForTitle).toEqual('Long-term and high security')
     })
 
-    it(`for a prison, it returns 'Prison'`, () => {
+    it("for a prison, it returns 'Prison'", () => {
       const analyticsView = new AnalyticsView(null, 'behaviour-entries', 'MDI')
       expect(analyticsView.levelForTitle).toEqual('Prison')
     })
@@ -134,7 +134,6 @@ describe('AnalyticsView', () => {
 
   describe('linkTo()', () => {
     it('for National', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView('National', 'behaviour-entries', 'MDI')
         expect(analyticsView.linkTo(viewType)).toEqual(`/analytics/National/${viewType}`)
@@ -142,7 +141,6 @@ describe('AnalyticsView', () => {
     })
 
     it('for Regional', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView('LTHS', 'behaviour-entries', 'MDI')
         expect(analyticsView.linkTo(viewType)).toEqual(`/analytics/LTHS/${viewType}`)
@@ -150,7 +148,6 @@ describe('AnalyticsView', () => {
     })
 
     it('for a prison', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView(null, 'behaviour-entries', 'MDI')
         expect(analyticsView.linkTo(viewType)).toEqual(`/analytics/${viewType}`)
@@ -160,7 +157,6 @@ describe('AnalyticsView', () => {
 
   describe('getUrlFunction()', () => {
     it('for National, returns a function that links to regional level', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView('National', viewType, 'MDI')
         const urlFn = analyticsView.getUrlFunction()
@@ -169,7 +165,6 @@ describe('AnalyticsView', () => {
     })
 
     it('for Regional, returns a function which always returns null', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView('LTHS', viewType, 'MDI')
         const urlFn = analyticsView.getUrlFunction()
@@ -178,16 +173,14 @@ describe('AnalyticsView', () => {
     })
 
     it('for a prison, returns a function that links to Incentives table', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView(null, viewType, 'BWI')
         const urlFn = analyticsView.getUrlFunction()
-        expect(urlFn('BWI', 'A')).toEqual(`/incentive-summary/BWI-A`)
+        expect(urlFn('BWI', 'A')).toEqual('/incentive-summary/BWI-A')
       }
     })
 
     it('for a prison, does not link to Incentives table if the location is not a real wing', () => {
-      // eslint-disable-next-line no-restricted-syntax
       for (const viewType of viewTypes) {
         const analyticsView = new AnalyticsView(null, viewType, 'BWI')
         const urlFn = analyticsView.getUrlFunction()

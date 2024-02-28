@@ -407,7 +407,7 @@ describe('AnalyticsService', () => {
       mockAppS3ClientResponse(s3Client)
     })
 
-    it(`has correct 'All' row`, async () => {
+    it("has correct 'All' row", async () => {
       const { rows } = await analyticsService.getPrisonersWithEntriesByLocation()
       expect(rows).toHaveLength(prisonLocationsBehaviourEntries.MDI.length)
 

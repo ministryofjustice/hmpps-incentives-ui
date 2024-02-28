@@ -10,7 +10,7 @@ import offenderSearchApi from '../mockApis/offenderSearchApi'
 import zendeskApi from '../mockApis/zendeskApi'
 import frontendComponents from '../mockApis/frontendComponents'
 
-export default (on: (string, Record) => void): void => {
+export default (on: Cypress.PluginEvents) => {
   on('task', {
     reset: resetStubs,
 

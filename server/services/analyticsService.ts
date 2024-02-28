@@ -42,7 +42,7 @@ export default class AnalyticsService {
   constructor(
     private readonly client: S3Client,
     private readonly cache: StitchedTablesCache,
-    private readonly view: AnalyticsView, // eslint-disable-next-line no-empty-function
+    private readonly view: AnalyticsView,
   ) {}
 
   async findLatestTable(tableType: TableType): Promise<{ key: string; date: Date; modified: Date }> {

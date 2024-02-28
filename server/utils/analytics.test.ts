@@ -146,7 +146,6 @@ describe('TrendsRange', () => {
 
     it(`new TrendsRange(${max}, ${step}) has expected values`, () => {
       const values = []
-      // eslint-disable-next-line no-restricted-syntax
       for (const value of range) {
         values.push(value)
       }

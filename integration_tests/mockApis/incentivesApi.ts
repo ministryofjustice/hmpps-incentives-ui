@@ -14,7 +14,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/incentivesApi/health/ping',
+        urlPath: '/incentivesApi/health/ping',
       },
       response: {
         status: 200,
@@ -63,7 +63,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/incentivesApi/incentive/levels/${incentiveLevel.code}`,
+        urlPath: `/incentivesApi/incentive/levels/${incentiveLevel.code}`,
       },
       response: {
         status: 200,
@@ -79,7 +79,7 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        urlPattern: '/incentivesApi/incentive/levels',
+        urlPath: '/incentivesApi/incentive/levels',
       },
       response: {
         status: 201,
@@ -95,7 +95,7 @@ export default {
     return stubFor({
       request: {
         method: 'PATCH',
-        urlPattern: `/incentivesApi/incentive/levels/${incentiveLevel.code}`,
+        urlPath: `/incentivesApi/incentive/levels/${incentiveLevel.code}`,
       },
       response: {
         status: 200,
@@ -123,7 +123,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/incentivesApi/incentive/prison-levels/${options.prisonId}`,
+        urlPath: `/incentivesApi/incentive/prison-levels/${options.prisonId}`,
       },
       response: {
         status: 200,
@@ -141,7 +141,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/incentivesApi/incentive/prison-levels/${prisonIncentiveLevel.prisonId}/level/${prisonIncentiveLevel.levelCode}`,
+        urlPath: `/incentivesApi/incentive/prison-levels/${prisonIncentiveLevel.prisonId}/level/${prisonIncentiveLevel.levelCode}`,
       },
       response: {
         status: 200,
@@ -157,7 +157,7 @@ export default {
     return stubFor({
       request: {
         method: 'PATCH',
-        urlPattern: `/incentivesApi/incentive/prison-levels/${prisonIncentiveLevel.prisonId}/level/${prisonIncentiveLevel.levelCode}`,
+        urlPath: `/incentivesApi/incentive/prison-levels/${prisonIncentiveLevel.prisonId}/level/${prisonIncentiveLevel.levelCode}`,
       },
       response: {
         status: 200,
@@ -393,7 +393,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        url: '/incentivesApi/incentive-reviews/prisoner/A8083DY',
+        urlPath: '/incentivesApi/incentive-reviews/prisoner/A8083DY',
       },
       response: {
         status: 200,
@@ -420,7 +420,7 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        url: '/incentivesApi/incentive-reviews/prisoner/A8083DY',
+        urlPath: '/incentivesApi/incentive-reviews/prisoner/A8083DY',
       },
       response: {
         status: 201,

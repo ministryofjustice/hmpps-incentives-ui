@@ -21,7 +21,7 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        urlPattern: '/zendeskApi/api/v2/tickets.json',
+        urlPath: '/zendeskApi/api/v2/tickets.json',
       },
       response: {
         status: 201,

@@ -7,7 +7,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/nomisUserRolesApi/health/ping',
+        urlPath: '/nomisUserRolesApi/health/ping',
       },
       response: {
         status: 200,
@@ -21,7 +21,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/nomisUserRolesApi/me/caseloads',
+        urlPath: '/nomisUserRolesApi/me/caseloads',
       },
       response: {
         status: 200,

@@ -15,7 +15,7 @@
     {{ govukErrorSummary({
       titleText: "There is a problem",
       errorList: errors,
-      attributes: { 'data-qa-errors': true }
+      attributes: { "data-qa-errors": true }
     }) }}
   {% endif %}
 
@@ -48,14 +48,14 @@
     {% endif %}
 
     {% if userCanUpdateIEP %}
-        <div class="dps-mini-profile-header--align-right">
-          <p class="hmpps-action-button govuk-!-display-none-print" data-test="change-incentive-level-link">
-            <img src="/assets/images/iconRecordIncentiveLevel.svg" alt="Icon representing an incentive level" aria-hidden="true" />
-            <a href= {{  recordIncentiveUrl }}>
-              Record incentive level
-            </a>
-          </p>
-        </div>
+      <div class="dps-mini-profile-header--align-right">
+        <p class="hmpps-action-button govuk-!-display-none-print" data-test="change-incentive-level-link">
+          <img src="/assets/images/iconRecordIncentiveLevel.svg" alt="Icon representing an incentive level" aria-hidden="true" />
+          <a href= {{  recordIncentiveUrl }}>
+            Record incentive level
+          </a>
+        </p>
+      </div>
     {% endif %}
   </div>
 
@@ -65,57 +65,57 @@
     <div class="horizontal-form__wrapper govuk-!-padding-3 govuk-!-margin-bottom-5">
       <h2 class="govuk-heading-m">View by</h2>
 
-      <form class="horizontal-form {% if errors.length > 0 %}horizontal-form--with-errors{% endif %} govuk-!-margin-bottom-3" method="GET">
+      <form class="horizontal-form {% if errors.length > 0 %}horizontal-form--with-errors{% endif %} govuk-!-margin-bottom-3" method="GET" novalidate>
         {{ govukSelect({
-          name: 'agencyId',
-          id: 'agencyId',
+          name: "agencyId",
+          id: "agencyId",
           label: {
-            text: 'Establishment'
+            text: "Establishment"
           },
-          items: establishments | govukSelectInsertDefault('All') | govukSelectSetSelected(formValues.agencyId),
-          errorMessage: errors | findFieldInErrorSummary('agencyId'),
+          items: establishments | govukSelectInsertDefault("All") | govukSelectSetSelected(formValues.agencyId),
+          errorMessage: errors | findFieldInErrorSummary("agencyId"),
           attributes: {
-            "data-test": 'establishment-select'
+            "data-test": "establishment-select"
           }
         }) }}
 
         {{ govukSelect({
-          name: 'incentiveLevel',
-          id: 'incentiveLevel',
+          name: "incentiveLevel",
+          id: "incentiveLevel",
           label: {
-            text: 'Incentive level'
+            text: "Incentive level"
           },
-          items: levels  | govukSelectInsertDefault('All') | govukSelectSetSelected(formValues.incentiveLevel),
-          errorMessage: errors | findFieldInErrorSummary('incentiveLevel'),
+          items: levels  | govukSelectInsertDefault("All") | govukSelectSetSelected(formValues.incentiveLevel),
+          errorMessage: errors | findFieldInErrorSummary("incentiveLevel"),
           attributes: {
-            "data-test": 'incentive-level-select'
+            "data-test": "incentive-level-select"
           }
         }) }}
 
         {{ hmppsDatepicker({
-          id: 'fromDate',
-          name: 'fromDate',
+          id: "fromDate",
+          name: "fromDate",
           classes: "hmpps-datepicker--fixed-width",
           label: {
-            text: 'Date from'
+            text: "Date from"
           },
           value: formValues.fromDate,
           maxDate: maxDate,
-          errorMessage: errors | findFieldInErrorSummary('fromDate'),
-          dataQa: 'fromDate'
+          errorMessage: errors | findFieldInErrorSummary("fromDate"),
+          dataQa: "fromDate"
         }) }}
 
         {{ hmppsDatepicker({
-          id: 'toDate',
-          name: 'toDate',
+          id: "toDate",
+          name: "toDate",
           classes: "hmpps-datepicker--fixed-width",
           label: {
-            text: 'Date to'
+            text: "Date to"
           },
           value: formValues.toDate,
           maxDate: maxDate,
-          errorMessage: errors | findFieldInErrorSummary('toDate'),
-          dataQa: 'toDate'
+          errorMessage: errors | findFieldInErrorSummary("toDate"),
+          dataQa: "toDate"
         }) }}
 
         <div class="govuk-button-group">
@@ -124,7 +124,7 @@
             preventDoubleClick: true,
             type: "submit",
             attributes: {
-              "data-test": 'filter-submit'
+              "data-test": "filter-submit"
             }
           }) }}
 
@@ -145,9 +145,9 @@
       {% set resultsRows = (resultsRows.push([
         { text: result.iepTime | date },
         { text: result.iepLevel },
-        { html: result.comments or 'Not entered', classes: 'govuk-input--width-4 incentive-details-reason-text' },
+        { html: result.comments or "Not entered", classes: "govuk-input--width-4 incentive-details-reason-text" },
         { text: result.iepEstablishment },
-        { text: result.iepStaffMember or 'Not entered' }
+        { text: result.iepStaffMember or "Not entered" }
       ]), resultsRows) %}
     {% endfor %}
 
@@ -171,12 +171,10 @@
       ],
       rows: resultsRows,
       attributes: {
-        "data-test": 'incentive-level-history'
+        "data-test": "incentive-level-history"
       }
     }) }}
   {% endif %}
-
-
 {% endblock %}
 
 {% block bodyEnd %}

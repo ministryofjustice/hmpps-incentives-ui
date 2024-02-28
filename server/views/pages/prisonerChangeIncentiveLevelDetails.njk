@@ -9,74 +9,74 @@
 {% set pageTitle = applicationName + " – Record incentive level" %}
 
 {% block content %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-  {% if errors.length > 0 %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors,
-      attributes: { "data-test": "form-errors" }
-    }) }}
-  {% endif %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors.length > 0 %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors,
+          attributes: { "data-test": "form-errors" }
+        }) }}
+      {% endif %}
 
-  <h1 class="govuk-heading-l">Record {{ prisonerName | possessive }} incentive level</h1>
+      <h1 class="govuk-heading-l">Record {{ prisonerName | possessive }} incentive level</h1>
 
-  <p data-test="current-incentive-level">
-    <span class="govuk-heading-m govuk-!-margin-bottom-3">Current incentive level</span>
-    {{ currentIncentiveLevel }}
-  </p>
+      <p data-test="current-incentive-level">
+        <span class="govuk-heading-m govuk-!-margin-bottom-3">Current incentive level</span>
+        {{ currentIncentiveLevel }}
+      </p>
 
-  <form method="POST" novalidate="novalidate">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+      <form method="POST" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-    {{ govukRadios({
-      idPrefix: "newIepLevel",
-      name: "newIepLevel",
-      errorMessage: errors | findFieldInErrorSummary('newIepLevel'),
-      fieldset: {
-        legend: {
-          text: "Record an incentive level",
-          classes: "govuk-fieldset__legend--m"
-        }
-      },
-      hint: {
-        text: "This could be a change in level, or keeping the prisoner at the same level"
-      },
-      items: selectableLevels,
-      attributes: { "data-test": "new-level" }
-    }) }}
+        {{ govukRadios({
+          idPrefix: "newIepLevel",
+          name: "newIepLevel",
+          errorMessage: errors | findFieldInErrorSummary("newIepLevel"),
+          fieldset: {
+            legend: {
+              text: "Record an incentive level",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "This could be a change in level, or keeping the prisoner at the same level"
+          },
+          items: selectableLevels,
+          attributes: { "data-test": "new-level" }
+        }) }}
 
-    {{ govukCharacterCount({
-      name: "reason",
-      id: "reason",
-      value: formValues.reason,
-      errorMessage: errors | findFieldInErrorSummary('reason'),
-      classes: "govuk-!-width-two-thirds",
-      maxlength: 240,
-      label: {
-        text: "Reason for recording",
-        classes: "govuk-label--m"
-      },
-      hint: {
-        text: "Add any details you’d like to support your decision"
-      },
-      attributes: { "data-test": "change-reason" }
-    }) }}
+        {{ govukCharacterCount({
+          name: "reason",
+          id: "reason",
+          value: formValues.reason,
+          errorMessage: errors | findFieldInErrorSummary("reason"),
+          classes: "govuk-!-width-two-thirds",
+          maxlength: 240,
+          label: {
+            text: "Reason for recording",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "Add any details you’d like to support your decision"
+          },
+          attributes: { "data-test": "change-reason" }
+        }) }}
 
-    <div class="govuk-button-group govuk-!-margin-top-8">
-      {{ govukButton({
-        text: "Save",
-        type: "submit",
-        classes: "govuk-!-margin-right-2",
-        preventDoubleClick: true,
-        attributes: { "data-test": "submit-change" }
-      }) }}
+        <div class="govuk-button-group govuk-!-margin-top-8">
+          {{ govukButton({
+            text: "Save",
+            type: "submit",
+            classes: "govuk-!-margin-right-2",
+            preventDoubleClick: true,
+            attributes: { "data-test": "submit-change" }
+          }) }}
 
-      <a href="{{ cancelUrl }}" class="govuk-link" data-test="cancel-change">
-        Cancel
-      </a>
+          <a href="{{ cancelUrl }}" class="govuk-link" data-test="cancel-change">
+            Cancel
+          </a>
+        </div>
+      </form>
     </div>
-  </form>
-{% endblock %}
   </div>
-</div>
+{% endblock %}

@@ -8,7 +8,7 @@ import config from '../config'
 import logger from '../../logger'
 
 export default function setUpWebSession(): Router {
-  const client = createRedisClient(`middleware/setUpWebSession.ts`)
+  const client = createRedisClient('middleware/setUpWebSession.ts')
   client.connect().catch((err: Error) => logger.error('Error connecting to [middleware/setUpWebSession.ts] Redis', err))
 
   const router = express.Router()

@@ -219,7 +219,7 @@ export class IncentivesApi extends RestClient {
    */
   setIncentiveLevelOrder(levelCodes: string[]): Promise<IncentiveLevel[]> {
     return this.patch({
-      path: `/incentive/level-order`,
+      path: '/incentive/level-order',
       data: levelCodes as unknown as Record<string, unknown>,
     })
   }

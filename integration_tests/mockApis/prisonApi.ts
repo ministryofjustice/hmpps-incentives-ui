@@ -83,7 +83,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)`,
+        urlPattern: '/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)',
       },
       response: {
         status: 200,
@@ -111,7 +111,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=false&csraSummary=false`,
+        urlPattern: '/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=false&csraSummary=false',
       },
       response: {
         status: 200,
@@ -139,7 +139,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=true&csraSummary=true`,
+        urlPattern: '/prisonApi/api/bookings/offenderNo/([A-Z0-9]+)\\?fullInfo=true&csraSummary=true',
       },
       response: {
         status: 200,

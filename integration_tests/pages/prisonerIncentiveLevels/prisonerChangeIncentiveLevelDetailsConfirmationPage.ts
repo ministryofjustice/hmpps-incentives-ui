@@ -2,7 +2,7 @@ import Page, { PageElement } from '../page'
 
 export default class PrisonerChangeIncentiveLevelDetailsConfirmationPage extends Page {
   constructor() {
-    super(`John Smith’s incentive level is set to Basic`)
+    super('John Smith’s incentive level is set to Basic')
   }
 
   get newIncentiveLevel(): PageElement {

@@ -2,7 +2,7 @@ import Page, { type PageElement } from '../page'
 
 export default class PrisonerIncentiveLevelDetailsPage extends Page {
   constructor() {
-    super(`John Smith’s incentive details`)
+    super('John Smith’s incentive details')
   }
 
   get recordIncentiveLevelButton(): PageElement<HTMLAnchorElement> {

@@ -448,7 +448,7 @@ describe('Protected characteristic pages', () => {
   })
 
   describe.each(['trendsIncentiveLevelsGroup', 'trendsEntriesGroup'])(
-    `Protected characteristic route`,
+    'Protected characteristic route',
     queryParamName => {
       it(`responds 404 Not Found when value for ${queryParamName} query parameter is invalid`, () => {
         return request(app)
@@ -479,9 +479,9 @@ describe('Protected characteristic pages', () => {
             })
         })
 
-        it(`PC groups defaults to 15-17`, () => {
+        it('PC groups defaults to 15-17', () => {
           return request(app)
-            .get(`/analytics/protected-characteristic?characteristic=age`)
+            .get('/analytics/protected-characteristic?characteristic=age')
             .expect(200)
             .expect(res => {
               expect(res.text).toContain('<option value="15-17" selected>15-17</option>')
@@ -509,9 +509,9 @@ describe('Protected characteristic pages', () => {
             })
         })
 
-        it(`PC groups defaults to 18-25`, () => {
+        it('PC groups defaults to 18-25', () => {
           return request(app)
-            .get(`/analytics/protected-characteristic?characteristic=age`)
+            .get('/analytics/protected-characteristic?characteristic=age')
             .expect(200)
             .expect(res => {
               expect(res.text).toContain('<option value="18-25" selected>18-25</option>')

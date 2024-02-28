@@ -24,7 +24,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/offenderSearchApi/prisoner/([A-Z0-9]+)`,
+        urlPattern: '/offenderSearchApi/prisoner/([A-Z0-9]+)',
       },
       response: {
         status: 200,

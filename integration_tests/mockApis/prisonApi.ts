@@ -91,9 +91,9 @@ export default {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: {
-          offenderNo: 'A1234A',
+          offenderNo: 'A8083DY',
           agencyId: 'MDI',
-          bookingId: -1,
+          bookingId: 12345,
           firstName: 'John',
           lastName: 'Smith',
           assignedLivingUnit: {
@@ -119,9 +119,9 @@ export default {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: {
-          offenderNo: 'A1234A',
+          offenderNo: 'A8083DY',
           agencyId: 'MDI',
-          bookingId: -1,
+          bookingId: 12345,
           firstName: 'John',
           lastName: 'Smith',
           assignedLivingUnit: {
@@ -147,9 +147,9 @@ export default {
           'Content-Type': 'application/json;charset=UTF-8',
         },
         jsonBody: {
-          offenderNo: 'A1234A',
+          offenderNo: 'A8083DY',
           agencyId: 'MDI',
-          bookingId: -1,
+          bookingId: 12345,
           firstName: 'John',
           lastName: 'Smith',
           assignedLivingUnit: {
@@ -167,7 +167,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        url: `/prisonApi/api/users/${staff.staffId}`,
+        url: `/prisonApi/api/users/${staff.username}`,
       },
       response: {
         status: 200,

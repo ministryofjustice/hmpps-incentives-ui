@@ -1,13 +1,12 @@
 import { OffenderSearchResult } from '../data/offenderSearch'
 
-const offenderDetails: OffenderSearchResult = {
+// eslint-disable-next-line import/prefer-default-export
+export const sampleOffenderDetails: OffenderSearchResult = {
   bookingId: 12345,
   prisonerNumber: 'A8083DY',
   firstName: 'John',
   lastName: 'Smith',
   prisonId: 'MDI',
-  prisonName: 'Moorland',
-  cellLocation: '123',
+  prisonName: 'Moorland (HMP & YOI)',
+  cellLocation: '1-2-003',
 }
-
-export default offenderDetails

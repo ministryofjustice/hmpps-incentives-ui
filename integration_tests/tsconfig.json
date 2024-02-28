@@ -1,4 +1,6 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "target": "es5",
     "noEmit": true,
@@ -6,7 +8,9 @@
     "types": ["cypress", "express", "express-session"],
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "sourceMap": false,
     "typeRoots": ["../server/@types", "../node_modules/@types", "../node_modules"]
   },
+  "exclude": [],
   "include": ["../server/@types/index.d.ts", "**/*.ts"]
 }

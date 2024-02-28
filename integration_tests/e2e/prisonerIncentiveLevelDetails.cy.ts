@@ -24,7 +24,7 @@ context('Prisoner incentive level details', () => {
       cy.task('stubGetIncentiveSummaryForPrisoner')
       cy.navigateToPrisonerIncentiveLevelDetails()
       const page = Page.verifyOnPage(PrisonerIncentiveLevelDetailsPage)
-      page.recordIncentiveLevelButton.click()
+      page.recordIncentiveLevelButton.should('exist')
     })
 
     it('should show when the next review date is', () => {

@@ -3,7 +3,6 @@ import type { RedisClient } from './redisClient'
 export default class TokenStore {
   private readonly prefix = 'systemToken:'
 
-  // eslint-disable-next-line no-empty-function
   constructor(private readonly client: RedisClient) {}
 
   private async ensureConnected() {

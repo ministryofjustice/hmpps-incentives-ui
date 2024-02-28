@@ -100,7 +100,8 @@
         "printWidth": 120,
         "semi": false
       }
-    ]
+    ],
+    "no-empty-function": ["error", { "allow": ["constructors", "arrowFunctions"] }]
   },
 
   "reportUnusedDisableDirectives": true

@@ -14,7 +14,6 @@ declare namespace Cypress {
     /**
      * Set up stubs needed for listing prisoner incentive levels
      */
-
     navigateToPrisonerIncentiveLevelDetails(): Chainable<ListPage>
 
     navigateToChangePrisonerIncentiveLevelDetails(): Chainable<ListPage>
@@ -25,6 +24,6 @@ declare namespace Cypress {
    */
   interface ApplicationWindow {
     /** Google Analytics version 4 */
-    gtag?: (...args: [string, string, Record<string, string>]) => void
+    gtag?: (...args: GtagCall) => void
   }
 }

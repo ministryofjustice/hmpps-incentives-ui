@@ -4,6 +4,9 @@ export type GtagCall =
   | ['set', Record<string, string>]
   | ['event', string, Record<string, string>?]
 
+/**
+ * Adds a spy for `gtag` (global function variable for Google Analytics) into loaded page
+ */
 export default class GoogleAnalyticsTracker {
   private calls: GtagCall[]
 

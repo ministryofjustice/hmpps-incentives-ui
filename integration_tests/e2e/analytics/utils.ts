@@ -1,7 +1,6 @@
 import type { ChartId } from '../../../server/routes/analyticsChartTypes'
 import Page, { type PageElement } from '../../pages/page'
 import type AnalyticsPage from '../../pages/analytics'
-import GoogleAnalyticsSpy from '../../plugins/googleAnalyticsSpy'
 
 export function testValidFeedbackSubmission<PageClass extends AnalyticsPage>(
   pageClass: new () => PageClass,
@@ -81,20 +80,19 @@ export function testDetailsOpenedGaEvents<PageClass extends AnalyticsPage>(
 ) {
   const page = Page.verifyOnPage(pageClass)
 
-  const gaSpy = new GoogleAnalyticsSpy()
-  gaSpy.install()
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [chartId, gaCategory] of Object.entries(charts)) {
-    page[detailsGetterMethod]
-      .call(page, chartId)
-      .click()
-      .then(() =>
-        gaSpy.shouldHaveSentEvent('incentives_event', {
-          category: gaCategory,
-          action: 'opened',
-          label: 'MDI',
-        }),
-      )
-  }
+  cy.trackGoogleAnalyticsCalls().then(googleAnalyticsTracker => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [chartId, gaCategory] of Object.entries(charts)) {
+      page[detailsGetterMethod]
+        .call(page, chartId)
+        .click()
+        .then(() =>
+          googleAnalyticsTracker.shouldHaveLastSent('event', 'incentives_event', {
+            category: gaCategory,
+            action: 'opened',
+            label: 'MDI',
+          }),
+        )
+    }
+  })
 }

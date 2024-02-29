@@ -98,7 +98,7 @@ describe('name formatting', () => {
       expect(properCaseName('DaVId')).toEqual('David')
     })
     it('Multiple words', () => {
-      expect(properCaseName('DAVID JONES')).toEqual('David jones')
+      expect(properCaseName('DAVID JONES')).toEqual('David Jones')
     })
     it('Hyphenated', () => {
       expect(properCaseName('DAVID-JONES-BART-LISA')).toEqual('David-Jones-Bart-Lisa')

@@ -16,10 +16,12 @@ parameters:
   node-version:
     type: string
     default: 20.11-browsers
+    description: cimg/node docker image tag
 
-  python-version:
+  redis-version:
     type: string
-    default: '3.10'
+    default: '7.0'
+    description: cimg/redis docker image tag
 
   cypress-videos:
     type: string
@@ -30,9 +32,7 @@ executors:
   integration-tests:
     docker:
       - image: cimg/node:<< pipeline.parameters.node-version >>
-        environment:
-          TZ: Europe/London
-      - image: cimg/redis:7.0
+      - image: cimg/redis:<< pipeline.parameters.redis-version >>
       - image: minio/minio
         command: server --address :9000 /data
         environment:
@@ -87,8 +87,6 @@ jobs:
       - run:
           name: Run unit tests
           command: npm run test:ci
-          environment:
-            TZ: Europe/London
       - store_test_results:
           path: test_results
       - store_artifacts:
@@ -124,7 +122,7 @@ jobs:
             AWS_SECRET_ACCESS_KEY: incentives
             AWS_DEFAULT_REGION: eu-west-1
       - run:
-          name: Run the node app.
+          name: Run the node app
           command: npm run start-feature
           background: true
       - run:
@@ -136,10 +134,10 @@ jobs:
       - store_test_results:
           path: test_results
       - store_artifacts:
-          name: 'Uploading cypress videos'
+          name: Uploading cypress videos
           path: integration_tests/videos
       - store_artifacts:
-          name: 'Uploading cypress screenshots'
+          name: Uploading cypress screenshots
           path: integration_tests/screenshots
 
 workflows:
@@ -166,8 +164,7 @@ workflows:
                 - main
       - hmpps/deploy_env:
           name: deploy_dev
-          env: "dev"
-          helm_timeout: 7m
+          env: dev
           jira_update: true
           pipeline_id: <<pipeline.id>>
           pipeline_number: <<pipeline.number>>
@@ -181,14 +178,14 @@ workflows:
             - unit_test
             - integration_test
             - build_docker
+          helm_timeout: 7m
       - request-preprod-approval:
           type: approval
           requires:
             - deploy_dev
       - hmpps/deploy_env:
           name: deploy_preprod
-          env: "preprod"
-          helm_timeout: 7m
+          env: preprod
           jira_update: true
           jira_env_type: staging
           pipeline_id: <<pipeline.id>>
@@ -198,14 +195,14 @@ workflows:
             - hmpps-incentives-ui-preprod
           requires:
             - request-preprod-approval
+          helm_timeout: 7m
       - request-prod-approval:
           type: approval
           requires:
             - deploy_preprod
       - hmpps/deploy_env:
           name: deploy_prod
-          env: "prod"
-          helm_timeout: 7m
+          env: prod
           jira_update: true
           jira_env_type: production
           pipeline_id: <<pipeline.id>>
@@ -217,6 +214,7 @@ workflows:
             - hmpps-incentives-ui-prod
           requires:
             - request-prod-approval
+          helm_timeout: 7m
 
   security:
     triggers:
@@ -229,6 +227,7 @@ workflows:
     jobs:
       - hmpps/npm_security_audit:
           slack_channel: << pipeline.parameters.alerts-slack-channel >>
+          node_tag: << pipeline.parameters.node-version >>
           context:
             - hmpps-common-vars
       - hmpps/trivy_latest_scan:

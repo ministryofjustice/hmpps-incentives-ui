@@ -48,6 +48,15 @@ describe('name formatting', () => {
     it('can format no name', () => {
       expect(formatName(undefined, undefined)).toEqual('')
     })
+    it('can format names with multiple spaces', () => {
+      expect(formatName(' david  ', '  jones ')).toEqual('David Jones')
+    })
+    it('can format names with initialed other names', () => {
+      expect(formatName('david  e', 'jones jr.')).toEqual('David E Jones Jr.')
+    })
+    it('can format names with double barrels', () => {
+      expect(formatName('david-joe', 'seymour-jones')).toEqual('David-Joe Seymour-Jones')
+    })
   })
 
   describe('initialise name', () => {

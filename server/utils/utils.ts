@@ -5,7 +5,8 @@ const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
 
 /**
  * Converts a name part (first name, last name, middle name, etc.) to title case equivalent,
- * handling double-barreled names correctly (i.e. each part in a double-barreled is converted to title case).
+ * handling double-barreled names correctly (i.e. each part in a double-barreled is converted to title case)
+ * and removes whitespaces.
  * @param name name to be converted.
  * @returns name converted to title case.
  */
@@ -13,9 +14,20 @@ export const properCaseName = (name: string): string =>
   isBlank(name)
     ? ''
     : name
-        .split('-')
-        .map(part => (part.length >= 1 ? part[0].toUpperCase() + part.toLowerCase().slice(1) : part))
-        .join('-')
+        .trim()
+        .split(/\s+/)
+        .map(part => {
+          if (part.includes('-')) {
+            return part
+              .split('-')
+              .map(subpart =>
+                subpart.length >= 1 ? subpart[0].toUpperCase() + subpart.toLowerCase().slice(1) : subpart,
+              )
+              .join('-')
+          }
+          return part.length >= 1 ? part[0].toUpperCase() + part.toLowerCase().slice(1) : part
+        })
+        .join(' ')
 
 /**
  * Converts a full name (or sentence) to title case

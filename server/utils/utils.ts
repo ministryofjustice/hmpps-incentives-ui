@@ -17,15 +17,10 @@ export const properCaseName = (name: string): string =>
         .trim()
         .split(/\s+/)
         .map(part => {
-          if (part.includes('-')) {
-            return part
-              .split('-')
-              .map(subpart =>
-                subpart.length >= 1 ? subpart[0].toUpperCase() + subpart.toLowerCase().slice(1) : subpart,
-              )
-              .join('-')
-          }
-          return part.length >= 1 ? part[0].toUpperCase() + part.toLowerCase().slice(1) : part
+          return part
+            .split('-')
+            .map(subpart => (subpart.length >= 1 ? subpart[0].toUpperCase() + subpart.toLowerCase().slice(1) : subpart))
+            .join('-')
         })
         .join(' ')
 
@@ -34,7 +29,7 @@ export const properCaseName = (name: string): string =>
  * handling double-barreled names correctly (i.e. each part in a double-barreled is converted to title case).
  */
 export const convertToTitleCase = (sentence: string): string =>
-  isBlank(sentence) ? '' : sentence.split(' ').map(properCaseName).join(' ')
+  isBlank(sentence) ? '' : sentence.split(/\s+/).map(properCaseName).join(' ').trim()
 
 /** Converts a first name and surname to title case */
 export const formatName = (firstName: string, lastName: string): string =>

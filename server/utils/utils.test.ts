@@ -24,8 +24,8 @@ describe('name formatting', () => {
       ['Upper case', 'ROBERT', 'Robert'],
       ['Mixed case', 'RoBErT', 'Robert'],
       ['Multiple words', 'RobeRT SMiTH', 'Robert Smith'],
-      ['Leading spaces', '  RobeRT', '  Robert'],
-      ['Trailing spaces', 'RobeRT  ', 'Robert  '],
+      ['Leading spaces', '  RobeRT', 'Robert'],
+      ['Trailing spaces', 'RobeRT  ', 'Robert'],
       ['Hyphenated', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
     ])('%s convertToTitleCase(%p, %p)', (_: string, a: string, expected: string) => {
       expect(convertToTitleCase(a)).toEqual(expected)

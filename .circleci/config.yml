@@ -30,8 +30,6 @@ executors:
   integration-tests:
     docker:
       - image: cimg/node:<< pipeline.parameters.node-version >>
-        environment:
-          TZ: Europe/London
       - image: cimg/redis:7.0
       - image: minio/minio
         command: server --address :9000 /data
@@ -87,8 +85,6 @@ jobs:
       - run:
           name: Run unit tests
           command: npm run test:ci
-          environment:
-            TZ: Europe/London
       - store_test_results:
           path: test_results
       - store_artifacts:

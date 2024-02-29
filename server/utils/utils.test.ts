@@ -24,8 +24,8 @@ describe('name formatting', () => {
       ['Upper case', 'ROBERT', 'Robert'],
       ['Mixed case', 'RoBErT', 'Robert'],
       ['Multiple words', 'RobeRT SMiTH', 'Robert Smith'],
-      ['Leading spaces', '  RobeRT', '  Robert'],
-      ['Trailing spaces', 'RobeRT  ', 'Robert  '],
+      ['Leading spaces', '  RobeRT', 'Robert'],
+      ['Trailing spaces', 'RobeRT  ', 'Robert'],
       ['Hyphenated', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
     ])('%s convertToTitleCase(%p, %p)', (_: string, a: string, expected: string) => {
       expect(convertToTitleCase(a)).toEqual(expected)
@@ -47,6 +47,15 @@ describe('name formatting', () => {
     })
     it('can format no name', () => {
       expect(formatName(undefined, undefined)).toEqual('')
+    })
+    it('can format names with multiple spaces', () => {
+      expect(formatName(' david  ', '  jones ')).toEqual('David Jones')
+    })
+    it('can format names with initialed other names', () => {
+      expect(formatName('david  e', 'jones jr.')).toEqual('David E Jones Jr.')
+    })
+    it('can format names with double barrels', () => {
+      expect(formatName('david-joe', 'seymour-jones')).toEqual('David-Joe Seymour-Jones')
     })
   })
 
@@ -89,7 +98,7 @@ describe('name formatting', () => {
       expect(properCaseName('DaVId')).toEqual('David')
     })
     it('Multiple words', () => {
-      expect(properCaseName('DAVID JONES')).toEqual('David jones')
+      expect(properCaseName('DAVID JONES')).toEqual('David Jones')
     })
     it('Hyphenated', () => {
       expect(properCaseName('DAVID-JONES-BART-LISA')).toEqual('David-Jones-Bart-Lisa')

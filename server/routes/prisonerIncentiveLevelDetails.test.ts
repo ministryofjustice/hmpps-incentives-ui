@@ -52,7 +52,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .expect('Content-Type', /html/)
       .expect(() => {
         expect(offenderSearch.getPrisoner).toHaveBeenCalledWith(prisonerNumber)
-        expect(prisonApi.getAgency).toHaveBeenCalledWith(agencyDetails.agencyId)
+        expect(prisonApi.getAgency).toHaveBeenCalledWith(agencyDetails.agencyId, false)
         expect(prisonApi.getStaffDetails).toHaveBeenCalledWith('SYSTEM_USER')
         expect(incentivesApi.getIncentiveSummaryForPrisoner).toHaveBeenCalledWith(prisonerNumber)
       })

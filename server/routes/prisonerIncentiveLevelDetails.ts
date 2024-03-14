@@ -177,7 +177,7 @@ export default function routes(router: Router): Router {
     } catch (e) {
       errors.push({ href: '#toDate', text: `Enter a to date, for example ${todayAsShortDate}` })
     }
-    if (fromDate && toDate && fromDateInput > toDateInput) {
+    if (fromDate && toDate && fromDate > toDate) {
       errors.push({ href: '#fromDate', text: 'Enter a from date which is not after the to date' })
       errors.push({ href: '#toDate', text: 'Enter a to date which is not before the from date' })
     }

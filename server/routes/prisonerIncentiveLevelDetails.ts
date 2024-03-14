@@ -120,13 +120,28 @@ export default function routes(router: Router): Router {
       .filter(resolvedToConcreteValue)
       .map(promise => promise.value)
 
-    const establishments = await Promise.all(
-      uniqueAgencyIds.filter(id => Boolean(id)).map(id => prisonApi.getAgency(id)),
+    const establishments = (
+      await Promise.allSettled(
+        uniqueAgencyIds
+          .filter(id => Boolean(id))
+          .map(id => {
+            return prisonApi.getAgency(id, false)
+          }),
+      )
     )
+      .filter(resolvedToConcreteValue)
+      .map(promise => promise.value)
+
     const levels = Array.from(new Set(incentiveLevelDetails.iepDetails.map(details => details.iepLevel))).sort()
 
     const iepHistoryDetails: HistoryDetail[] = incentiveLevelDetails.iepDetails.map(details => {
-      const { description } = establishments.find(estb => estb.agencyId === details.agencyId)
+      const { description } = establishments.find(estb => estb.agencyId === details.agencyId) || {
+        agencyId: 'Unknown',
+        description: 'Unknown Establishment',
+        agencyType: 'INST',
+        active: false,
+      }
+
       const user = details.userId && users.find(u => u.username === details.userId)
 
       return {

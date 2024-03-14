@@ -183,7 +183,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        url: `/prisonApi/api/agencies/${agency.agencyId}?activeOnly=true`,
+        urlPath: `/prisonApi/api/agencies/${agency.agencyId}`,
       },
       response: {
         status: 200,

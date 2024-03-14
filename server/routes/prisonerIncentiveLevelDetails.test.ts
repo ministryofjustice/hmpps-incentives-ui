@@ -52,7 +52,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .expect('Content-Type', /html/)
       .expect(() => {
         expect(offenderSearch.getPrisoner).toHaveBeenCalledWith(prisonerNumber)
-        expect(prisonApi.getAgency).toHaveBeenCalledWith(agencyDetails.agencyId)
+        expect(prisonApi.getAgency).toHaveBeenCalledWith(agencyDetails.agencyId, false)
         expect(prisonApi.getStaffDetails).toHaveBeenCalledWith('SYSTEM_USER')
         expect(incentivesApi.getIncentiveSummaryForPrisoner).toHaveBeenCalledWith(prisonerNumber)
       })
@@ -259,6 +259,22 @@ describe('GET /incentive-reviews/prisoner/', () => {
       .expect(404)
       .expect(res => {
         expect(res.text).not.toContain('John, Smith')
+      })
+  })
+
+  it('should return unknown agency if not found', () => {
+    const error: SanitisedError = {
+      name: 'Error',
+      status: 404,
+      message: 'Not Found',
+      stack: 'Not Found',
+    }
+    prisonApi.getAgency.mockRejectedValue(error)
+    return request(app)
+      .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Unknown Establishment')
       })
   })
 })

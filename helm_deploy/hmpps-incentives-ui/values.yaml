@@ -42,6 +42,9 @@ generic-service:
     BUNYAN_NO_COLOR: "1"
     PHASE_NAME: ""
     FEATURE_ADD_TEST_ERROR_ENDPOINT: ""
+    AUDIT_ENABLED: "false"
+    AUDIT_SQS_REGION: "eu-west-2"
+    AUDIT_SERVICE_NAME: "UNASSIGNED"
 
   envFrom:
     - secretRef:
@@ -53,6 +56,9 @@ generic-service:
       REDIS_AUTH_TOKEN: "auth_token"
     analytical-platform-s3-bucket-output:
       S3_BUCKET_NAME: "bucket_name"
+    # sqs-hmpps-audit-secret:
+    #   AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
+    #   AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
 
   allowlist:
     groups:

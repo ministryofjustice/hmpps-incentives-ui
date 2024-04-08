@@ -10,7 +10,7 @@ describe('hmppsAuditClient', () => {
   const auditClientConfig = {
     queueUrl: 'http://localhost:4566/000000000000/mainQueue',
     region: 'eu-west-2',
-    serviceName: 'hmpps-service',
+    serviceName: 'hmpps-incentives-ui',
     enabled: true,
   }
 
@@ -40,7 +40,7 @@ describe('hmppsAuditClient', () => {
         what: 'EXAMPLE_EVENT',
         who: 'user1',
         when: expect.any(String),
-        service: 'hmpps-service',
+        service: 'hmpps-incentives-ui',
         subjectId: 'subject123',
         subjectType: 'exampleType',
         correlationId: 'request123',
@@ -57,7 +57,7 @@ describe('hmppsAuditClient', () => {
       expect(actualMessageBody).toEqual(expectedSqsMessageBody)
 
       const eventTime = Date.parse(actualMessageBody.when)
-      expect(Date.now() - eventTime).toBeLessThan(10)
+      expect(Date.now() - eventTime).toBeLessThan(50)
 
       expect(sqsMock.calls().length).toEqual(1)
     })

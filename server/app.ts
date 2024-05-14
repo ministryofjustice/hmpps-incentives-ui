@@ -4,7 +4,6 @@ import { NotFound } from 'http-errors'
 import config from './config'
 import allRoutes from './routes/all'
 import nunjucksSetup from './utils/nunjucksSetup'
-import { setUpSentryErrorHandler, setUpSentryRequestHandler } from './utils/sentry'
 import errorHandler from './errorHandler'
 import type UserService from './services/userService'
 
@@ -27,7 +26,6 @@ export default function createApp(userService: UserService): express.Application
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
-  setUpSentryRequestHandler(app)
   app.use(metricsMiddleware)
   app.use(setUpProductInfo())
   app.use(setUpHealthChecks())
@@ -44,7 +42,6 @@ export default function createApp(userService: UserService): express.Application
   // App routes
   app.use('/', allRoutes(userService))
 
-  setUpSentryErrorHandler(app)
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(config.production))
 

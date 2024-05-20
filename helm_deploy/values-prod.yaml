@@ -1,4 +1,3 @@
----
 generic-service:
   serviceAccountName: hmpps-incentives-prod-analytical-platform
 
@@ -12,7 +11,7 @@ generic-service:
     SUPPORT_URL: "https://support.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
     HMPPS_INCENTIVES_API_URL: "https://incentives-api.hmpps.service.justice.gov.uk"
-    HMPPS_PRISON_API_URL: "https://api.prison.service.justice.gov.uk"
+    HMPPS_PRISON_API_URL: "https://prison-api.prison.service.justice.gov.uk"
     NOMIS_USER_ROLES_API_URL: "https://nomis-user.aks-live-1.studio-hosting.service.justice.gov.uk"
     MANAGE_USERS_API_URL: "https://manage-users-api.hmpps.service.justice.gov.uk"
     OFFENDER_SEARCH_API_URL: "https://prisoner-search.prison.service.justice.gov.uk"

@@ -1,6 +1,3 @@
-import promClient from 'prom-client'
-
-import config from '../config'
 import PrisonRegister from '../data/prisonRegister'
 import S3Client from '../data/s3Client'
 import AnalyticsService from './analyticsService'
@@ -1234,56 +1231,5 @@ describe('AnalyticsService', () => {
         ])
       })
     }
-  })
-
-  describe('Prometheus stale analytics data gauge', () => {
-    beforeAll(() => {
-      config.analyticsDataStaleAferDays = 3
-      jest.useFakeTimers()
-    })
-
-    afterAll(() => {
-      config.analyticsDataStaleAferDays = 0
-      jest.useRealTimers()
-    })
-
-    beforeEach(() => {
-      promClient.register.resetMetrics()
-      mockAppS3ClientResponse(s3Client)
-    })
-
-    async function getStaleAnalyticsMetrics() {
-      const metrics = await promClient.register.getMetricsAsJSON()
-      const staleAnalyticsMetric = metrics[0]
-      expect(staleAnalyticsMetric.name).toEqual<string>('incentives_stale_analytics_data')
-      expect(staleAnalyticsMetric.values).toHaveLength(1)
-      return staleAnalyticsMetric.values[0]
-    }
-
-    it('set to 1 when a source table is stale', async () => {
-      jest.setSystemTime(new Date('2022-08-08T12:15:00Z')) // 4 days after test source table date
-
-      // load a table twice because only cached tables get checked for staleness
-      await analyticsService.getIncentiveLevelsByLocation()
-      await analyticsService.getIncentiveLevelsByLocation()
-
-      // expect a stale behaviour entries table
-      const { value, labels } = await getStaleAnalyticsMetrics()
-      expect(value).toEqual<number>(1)
-      expect(labels).toEqual({ table_type: TableType.incentiveLevels })
-    })
-
-    it('set to 0 when a source table is fresh', async () => {
-      jest.setSystemTime(new Date('2022-08-04T22:15:00Z')) // same day as test source table date
-
-      // load a table twice because only cached tables get checked for staleness
-      await analyticsService.getIncentiveLevelsByLocation()
-      await analyticsService.getIncentiveLevelsByLocation()
-
-      // expect a fresh incentives table
-      const { value, labels } = await getStaleAnalyticsMetrics()
-      expect(value).toEqual<number>(0)
-      expect(labels).toEqual({ table_type: TableType.incentiveLevels })
-    })
   })
 })

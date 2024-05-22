@@ -12,7 +12,7 @@ buildAppInsightsClient()
 import { setImmediate, setInterval } from 'timers'
 
 import config from './server/config'
-import { app, metricsApp } from './server/index'
+import { app } from './server/index'
 import analyticsPrecacheTables from './server/routes/analyticsPrecacheTables'
 import logger from './logger'
 
@@ -24,8 +24,4 @@ app.listen(app.get('port'), () => {
     setImmediate(analyticsPrecacheTables)
     setInterval(analyticsPrecacheTables, 60 * 60 * 1000)
   }
-})
-
-metricsApp.listen(metricsApp.get('port'), () => {
-  logger.info(`Metrics server listening on port ${metricsApp.get('port')}`)
 })

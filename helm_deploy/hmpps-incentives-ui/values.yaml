@@ -27,12 +27,6 @@ generic-service:
     httpGet:
       path: /ping
 
-  custommetrics:
-    enabled: true
-    scrapeInterval: 15s
-    metricsPath: /metrics
-    metricsPort: 3001
-
   env:
     ENVIRONMENT: ""
     NODE_ENV: "production"

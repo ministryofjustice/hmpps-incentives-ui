@@ -155,7 +155,6 @@ There is a suite of tools used for monitoring deployed applications:
 * [Azure Application Insights](https://portal.azure.com/) – application profiling and introspection
 * [Prometheus](https://prometheus.cloud-platform.service.justice.gov.uk/) – application and request metrics
 * [Alertmanager](https://alertmanager.live.cloud-platform.service.justice.gov.uk/) – alerts based on metrics
-* [Sentry.io](https://sentry.io/organizations/ministryofjustice/issues/) – monitoring of errors and exceptions
 * [SonarCloud](https://sonarcloud.io/project/overview?id=ministryofjustice_hmpps-incentives-ui) – code quality monitoring
 
 ## References

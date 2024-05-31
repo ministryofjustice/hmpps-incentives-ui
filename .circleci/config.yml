@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@8
+  hmpps: ministryofjustice/hmpps@9
   slack: circleci/slack@4
 
 parameters:
@@ -17,11 +17,13 @@ parameters:
     type: string
     default: 20.12-browsers
     description: cimg/node docker image tag
-
   redis-version:
     type: string
     default: '7.0'
     description: cimg/redis docker image tag
+  java-version:
+    type: string
+    default: '21.0'
 
   cypress-videos:
     type: string
@@ -235,6 +237,7 @@ workflows:
           context:
             - hmpps-common-vars
       - hmpps/veracode_pipeline_scan:
+          jdk_tag: << pipeline.parameters.java-version >>
           slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
             - veracode-credentials

@@ -1,11 +1,12 @@
 $govuk-global-styles: true;
-$path: "/assets/images/";
+$govuk-suppressed-warnings: 'ie8', 'govuk-typography-scale-14';
+$path: '/assets/images/';
 
 $moj-page-width: 1280px;
 $govuk-page-width: $moj-page-width;
 
-@import 'govuk/all';
-@import 'moj/all';
+@import 'govuk-frontend/dist/govuk/all';
+@import '@ministryofjustice/frontend/moj/all';
 
 @import './components/button';
 @import './components/card';

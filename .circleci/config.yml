@@ -76,7 +76,6 @@ jobs:
             - node_modules
             - build
             - dist
-            - assets/stylesheets
 
   unit_test:
     executor:

@@ -8,6 +8,10 @@ const buildAssets = require('./assets.config')
 const buildApp = require('./app.config')
 
 const cwd = process.cwd()
+
+/**
+ * @type {BuildConfig}
+ */
 const buildConfig = {
   isProduction: process.env.NODE_ENV === 'production',
 
@@ -40,7 +44,10 @@ const buildConfig = {
   },
 }
 
-function main() {
+const main = () => {
+  /**
+   * @type {chokidar.WatchOptions}
+   */
   const chokidarOptions = {
     persistent: true,
     ignoreInitial: true,

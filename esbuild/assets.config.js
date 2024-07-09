@@ -6,8 +6,12 @@ const { copy } = require('esbuild-plugin-copy')
 const { sassPlugin } = require('esbuild-sass-plugin')
 const { glob } = require('glob')
 
-const buildAdditionalAssets = buildConfig =>
-  esbuild.build({
+/**
+ * @param {BuildConfig} buildConfig
+ * @returns {Promise}
+ */
+const buildAdditionalAssets = buildConfig => {
+  return esbuild.build({
     outdir: buildConfig.assets.outDir,
     plugins: [
       copy({
@@ -16,7 +20,12 @@ const buildAdditionalAssets = buildConfig =>
       }),
     ],
   })
+}
 
+/**
+ * @param {BuildConfig} buildConfig
+ * @returns {Promise}
+ */
 const buildAssets = buildConfig => {
   return esbuild.build({
     entryPoints: buildConfig.assets.entryPoints,
@@ -40,6 +49,9 @@ const buildAssets = buildConfig => {
   })
 }
 
+/**
+ * @param {BuildConfig} buildConfig
+ */
 module.exports = buildConfig => {
   process.stderr.write('\u{1b}[36m→ Building assets…\u{1b}[0m\n')
 

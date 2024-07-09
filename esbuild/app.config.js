@@ -3,6 +3,9 @@ const { copy } = require('esbuild-plugin-copy')
 const { typecheckPlugin } = require('@jgoz/esbuild-plugin-typecheck')
 const glob = require('glob')
 
+/**
+ * @param {BuildConfig} buildConfig
+ */
 module.exports = buildConfig => {
   process.stderr.write('\u{1b}[36m→ Building app…\u{1b}[0m\n')
 
@@ -23,5 +26,9 @@ module.exports = buildConfig => {
         }),
       ],
     })
-    .catch(() => process.exit(1))
+    .catch(e => {
+      process.stderr.write(e)
+      process.stderr.write('\n')
+      process.exit(1)
+    })
 }

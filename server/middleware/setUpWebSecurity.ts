@@ -11,7 +11,7 @@ export default function setUpWebSecurity(): Router {
   // Secure code best practice - see:
   // 1. https://expressjs.com/en/advanced/best-practice-security.html,
   // 2. https://www.npmjs.com/package/helmet
-  router.use((req: Request, res: Response, next: NextFunction) => {
+  router.use((_req: Request, res: Response, next: NextFunction) => {
     res.locals.cspNonce = crypto.randomBytes(16).toString('hex')
     next()
   })
@@ -48,6 +48,9 @@ export default function setUpWebSecurity(): Router {
             frontendComponentsHost,
             '*.google-analytics.com',
             '*.googletagmanager.com',
+            '*.g.doubleclick.net',
+            '*.google.com',
+            '*.google.co.uk',
             'https://*.hotjar.com',
           ],
           formAction: ["'self'", authHost, dpsHost],
@@ -57,6 +60,9 @@ export default function setUpWebSecurity(): Router {
             '*.google-analytics.com',
             '*.googletagmanager.com',
             '*.analytics.google.com',
+            '*.g.doubleclick.net',
+            '*.google.com',
+            '*.google.co.uk',
             'https://*.hotjar.com',
             'https://*.hotjar.io',
             'wss://*.hotjar.com',

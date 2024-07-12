@@ -72,17 +72,6 @@
       "ts"
     ]
   },
-  "nodemonConfig": {
-    "ignore": [
-      ".circleci/*",
-      "migrations/*",
-      "node_modules/*",
-      "test/*",
-      "integration_tests/*"
-    ],
-    "delay": 2500,
-    "ext": "js,json,html,njk"
-  },
   "lint-staged": {
     "*.{ts,js,css}": [
       "prettier --write",

@@ -7,8 +7,8 @@ const { sassPlugin } = require('esbuild-sass-plugin')
 const { glob } = require('glob')
 
 /**
- * @param {BuildConfig} buildConfig
- * @returns {Promise}
+ * Copy additional assets into distribution
+ * @type {BuildStep}
  */
 const buildAdditionalAssets = buildConfig => {
   return esbuild.build({
@@ -23,8 +23,8 @@ const buildAdditionalAssets = buildConfig => {
 }
 
 /**
- * @param {BuildConfig} buildConfig
- * @returns {Promise}
+ * Build scss and javascript assets
+ * @type {BuildStep}
  */
 const buildAssets = buildConfig => {
   return esbuild.build({
@@ -51,13 +51,10 @@ const buildAssets = buildConfig => {
 
 /**
  * @param {BuildConfig} buildConfig
+ * @returns {Promise}
  */
 module.exports = buildConfig => {
   process.stderr.write('\u{1b}[36m→ Building assets…\u{1b}[0m\n')
 
-  Promise.all([buildAssets(buildConfig), buildAdditionalAssets(buildConfig)]).catch(e => {
-    process.stderr.write(e)
-    process.stderr.write('\n')
-    process.exit(1)
-  })
+  return Promise.all([buildAssets(buildConfig), buildAdditionalAssets(buildConfig)])
 }

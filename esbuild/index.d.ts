@@ -1,3 +1,5 @@
+import type { BuildResult } from 'esbuild'
+
 export interface BuildConfig {
   isProduction: boolean
 
@@ -14,3 +16,5 @@ export interface BuildConfig {
     clear: string[]
   }
 }
+
+export type BuildStep = (BuildConfig) => Promise<BuildResult>

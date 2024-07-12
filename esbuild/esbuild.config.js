@@ -10,6 +10,7 @@ const buildApp = require('./app.config')
 const cwd = process.cwd()
 
 /**
+ * Configuration for build steps
  * @type {BuildConfig}
  */
 const buildConfig = {
@@ -55,8 +56,10 @@ const main = () => {
 
   const args = process.argv
   if (args.includes('--build')) {
-    buildApp(buildConfig)
-    buildAssets(buildConfig)
+    Promise.all([buildApp(buildConfig), buildAssets(buildConfig)]).catch(e => {
+      process.stderr.write(`${e}\n`)
+      process.exit(1)
+    })
   }
 
   if (args.includes('--dev-server')) {
@@ -71,12 +74,14 @@ const main = () => {
     process.stderr.write('\u{1b}[36m→ Watching for changes…\u{1b}[0m\n')
 
     // Assets
-    chokidar.watch(['assets/**/*'], chokidarOptions).on('all', () => buildAssets(buildConfig))
+    chokidar
+      .watch(['assets/**/*'], chokidarOptions)
+      .on('all', () => buildAssets(buildConfig).catch(e => process.stderr.write(`${e}\n`)))
 
     // App
     chokidar
       .watch(['server/**/*'], { ...chokidarOptions, ignored: ['**/*.test.ts'] })
-      .on('all', () => buildApp(buildConfig))
+      .on('all', () => buildApp(buildConfig).catch(e => process.stderr.write(`${e}\n`)))
   }
 }
 

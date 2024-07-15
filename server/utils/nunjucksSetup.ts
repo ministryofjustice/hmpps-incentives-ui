@@ -1,9 +1,11 @@
 /* eslint-disable no-param-reassign */
+import fs from 'node:fs'
 import path from 'node:path'
 
 import express from 'express'
 import nunjucks from 'nunjucks'
 
+import logger from '../../logger'
 import config from '../config'
 import { calculateTrendsRange, makeChartPalette } from './analytics'
 import format from './format'
@@ -32,16 +34,12 @@ export default function nunjucksSetup(app: express.Express): void {
   app.locals.dpsUrl = config.dpsUrl
   app.locals.supportUrl = config.supportUrl
 
-  // Cachebusting version string
-  if (config.production) {
-    // Version only changes with new commits
-    app.locals.version = config.applicationInfo.gitRef
-  } else {
-    // Version changes every request
-    app.use((req, res, next) => {
-      res.locals.version = Date.now().toString()
-      return next()
-    })
+  let assetManifest: Record<string, string> = {}
+  try {
+    const assetMetadataPath = path.resolve(__dirname, '../../assets/manifest.json')
+    assetManifest = JSON.parse(fs.readFileSync(assetMetadataPath, 'utf8'))
+  } catch (e) {
+    logger.error('Could not read asset manifest file')
   }
 
   const njkEnv = nunjucks.configure(
@@ -55,6 +53,9 @@ export default function nunjucksSetup(app: express.Express): void {
       express: app,
     },
   )
+
+  // static assets
+  njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
 
   // form helpers
   njkEnv.addFilter('findFieldInErrorSummary', findFieldInErrorSummary)

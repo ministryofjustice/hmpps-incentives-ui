@@ -31,6 +31,7 @@ ARG GIT_REF=unknown
 
 COPY package*.json ./
 RUN CYPRESS_INSTALL_BINARY=0 npm ci --no-audit
+ENV NODE_ENV='production'
 
 COPY . .
 RUN npm run build
@@ -40,18 +41,15 @@ RUN npm prune --no-audit --omit=dev
 FROM base
 
 COPY --from=build --chown=appuser:appgroup \
-        /app/package.json \
-        /app/package-lock.json \
-        ./
+    /app/package.json \
+    /app/package-lock.json \
+    ./
 
 COPY --from=build --chown=appuser:appgroup \
-        /app/assets ./assets
+    /app/dist ./dist
 
 COPY --from=build --chown=appuser:appgroup \
-        /app/dist ./dist
-
-COPY --from=build --chown=appuser:appgroup \
-        /app/node_modules ./node_modules
+    /app/node_modules ./node_modules
 
 EXPOSE 3000
 ENV NODE_ENV='production'

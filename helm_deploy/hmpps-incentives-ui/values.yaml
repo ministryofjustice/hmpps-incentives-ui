@@ -61,11 +61,6 @@ generic-service:
       - prisons
       - private_prisons
 
-    # hotjar servers: https://help.hotjar.com/hc/en-us/articles/115011789288
-    hotjar-1: 18.203.61.76
-    hotjar-2: 18.203.176.135
-    hotjar-3: 52.17.197.221
-
 generic-prometheus-alerts:
   targetApplication: hmpps-incentives-ui
   alertSeverity: digital-prison-service

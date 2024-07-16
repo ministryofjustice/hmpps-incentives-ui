@@ -32,8 +32,9 @@ export default function setUpStaticResources(): Router {
   // downloads
   router.use(
     '/user-guide.pdf',
-    express.static(path.join(process.cwd(), '/assets/downloads/user-guide.pdf'), {
+    express.static(path.join(process.cwd(), '/dist/assets/downloads/user-guide.pdf'), {
       maxAge: '2h',
+      setHeaders: res => res.setHeader('Content-Type', 'application/pdf'),
     }),
   )
 

@@ -19,7 +19,7 @@ parameters:
     description: cimg/node docker image tag
   redis-version:
     type: string
-    default: '7.0'
+    default: '7.4'
     description: cimg/redis docker image tag
   java-version:
     type: string

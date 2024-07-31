@@ -1,4 +1,8 @@
 {
   "peer": true,
-  "reject": ["@types/node"]
+  "reject": [
+    "@types/node",
+    "applicationinsights",
+    "eslint"
+  ]
 }

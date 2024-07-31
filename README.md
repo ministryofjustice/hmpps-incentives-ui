@@ -23,13 +23,15 @@ can be used to install appropriate node versions, e.g.:
 
 ```shell
 nvm use
+# or
+fnm use
 ```
 
 Additional tools are required to manage deployment: `kubectl` and `helm`.
 
 ### Using services in `dev` environment
 
-This is probably the easiest way to run and develop on your machine: by hooking into services that already exist
+This is the easiest way to run and develop on your machine: by hooking into services that already exist
 in the `dev` environment.
 A user account is needed in hmpps-auth with the appropriate roles.
 
@@ -101,14 +103,18 @@ npm run int-test-ui
 
 ### Code style tests
 
+Type-checking is performed with:
+
+```shell
+npm run typecheck
+```
+
 Prettier should automatically correct many stylistic errors when changes are committed,
 but the linter can also be run manually:
 
 ```shell
 npm run lint
 ```
-
-Additionally, SonarCloud comments on pull requests with an assessment of code quality.
 
 ### Security tests
 

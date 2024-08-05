@@ -2,9 +2,10 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "es5",
+    "module": "commonjs",
+    "target": "es2018",
     "noEmit": true,
-    "lib": ["es5", "dom", "es2015.promise"],
+    "lib": ["dom", "es2018"],
     "types": ["cypress", "express", "express-session"],
     "esModuleInterop": true,
     "skipLibCheck": true,

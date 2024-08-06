@@ -167,6 +167,7 @@ export default function routes(router: Router): Router {
       if (fromDateInput) {
         fromDate = parseDateInput(fromDateInput)
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       errors.push({ href: '#fromDate', text: `Enter a from date, for example ${todayAsShortDate}` })
     }
@@ -174,6 +175,7 @@ export default function routes(router: Router): Router {
       if (toDateInput) {
         toDate = parseDateInput(toDateInput)
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       errors.push({ href: '#toDate', text: `Enter a to date, for example ${todayAsShortDate}` })
     }

@@ -1,5 +1,6 @@
 import type { RequestHandler, Request, Response, Router } from 'express'
 
+import logger from '../../logger'
 import { formatName, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import TokenStore from '../data/tokenStore'
@@ -52,6 +53,7 @@ async function renderForm(
       selectableLevels,
     })
   } catch (error) {
+    logger.error(`Could not render change prisoner incentive level form ${error.message}`)
     res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
   }
 }
@@ -83,6 +85,7 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
       profileUrl,
     })
   } catch (error) {
+    logger.error(`Could not render change prisoner incentive level confirmation ${error.message}`)
     res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
   }
 }
@@ -161,6 +164,7 @@ export default function routes(router: Router): Router {
       })
       await renderConfirmation(req, res)
     } catch (error) {
+      logger.error(`Could not save prisoner incentive level form ${error.message}`)
       res.redirect(`/incentive-reviews/prisoner/${prisonerNumber}`)
     }
   })

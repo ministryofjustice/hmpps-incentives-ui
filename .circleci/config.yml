@@ -191,6 +191,7 @@ workflows:
                 - main
           requires:
             - helm_lint
+            - lint_and_typecheck
             - unit_test
             - integration_test
             - build_docker

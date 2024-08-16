@@ -42,6 +42,10 @@ export default class PrisonerIncentiveLevelDetailsPage extends Page {
   }
 
   get fromDate(): PageElement<HTMLInputElement> {
-    return cy.get('[data-qa="fromDate"]')
+    return cy.get('#fromDate')
+  }
+
+  get toDate(): PageElement<HTMLInputElement> {
+    return cy.get('#toDate')
   }
 }

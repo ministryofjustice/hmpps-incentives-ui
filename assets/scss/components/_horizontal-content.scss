@@ -39,12 +39,8 @@
       margin: govuk-spacing(3) govuk-spacing(3) 0 0;
     }
 
-    .hmpps-datepicker-input__wrapper {
-      margin-bottom: 0;
-    }
-
     > .govuk-button-group {
-      align-self: flex-end;
+      align-self: center;
 
       .govuk-button {
         margin-bottom: $govuk-border-width-form-element;

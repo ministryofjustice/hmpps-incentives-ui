@@ -6,7 +6,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "components/datepicker/macro.njk" import hmppsDatepicker %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 
 {% set pageTitle = applicationName + " – Incentive details" %}
 
@@ -92,30 +92,28 @@
           }
         }) }}
 
-        {{ hmppsDatepicker({
+        {{ mojDatePicker({
           id: "fromDate",
           name: "fromDate",
-          classes: "hmpps-datepicker--fixed-width",
           label: {
             text: "Date from"
           },
           value: formValues.fromDate,
           maxDate: maxDate,
           errorMessage: errors | findFieldInErrorSummary("fromDate"),
-          dataQa: "fromDate"
+          leadingZeros: 1
         }) }}
 
-        {{ hmppsDatepicker({
+        {{ mojDatePicker({
           id: "toDate",
           name: "toDate",
-          classes: "hmpps-datepicker--fixed-width",
           label: {
             text: "Date to"
           },
           value: formValues.toDate,
           maxDate: maxDate,
           errorMessage: errors | findFieldInErrorSummary("toDate"),
-          dataQa: "toDate"
+          leadingZeros: 1
         }) }}
 
         <div class="govuk-button-group">

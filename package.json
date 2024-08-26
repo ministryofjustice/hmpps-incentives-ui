@@ -82,8 +82,8 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.635.0",
-    "@aws-sdk/client-sqs": "^3.635.0",
+    "@aws-sdk/client-s3": "^3.637.0",
+    "@aws-sdk/client-sqs": "^3.637.0",
     "@ministryofjustice/frontend": "^2.2.0",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.6",
@@ -170,7 +170,7 @@
     "prettier": "^3.3.3",
     "prettier-plugin-jinja-template": "^1.4.1",
     "supertest": "^7.0.0",
-    "ts-jest": "^29.2.4",
+    "ts-jest": "^29.2.5",
     "typescript": "^5.5.4"
   }
 }

@@ -11,7 +11,7 @@ import PrisonIncentiveLevelsPage from '../pages/prisonIncentiveLevels/prisonInce
 context('Prison incentive level management', () => {
   beforeEach(() => {
     const roles = ['ROLE_MAINTAIN_PRISON_IEP_LEVELS']
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn', { roles })
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')

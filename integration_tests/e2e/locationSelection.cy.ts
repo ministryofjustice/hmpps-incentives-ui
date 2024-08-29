@@ -4,7 +4,7 @@ import LocationSelectionPage from '../pages/locationSelection'
 
 context('Location selection', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')

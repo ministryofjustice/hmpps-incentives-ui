@@ -1,6 +1,6 @@
 context('Getting a prisoner image', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
   })

@@ -28,7 +28,7 @@ const incentiveSummary: DatesAsStrings<IncentiveReviewHistory> = {
 }
 context('Prisoner change incentive level details', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')

@@ -12,7 +12,7 @@ import frontendComponents from '../mockApis/frontendComponents'
 
 export default (on: Cypress.PluginEvents) => {
   on('task', {
-    reset: resetStubs,
+    resetStubs,
 
     ...auth,
     ...manageUsersApi,

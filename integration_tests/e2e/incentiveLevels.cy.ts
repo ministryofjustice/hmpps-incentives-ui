@@ -9,7 +9,7 @@ import IncentiveLevelStatusFormPage from '../pages/incentiveLevels/incentiveLeve
 context('Incentive level management', () => {
   beforeEach(() => {
     const roles = ['ROLE_MAINTAIN_INCENTIVE_LEVELS']
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn', { roles })
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')

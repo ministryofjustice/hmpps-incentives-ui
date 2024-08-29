@@ -1,4 +1,4 @@
-import { Response } from 'superagent'
+import type { Response } from 'superagent'
 
 import createUserToken from '../../server/routes/testutils/createUserToken'
 import { stubFor, getMatchingRequests } from './wiremock'

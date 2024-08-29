@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress'
+
 import setupNodeEvents from './integration_tests/plugins'
 
 export default defineConfig({

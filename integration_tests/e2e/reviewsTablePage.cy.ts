@@ -5,7 +5,7 @@ import ReviewsTablePage from '../pages/reviewsTablePage'
 
 context('Manage incentives (select a location)', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
@@ -42,7 +42,7 @@ context('Manage incentives (select a location)', () => {
 // should direct user to the manage incentive reviews page
 context('Manage incentive reviews', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')

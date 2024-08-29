@@ -34,7 +34,7 @@ const cleanRows = (rows: string[][], removeLastRow: boolean) => {
 
 context('Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
@@ -220,7 +220,7 @@ context('Analytics section > Protected characteristics page', () => {
 
 context('Pgd Region selection > National > Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
@@ -384,7 +384,7 @@ context('Pgd Region selection > National > Analytics section > Protected charact
 
 context('Pgd Region selection > LTHS > Analytics section > Protected characteristics page', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')

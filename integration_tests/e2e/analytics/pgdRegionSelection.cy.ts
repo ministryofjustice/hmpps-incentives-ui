@@ -5,7 +5,7 @@ import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
 
 context('Prison group selection', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')

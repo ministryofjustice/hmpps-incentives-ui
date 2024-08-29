@@ -12,7 +12,7 @@ import type { ChartId } from '../../../server/routes/analyticsChartTypes'
 
 context('Analytics section > Incentive levels page', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
@@ -90,7 +90,7 @@ context('Analytics section > Incentive levels page', () => {
 
 context('Pgd Region selection > National > Analytics section > Incentive levels page', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
@@ -175,7 +175,7 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
 
 context('Pgd Region selection > LTHS > Analytics section > Incentive levels page', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')

@@ -13,7 +13,7 @@ import type { ChartId } from '../../../server/routes/analyticsChartTypes'
 
 context('Analytics section > Behaviour entries page', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
@@ -117,7 +117,7 @@ context('Analytics section > Behaviour entries page', () => {
 
 context('Pgd Region selection > National > Analytics section > Behaviour entries page', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
@@ -221,7 +221,7 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
 
 context('Pgd Region selection > LTHS > Analytics section > Behaviour entries page', () => {
   beforeEach(() => {
-    cy.task('reset')
+    cy.task('resetStubs')
     cy.task('stubSignIn')
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')

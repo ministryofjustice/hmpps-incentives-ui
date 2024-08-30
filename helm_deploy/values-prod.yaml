@@ -24,3 +24,6 @@ generic-service:
   resources:
     limits:
       memory: 2048Mi
+
+generic-prometheus-alerts:
+  alertSeverity: hmpps-incentives-prod

@@ -29,5 +29,5 @@ generic-service:
     FEATURE_FS_CACHE: "true"
 
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service-dev
+  alertSeverity: hmpps-incentives-dev
   businessHoursOnly: true

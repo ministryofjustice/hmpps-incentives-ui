@@ -28,5 +28,5 @@ generic-service:
     FEATURE_PRECACHE_TABLES: "true"
 
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service-dev
+  alertSeverity: hmpps-incentives-preprod
   businessHoursOnly: true

@@ -1,7 +1,7 @@
 import csurf from 'csurf'
 import { Router } from 'express'
 
-import populateCurrentUser from '../middleware/populateCurrentUser'
+import setUpCurrentUser from '../middleware/setUpCurrentUser'
 import type UserService from '../services/userService'
 
 const testMode = process.env.NODE_ENV === 'test'
@@ -9,7 +9,7 @@ const testMode = process.env.NODE_ENV === 'test'
 export default function standardRouter(userService: UserService): Router {
   const router = Router({ mergeParams: true })
 
-  router.use(populateCurrentUser(userService))
+  router.use(setUpCurrentUser(userService))
 
   // CSRF protection
   if (!testMode) {

@@ -1,10 +1,12 @@
-import type { RequestHandler } from 'express'
+import { Router } from 'express'
 
 import logger from '../../logger'
 import type UserService from '../services/userService'
 
-export default function populateCurrentUser(userService: UserService): RequestHandler {
-  return async (req, res, next) => {
+export default function setUpCurrentUser(userService: UserService): Router {
+  const router = Router()
+
+  router.use(async (req, res, next) => {
     try {
       if (res.locals.user) {
         const user = await userService.getUser(res.locals.user.token)
@@ -19,5 +21,7 @@ export default function populateCurrentUser(userService: UserService): RequestHa
       logger.error(error, `Failed to retrieve user for: ${res.locals.user && res.locals.user.username}`)
       next(error)
     }
-  }
+  })
+
+  return router
 }

@@ -1,11 +1,10 @@
 # Runs the services needed for integation testing
 # or the subset of services needed by the application if it is connected to `dev` HMPPS APIs
-version: '3.9'
 
 services:
 
   redis:
-    image: redis:7.4
+    image: redis:7
     networks:
       - hmpps
     container_name: inc-ui-redis
@@ -60,7 +59,7 @@ services:
       "
 
   wiremock:
-    image: wiremock/wiremock
+    image: wiremock/wiremock:3x
     networks:
       - hmpps
     container_name: inc-ui-wiremock

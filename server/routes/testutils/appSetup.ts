@@ -9,7 +9,6 @@ import setUpProductInfo from '../../middleware/setUpProductInfo'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import UserService from '../../services/userService'
-import * as auth from '../../authentication/auth'
 import { type Location, PrisonApi } from '../../data/prisonApi'
 import { getTestLocation } from '../../testData/prisonApi'
 import { mockUser } from './mockUsers'
@@ -110,6 +109,5 @@ export function appWithAllRoutes({
   mockUserService?: MockUserService
   testRouter?: Router
 }): Express {
-  auth.default.authenticationMiddleware = () => (req, res, next) => next()
   return appSetup(production, testSession, mockUserService, testRouter)
 }

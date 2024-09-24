@@ -1,10 +1,9 @@
 # Runs the application and full suite of services it depends on
-version: '3.9'
 
 services:
 
   redis:
-    image: redis:7.4
+    image: redis:7
     networks:
       - hmpps
     container_name: inc-ui-redis
@@ -61,6 +60,7 @@ services:
 
   hmpps-auth:
     image: quay.io/hmpps/hmpps-auth:latest
+    pull_policy: always
     networks:
       - hmpps
     container_name: inc-ui-auth
@@ -74,6 +74,7 @@ services:
 
   hmpps-prison-api:
     image: quay.io/hmpps/prison-api:latest
+    pull_policy: always
     networks:
       - hmpps
     container_name: inc-ui-prison
@@ -89,6 +90,7 @@ services:
 
   hmpps-incentives-api:
     image: quay.io/hmpps/hmpps-incentives-api:latest
+    pull_policy: always
     networks:
       - hmpps
     container_name: inc-ui-incentives
@@ -104,6 +106,7 @@ services:
 
   nomis-user-roles-api:
     image: quay.io/hmpps/nomis-user-roles-api:latest
+    pull_policy: always
     networks:
       - hmpps
     container_name: inc-ui-nomis-roles

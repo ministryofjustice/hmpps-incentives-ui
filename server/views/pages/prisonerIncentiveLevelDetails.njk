@@ -101,7 +101,7 @@
           value: formValues.fromDate,
           maxDate: maxDate,
           errorMessage: errors | findFieldInErrorSummary("fromDate"),
-          leadingZeros: 1
+          leadingZeros: "true"
         }) }}
 
         {{ mojDatePicker({
@@ -113,7 +113,7 @@
           value: formValues.toDate,
           maxDate: maxDate,
           errorMessage: errors | findFieldInErrorSummary("toDate"),
-          leadingZeros: 1
+          leadingZeros: "true"
         }) }}
 
         <div class="govuk-button-group">

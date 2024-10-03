@@ -1,4 +1,3 @@
-import logger from '../../logger'
 import config from '../config'
 import RestClient from './restClient'
 
@@ -10,15 +9,42 @@ export interface Component {
 
 export type AvailableComponent = 'header' | 'footer'
 
+export interface CaseLoad {
+  caseLoadId: string
+  description: string
+  type: string
+  caseloadFunction: string
+  currentlyActive: boolean
+}
+
+export interface Service {
+  id: string
+  heading: string
+  description: string
+  href: string
+  navEnabled: boolean
+}
+
+export interface ComponentsResponse extends Record<AvailableComponent, Component> {
+  meta: {
+    activeCaseLoad: CaseLoad
+    caseLoads: CaseLoad[]
+    services: Service[]
+  }
+}
+
 export default class FrontendComponentsClient {
   private static restClient(token: string): RestClient {
     return new RestClient('HMPPS Components Client', config.apis.frontendComponents, token)
   }
 
-  getComponent(component: AvailableComponent, userToken: string): Promise<Component> {
-    logger.info(`Getting frontend component ${component}`)
-    return FrontendComponentsClient.restClient(userToken).get<Component>({
-      path: `/${component}`,
+  getComponents<T extends AvailableComponent[]>(
+    components: T,
+    userToken: string,
+  ): Promise<Pick<ComponentsResponse, 'meta' | T[number]>> {
+    return FrontendComponentsClient.restClient(userToken).get({
+      path: '/components',
+      query: { component: components },
       headers: { 'x-user-token': userToken },
     })
   }

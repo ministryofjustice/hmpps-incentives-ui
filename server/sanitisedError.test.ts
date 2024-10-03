@@ -36,14 +36,13 @@ describe('sanitised error', () => {
     expect(sanitisedError(error)).toEqual(expectedError)
   })
 
-  it('it should return the error message ', () => {
+  it('it should return the error message', () => {
     const error = {
       message: 'error description',
     } as unknown as UnsanitisedError
 
-    const expectedError = new Error('error description')
-
-    expect(sanitisedError(error)).toEqual(expectedError)
+    expect(sanitisedError(error)).toBeInstanceOf(Error)
+    expect(sanitisedError(error)).toHaveProperty('message', 'error description')
   })
 
   it('it should return an empty error for an unknown error structure', () => {

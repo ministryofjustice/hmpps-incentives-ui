@@ -1,17 +1,21 @@
 import type { Response } from 'superagent'
 
 import { stubFor } from './wiremock'
-import type { Component, AvailableComponent } from '../../server/data/frontendComponentsClient'
+import type { AvailableComponent, Component } from '../../server/data/frontendComponentsClient'
+import { mockFrontendComponentResponse } from '../../server/testData/frontendComponents'
 
-const stubComponent = (name: AvailableComponent, component: Component): Promise<Response> =>
+const stubComponents = (components: Partial<Record<AvailableComponent, Component>> = {}): Promise<Response> =>
   stubFor({
     request: {
       method: 'GET',
-      urlPath: `/frontendComponents/${name}`,
+      urlPath: '/frontendComponents/components',
+      queryParameters: {
+        component: { includes: Object.keys(components).map(component => ({ equalTo: component })) },
+      },
     },
     response: {
       headers: { 'Content-Type': 'application/json' },
-      jsonBody: component,
+      jsonBody: mockFrontendComponentResponse(components),
     },
   })
 
@@ -47,13 +51,8 @@ const stubJavascript = (name: AvailableComponent, js: string): Promise<Response>
   })
 
 export default {
-  stubFallbackHeaderAndFooter(): Promise<Response[]> {
-    const empty: Component = {
-      html: '',
-      css: [],
-      javascript: [],
-    }
-    return Promise.all([stubComponent('header', empty), stubComponent('footer', empty)])
+  stubFallbackHeaderAndFooter(): Promise<Response> {
+    return stubComponents()
   },
   stubFrontendComponentsHeaderAndFooter(): Promise<Response[]> {
     return Promise.all([
@@ -61,15 +60,17 @@ export default {
       stubCSS('footer', 'footer { background: yellow }'),
       stubJavascript('header', 'window.FrontendComponentsHeaderDidLoad = true;'),
       stubJavascript('footer', 'window.FrontendComponentsFooterDidLoad = true;'),
-      stubComponent('header', {
-        html: '<header>HEADER</header>',
-        css: ['http://localhost:9091/frontendComponents/header.css'],
-        javascript: ['http://localhost:9091/frontendComponents/header.js'],
-      }),
-      stubComponent('footer', {
-        html: '<footer>FOOTER</footer>',
-        css: ['http://localhost:9091/frontendComponents/footer.css'],
-        javascript: ['http://localhost:9091/frontendComponents/footer.js'],
+      stubComponents({
+        header: {
+          html: '<header>HEADER</header>',
+          css: ['http://localhost:9091/frontendComponents/header.css'],
+          javascript: ['http://localhost:9091/frontendComponents/header.js'],
+        },
+        footer: {
+          html: '<footer>FOOTER</footer>',
+          css: ['http://localhost:9091/frontendComponents/footer.css'],
+          javascript: ['http://localhost:9091/frontendComponents/footer.js'],
+        },
       }),
     ])
   },

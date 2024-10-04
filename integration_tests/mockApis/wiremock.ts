@@ -8,7 +8,7 @@ const url = 'http://localhost:9091/__admin'
  */
 export interface Mapping {
   request?: Partial<
-    { method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' } & (
+    { method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'; queryParameters: object } & (
       | { url: string }
       | { urlPath: string }
       | { urlPathPattern: string }

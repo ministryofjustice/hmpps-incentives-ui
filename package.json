@@ -82,8 +82,8 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.664.0",
-    "@aws-sdk/client-sqs": "^3.664.0",
+    "@aws-sdk/client-s3": "^3.665.0",
+    "@aws-sdk/client-sqs": "^3.665.0",
     "@ministryofjustice/frontend": "^2.2.4",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.6",

@@ -1,5 +1,5 @@
 # Stage: base image
-FROM node:20.17-bookworm-slim AS base
+FROM node:20.18-bookworm-slim AS base
 
 ARG BUILD_NUMBER=2022-01-07.1.ef03202
 ARG GIT_REF=unknown

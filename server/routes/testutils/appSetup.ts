@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto'
+
 import flash from 'connect-flash'
 import express, { type Express, type Router } from 'express'
 import { Cookie, type Session, type SessionData } from 'express-session'
@@ -69,7 +71,8 @@ function appSetup(
   app.use((req, res, next) => {
     req.session = testSession
 
-    res.locals = {} as Express.Locals
+    req.id = randomUUID()
+
     const authHeader = req.header('authorization')
     const token = /^Bearer\s+(?<token>.*)\s*$/i.exec(authHeader)?.groups?.token
     res.locals.user = mockUserService.getFullUserObject(token)

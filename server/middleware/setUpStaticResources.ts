@@ -12,7 +12,7 @@ export default function setUpStaticResources(): Router {
   router.use(compression())
 
   //  Static Resources Configuration
-  const cacheControl = { maxAge: config.staticResourceCacheDuration }
+  const staticResourcesConfig = { maxAge: config.staticResourceCacheDuration, redirect: false }
 
   // frontend assets
   Array.of(
@@ -22,17 +22,18 @@ export default function setUpStaticResources(): Router {
     '/node_modules/@ministryofjustice/frontend/moj/assets',
     '/node_modules/@ministryofjustice/frontend',
   ).forEach(dir => {
-    router.use('/assets', express.static(path.join(process.cwd(), dir), cacheControl))
+    router.use('/assets', express.static(path.join(process.cwd(), dir), staticResourcesConfig))
   })
   router.use(
     '/assets/js/jquery.min.js',
-    express.static(path.join(process.cwd(), '/node_modules/jquery/dist/jquery.min.js'), cacheControl),
+    express.static(path.join(process.cwd(), '/node_modules/jquery/dist/jquery.min.js'), staticResourcesConfig),
   )
 
   // downloads
   router.use(
     '/user-guide.pdf',
     express.static(path.join(process.cwd(), '/dist/assets/downloads/user-guide.pdf'), {
+      ...staticResourcesConfig,
       maxAge: '2h',
       setHeaders: res => res.setHeader('Content-Type', 'application/pdf'),
     }),

@@ -82,9 +82,9 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.687.0",
-    "@aws-sdk/client-sqs": "^3.687.0",
-    "@ministryofjustice/frontend": "^3.0.2",
+    "@aws-sdk/client-s3": "^3.693.0",
+    "@aws-sdk/client-sqs": "^3.693.0",
+    "@ministryofjustice/frontend": "^3.0.3",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.6",
     "body-parser": "^1.20.3",
@@ -112,7 +112,7 @@
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.2",
-    "@ministryofjustice/eslint-config-hmpps": "^0.0.1-alpha.7",
+    "@ministryofjustice/eslint-config-hmpps": "^0.0.1-alpha.8",
     "@tsconfig/node22": "^22.0.0",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",

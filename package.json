@@ -112,7 +112,7 @@
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.2",
-    "@ministryofjustice/eslint-config-hmpps": "^0.0.1-alpha.8",
+    "@ministryofjustice/eslint-config-hmpps": "^0.0.1-alpha.9",
     "@tsconfig/node22": "^22.0.0",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
@@ -160,6 +160,6 @@
     "prettier-plugin-jinja-template": "^2.0.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.2"
   }
 }

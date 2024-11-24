@@ -1,5 +1,5 @@
 import { Colour, makeChartPalette, TrendsRange, calculateTrendsRange } from './analytics'
-import type { TrendsReport } from '../services/analyticsServiceTypes'
+import type { TrendsReport, TrendsReportRow } from '../services/analyticsServiceTypes'
 
 describe.each([
   [
@@ -242,7 +242,7 @@ describe('calculateTrendsRange filter', () => {
         columns: undefined,
         dataSource: undefined,
         lastUpdated: undefined,
-        rows: rowValues.map(values => {
+        rows: rowValues.map((values): TrendsReportRow => {
           return {
             values,
             total: values.reduce((v1, v2) => v1 + v2, 0),

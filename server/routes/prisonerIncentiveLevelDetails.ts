@@ -98,20 +98,20 @@ export default function routes(router: Router): Router {
     const uniqueAgencyIds = Array.from(new Set(incentiveLevelDetails.iepDetails.map(details => details.agencyId)))
 
     // Only get users that map to a user in the prison staff table
-    const users: Staff[] = (
+    const users = (
       await Promise.allSettled(
         uniqueUserIds
           .filter(userId => Boolean(userId))
-          .map(userId => {
+          .map((userId): Promise<Staff> => {
             if (SYSTEM_USERS.includes(userId)) {
-              return {
+              return Promise.resolve({
                 firstName: 'System',
                 lastName: '',
                 username: userId,
                 staffId: undefined,
                 activeCaseLoadId: undefined,
                 active: undefined,
-              }
+              })
             }
             return prisonApi.getStaffDetails(userId)
           }),

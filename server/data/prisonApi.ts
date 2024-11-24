@@ -1,4 +1,5 @@
 import config from '../config'
+import type { SanitisedError } from '../sanitisedError'
 import RestClient from './restClient'
 
 export interface Location {
@@ -54,7 +55,7 @@ export class PrisonApi extends RestClient {
     return this.get<Buffer>({
       path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}/image/data`,
       query: { fullSizeImage: 'false' },
-    }).catch(error => {
+    }).catch((error: SanitisedError): null => {
       const status = error?.status
       if (status === 403 || status === 404) {
         // return null if unauthorised or not found

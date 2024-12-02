@@ -26,6 +26,7 @@ export interface ApplicationInfo {
   productId: string
   buildNumber: string
   gitRef: string
+  branchName: string
 }
 
 const applicationInfo: ApplicationInfo = {
@@ -33,6 +34,7 @@ const applicationInfo: ApplicationInfo = {
   productId: get('PRODUCT_ID', 'DPS???', requiredInProduction),
   buildNumber: get('BUILD_NUMBER', '2022-01-07.1.ef03202', requiredInProduction),
   gitRef: get('GIT_REF', 'unknown', requiredInProduction),
+  branchName: get('GIT_BRANCH', 'xxxxxxxxxxxxxxxxxxx', requiredInProduction),
 }
 
 const auditConfig = () => {
@@ -80,6 +82,7 @@ export default {
   apis: {
     hmppsAuth: {
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
+      healthPath: '/health/ping',
       externalUrl: get('HMPPS_AUTH_EXTERNAL_URL', get('HMPPS_AUTH_URL', 'http://localhost:9090/auth')),
       timeout: {
         response: Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000)),
@@ -93,6 +96,7 @@ export default {
     },
     hmppsIncentivesApi: {
       url: get('HMPPS_INCENTIVES_API_URL', 'http://localhost:2999', requiredInProduction),
+      healthPath: '/health/ping',
       externalUrl: get('HMPPS_INCENTIVES_API_EXTERNAL_URL', get('HMPPS_INCENTIVES_API_URL', 'http://localhost:2999')),
       timeout: {
         response: Number(get('HMPPS_INCENTIVES_API_TIMEOUT_RESPONSE', 60000)),
@@ -102,6 +106,7 @@ export default {
     },
     hmppsPrisonApi: {
       url: get('HMPPS_PRISON_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       externalUrl: get('HMPPS_PRISON_API_EXTERNAL_URL', get('HMPPS_PRISON_API_URL', 'http://localhost:8080')),
       timeout: {
         response: Number(get('HMPPS_PRISON_API_TIMEOUT_RESPONSE', 10000)),
@@ -111,6 +116,7 @@ export default {
     },
     offenderSearchApi: {
       url: get('OFFENDER_SEARCH_API_URL', 'http://localhost:8083', requiredInProduction),
+      healthPath: '/health/ping',
       externalUrl: get('OFFENDER_SEARCH_API_EXTERNAL_URL', get('OFFENDER_SEARCH_API_URL', 'http://localhost:8083')),
       timeout: {
         response: Number(get('OFFENDER_SEARCH_API_TIMEOUT_RESPONSE', 8000)),
@@ -120,6 +126,7 @@ export default {
     },
     nomisUserRolesApi: {
       url: get('NOMIS_USER_ROLES_API_URL', 'http://localhost:8081', requiredInProduction),
+      healthPath: '/health/ping',
       externalUrl: get('NOMIS_USER_ROLES_API_EXTERNAL_URL', get('NOMIS_USER_ROLES_API_URL', 'http://localhost:8081')),
       timeout: {
         response: Number(get('NOMIS_USER_ROLES_API_TIMEOUT_RESPONSE', 8000)),
@@ -129,6 +136,7 @@ export default {
     },
     manageUsersApi: {
       url: get('MANAGE_USERS_API_URL', 'http://localhost:9091', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('MANAGE_USERS_API_TIMEOUT_DEADLINE', 10000)),
@@ -137,6 +145,7 @@ export default {
     },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_DEADLINE', 5000)),
@@ -156,6 +165,7 @@ export default {
     },
     frontendComponents: {
       url: get('COMPONENT_API_URL', 'http://localhost:8082', requiredInProduction),
+      healthPath: '/ping',
       timeout: {
         response: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 5000)),
         deadline: Number(get('COMPONENT_API_TIMEOUT_SECONDS', 5000)),

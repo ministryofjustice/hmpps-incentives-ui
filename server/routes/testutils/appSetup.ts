@@ -7,13 +7,13 @@ import { NotFound } from 'http-errors'
 
 import allRoutes from '../all'
 import breadcrumbs from '../../middleware/breadcrumbs'
-import setUpProductInfo from '../../middleware/setUpProductInfo'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import UserService from '../../services/userService'
 import { type Location, PrisonApi } from '../../data/prisonApi'
 import { getTestLocation } from '../../testData/prisonApi'
 import { mockUser } from './mockUsers'
+import setUpHealthChecks from '../../middleware/setUpHealthChecks'
 
 jest.mock('../../data/prisonApi')
 
@@ -84,7 +84,7 @@ function appSetup(
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
-  app.use(setUpProductInfo())
+  app.use(setUpHealthChecks())
   app.use(breadcrumbs())
 
   // App routes

@@ -1,24 +1,29 @@
 import express, { Router } from 'express'
+import {
+  monitoringMiddleware,
+  endpointHealthComponent,
+  EndpointHealthComponentOptions,
+} from '@ministryofjustice/hmpps-monitoring'
 
-import healthcheck from '../services/healthCheck'
+import logger from '../../logger'
+import config from '../config'
 
 export default function setUpHealthChecks(): Router {
   const router = express.Router()
 
-  router.get('/health', (req, res, next) => {
-    healthcheck(result => {
-      if (!result.healthy) {
-        res.status(503)
-      }
-      res.json(result)
-    })
+  const apiConfig = Object.entries(config.apis)
+  const { applicationInfo } = config
+
+  const middleware = monitoringMiddleware({
+    applicationInfo,
+    healthComponents: apiConfig
+      .filter(([name, _options]) => name !== 'zendesk')
+      .map(([name, options]) => endpointHealthComponent(logger, name, options as EndpointHealthComponentOptions)),
   })
 
-  router.get('/ping', (req, res) =>
-    res.send({
-      status: 'UP',
-    }),
-  )
+  router.get('/health', middleware.health)
+  router.get('/info', middleware.info)
+  router.get('/ping', middleware.ping)
 
   return router
 }

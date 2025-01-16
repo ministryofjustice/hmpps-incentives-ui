@@ -139,7 +139,7 @@
     "chokidar": "^3.6.0",
     "concurrently": "^9.1.2",
     "cookie-session": "^2.1.0",
-    "cypress": "^13.17.0",
+    "cypress": "^14.0.0",
     "cypress-multi-reporters": "^2.0.4",
     "esbuild": "^0.24.2",
     "esbuild-plugin-clean": "^1.0.1",

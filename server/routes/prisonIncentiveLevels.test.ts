@@ -351,13 +351,13 @@ describe('Prison incentive level management', () => {
               return valueCell.textContent.trim()
             })
             .toArray()
-          expect(values).toEqual(
-            [
-            'Yes', 
-            '£60.50 per week', 
-            '£19.80 per week', 
-            '£605', '£198', 
-            '1 added every 14 days', 
+          expect(values).toEqual([
+            'Yes',
+            '£60.50 per week',
+            '£19.80 per week',
+            '£605',
+            '£198',
+            '1 added every 14 days',
             '2 added each month'
           ])
         })
@@ -379,14 +379,13 @@ describe('Prison incentive level management', () => {
               return valueCell.textContent.trim()
             })
             .toArray()
-          expect(values).toEqual(
-            [
-            'No', 
-            '£27.50 per week', 
-            '£5.50 per week', 
-            '£275', 
-            '£55', 
-            '1 added every 14 days', 
+          expect(values).toEqual([
+            'No',
+            '£27.50 per week',
+            '£5.50 per week',
+            '£275',
+            '£55',
+            '1 added every 14 days',
             '0 added each month'
           ])
         })

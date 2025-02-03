@@ -117,6 +117,7 @@
     id: form.formId + "-" + fieldId,
     name: fieldId,
     value: field.value,
+    suffix: {text: "added every 14 days"},
     inputmode: "numeric",
     spellcheck: false,
     errorMessage: { text: field.error } if field.error else undefined
@@ -130,8 +131,14 @@
     id: form.formId + "-" + fieldId,
     name: fieldId,
     value: field.value,
+    suffix: {text: "added each month"},
     inputmode: "numeric",
     spellcheck: false,
     errorMessage: { text: field.error } if field.error else undefined
   }) }}
+
+  <p class="govuk-body">VOs are added every 14 days from the date of conviction. Unused VOs can be accumulated up to a total of 26.</p>
+
+  <p class="govuk-body">PVOs are added on the first day of each month. Unused PVOs expire at the end of each month.</p>
+
 {% endcall %}

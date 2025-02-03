@@ -71,14 +71,18 @@
         rows: [
           [
             { text: "Visits (VO)" },
-            { text: prisonIncentiveLevel.visitOrders }
+            { text: prisonIncentiveLevel.visitOrders + " added every 14 days"}
           ],
           [
             { text: "Privileged visits (PVO)" },
-            { text: prisonIncentiveLevel.privilegedVisitOrders}
+            { text: prisonIncentiveLevel.privilegedVisitOrders + " added each month"}
           ]
         ]
       }) }}
+
+      <p class="govuk-body">VOs are added every 14 days from the date of conviction. Unused VOs can be accumulated up to a total of 26.</p>
+
+      <p class="govuk-body">PVOs are added on the first day of each month. Unused PVOs expire at the end of each month.</p>
 
       <div class="govuk-button-group">
         {{ govukButton({

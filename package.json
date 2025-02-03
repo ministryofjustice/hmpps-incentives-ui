@@ -82,8 +82,8 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.735.0",
-    "@aws-sdk/client-sqs": "^3.734.0",
+    "@aws-sdk/client-s3": "^3.740.0",
+    "@aws-sdk/client-sqs": "^3.738.0",
     "@ministryofjustice/frontend": "^3.3.1",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.6",
@@ -126,7 +126,7 @@
     "@types/jquery": "^3.5.32",
     "@types/jsdom": "^21.1.7",
     "@types/jsonwebtoken": "^9.0.8",
-    "@types/node": "^22.12.0",
+    "@types/node": "^22.13.0",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.4.17",
@@ -153,7 +153,7 @@
     "jest-junit": "^16.0.0",
     "jsdom": "^26.0.0",
     "jsonwebtoken": "^9.0.2",
-    "lint-staged": "^15.4.2",
+    "lint-staged": "^15.4.3",
     "mocha-junit-reporter": "^2.2.1",
     "nock": "^14.0.0",
     "prettier": "^3.4.2",

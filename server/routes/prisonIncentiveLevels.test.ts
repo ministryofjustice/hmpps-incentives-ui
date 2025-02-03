@@ -358,7 +358,7 @@ describe('Prison incentive level management', () => {
             '£605',
             '£198',
             '1 added every 14 days',
-            '2 added each month'
+            '2 added each month',
           ])
         })
     })
@@ -386,7 +386,7 @@ describe('Prison incentive level management', () => {
             '£275',
             '£55',
             '1 added every 14 days',
-            '0 added each month'
+            '0 added each month',
           ])
         })
     })

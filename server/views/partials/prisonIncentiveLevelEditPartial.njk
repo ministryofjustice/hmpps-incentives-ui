@@ -47,6 +47,7 @@
     id: form.formId + "-" + fieldId,
     name: fieldId,
     value: field.value,
+    suffix: { text: "per week" },
     spellcheck: false,
     errorMessage: { text: field.error } if field.error else undefined
   }) }}
@@ -60,6 +61,7 @@
     id: form.formId + "-" + fieldId,
     name: fieldId,
     value: field.value,
+    suffix: { text: "per week" },
     spellcheck: false,
     errorMessage: { text: field.error } if field.error else undefined
   }) }}

@@ -1,11 +1,11 @@
 .dps-caseload-bar {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid $govuk-border-colour;
   @include govuk-width-container;
   @include govuk-responsive-margin(3, 'bottom');
   @include govuk-responsive-padding(3, 'top');
   @include govuk-responsive-padding(3, 'bottom');
-  display: flex;
-  flex-wrap: wrap;
-  border-bottom: 1px solid $govuk-border-colour;
 
   .dps-caseload-bar__location {
     @include govuk-font($size: 19, $weight: 'bold');

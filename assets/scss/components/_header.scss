@@ -5,17 +5,14 @@
   color: govuk-colour('white');
 
   &__container {
-    @include govuk-width-container;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    @include govuk-width-container;
   }
 
   &__logo {
     @include govuk-responsive-margin(2, 'right');
-    position: relative;
-    top: -2px;
-    fill: govuk-colour('white');
   }
 
   &__title {
@@ -24,16 +21,16 @@
     align-items: center;
 
     &__organisation-name {
-      @include govuk-responsive-margin(2, 'right');
-      @include govuk-font($size: 24, $weight: 'bold');
       display: flex;
       align-items: center;
+      @include govuk-responsive-margin(2, 'right');
+      @include govuk-font($size: 24, $weight: 'bold');
     }
 
     &__service-name {
+      display: none;
       @include govuk-responsive-margin(2, 'right');
       @include govuk-font(24);
-      display: none;
 
       @include govuk-media-query($from: desktop) {
         display: flex;
@@ -43,10 +40,9 @@
   }
 
   &__link {
+    text-underline-offset: 0.1em;
     @include govuk-link-common;
     @include govuk-link-style-default;
-
-    text-underline-offset: 0.1em;
 
     &:link,
     &:visited,
@@ -68,8 +64,8 @@
     }
 
     &__sub-text {
-      @include govuk-font(16);
       display: none;
+      @include govuk-font(16);
 
       @include govuk-media-query($from: tablet) {
         display: block;
@@ -91,9 +87,9 @@
     }
 
     &__item {
-      @include govuk-font(19);
       margin-bottom: govuk-spacing(1);
       text-align: right;
+      @include govuk-font(19);
 
       @include govuk-media-query($from: tablet) {
         @include govuk-responsive-margin(4, 'right');
@@ -121,6 +117,6 @@
 }
 
 .govuk-phase-banner {
-  @include govuk-width-container;
   border: none;
+  @include govuk-width-container;
 }

@@ -84,7 +84,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.750.0",
     "@aws-sdk/client-sqs": "^3.750.0",
-    "@ministryofjustice/frontend": "^3.3.1",
+    "@ministryofjustice/frontend": "^3.7.0",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.6",
     "body-parser": "^1.20.3",
@@ -139,7 +139,7 @@
     "chokidar": "^3.6.0",
     "concurrently": "^9.1.2",
     "cookie-session": "^2.1.0",
-    "cypress": "^14.0.3",
+    "cypress": "^14.1.0",
     "cypress-multi-reporters": "^2.0.5",
     "esbuild": "^0.25.0",
     "esbuild-plugin-clean": "^1.0.1",

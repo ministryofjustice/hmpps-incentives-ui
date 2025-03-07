@@ -3,6 +3,7 @@ import type { RequestHandler, Request, Response, Router } from 'express'
 import logger from '../../logger'
 import { formatName, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
+import { globalSearchRole, inactiveBookingsRole, outsidePrisonId, transferPrisonId } from '../data/constants'
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -104,15 +105,20 @@ export default function routes(router: Router): Router {
       const prisonApi = new PrisonApi(systemToken)
 
       // load prisoner info; propagates 404 if not found
-      const prisonerDetails = await prisonApi.getPrisonerDetails(prisonerNumber)
-      const { firstName, lastName } = prisonerDetails
+      const prisoner = await prisonApi.getPrisonerDetails(prisonerNumber)
+      const { firstName, lastName } = prisoner
 
-      // require prisoner to be in user’s caseloads (role is already checked by `authorisationMiddleware`)
-      const prisonerWithinCaseloads = res.locals.user.caseloads.some(
-        caseload => caseload.id === prisonerDetails.agencyId,
-      )
+      // require prisoner to be in user’s caseloads or have global search (for those in transfer) or inactive booking (for those who’ve been released)
+      let prisonerWithinCaseloads: boolean
+      if (prisoner.agencyId === transferPrisonId) {
+        prisonerWithinCaseloads = res.locals.user.roles.some(role => role === globalSearchRole)
+      } else if (prisoner.agencyId === outsidePrisonId) {
+        prisonerWithinCaseloads = res.locals.user.roles.some(role => role === inactiveBookingsRole)
+      } else {
+        prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.agencyId)
+      }
       if (!prisonerWithinCaseloads) {
-        res.redirect(incentiveHistoryUrl)
+        res.redirect('/')
         return
       }
 

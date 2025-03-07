@@ -101,18 +101,16 @@ describe('GET /incentive-reviews/prisoner/', () => {
       })
   })
 
-  it('should NOT allow user to update iep if user is NOT in case load and has CORRECT role', () => {
+  it('should NOT allow user access if user is NOT in case load despite CORRECT role', () => {
     app = appWithAllRoutes({
       mockUserService: new MockUserService(mockLeedsUserWithRole),
     })
 
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
-      .expect(200)
-      .expect('Content-Type', /html/)
+      .expect(302)
       .expect(res => {
-        expect(res.text).toContain('Incentive level history')
-        expect(res.text).not.toContain('Record incentive level')
+        expect(res.headers.location).toEqual('/')
       })
   })
 

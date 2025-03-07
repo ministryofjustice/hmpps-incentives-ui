@@ -63,7 +63,7 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
       .set('authorization', `bearer ${tokenWithNecessaryRole}`)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
-        expect(res.headers.location).toBe(`/incentive-reviews/prisoner/${prisonerInLeedsDetails.offenderNo}`)
+        expect(res.headers.location).toBe('/')
       })
   })
 
@@ -125,7 +125,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
       .send(validFormData)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
-        expect(res.headers.location).toBe(`/incentive-reviews/prisoner/${prisonerInLeedsDetails.offenderNo}`)
+        expect(res.headers.location).toBe('/')
       })
   })
 

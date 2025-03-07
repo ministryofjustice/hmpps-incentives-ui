@@ -3,7 +3,14 @@ import type { RequestHandler, Router } from 'express'
 import format from '../utils/format'
 import { formatName, parseDateInput, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import { maintainPrisonerIncentiveLevelRole, SYSTEM_USERS } from '../data/constants'
+import {
+  globalSearchRole,
+  inactiveBookingsRole,
+  maintainPrisonerIncentiveLevelRole,
+  outsidePrisonId,
+  transferPrisonId,
+  SYSTEM_USERS,
+} from '../data/constants'
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
 import HmppsAuthClient from '../data/hmppsAuthClient'
@@ -24,7 +31,7 @@ type HistoryDetail = IncentiveReviewHistoryItem & {
   iepStaffMember: string | undefined
 }
 
-type HistoryFilters = {
+interface HistoryFilters {
   agencyId?: string
   incentiveLevel?: string
   fromDate?: Date
@@ -83,10 +90,21 @@ export default function routes(router: Router): Router {
     const { firstName, lastName } = prisoner
     const prisonerName = formatName(firstName, lastName)
 
+    let prisonerWithinCaseloads: boolean
+    if (prisoner.prisonId === transferPrisonId) {
+      prisonerWithinCaseloads = res.locals.user.roles.some(role => role === globalSearchRole)
+    } else if (prisoner.prisonId === outsidePrisonId) {
+      prisonerWithinCaseloads = res.locals.user.roles.some(role => role === inactiveBookingsRole)
+    } else {
+      prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.prisonId)
+    }
+    if (!prisonerWithinCaseloads) {
+      return res.redirect('/')
+    }
+
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)
     const { iepLevel: currentIncentiveLevel, nextReviewDate } = incentiveLevelDetails
 
-    const prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.prisonId)
     const userCanMaintainIncentives = res.locals.user.roles.includes(maintainPrisonerIncentiveLevelRole)
 
     const todayAsShortDate = format.formDate(new Date())
@@ -241,7 +259,7 @@ export default function routes(router: Router): Router {
       recordIncentiveUrl: `/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`,
       results: filteredResults,
       noFiltersSupplied,
-      userCanUpdateIEP: prisonerWithinCaseloads && userCanMaintainIncentives,
+      userCanUpdateIEP: userCanMaintainIncentives,
     })
   })
 

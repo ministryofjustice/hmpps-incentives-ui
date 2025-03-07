@@ -99,7 +99,8 @@ export default function routes(router: Router): Router {
       prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.prisonId)
     }
     if (!prisonerWithinCaseloads) {
-      return res.redirect('/')
+      res.redirect('/')
+      return
     }
 
     const incentiveLevelDetails = await incentivesApi.getIncentiveSummaryForPrisoner(prisonerNumber)

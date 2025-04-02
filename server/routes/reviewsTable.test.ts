@@ -2,14 +2,14 @@ import type { Express } from 'express'
 import jquery from 'jquery'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
+import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 import { getTestIncentivesReviews, samplePrisonIncentiveLevels } from '../testData/incentivesApi'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import type { IncentivesReviewsRequest, sortOptions, orderOptions } from '../data/incentivesApi'
 import { IncentivesApi } from '../data/incentivesApi'
 
-jest.mock('../data/hmppsAuthClient')
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 jest.mock('../data/incentivesApi', () => {
   type module = typeof import('../data/incentivesApi')
   const realModule = jest.requireActual<module>('../data/incentivesApi')
@@ -25,8 +25,8 @@ beforeAll(() => {
   const today = new Date('2022-10-09T13:20:35.000+01:00')
   jest.useFakeTimers({ now: today, advanceTimers: true })
 
-  const hmppsAuthClient = HmppsAuthClient.prototype as jest.Mocked<HmppsAuthClient>
-  hmppsAuthClient.getSystemClientToken.mockResolvedValue('test system token')
+  const hmppsAuthClient = AuthenticationClient.prototype as jest.Mocked<AuthenticationClient>
+  hmppsAuthClient.getToken.mockResolvedValue('test system token')
 
   incentivesApi = IncentivesApi.prototype as jest.Mocked<IncentivesApi>
   incentivesApi.getPrisonIncentiveLevels.mockResolvedValue(

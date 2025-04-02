@@ -12,7 +12,7 @@ import type { PrisonIncentiveLevelAddData } from './forms/prisonIncentiveLevelAd
 import type { PrisonIncentiveLevelDeactivateData } from './forms/prisonIncentiveLevelDeactivateForm'
 import type { PrisonIncentiveLevelEditData } from './forms/prisonIncentiveLevelEditForm'
 
-jest.mock('../data/hmppsAuthClient')
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 jest.mock('../data/incentivesApi', () => {
   type module = typeof import('../data/incentivesApi')
   const realModule = jest.requireActual<module>('../data/incentivesApi')

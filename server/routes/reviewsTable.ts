@@ -1,11 +1,11 @@
 import type { RequestHandler, Router } from 'express'
 import { NotFound } from 'http-errors'
+import { AuthenticationClient, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 
 import config from '../config'
 import { pagination, type LegacyPagination } from '../utils/pagination'
 import { type SortableTableColumns, sortableTableHead } from '../utils/sortableTable'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import { createRedisClient } from '../data/redisClient'
 import {
   IncentivesApi,
@@ -13,9 +13,13 @@ import {
   orderOptions,
   type IncentivesReviewsPaginationAndSorting,
 } from '../data/incentivesApi'
-import TokenStore from '../data/tokenStore'
+import logger from '../../logger'
 
-const hmppsAuthClient = new HmppsAuthClient(new TokenStore(createRedisClient('routes/incentivesTable.ts')))
+const hmppsAuthClient = new AuthenticationClient(
+  config.apis.hmppsAuth,
+  logger,
+  new RedisTokenStore(createRedisClient('routes/incentivesTable.ts')),
+)
 
 const PAGE_SIZE = 20
 
@@ -50,7 +54,7 @@ export default function routes(router: Router): Router {
 
     const caseNoteFilter = getCaseNoteFilter()
 
-    const systemToken = await hmppsAuthClient.getSystemClientToken(user.username)
+    const systemToken = await hmppsAuthClient.getToken(user.username)
     const incentivesApi = new IncentivesApi(systemToken)
 
     const agencyId = locationPrefix.split('-')[0]

@@ -14,10 +14,10 @@ import { userCaseload } from '../testData/nomisIUserRolesApi'
 import type { SanitisedError } from '../sanitisedError'
 import type { FormData } from './prisonerChangeIncentiveLevelDetails'
 
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 jest.mock('../data/prisonApi')
 jest.mock('../data/incentivesApi')
 jest.mock('../services/userService')
-jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/nomisUserRolesApi')
 
 let app: Express

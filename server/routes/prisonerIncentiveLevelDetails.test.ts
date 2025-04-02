@@ -12,10 +12,10 @@ import { sampleOffenderDetails } from '../testData/offenderSearch'
 import { SanitisedError } from '../sanitisedError'
 import { makeMockUser } from './testutils/mockUsers'
 
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 jest.mock('../data/prisonApi')
 jest.mock('../data/incentivesApi')
 jest.mock('../services/userService')
-jest.mock('../data/hmppsAuthClient')
 jest.mock('../data/offenderSearch')
 jest.mock('../data/nomisUserRolesApi')
 

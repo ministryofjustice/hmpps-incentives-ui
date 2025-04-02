@@ -1,18 +1,20 @@
 import type { RequestHandler, Request, Response, Router } from 'express'
+import { AuthenticationClient, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 
 import logger from '../../logger'
 import { formatName, putLastNameFirst } from '../utils/utils'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { globalSearchRole, inactiveBookingsRole, outsidePrisonId, transferPrisonId } from '../data/constants'
-import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import { PrisonApi } from '../data/prisonApi'
 import { IncentivesApi } from '../data/incentivesApi'
 import type { ErrorSummaryItem } from './forms/forms'
+import config from '../config'
 
-const hmppsAuthClient = new HmppsAuthClient(
-  new TokenStore(createRedisClient('routes/prisonerChangeIncentiveLevelDetails.ts')),
+const hmppsAuthClient = new AuthenticationClient(
+  config.apis.hmppsAuth,
+  logger,
+  new RedisTokenStore(createRedisClient('routes/prisonerChangeIncentiveLevelDetails.ts')),
 )
 
 export interface FormData {
@@ -28,7 +30,7 @@ async function renderForm(
 ): Promise<void> {
   const { prisonerNumber } = req.params
 
-  const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
+  const systemToken = await hmppsAuthClient.getToken(res.locals.user.username)
   const prisonApi = new PrisonApi(systemToken)
   const incentivesApi = new IncentivesApi(systemToken)
 
@@ -63,7 +65,7 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
   const { prisonerNumber } = req.params
   const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
 
-  const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
+  const systemToken = await hmppsAuthClient.getToken(res.locals.user.username)
   const prisonApi = new PrisonApi(systemToken)
   const incentivesApi = new IncentivesApi(systemToken)
 
@@ -101,7 +103,7 @@ export default function routes(router: Router): Router {
       const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
       const incentiveHistoryUrl = `/incentive-reviews/prisoner/${prisonerNumber}`
 
-      const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
+      const systemToken = await hmppsAuthClient.getToken(res.locals.user.username)
       const prisonApi = new PrisonApi(systemToken)
 
       // load prisoner info; propagates 404 if not found
@@ -161,7 +163,7 @@ export default function routes(router: Router): Router {
       await renderForm(req, res, { newIepLevel, reason }, errors)
       return
     }
-    const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
+    const systemToken = await hmppsAuthClient.getToken(res.locals.user.username)
     const incentivesApi = new IncentivesApi(systemToken)
     try {
       await incentivesApi.updateIncentiveLevelForPrisoner(prisonerNumber, {

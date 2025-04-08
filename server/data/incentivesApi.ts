@@ -1,7 +1,9 @@
 // eslint-disable-next-line max-classes-per-file
+import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
+
 import config from '../config'
-import RestClient from './restClient'
 import { convertIncentiveReviewHistoryDates, convertIncentiveReviewItemDates } from './incentivesApiUtils'
+import logger from '../../logger'
 
 /**
  * Structure representing an error response from the incentives api
@@ -160,13 +162,18 @@ export type UpdateIncentiveLevelRequest = {
 
 export class IncentivesApi extends RestClient {
   constructor(systemToken: string) {
-    super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, systemToken)
+    super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, logger, {
+      getToken: async () => systemToken,
+    })
   }
 
   getIncentiveSummaryForPrisoner(prisonerNumber: string): Promise<IncentiveReviewHistory> {
-    return this.get<DatesAsStrings<IncentiveReviewHistory>>({
-      path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
-    }).then(response => convertIncentiveReviewHistoryDates(response))
+    return this.get<DatesAsStrings<IncentiveReviewHistory>>(
+      {
+        path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
+      },
+      asSystem(),
+    ).then(response => convertIncentiveReviewHistoryDates(response))
   }
 
   /**
@@ -176,66 +183,87 @@ export class IncentivesApi extends RestClient {
     prisonerNumber: string,
     data: UpdateIncentiveLevelRequest,
   ): Promise<IncentiveReviewHistoryItem> {
-    return this.post<DatesAsStrings<IncentiveReviewHistoryItem>>({
-      path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
-      data,
-    }).then(response => convertIncentiveReviewItemDates(response))
+    return this.post<DatesAsStrings<IncentiveReviewHistoryItem>>(
+      {
+        path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
+        data,
+      },
+      asSystem(),
+    ).then(response => convertIncentiveReviewItemDates(response))
   }
 
   getIncentiveLevels(withInactive = false): Promise<IncentiveLevel[]> {
     const query = withInactive ? { 'with-inactive': 'true' } : {}
-    return this.get({
-      path: '/incentive/levels',
-      query,
-    })
+    return this.get(
+      {
+        path: '/incentive/levels',
+        query,
+      },
+      asSystem(),
+    )
   }
 
   getIncentiveLevel(code: string): Promise<IncentiveLevel> {
-    return this.get({ path: `/incentive/levels/${encodeURIComponent(code)}` })
+    return this.get({ path: `/incentive/levels/${encodeURIComponent(code)}` }, asSystem())
   }
 
   /**
    * @throws SanitisedError<ErrorResponse>
    */
   createIncentiveLevel(data: IncentiveLevel): Promise<IncentiveLevel> {
-    return this.post({
-      path: '/incentive/levels',
-      data: data as unknown as Record<string, unknown>,
-    })
+    return this.post(
+      {
+        path: '/incentive/levels',
+        data: data as unknown as Record<string, unknown>,
+      },
+      asSystem(),
+    )
   }
 
   /**
    * @throws SanitisedError<ErrorResponse>
    */
   updateIncentiveLevel(levelCode: string, data: IncentiveLevelUpdate): Promise<IncentiveLevel> {
-    return this.patch({
-      path: `/incentive/levels/${encodeURIComponent(levelCode)}`,
-      data,
-    })
+    return this.patch(
+      {
+        path: `/incentive/levels/${encodeURIComponent(levelCode)}`,
+        data,
+      },
+      asSystem(),
+    )
   }
 
   /**
    * @throws SanitisedError<ErrorResponse>
    */
   setIncentiveLevelOrder(levelCodes: string[]): Promise<IncentiveLevel[]> {
-    return this.patch({
-      path: '/incentive/level-order',
-      data: levelCodes as unknown as Record<string, unknown>,
-    })
+    return this.patch(
+      {
+        path: '/incentive/level-order',
+        data: levelCodes as unknown as Record<string, unknown>,
+      },
+      asSystem(),
+    )
   }
 
   getPrisonIncentiveLevels(prisonId: string, withInactive = false): Promise<PrisonIncentiveLevel[]> {
     const query = withInactive ? { 'with-inactive': 'true' } : {}
-    return this.get({
-      path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}`,
-      query,
-    })
+    return this.get(
+      {
+        path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}`,
+        query,
+      },
+      asSystem(),
+    )
   }
 
   getPrisonIncentiveLevel(prisonId: string, levelCode: string): Promise<PrisonIncentiveLevel> {
-    return this.get({
-      path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}/level/${encodeURIComponent(levelCode)}`,
-    })
+    return this.get(
+      {
+        path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}/level/${encodeURIComponent(levelCode)}`,
+      },
+      asSystem(),
+    )
   }
 
   /**
@@ -246,10 +274,13 @@ export class IncentivesApi extends RestClient {
     levelCode: string,
     data: PrisonIncentiveLevelUpdate,
   ): Promise<PrisonIncentiveLevel> {
-    return this.patch({
-      path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}/level/${encodeURIComponent(levelCode)}`,
-      data,
-    })
+    return this.patch(
+      {
+        path: `/incentive/prison-levels/${encodeURIComponent(prisonId)}/level/${encodeURIComponent(levelCode)}`,
+        data,
+      },
+      asSystem(),
+    )
   }
 
   getReviews({
@@ -263,10 +294,13 @@ export class IncentivesApi extends RestClient {
   }: IncentivesReviewsRequest): Promise<IncentivesReviewsResponse> {
     const prison = encodeURIComponent(agencyId)
     const location = encodeURIComponent(locationPrefix)
-    return this.get<DatesAsStrings<IncentivesReviewsResponse>>({
-      path: `/incentives-reviews/prison/${prison}/location/${location}/level/${levelCode}`,
-      query: { sort, order, page, pageSize },
-    }).then(response => {
+    return this.get<DatesAsStrings<IncentivesReviewsResponse>>(
+      {
+        path: `/incentives-reviews/prison/${prison}/location/${location}/level/${levelCode}`,
+        query: { sort, order, page, pageSize },
+      },
+      asSystem(),
+    ).then(response => {
       return {
         ...response,
         reviews: response.reviews.map(review => {

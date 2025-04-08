@@ -1,6 +1,7 @@
+import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import config from '../config'
 import type { TransferPrisonId, OutsidePrisonId } from './constants'
-import RestClient from './restClient'
+import logger from '../../logger'
 
 interface BaseOffenderSearchResult {
   bookingId: number
@@ -31,15 +32,20 @@ export type OffenderSearchResult = OffenderSearchResultIn | OffenderSearchResult
 
 export class OffenderSearchClient extends RestClient {
   constructor(token: string) {
-    super('Offender Search API', config.apis.offenderSearchApi, token)
+    super('Offender Search API', config.apis.offenderSearchApi, logger, {
+      getToken: async () => token,
+    })
   }
 
   /**
    * Find a single person by prisoner number
    */
   getPrisoner(prisonerNumber: string): Promise<OffenderSearchResult> {
-    return this.get<OffenderSearchResult>({
-      path: `/prisoner/${encodeURIComponent(prisonerNumber)}`,
-    })
+    return this.get<OffenderSearchResult>(
+      {
+        path: `/prisoner/${encodeURIComponent(prisonerNumber)}`,
+      },
+      asSystem(),
+    )
   }
 }

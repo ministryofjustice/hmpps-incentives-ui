@@ -1,6 +1,7 @@
+import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import logger from '../../logger'
 import config from '../config'
-import RestClient from './restClient'
+import ConcreteRestClient from './concreteRestClient'
 
 export interface User {
   username: string
@@ -14,12 +15,14 @@ export interface User {
 }
 
 export default class ManageUsersApiClient {
-  private static restClient(token: string): RestClient {
-    return new RestClient('Manage Users Api Client', config.apis.manageUsersApi, token)
+  private static restClient(token: string): ConcreteRestClient {
+    return new ConcreteRestClient('Manage Users Api Client', config.apis.manageUsersApi, logger, {
+      getToken: async () => token,
+    })
   }
 
   getUser(token: string): Promise<User> {
     logger.info('Getting user details: calling HMPPS Manage Users Api')
-    return ManageUsersApiClient.restClient(token).get<User>({ path: '/users/me' })
+    return ManageUsersApiClient.restClient(token).get<User>({ path: '/users/me' }, asSystem())
   }
 }

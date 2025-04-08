@@ -1,6 +1,6 @@
+import { asSystem, RestClient, type SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import config from '../config'
-import type { SanitisedError } from '../sanitisedError'
-import RestClient from './restClient'
+import logger from '../../logger'
 
 export interface Location {
   locationId: number
@@ -48,15 +48,20 @@ export interface Offender {
 
 export class PrisonApi extends RestClient {
   constructor(token: string) {
-    super('HMPPS Prison API', config.apis.hmppsPrisonApi, token)
+    super('HMPPS Prison API', config.apis.hmppsPrisonApi, logger, {
+      getToken: async () => token,
+    })
   }
 
   getImageByPrisonerNumber(prisonerNumber: string): Promise<Buffer | null> {
-    return this.get<Buffer>({
-      path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}/image/data`,
-      query: { fullSizeImage: 'false' },
-    }).catch((error: SanitisedError): null => {
-      const status = error?.status
+    return this.get<Buffer>(
+      {
+        path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}/image/data`,
+        query: { fullSizeImage: 'false' },
+      },
+      asSystem(),
+    ).catch((error: SanitisedError): null => {
+      const status = error?.responseStatus
       if (status === 403 || status === 404) {
         // return null if unauthorised or not found
         return null
@@ -66,10 +71,13 @@ export class PrisonApi extends RestClient {
   }
 
   getUserLocations(): Promise<Array<Location>> {
-    return this.get<Array<Location>>({
-      path: '/api/users/me/locations',
-      query: { 'include-non-residential-locations': 'true' },
-    }).then(locations => {
+    return this.get<Array<Location>>(
+      {
+        path: '/api/users/me/locations',
+        query: { 'include-non-residential-locations': 'true' },
+      },
+      asSystem(),
+    ).then(locations => {
       return locations.filter(location => {
         return location.currentOccupancy > 0
       })
@@ -77,23 +85,32 @@ export class PrisonApi extends RestClient {
   }
 
   getAgency(agencyId: string, activeOnly = true): Promise<Agency> {
-    return this.get<Agency>({
-      path: `/api/agencies/${encodeURIComponent(agencyId)}`,
-      query: { activeOnly: activeOnly.toString() },
-    })
+    return this.get<Agency>(
+      {
+        path: `/api/agencies/${encodeURIComponent(agencyId)}`,
+        query: { activeOnly: activeOnly.toString() },
+      },
+      asSystem(),
+    )
   }
 
   getStaffDetails(staffId: string): Promise<Staff> {
-    return this.get<Staff>({
-      path: `/api/users/${encodeURIComponent(staffId)}`,
-    })
+    return this.get<Staff>(
+      {
+        path: `/api/users/${encodeURIComponent(staffId)}`,
+      },
+      asSystem(),
+    )
   }
 
   getPrisonerDetails(prisonerNumber: string, fullInfo: boolean = false): Promise<Offender> {
     const query = { fullInfo: fullInfo.toString(), csraSummary: fullInfo.toString() }
-    return this.get<Offender>({
-      path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}`,
-      query,
-    })
+    return this.get<Offender>(
+      {
+        path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}`,
+        query,
+      },
+      asSystem(),
+    )
   }
 }

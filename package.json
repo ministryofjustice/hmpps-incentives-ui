@@ -82,9 +82,9 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.796.0",
-    "@aws-sdk/client-sqs": "^3.796.0",
-    "@ministryofjustice/frontend": "^4.0.2",
+    "@aws-sdk/client-s3": "^3.799.0",
+    "@aws-sdk/client-sqs": "^3.799.0",
+    "@ministryofjustice/frontend": "^5.1.2",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.6",
     "body-parser": "^2.2.0",
@@ -94,7 +94,7 @@
     "connect-flash": "^0.1.1",
     "connect-redis": "^8.0.3",
     "cookie-parser": "^1.4.7",
-    "csrf-sync": "^4.1.0",
+    "csrf-sync": "^4.2.0",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "govuk-frontend": "^5.9.0",
@@ -160,6 +160,6 @@
     "prettier-plugin-jinja-template": "^2.1.0",
     "supertest": "^7.1.0",
     "ts-jest": "^29.3.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.7.3"
   }
 }

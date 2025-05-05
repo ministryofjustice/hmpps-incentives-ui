@@ -4,7 +4,7 @@
 services:
 
   redis:
-    image: redis:7
+    image: redis:8
     networks:
       - hmpps
     container_name: inc-ui-redis

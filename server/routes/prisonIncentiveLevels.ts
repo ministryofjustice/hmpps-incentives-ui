@@ -1,8 +1,8 @@
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
 import { BadRequest, NotFound } from 'http-errors'
+import { type SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import logger from '../../logger'
-import type { SanitisedError } from '../sanitisedError'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import {
   ErrorCode,

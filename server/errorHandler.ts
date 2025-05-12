@@ -1,12 +1,18 @@
 import type { Request, Response, NextFunction } from 'express'
 import type { HttpError } from 'http-errors'
 import type { HTTPError as SuperagentHttpError } from 'superagent'
+import { type SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import logger from '../logger'
 
 export default function createErrorHandler(production: boolean) {
-  return (error: HttpError | SuperagentHttpError, req: Request, res: Response, next: NextFunction): void => {
-    const status = error.status || 500
+  return (
+    error: HttpError | SuperagentHttpError | SanitisedError,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void => {
+    const status = ('status' in error && error.status) || ('responseStatus' in error && error.responseStatus) || 500
 
     logger.error(`Error handling request for '${req.originalUrl}', user '${res.locals.user?.username}'`, error)
 

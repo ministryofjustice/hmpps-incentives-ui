@@ -1,16 +1,5 @@
+import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import type { ResponseError } from 'superagent'
-
-/**
- * An error that may be safe to log as it omits sensitive request headers
- */
-export interface SanitisedError<Data = unknown> extends Error {
-  text?: string
-  status?: number
-  headers?: unknown
-  data?: Data
-  stack: string
-  message: string
-}
 
 /**
  * An error as returned by superagemt, contains sensitive request headers
@@ -27,7 +16,7 @@ export default function sanitise<Data = unknown>(error: UnsanitisedError): Sanit
   e.stack = error.stack
   if (error.response) {
     e.text = error.response.text
-    e.status = error.response.status
+    e.responseStatus = error.response.status
     e.headers = error.response.headers
     e.data = error.response.body
   }

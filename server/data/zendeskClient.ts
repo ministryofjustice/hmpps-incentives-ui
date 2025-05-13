@@ -1,4 +1,4 @@
-import Agent, { HttpsAgent } from 'agentkeepalive'
+import { HttpAgent, HttpsAgent } from 'agentkeepalive'
 import superagent, { type ResponseError } from 'superagent'
 import { ApiConfig } from '@ministryofjustice/hmpps-rest-client'
 
@@ -36,7 +36,7 @@ export interface TicketResponse {
  * Zendesk API client: only actions is to create a ticket
  */
 export default class ZendeskClient {
-  agent: Agent
+  private agent: HttpAgent
 
   constructor(
     private readonly config: ApiConfig,
@@ -44,7 +44,7 @@ export default class ZendeskClient {
     private readonly token: string,
   ) {
     const agentConfig = { ...config.agent, keepAlive: false }
-    this.agent = config.url.startsWith('https') ? new HttpsAgent(agentConfig) : new Agent(agentConfig)
+    this.agent = config.url.startsWith('https') ? new HttpsAgent(agentConfig) : new HttpAgent(agentConfig)
   }
 
   async createTicket(ticket: CreateTicketRequest): Promise<TicketResponse> {

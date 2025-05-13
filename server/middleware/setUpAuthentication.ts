@@ -3,10 +3,11 @@ import type { Router } from 'express'
 import express from 'express'
 import passport from 'passport'
 import { Strategy } from 'passport-oauth2'
+import { AuthenticatedRequest, VerificationClient } from '@ministryofjustice/hmpps-auth-clients'
 
 import config from '../config'
-import tokenVerifier from '../data/tokenVerification'
-import generateOauthClientToken from '../authentication/clientCredentials'
+import generateOauthClientToken from '../utils/clientCredentials'
+import logger from '../../logger'
 
 passport.serializeUser((user, done) => {
   // Not used but required for Passport
@@ -37,6 +38,7 @@ passport.use(
 
 export default function setupAuthentication(): Router {
   const router = express.Router()
+  const tokenVerificationClient = new VerificationClient(config.apis.tokenVerification, logger)
 
   router.use(passport.initialize())
   router.use(passport.session())
@@ -74,7 +76,7 @@ export default function setupAuthentication(): Router {
   })
 
   router.use(async (req, res, next) => {
-    if (req.isAuthenticated() && (await tokenVerifier(req))) {
+    if (req.isAuthenticated() && (await tokenVerificationClient.verifyToken(req as unknown as AuthenticatedRequest))) {
       return next()
     }
     req.session.returnTo = req.originalUrl

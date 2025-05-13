@@ -1,4 +1,5 @@
 import type { RequestHandler, Router } from 'express'
+import { AuthenticationClient, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 
 import format from '../utils/format'
 import { formatName, parseDateInput, putLastNameFirst } from '../utils/utils'
@@ -11,13 +12,13 @@ import {
   transferPrisonId,
   SYSTEM_USERS,
 } from '../data/constants'
-import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
-import HmppsAuthClient from '../data/hmppsAuthClient'
 import { PrisonApi, type Staff } from '../data/prisonApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
 import { IncentivesApi, type IncentiveReviewHistoryItem } from '../data/incentivesApi'
 import type { ErrorSummaryItem, GovukSelectItem } from './forms/forms'
+import config from '../config'
+import logger from '../../logger'
 
 interface FormData {
   agencyId?: string
@@ -68,8 +69,10 @@ function resolvedToConcreteValue<T>(
   return promise.status === 'fulfilled' && promise.value !== undefined && promise.value !== null
 }
 
-const hmppsAuthClient = new HmppsAuthClient(
-  new TokenStore(createRedisClient('routes/prisonerIncentiveLevelDetails.ts')),
+const hmppsAuthClient = new AuthenticationClient(
+  config.apis.hmppsAuth,
+  logger,
+  new RedisTokenStore(createRedisClient('routes/prisonerIncentiveLevelDetails.ts')),
 )
 
 export default function routes(router: Router): Router {
@@ -80,7 +83,7 @@ export default function routes(router: Router): Router {
     const { agencyId, incentiveLevel, fromDate: fromDateInput, toDate: toDateInput }: FormData = req.query
     const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
 
-    const systemToken = await hmppsAuthClient.getSystemClientToken(res.locals.user.username)
+    const systemToken = await hmppsAuthClient.getToken(res.locals.user.username)
     const prisonApi = new PrisonApi(systemToken)
     const offenderSearchClient = new OffenderSearchClient(systemToken)
     const incentivesApi = new IncentivesApi(systemToken)

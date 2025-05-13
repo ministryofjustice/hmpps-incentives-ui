@@ -1,6 +1,6 @@
 import nock from 'nock'
+import { AgentConfig } from '@ministryofjustice/hmpps-rest-client'
 
-import { AgentConfig } from '../config'
 import ZendeskClient, { type TicketResponse } from './zendeskClient'
 
 describe('Zendesk client', () => {

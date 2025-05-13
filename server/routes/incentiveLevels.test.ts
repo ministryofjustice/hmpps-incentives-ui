@@ -2,6 +2,7 @@ import type { Express } from 'express'
 import jquery from 'jquery'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
+import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
@@ -9,13 +10,12 @@ import { sampleIncentiveLevels } from '../testData/incentivesApi'
 import { getAgencyMockImplementation } from '../testData/prisonApi'
 import { IncentivesApi, type ErrorResponse, type IncentiveLevel } from '../data/incentivesApi'
 import { PrisonApi } from '../data/prisonApi'
-import type { SanitisedError } from '../sanitisedError'
 import type { IncentiveLevelCreateData } from './forms/incentiveLevelCreateForm'
 import type { IncentiveLevelEditData } from './forms/incentiveLevelEditForm'
 import type { IncentiveLevelReorderData } from './forms/incentiveLevelReorderForm'
 import type { IncentiveLevelStatusData } from './forms/incentiveLevelStatusForm'
 
-jest.mock('../data/hmppsAuthClient')
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 jest.mock('../data/incentivesApi', () => {
   type module = typeof import('../data/incentivesApi')
   const realModule = jest.requireActual<module>('../data/incentivesApi')
@@ -260,7 +260,7 @@ describe('Incentive level management', () => {
     it('should 404 if level does not exist', () => {
       const error: SanitisedError<ErrorResponse> = {
         name: 'Error',
-        status: 404,
+        responseStatus: 404,
         message: 'Not Found',
         stack: 'Not Found',
       }
@@ -383,7 +383,7 @@ describe('Incentive level management', () => {
     it('should show error message returned by api', () => {
       const error: SanitisedError<ErrorResponse> = {
         name: 'Error',
-        status: 500,
+        responseStatus: 500,
         message: 'Internal Server Error',
         stack: 'Internal Server Error',
       }
@@ -412,7 +412,7 @@ describe('Incentive level management', () => {
 
       const error: SanitisedError<ErrorResponse> = {
         name: 'Error',
-        status: 400,
+        responseStatus: 400,
         message: 'Bad Request',
         stack: 'Error: Bad Request',
         data: {
@@ -454,7 +454,7 @@ describe('Incentive level management', () => {
     it('should 404 if level does not exist', () => {
       const error: SanitisedError<ErrorResponse> = {
         name: 'Error',
-        status: 404,
+        responseStatus: 404,
         message: 'Not Found',
         stack: 'Not Found',
       }
@@ -656,7 +656,7 @@ describe('Incentive level management', () => {
     it('should show error message returned by api', () => {
       const error: SanitisedError<ErrorResponse> = {
         name: 'Error',
-        status: 500,
+        responseStatus: 500,
         message: 'Internal Server Error',
         stack: 'Internal Server Error',
       }
@@ -686,7 +686,7 @@ describe('Incentive level management', () => {
 
       const error: SanitisedError<ErrorResponse> = {
         name: 'Error',
-        status: 400,
+        responseStatus: 400,
         message: 'Bad Request',
         stack: 'Error: Bad Request',
         data: {
@@ -729,7 +729,7 @@ describe('Incentive level management', () => {
     it('should 404 if level does not exist', () => {
       const error: SanitisedError<ErrorResponse> = {
         name: 'Error',
-        status: 404,
+        responseStatus: 404,
         message: 'Not Found',
         stack: 'Not Found',
       }
@@ -827,7 +827,7 @@ describe('Incentive level management', () => {
     it('should show error message returned by api', () => {
       const error: SanitisedError<ErrorResponse> = {
         name: 'Error',
-        status: 500,
+        responseStatus: 500,
         message: 'Internal Server Error',
         stack: 'Internal Server Error',
       }
@@ -857,7 +857,7 @@ describe('Incentive level management', () => {
 
       const error: SanitisedError<ErrorResponse> = {
         name: 'Error',
-        status: 400,
+        responseStatus: 400,
         message: 'Bad Request',
         stack: 'Error: Bad Request',
         data: {
@@ -1060,7 +1060,7 @@ describe('Incentive level management', () => {
     it('should show error message returned by api', () => {
       const error: SanitisedError<ErrorResponse> = {
         name: 'Error',
-        status: 400,
+        responseStatus: 400,
         message: 'Internal Server Error',
         stack: 'Internal Server Error',
         data: {

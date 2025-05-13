@@ -1,4 +1,6 @@
-import sanitisedError, { type SanitisedError, type UnsanitisedError } from './sanitisedError'
+import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
+
+import sanitisedError, { type UnsanitisedError } from './sanitisedError'
 
 describe('sanitised error', () => {
   it('it should omit the request headers from the error object ', () => {
@@ -28,7 +30,7 @@ describe('sanitised error', () => {
     const expectedError = new Error() as SanitisedError<{ content: string }>
     expectedError.message = 'Not Found'
     expectedError.text = 'details'
-    expectedError.status = 404
+    expectedError.responseStatus = 404
     expectedError.headers = { date: 'Tue, 19 May 2020 15:16:20 GMT' }
     expectedError.data = { content: 'hello' }
     expectedError.stack = 'stack description'

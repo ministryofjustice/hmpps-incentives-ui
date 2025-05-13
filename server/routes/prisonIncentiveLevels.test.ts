@@ -2,17 +2,17 @@ import type { Express } from 'express'
 import jquery from 'jquery'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
+import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
-import type { SanitisedError } from '../sanitisedError'
 import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../testData/incentivesApi'
 import { IncentivesApi, type ErrorResponse } from '../data/incentivesApi'
 import type { PrisonIncentiveLevelAddData } from './forms/prisonIncentiveLevelAddForm'
 import type { PrisonIncentiveLevelDeactivateData } from './forms/prisonIncentiveLevelDeactivateForm'
 import type { PrisonIncentiveLevelEditData } from './forms/prisonIncentiveLevelEditForm'
 
-jest.mock('../data/hmppsAuthClient')
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 jest.mock('../data/incentivesApi', () => {
   type module = typeof import('../data/incentivesApi')
   const realModule = jest.requireActual<module>('../data/incentivesApi')
@@ -527,7 +527,7 @@ describe('Prison incentive level management', () => {
       it('should show error message returned by api', () => {
         const error: SanitisedError<ErrorResponse> = {
           name: 'Error',
-          status: 400,
+          responseStatus: 400,
           message: 'Bad Request',
           stack: 'Error: Bad Request',
           data: {
@@ -554,7 +554,7 @@ describe('Prison incentive level management', () => {
       it('should show specific error message if there are prisoners on the level', () => {
         const error: SanitisedError<ErrorResponse> = {
           name: 'Error',
-          status: 400,
+          responseStatus: 400,
           message: 'Bad Request',
           stack: 'Error: Bad Request',
           data: {
@@ -770,7 +770,7 @@ describe('Prison incentive level management', () => {
       it('should show error message returned by api', () => {
         const error: SanitisedError<ErrorResponse> = {
           name: 'Error',
-          status: 400,
+          responseStatus: 400,
           message: 'Bad Request',
           stack: 'Error: Bad Request',
           data: {
@@ -1194,7 +1194,7 @@ describe('Prison incentive level management', () => {
       ])('should show error message returned by api ($scenario)', ({ url }) => {
         const error: SanitisedError<ErrorResponse> = {
           name: 'Error',
-          status: 400,
+          responseStatus: 400,
           message: 'Bad Request',
           stack: 'Error: Bad Request',
           data: {

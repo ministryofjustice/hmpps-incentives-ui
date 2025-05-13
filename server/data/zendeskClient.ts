@@ -1,7 +1,7 @@
 import Agent, { HttpsAgent } from 'agentkeepalive'
 import superagent, { type ResponseError } from 'superagent'
+import { ApiConfig } from '@ministryofjustice/hmpps-rest-client'
 
-import type { ApiConfig } from '../config'
 import logger from '../../logger'
 import sanitiseError from '../sanitisedError'
 

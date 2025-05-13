@@ -1,5 +1,7 @@
+import { asSystem } from '@ministryofjustice/hmpps-rest-client'
+import logger from '../../logger'
 import config from '../config'
-import RestClient from './restClient'
+import ConcreteRestClient from './concreteRestClient'
 
 export interface Component {
   html: string
@@ -34,18 +36,23 @@ export interface ComponentsResponse extends Record<AvailableComponent, Component
 }
 
 export default class FrontendComponentsClient {
-  private static restClient(token: string): RestClient {
-    return new RestClient('HMPPS Components Client', config.apis.frontendComponents, token)
+  private static restClient(token: string): ConcreteRestClient {
+    return new ConcreteRestClient('HMPPS Components Client', config.apis.frontendComponents, logger, {
+      getToken: async () => token,
+    })
   }
 
   getComponents<T extends AvailableComponent[]>(
     components: T,
     userToken: string,
   ): Promise<Pick<ComponentsResponse, 'meta' | T[number]>> {
-    return FrontendComponentsClient.restClient(userToken).get({
-      path: '/components',
-      query: { component: components },
-      headers: { 'x-user-token': userToken },
-    })
+    return FrontendComponentsClient.restClient(userToken).get(
+      {
+        path: '/components',
+        query: { component: components },
+        headers: { 'x-user-token': userToken },
+      },
+      asSystem(),
+    )
   }
 }

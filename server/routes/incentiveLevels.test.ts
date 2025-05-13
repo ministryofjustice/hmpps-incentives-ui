@@ -61,7 +61,7 @@ describe('Incentive level management', () => {
   ])('should not be accessible without correct role: %s', (url: string) => {
     return request(app)
       .get(url)
-      .set('authorization', `bearer ${tokenWithMissingRole}`)
+      .set('authorization', `Bearer ${tokenWithMissingRole}`)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
         expect(res.headers.location).toBe('/authError')
@@ -78,7 +78,7 @@ describe('Incentive level management', () => {
   ])('should be accessible with necessary role: %s', (url: string, expectedPage: string) => {
     return request(app)
       .get(url)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+      .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(`data-qa="${expectedPage}"`)
@@ -91,7 +91,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
@@ -118,7 +118,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
@@ -137,7 +137,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
@@ -159,7 +159,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
@@ -174,7 +174,7 @@ describe('Incentive level management', () => {
     it('should always show add level button', () => {
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).toContain('Create a new incentive level')
         })
@@ -183,7 +183,7 @@ describe('Incentive level management', () => {
     it('should not show links to view level details', () => {
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).not.toContain('/incentive-levels/view/')
         })
@@ -192,7 +192,7 @@ describe('Incentive level management', () => {
     it('should not show links to edit level details', () => {
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).not.toContain('/incentive-levels/edit/')
         })
@@ -233,7 +233,7 @@ describe('Incentive level management', () => {
 
         return request(app)
           .get(`/incentive-levels/view/${incentiveLevel.code}`)
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(res => {
             expect(res.text).toContain(`/incentive-levels/edit/${incentiveLevel.code}`)
 
@@ -262,7 +262,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels/view/ABC')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(404)
     })
   })
@@ -277,7 +277,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels/status/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(200)
         .expect(res => {
           expect(res.text).toContain('data-qa="incentive-levels-status"')
@@ -298,7 +298,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels/status/ENT')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(200)
         .expect(res => {
           expect(res.text).toContain('data-qa="incentive-levels-status"')
@@ -326,7 +326,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/status/ENT')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -351,7 +351,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/status/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -366,7 +366,7 @@ describe('Incentive level management', () => {
     it('should show an error if status is not selected', () => {
       return request(app)
         .post('/incentive-levels/status/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelStatusForm' })
         .expect(res => {
           expect(res.text).toContain('There is a problem')
@@ -384,7 +384,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/status/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -415,7 +415,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/status/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -439,7 +439,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels/status/ABC')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(404)
     })
   })
@@ -478,7 +478,7 @@ describe('Incentive level management', () => {
 
         return request(app)
           .get('/incentive-levels/edit/STD')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(res => {
             const $body = $(res.text)
             const $form = $body.find('form')
@@ -534,7 +534,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/edit/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -568,7 +568,7 @@ describe('Incentive level management', () => {
       // Then expect the whitespaces to have been removed
       return request(app)
         .post('/incentive-levels/edit/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -617,7 +617,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/edit/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelEditForm', name, availability })
         .expect(res => {
           const $body = $(res.text)
@@ -641,7 +641,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/edit/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -673,7 +673,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/edit/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -697,7 +697,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels/edit/ABC')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(404)
     })
   })
@@ -720,7 +720,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/add')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -771,7 +771,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/add')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelCreateForm', name, code })
         .expect(res => {
           const $body = $(res.text)
@@ -795,7 +795,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/add')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -826,7 +826,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/add')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -862,7 +862,7 @@ describe('Incentive level management', () => {
       // Then expect the whitespaces to have been removed
       return request(app)
         .post('/incentive-levels/add')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -899,7 +899,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/reorder')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelReorderForm', code, direction })
         .redirects(1)
         .expect(res => {
@@ -944,7 +944,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/reorder')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelReorderForm', code, direction })
         .redirects(1)
         .expect(res => {
@@ -993,7 +993,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/reorder')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelReorderForm', code, direction })
         .expect(res => {
           const $body = $(res.text)
@@ -1024,7 +1024,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/reorder')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {

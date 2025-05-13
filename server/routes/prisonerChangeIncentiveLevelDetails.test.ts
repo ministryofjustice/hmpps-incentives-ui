@@ -48,7 +48,7 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
   it('should NOT allow user to update incentive level without required role', () => {
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
-      .set('authorization', `bearer ${tokenWithMissingRole}`)
+      .set('authorization', `Bearer ${tokenWithMissingRole}`)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
         expect(res.headers.location).toBe('/authError')
@@ -60,7 +60,7 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
 
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerInLeedsDetails.offenderNo}/change-incentive-level`)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+      .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
         expect(res.headers.location).toBe('/')
@@ -70,7 +70,7 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
   it('should render the correct template with the correct data', () => {
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+      .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Smith, John')
@@ -85,7 +85,7 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
     prisonApi.getPrisonerDetails.mockRejectedValue(mockRestClientError(404))
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+      .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
       .expect(404)
       .expect(res => {
         expect(res.text).not.toContain('John, Smith')
@@ -102,7 +102,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
   it('should NOT allow user to update incentive level without required role', () => {
     return request(app)
       .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
-      .set('authorization', `bearer ${tokenWithMissingRole}`)
+      .set('authorization', `Bearer ${tokenWithMissingRole}`)
       .send(validFormData)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
@@ -115,7 +115,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
 
     return request(app)
       .post(`/incentive-reviews/prisoner/${prisonerInLeedsDetails.offenderNo}/change-incentive-level`)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+      .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
       .send(validFormData)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
@@ -127,7 +127,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
     it('should return an error if form is missing both incentive level and reason', () => {
       return request(app)
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({
           newIepLevel: '',
           reason: '',
@@ -143,7 +143,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
     it('should return an error if form is missing an incentive level', () => {
       return request(app)
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({
           newIepLevel: '',
           reason: 'reason',
@@ -159,7 +159,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
     it('should return an error if form is missing a reason', () => {
       return request(app)
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({
           newIepLevel: 'STD',
           reason: '',
@@ -174,7 +174,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
     it('should return an error if comment is over 240 characters', () => {
       return request(app)
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({
           newIepLevel: 'STD',
           reason:
@@ -193,7 +193,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
     it('should retain the inputted form values', () => {
       return request(app)
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({
           newIepLevel: '',
           reason: 'Should retain this text',
@@ -236,7 +236,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
       )
       return request(app)
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validFormData)
         .expect(200)
         .expect(res => {
@@ -253,7 +253,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
       return request(app)
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
         .send(validFormData)
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(302)
         .expect(res => {
           expect(res.text).not.toContain('John, Smith')

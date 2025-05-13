@@ -1,6 +1,5 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { type SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
@@ -10,6 +9,7 @@ import { OffenderSearchClient } from '../data/offenderSearch'
 import { getAgencyMockImplementation, staffDetails, agencyDetails } from '../testData/prisonApi'
 import { sampleReviewHistory, emptyIncentiveSummaryForBooking } from '../testData/incentivesApi'
 import { sampleOffenderDetails } from '../testData/offenderSearch'
+import { mockRestClientError } from '../testData/restClientError'
 import { makeMockUser } from './testutils/mockUsers'
 
 jest.mock('@ministryofjustice/hmpps-auth-clients')
@@ -245,13 +245,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
   })
 
   it('should return 404 if prisoner is not found', () => {
-    const error: SanitisedError = {
-      name: 'Error',
-      responseStatus: 404,
-      message: 'Not Found',
-      stack: 'Not Found',
-    }
-    offenderSearch.getPrisoner.mockRejectedValue(error)
+    offenderSearch.getPrisoner.mockRejectedValue(mockRestClientError(404))
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
       .expect(404)
@@ -261,13 +255,7 @@ describe('GET /incentive-reviews/prisoner/', () => {
   })
 
   it('should return unknown agency if not found', () => {
-    const error: SanitisedError = {
-      name: 'Error',
-      responseStatus: 404,
-      message: 'Not Found',
-      stack: 'Not Found',
-    }
-    prisonApi.getAgency.mockRejectedValue(error)
+    prisonApi.getAgency.mockRejectedValue(mockRestClientError(404))
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
       .expect(200)

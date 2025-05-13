@@ -20,7 +20,7 @@ describe('sanitised error', () => {
         },
         status: 404,
         statusText: 'Not found',
-        text: { details: 'details' },
+        text: 'details',
         body: { content: 'hello' },
       },
       message: 'Not Found',

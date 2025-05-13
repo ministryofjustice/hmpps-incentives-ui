@@ -2,12 +2,12 @@ import type { Express } from 'express'
 import jquery from 'jquery'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
-import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels } from '../testData/incentivesApi'
 import { getAgencyMockImplementation } from '../testData/prisonApi'
+import { mockRestClientError } from '../testData/restClientError'
 import { IncentivesApi, type ErrorResponse, type IncentiveLevel } from '../data/incentivesApi'
 import { PrisonApi } from '../data/prisonApi'
 import type { IncentiveLevelCreateData } from './forms/incentiveLevelCreateForm'
@@ -258,13 +258,7 @@ describe('Incentive level management', () => {
     )
 
     it('should 404 if level does not exist', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 404,
-        message: 'Not Found',
-        stack: 'Not Found',
-      }
-      incentivesApi.getIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.getIncentiveLevel.mockRejectedValue(mockRestClientError(404))
 
       return request(app)
         .get('/incentive-levels/view/ABC')
@@ -381,13 +375,7 @@ describe('Incentive level management', () => {
     })
 
     it('should show error message returned by api', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 500,
-        message: 'Internal Server Error',
-        stack: 'Internal Server Error',
-      }
-      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(mockRestClientError(500))
 
       const validForm: IncentiveLevelStatusData = {
         formId: 'incentiveLevelStatusForm',
@@ -410,20 +398,15 @@ describe('Incentive level management', () => {
     it('should show specific error message if level is active in some prisons', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 400,
-        message: 'Bad Request',
-        stack: 'Error: Bad Request',
-        data: {
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(
+        mockRestClientError<ErrorResponse>(400, {
           status: 400,
           errorCode: 101,
           userMessage: 'Validation failure: A level must remain active if it is active in some prison',
           developerMessage: 'A level must remain active if it is active in some prison',
           moreInfo: 'MDI,WRI',
-        },
-      }
-      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+        }),
+      )
 
       const validForm: IncentiveLevelStatusData = {
         formId: 'incentiveLevelStatusForm',
@@ -452,13 +435,7 @@ describe('Incentive level management', () => {
     })
 
     it('should 404 if level does not exist', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 404,
-        message: 'Not Found',
-        stack: 'Not Found',
-      }
-      incentivesApi.getIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.getIncentiveLevel.mockRejectedValue(mockRestClientError(404))
 
       return request(app)
         .get('/incentive-levels/status/ABC')
@@ -654,13 +631,7 @@ describe('Incentive level management', () => {
     })
 
     it('should show error message returned by api', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 500,
-        message: 'Internal Server Error',
-        stack: 'Internal Server Error',
-      }
-      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(mockRestClientError(500))
 
       const validForm: IncentiveLevelEditData = {
         formId: 'incentiveLevelEditForm',
@@ -684,20 +655,15 @@ describe('Incentive level management', () => {
     it('should show specific error message if level is active in some prisons', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 400,
-        message: 'Bad Request',
-        stack: 'Error: Bad Request',
-        data: {
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(
+        mockRestClientError<ErrorResponse>(400, {
           status: 400,
           errorCode: 101,
           userMessage: 'Validation failure: A level must remain active if it is active in some prison',
           developerMessage: 'A level must remain active if it is active in some prison',
           moreInfo: 'MDI',
-        },
-      }
-      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+        }),
+      )
 
       const validForm: IncentiveLevelEditData = {
         formId: 'incentiveLevelEditForm',
@@ -727,13 +693,7 @@ describe('Incentive level management', () => {
     })
 
     it('should 404 if level does not exist', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 404,
-        message: 'Not Found',
-        stack: 'Not Found',
-      }
-      incentivesApi.getIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.getIncentiveLevel.mockRejectedValue(mockRestClientError(404))
 
       return request(app)
         .get('/incentive-levels/edit/ABC')
@@ -825,13 +785,7 @@ describe('Incentive level management', () => {
     })
 
     it('should show error message returned by api', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 500,
-        message: 'Internal Server Error',
-        stack: 'Internal Server Error',
-      }
-      incentivesApi.createIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.createIncentiveLevel.mockRejectedValue(mockRestClientError(500))
 
       const validForm: IncentiveLevelCreateData = {
         formId: 'incentiveLevelCreateForm',
@@ -855,19 +809,14 @@ describe('Incentive level management', () => {
     it('should show specific error message if code was not unique', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 400,
-        message: 'Bad Request',
-        stack: 'Error: Bad Request',
-        data: {
+      incentivesApi.createIncentiveLevel.mockRejectedValue(
+        mockRestClientError<ErrorResponse>(400, {
           status: 400,
           errorCode: 102,
           userMessage: 'Validation failure: Incentive level with code EN3 already exists',
           developerMessage: 'Incentive level with code EN3 already exists',
-        },
-      }
-      incentivesApi.createIncentiveLevel.mockRejectedValue(error)
+        }),
+      )
 
       const validForm: IncentiveLevelCreateData = {
         formId: 'incentiveLevelCreateForm',
@@ -1058,19 +1007,14 @@ describe('Incentive level management', () => {
     })
 
     it('should show error message returned by api', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 400,
-        message: 'Internal Server Error',
-        stack: 'Internal Server Error',
-        data: {
+      incentivesApi.setIncentiveLevelOrder.mockRejectedValue(
+        mockRestClientError<ErrorResponse>(400, {
           status: 400,
           errorCode: 103,
           userMessage: 'Validation failure: All incentive levels required when setting order. Missing: EN3',
           developerMessage: 'All incentive levels required when setting order. Missing: EN3',
-        },
-      }
-      incentivesApi.setIncentiveLevelOrder.mockRejectedValue(error)
+        }),
+      )
 
       const validForm: IncentiveLevelReorderData = {
         formId: 'incentiveLevelReorderForm',

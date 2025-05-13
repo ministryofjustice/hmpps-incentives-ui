@@ -2,11 +2,11 @@ import type { Express } from 'express'
 import jquery from 'jquery'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
-import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../testData/incentivesApi'
+import { mockRestClientError } from '../testData/restClientError'
 import { IncentivesApi, type ErrorResponse } from '../data/incentivesApi'
 import type { PrisonIncentiveLevelAddData } from './forms/prisonIncentiveLevelAddForm'
 import type { PrisonIncentiveLevelDeactivateData } from './forms/prisonIncentiveLevelDeactivateForm'
@@ -525,18 +525,13 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show error message returned by api', () => {
-        const error: SanitisedError<ErrorResponse> = {
-          name: 'Error',
-          responseStatus: 400,
-          message: 'Bad Request',
-          stack: 'Error: Bad Request',
-          data: {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(
+          mockRestClientError<ErrorResponse>(400, {
             status: 400,
             userMessage: 'Validation failure: A level must be active if it is required',
             developerMessage: 'A level must be active if it is required',
-          },
-        }
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
+          }),
+        )
 
         return request(app)
           .post('/prison-incentive-levels/remove/ENH')
@@ -552,19 +547,14 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show specific error message if there are prisoners on the level', () => {
-        const error: SanitisedError<ErrorResponse> = {
-          name: 'Error',
-          responseStatus: 400,
-          message: 'Bad Request',
-          stack: 'Error: Bad Request',
-          data: {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(
+          mockRestClientError<ErrorResponse>(400, {
             status: 400,
             errorCode: 202,
             userMessage: 'Validation failure: A level must remain active if there are prisoners on it currently',
             developerMessage: 'A level must remain active if there are prisoners on it currently',
-          },
-        }
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
+          }),
+        )
 
         return request(app)
           .post('/prison-incentive-levels/remove/ENH')
@@ -768,18 +758,13 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show error message returned by api', () => {
-        const error: SanitisedError<ErrorResponse> = {
-          name: 'Error',
-          responseStatus: 400,
-          message: 'Bad Request',
-          stack: 'Error: Bad Request',
-          data: {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(
+          mockRestClientError<ErrorResponse>(400, {
             status: 400,
             userMessage: 'Validation failure: There must be an active default level for admission in a prison',
             developerMessage: 'There must be an active default level for admission in a prison',
-          },
-        }
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
+          }),
+        )
 
         const validForm: PrisonIncentiveLevelEditData = {
           formId: 'prisonIncentiveLevelEditForm',
@@ -1192,18 +1177,13 @@ describe('Prison incentive level management', () => {
           url: '/prison-incentive-levels/add/EN2',
         },
       ])('should show error message returned by api ($scenario)', ({ url }) => {
-        const error: SanitisedError<ErrorResponse> = {
-          name: 'Error',
-          responseStatus: 400,
-          message: 'Bad Request',
-          stack: 'Error: Bad Request',
-          data: {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(
+          mockRestClientError<ErrorResponse>(400, {
             status: 400,
             userMessage: 'Validation failure: There must be an active default level for admission in a prison',
             developerMessage: 'There must be an active default level for admission in a prison',
-          },
-        }
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
+          }),
+        )
 
         const validForm: PrisonIncentiveLevelAddData = {
           formId: 'prisonIncentiveLevelAddForm',

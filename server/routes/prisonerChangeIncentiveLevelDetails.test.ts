@@ -1,6 +1,5 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { type SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import { appWithAllRoutes } from './testutils/appSetup'
@@ -12,6 +11,7 @@ import { NomisUserRolesApi } from '../data/nomisUserRolesApi'
 import { samplePrisonIncentiveLevels, sampleReviewHistory } from '../testData/incentivesApi'
 import { prisonerDetails, prisonerInLeedsDetails } from '../testData/prisonApi'
 import { userCaseload } from '../testData/nomisIUserRolesApi'
+import { mockRestClientError } from '../testData/restClientError'
 import type { FormData } from './prisonerChangeIncentiveLevelDetails'
 
 jest.mock('@ministryofjustice/hmpps-auth-clients')
@@ -82,13 +82,7 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
   })
 
   it('should return 404 if prisoner is not found', () => {
-    const error: SanitisedError = {
-      name: 'Error',
-      responseStatus: 404,
-      message: 'Not Found',
-      stack: 'Not Found',
-    }
-    prisonApi.getPrisonerDetails.mockRejectedValue(error)
+    prisonApi.getPrisonerDetails.mockRejectedValue(mockRestClientError(404))
     return request(app)
       .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
       .set('authorization', `bearer ${tokenWithNecessaryRole}`)
@@ -255,13 +249,7 @@ describe('POST /incentive-reviews/prisoner/change-incentive-level', () => {
     })
 
     it('should return 302 and redirect if api returns an error', () => {
-      const error: SanitisedError = {
-        name: 'Error',
-        responseStatus: 500,
-        message: 'Internal Server Error',
-        stack: 'Internal Server Error',
-      }
-      incentivesApi.updateIncentiveLevelForPrisoner.mockRejectedValueOnce(error)
+      incentivesApi.updateIncentiveLevelForPrisoner.mockRejectedValueOnce(mockRestClientError(500))
       return request(app)
         .post(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
         .send(validFormData)

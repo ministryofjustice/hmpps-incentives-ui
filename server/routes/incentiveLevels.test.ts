@@ -2,12 +2,12 @@ import type { Express } from 'express'
 import jquery from 'jquery'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
-import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels } from '../testData/incentivesApi'
 import { getAgencyMockImplementation } from '../testData/prisonApi'
+import { mockRestClientError } from '../testData/restClientError'
 import { IncentivesApi, type ErrorResponse, type IncentiveLevel } from '../data/incentivesApi'
 import { PrisonApi } from '../data/prisonApi'
 import type { IncentiveLevelCreateData } from './forms/incentiveLevelCreateForm'
@@ -61,7 +61,7 @@ describe('Incentive level management', () => {
   ])('should not be accessible without correct role: %s', (url: string) => {
     return request(app)
       .get(url)
-      .set('authorization', `bearer ${tokenWithMissingRole}`)
+      .set('authorization', `Bearer ${tokenWithMissingRole}`)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
         expect(res.headers.location).toBe('/authError')
@@ -78,7 +78,7 @@ describe('Incentive level management', () => {
   ])('should be accessible with necessary role: %s', (url: string, expectedPage: string) => {
     return request(app)
       .get(url)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+      .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(`data-qa="${expectedPage}"`)
@@ -91,7 +91,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
@@ -118,7 +118,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
@@ -137,7 +137,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
@@ -159,7 +159,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
@@ -174,7 +174,7 @@ describe('Incentive level management', () => {
     it('should always show add level button', () => {
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).toContain('Create a new incentive level')
         })
@@ -183,7 +183,7 @@ describe('Incentive level management', () => {
     it('should not show links to view level details', () => {
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).not.toContain('/incentive-levels/view/')
         })
@@ -192,7 +192,7 @@ describe('Incentive level management', () => {
     it('should not show links to edit level details', () => {
       return request(app)
         .get('/incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).not.toContain('/incentive-levels/edit/')
         })
@@ -233,7 +233,7 @@ describe('Incentive level management', () => {
 
         return request(app)
           .get(`/incentive-levels/view/${incentiveLevel.code}`)
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(res => {
             expect(res.text).toContain(`/incentive-levels/edit/${incentiveLevel.code}`)
 
@@ -258,17 +258,11 @@ describe('Incentive level management', () => {
     )
 
     it('should 404 if level does not exist', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 404,
-        message: 'Not Found',
-        stack: 'Not Found',
-      }
-      incentivesApi.getIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.getIncentiveLevel.mockRejectedValue(mockRestClientError(404))
 
       return request(app)
         .get('/incentive-levels/view/ABC')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(404)
     })
   })
@@ -283,7 +277,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels/status/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(200)
         .expect(res => {
           expect(res.text).toContain('data-qa="incentive-levels-status"')
@@ -304,7 +298,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .get('/incentive-levels/status/ENT')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(200)
         .expect(res => {
           expect(res.text).toContain('data-qa="incentive-levels-status"')
@@ -332,7 +326,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/status/ENT')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -357,7 +351,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/status/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -372,7 +366,7 @@ describe('Incentive level management', () => {
     it('should show an error if status is not selected', () => {
       return request(app)
         .post('/incentive-levels/status/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelStatusForm' })
         .expect(res => {
           expect(res.text).toContain('There is a problem')
@@ -381,13 +375,7 @@ describe('Incentive level management', () => {
     })
 
     it('should show error message returned by api', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 500,
-        message: 'Internal Server Error',
-        stack: 'Internal Server Error',
-      }
-      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(mockRestClientError(500))
 
       const validForm: IncentiveLevelStatusData = {
         formId: 'incentiveLevelStatusForm',
@@ -396,7 +384,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/status/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -410,20 +398,15 @@ describe('Incentive level management', () => {
     it('should show specific error message if level is active in some prisons', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 400,
-        message: 'Bad Request',
-        stack: 'Error: Bad Request',
-        data: {
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(
+        mockRestClientError<ErrorResponse>(400, {
           status: 400,
           errorCode: 101,
           userMessage: 'Validation failure: A level must remain active if it is active in some prison',
           developerMessage: 'A level must remain active if it is active in some prison',
           moreInfo: 'MDI,WRI',
-        },
-      }
-      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+        }),
+      )
 
       const validForm: IncentiveLevelStatusData = {
         formId: 'incentiveLevelStatusForm',
@@ -432,7 +415,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/status/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -452,17 +435,11 @@ describe('Incentive level management', () => {
     })
 
     it('should 404 if level does not exist', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 404,
-        message: 'Not Found',
-        stack: 'Not Found',
-      }
-      incentivesApi.getIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.getIncentiveLevel.mockRejectedValue(mockRestClientError(404))
 
       return request(app)
         .get('/incentive-levels/status/ABC')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(404)
     })
   })
@@ -501,7 +478,7 @@ describe('Incentive level management', () => {
 
         return request(app)
           .get('/incentive-levels/edit/STD')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(res => {
             const $body = $(res.text)
             const $form = $body.find('form')
@@ -557,7 +534,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/edit/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -591,7 +568,7 @@ describe('Incentive level management', () => {
       // Then expect the whitespaces to have been removed
       return request(app)
         .post('/incentive-levels/edit/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -640,7 +617,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/edit/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelEditForm', name, availability })
         .expect(res => {
           const $body = $(res.text)
@@ -654,13 +631,7 @@ describe('Incentive level management', () => {
     })
 
     it('should show error message returned by api', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 500,
-        message: 'Internal Server Error',
-        stack: 'Internal Server Error',
-      }
-      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(mockRestClientError(500))
 
       const validForm: IncentiveLevelEditData = {
         formId: 'incentiveLevelEditForm',
@@ -670,7 +641,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/edit/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -684,20 +655,15 @@ describe('Incentive level management', () => {
     it('should show specific error message if level is active in some prisons', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 400,
-        message: 'Bad Request',
-        stack: 'Error: Bad Request',
-        data: {
+      incentivesApi.updateIncentiveLevel.mockRejectedValue(
+        mockRestClientError<ErrorResponse>(400, {
           status: 400,
           errorCode: 101,
           userMessage: 'Validation failure: A level must remain active if it is active in some prison',
           developerMessage: 'A level must remain active if it is active in some prison',
           moreInfo: 'MDI',
-        },
-      }
-      incentivesApi.updateIncentiveLevel.mockRejectedValue(error)
+        }),
+      )
 
       const validForm: IncentiveLevelEditData = {
         formId: 'incentiveLevelEditForm',
@@ -707,7 +673,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/edit/EN2')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -727,17 +693,11 @@ describe('Incentive level management', () => {
     })
 
     it('should 404 if level does not exist', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 404,
-        message: 'Not Found',
-        stack: 'Not Found',
-      }
-      incentivesApi.getIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.getIncentiveLevel.mockRejectedValue(mockRestClientError(404))
 
       return request(app)
         .get('/incentive-levels/edit/ABC')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(404)
     })
   })
@@ -760,7 +720,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/add')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -811,7 +771,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/add')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelCreateForm', name, code })
         .expect(res => {
           const $body = $(res.text)
@@ -825,13 +785,7 @@ describe('Incentive level management', () => {
     })
 
     it('should show error message returned by api', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 500,
-        message: 'Internal Server Error',
-        stack: 'Internal Server Error',
-      }
-      incentivesApi.createIncentiveLevel.mockRejectedValue(error)
+      incentivesApi.createIncentiveLevel.mockRejectedValue(mockRestClientError(500))
 
       const validForm: IncentiveLevelCreateData = {
         formId: 'incentiveLevelCreateForm',
@@ -841,7 +795,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/add')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -855,19 +809,14 @@ describe('Incentive level management', () => {
     it('should show specific error message if code was not unique', () => {
       const $ = jquery(new JSDOM().window) as unknown as typeof jquery
 
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 400,
-        message: 'Bad Request',
-        stack: 'Error: Bad Request',
-        data: {
+      incentivesApi.createIncentiveLevel.mockRejectedValue(
+        mockRestClientError<ErrorResponse>(400, {
           status: 400,
           errorCode: 102,
           userMessage: 'Validation failure: Incentive level with code EN3 already exists',
           developerMessage: 'Incentive level with code EN3 already exists',
-        },
-      }
-      incentivesApi.createIncentiveLevel.mockRejectedValue(error)
+        }),
+      )
 
       const validForm: IncentiveLevelCreateData = {
         formId: 'incentiveLevelCreateForm',
@@ -877,7 +826,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/add')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {
@@ -913,7 +862,7 @@ describe('Incentive level management', () => {
       // Then expect the whitespaces to have been removed
       return request(app)
         .post('/incentive-levels/add')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(form)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
@@ -950,7 +899,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/reorder')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelReorderForm', code, direction })
         .redirects(1)
         .expect(res => {
@@ -995,7 +944,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/reorder')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelReorderForm', code, direction })
         .redirects(1)
         .expect(res => {
@@ -1044,7 +993,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/reorder')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelReorderForm', code, direction })
         .expect(res => {
           const $body = $(res.text)
@@ -1058,19 +1007,14 @@ describe('Incentive level management', () => {
     })
 
     it('should show error message returned by api', () => {
-      const error: SanitisedError<ErrorResponse> = {
-        name: 'Error',
-        responseStatus: 400,
-        message: 'Internal Server Error',
-        stack: 'Internal Server Error',
-        data: {
+      incentivesApi.setIncentiveLevelOrder.mockRejectedValue(
+        mockRestClientError<ErrorResponse>(400, {
           status: 400,
           errorCode: 103,
           userMessage: 'Validation failure: All incentive levels required when setting order. Missing: EN3',
           developerMessage: 'All incentive levels required when setting order. Missing: EN3',
-        },
-      }
-      incentivesApi.setIncentiveLevelOrder.mockRejectedValue(error)
+        }),
+      )
 
       const validForm: IncentiveLevelReorderData = {
         formId: 'incentiveLevelReorderForm',
@@ -1080,7 +1024,7 @@ describe('Incentive level management', () => {
 
       return request(app)
         .post('/incentive-levels/reorder')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .redirects(1)
         .expect(res => {

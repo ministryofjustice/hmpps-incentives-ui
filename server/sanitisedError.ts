@@ -1,4 +1,4 @@
-import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
+import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import type { ResponseError } from 'superagent'
 
 /**
@@ -10,8 +10,8 @@ export type UnsanitisedError = ResponseError
  * Converts an UnsanitisedError (superagent.ResponseError) into a simpler Error object,
  * omitting request inforation (e.g. sensitive request headers)
  */
-export default function sanitise<Data = unknown>(error: UnsanitisedError): SanitisedError<Data> {
-  const e = new Error() as SanitisedError<Data>
+export default function sanitiseError<Data = unknown>(error: UnsanitisedError): SanitisedError<Data> {
+  const e = new SanitisedError<Data>()
   e.message = error.message
   e.stack = error.stack
   if (error.response) {

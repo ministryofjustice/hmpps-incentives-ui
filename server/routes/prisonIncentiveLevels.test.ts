@@ -2,11 +2,11 @@ import type { Express } from 'express'
 import jquery from 'jquery'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
-import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { sampleIncentiveLevels, samplePrisonIncentiveLevels } from '../testData/incentivesApi'
+import { mockRestClientError } from '../testData/restClientError'
 import { IncentivesApi, type ErrorResponse } from '../data/incentivesApi'
 import type { PrisonIncentiveLevelAddData } from './forms/prisonIncentiveLevelAddForm'
 import type { PrisonIncentiveLevelDeactivateData } from './forms/prisonIncentiveLevelDeactivateForm'
@@ -54,7 +54,7 @@ describe('Prison incentive level management', () => {
   ])('should not be accessible without correct role: %s', (url: string) => {
     return request(app)
       .get(url)
-      .set('authorization', `bearer ${tokenWithMissingRole}`)
+      .set('authorization', `Bearer ${tokenWithMissingRole}`)
       .expect(res => {
         expect(res.redirect).toBeTruthy()
         expect(res.headers.location).toBe('/authError')
@@ -69,7 +69,7 @@ describe('Prison incentive level management', () => {
   ])('should be accessible with necessary role: %s', (url: string, expectedPage: string) => {
     return request(app)
       .get(url)
-      .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+      .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain(`data-qa="${expectedPage}"`)
@@ -82,7 +82,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
@@ -101,7 +101,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
@@ -131,7 +131,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
@@ -152,7 +152,7 @@ describe('Prison incentive level management', () => {
     it('should show add level button when there are some available levels', () => {
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).toContain('Add a new incentive level')
           expect(res.text).toContain('"/prison-incentive-levels/add/EN2"')
@@ -170,7 +170,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).toContain('Add a new incentive level')
           expect(res.text).not.toContain('"/prison-incentive-levels/add/EN2"')
@@ -191,7 +191,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.text).not.toContain('Add a new incentive level')
         })
@@ -200,7 +200,7 @@ describe('Prison incentive level management', () => {
     it('should not activate any levels when no required level is missing', () => {
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.redirect).toBeFalsy()
           expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
@@ -222,7 +222,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(1)
@@ -245,7 +245,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(2)
@@ -260,7 +260,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(4)
@@ -299,7 +299,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(res.redirect).toBeTruthy()
           expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(4)
@@ -324,7 +324,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledTimes(1)
           expect(incentivesApi.updatePrisonIncentiveLevel).toHaveBeenCalledWith('MDI', 'STD', {
@@ -341,7 +341,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels/view/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('tbody tr')
@@ -369,7 +369,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels/view/BAS')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
           const $body = $(res.text)
           const $tableRows = $body.find('tbody tr')
@@ -396,7 +396,7 @@ describe('Prison incentive level management', () => {
     it('should indicate bad request if level is required globally', () => {
       return request(app)
         .get('/prison-incentive-levels/remove/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(400)
         .expect(() => {
           expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
@@ -411,7 +411,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .post('/prison-incentive-levels/remove/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .expect(400)
         .expect(() => {
@@ -425,7 +425,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels/remove/ENT')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(400)
         .expect(() => {
           expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
@@ -443,7 +443,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .post('/prison-incentive-levels/remove/ENT')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .expect(400)
         .expect(() => {
@@ -457,7 +457,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels/remove/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(400)
         .expect(() => {
           expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
@@ -475,7 +475,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .post('/prison-incentive-levels/remove/STD')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .expect(400)
         .expect(() => {
@@ -493,7 +493,7 @@ describe('Prison incentive level management', () => {
       it('should show form to deactivate level', () => {
         return request(app)
           .get('/prison-incentive-levels/remove/ENH')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(200)
           .expect(res => {
             expect(res.text).toContain('data-qa="prison-incentive-levels-deactivate"')
@@ -504,7 +504,7 @@ describe('Prison incentive level management', () => {
       it('should redirect to list of levels if deactivation is cancelled', () => {
         return request(app)
           .post('/prison-incentive-levels/remove/ENH')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .send({ formId: 'prisonIncentiveLevelDeactivateForm', confirmation: 'no' })
           .expect(res => {
             expect(res.redirect).toBeTruthy()
@@ -516,7 +516,7 @@ describe('Prison incentive level management', () => {
       it('should show an error if confirmation not provided', () => {
         return request(app)
           .post('/prison-incentive-levels/remove/ENH')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .send({ formId: 'prisonIncentiveLevelDeactivateForm' })
           .expect(res => {
             expect(res.text).toContain('Select yes or no')
@@ -525,22 +525,17 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show error message returned by api', () => {
-        const error: SanitisedError<ErrorResponse> = {
-          name: 'Error',
-          responseStatus: 400,
-          message: 'Bad Request',
-          stack: 'Error: Bad Request',
-          data: {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(
+          mockRestClientError<ErrorResponse>(400, {
             status: 400,
             userMessage: 'Validation failure: A level must be active if it is required',
             developerMessage: 'A level must be active if it is required',
-          },
-        }
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
+          }),
+        )
 
         return request(app)
           .post('/prison-incentive-levels/remove/ENH')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .send({ formId: 'prisonIncentiveLevelDeactivateForm', confirmation: 'yes' })
           .redirects(1)
           .expect(res => {
@@ -552,23 +547,18 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show specific error message if there are prisoners on the level', () => {
-        const error: SanitisedError<ErrorResponse> = {
-          name: 'Error',
-          responseStatus: 400,
-          message: 'Bad Request',
-          stack: 'Error: Bad Request',
-          data: {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(
+          mockRestClientError<ErrorResponse>(400, {
             status: 400,
             errorCode: 202,
             userMessage: 'Validation failure: A level must remain active if there are prisoners on it currently',
             developerMessage: 'A level must remain active if there are prisoners on it currently',
-          },
-        }
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
+          }),
+        )
 
         return request(app)
           .post('/prison-incentive-levels/remove/ENH')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .send({ formId: 'prisonIncentiveLevelDeactivateForm', confirmation: 'yes' })
           .redirects(1)
           .expect(res => {
@@ -588,7 +578,7 @@ describe('Prison incentive level management', () => {
 
         return request(app)
           .post('/prison-incentive-levels/remove/ENH')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .send({ formId: 'prisonIncentiveLevelDeactivateForm', confirmation: 'yes' })
           .expect(res => {
             expect(res.redirect).toBeTruthy()
@@ -605,7 +595,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get('/prison-incentive-levels/edit/ENT')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(404)
         .expect(() => {
           expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
@@ -631,7 +621,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .post('/prison-incentive-levels/edit/ENT')
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .expect(404)
         .expect(() => {
@@ -643,7 +633,7 @@ describe('Prison incentive level management', () => {
       it('should show form to edit existing level', () => {
         return request(app)
           .get('/prison-incentive-levels/edit/STD')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(200)
           .expect(res => {
             expect(res.text).toContain('data-qa="prison-incentive-levels-edit"')
@@ -656,7 +646,7 @@ describe('Prison incentive level management', () => {
 
         return request(app)
           .get('/prison-incentive-levels/edit/STD')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(res => {
             const $body = $(res.text)
 
@@ -683,7 +673,7 @@ describe('Prison incentive level management', () => {
 
         return request(app)
           .get('/prison-incentive-levels/edit/BAS')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(res => {
             const $body = $(res.text)
 
@@ -754,7 +744,7 @@ describe('Prison incentive level management', () => {
 
         return request(app)
           .post('/prison-incentive-levels/edit/STD')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .send({ formId: 'prisonIncentiveLevelEditForm', ...form })
           .expect(res => {
             const $body = $(res.text)
@@ -768,18 +758,13 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show error message returned by api', () => {
-        const error: SanitisedError<ErrorResponse> = {
-          name: 'Error',
-          responseStatus: 400,
-          message: 'Bad Request',
-          stack: 'Error: Bad Request',
-          data: {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(
+          mockRestClientError<ErrorResponse>(400, {
             status: 400,
             userMessage: 'Validation failure: There must be an active default level for admission in a prison',
             developerMessage: 'There must be an active default level for admission in a prison',
-          },
-        }
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
+          }),
+        )
 
         const validForm: PrisonIncentiveLevelEditData = {
           formId: 'prisonIncentiveLevelEditForm',
@@ -797,7 +782,7 @@ describe('Prison incentive level management', () => {
 
         return request(app)
           .post('/prison-incentive-levels/edit/STD')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .send(validForm)
           .redirects(1)
           .expect(res => {
@@ -901,7 +886,7 @@ describe('Prison incentive level management', () => {
 
           return request(app)
             .post(`/prison-incentive-levels/edit/${levelCode}`)
-            .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+            .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
             .send({ formId: 'prisonIncentiveLevelEditForm', ...form })
             .expect(res => {
               expect(res.redirect).toBeTruthy()
@@ -937,7 +922,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .get(url)
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(404)
         .expect(() => {
           expect(incentivesApi.updatePrisonIncentiveLevel).not.toHaveBeenCalled()
@@ -981,7 +966,7 @@ describe('Prison incentive level management', () => {
 
       return request(app)
         .post(url)
-        .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send(validForm)
         .expect(404)
         .expect(() => {
@@ -993,7 +978,7 @@ describe('Prison incentive level management', () => {
       it('should show form to add a user-selected level', () => {
         return request(app)
           .get('/prison-incentive-levels/add')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(200)
           .expect(res => {
             expect(res.text).toContain('data-qa="prison-incentive-levels-add"')
@@ -1004,7 +989,7 @@ describe('Prison incentive level management', () => {
       it('should show form to add a predetermined level', () => {
         return request(app)
           .get('/prison-incentive-levels/add/EN2')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(200)
           .expect(res => {
             expect(res.text).toContain('data-qa="prison-incentive-levels-next-add"')
@@ -1017,7 +1002,7 @@ describe('Prison incentive level management', () => {
 
         return request(app)
           .get('/prison-incentive-levels/add')
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(200)
           .expect(res => {
             const $body = $(res.text)
@@ -1121,7 +1106,7 @@ describe('Prison incentive level management', () => {
 
           return request(app)
             .post(url)
-            .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+            .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
             .send({ formId: 'prisonIncentiveLevelAddForm', ...form })
             .expect(res => {
               const $body = $(res.text)
@@ -1166,7 +1151,7 @@ describe('Prison incentive level management', () => {
 
           return request(app)
             .post(url)
-            .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+            .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
             .send(validForm)
             .expect(res => {
               const $body = $(res.text)
@@ -1192,18 +1177,13 @@ describe('Prison incentive level management', () => {
           url: '/prison-incentive-levels/add/EN2',
         },
       ])('should show error message returned by api ($scenario)', ({ url }) => {
-        const error: SanitisedError<ErrorResponse> = {
-          name: 'Error',
-          responseStatus: 400,
-          message: 'Bad Request',
-          stack: 'Error: Bad Request',
-          data: {
+        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(
+          mockRestClientError<ErrorResponse>(400, {
             status: 400,
             userMessage: 'Validation failure: There must be an active default level for admission in a prison',
             developerMessage: 'There must be an active default level for admission in a prison',
-          },
-        }
-        incentivesApi.updatePrisonIncentiveLevel.mockRejectedValue(error)
+          }),
+        )
 
         const validForm: PrisonIncentiveLevelAddData = {
           formId: 'prisonIncentiveLevelAddForm',
@@ -1221,7 +1201,7 @@ describe('Prison incentive level management', () => {
 
         return request(app)
           .post(url)
-          .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+          .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .send(validForm)
           .redirects(1)
           .expect(res => {
@@ -1305,7 +1285,7 @@ describe('Prison incentive level management', () => {
 
           return request(app)
             .post(url)
-            .set('authorization', `bearer ${tokenWithNecessaryRole}`)
+            .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
             .send({ formId: 'prisonIncentiveLevelAddForm', ...form })
             .expect(res => {
               expect(res.redirect).toBeTruthy()

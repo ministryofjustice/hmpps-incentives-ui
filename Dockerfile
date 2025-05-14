@@ -3,6 +3,7 @@ FROM node:22-bookworm-slim AS base
 
 ARG BUILD_NUMBER=2022-01-07.1.ef03202
 ARG GIT_REF=unknown
+ARG GIT_BRANCH=unknown
 
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
@@ -17,6 +18,7 @@ WORKDIR /app
 # Cache breaking
 ENV BUILD_NUMBER=${BUILD_NUMBER:-2022-01-07.1.ef03202}
 ENV GIT_REF=${GIT_REF:-unknown}
+ENV GIT_BRANCH=${GIT_BRANCH:-unknown}
 
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -28,6 +30,7 @@ FROM base AS build
 
 ARG BUILD_NUMBER=2022-01-07.1.ef03202
 ARG GIT_REF=unknown
+ARG GIT_BRANCH=unknown
 
 COPY package*.json ./
 RUN CYPRESS_INSTALL_BINARY=0 npm ci --no-audit

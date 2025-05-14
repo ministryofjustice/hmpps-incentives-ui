@@ -3,6 +3,7 @@ context('Healthcheck', () => {
     beforeEach(() => {
       cy.task('resetStubs')
       cy.task('stubAuthPing')
+      cy.task('stubFrontendComponentsApiPing')
       cy.task('stubIncentivesApiPing')
       cy.task('stubOffenderSearchApiPing')
       cy.task('stubPrisonApiPing')
@@ -12,7 +13,7 @@ context('Healthcheck', () => {
     })
 
     it('Health check page is visible', () => {
-      cy.request('/health').its('body.healthy').should('equal', true)
+      cy.request('/health').its('body.status').should('equal', 'UP')
     })
 
     it('Ping is visible and UP', () => {

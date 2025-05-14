@@ -74,4 +74,17 @@ export default {
       }),
     ])
   },
+  stubFrontendComponentsApiPing(): Promise<Response> {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/frontendComponents/ping',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: { status: 'UP' },
+      },
+    })
+  },
 }

@@ -79,8 +79,8 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.808.0",
-    "@aws-sdk/client-sqs": "^3.808.0",
+    "@aws-sdk/client-s3": "^3.812.0",
+    "@aws-sdk/client-sqs": "^3.812.0",
     "@ministryofjustice/frontend": "^5.1.3",
     "@ministryofjustice/hmpps-auth-clients": "^0.0.1-alpha.4",
     "@ministryofjustice/hmpps-monitoring": "^0.0.1-beta.2",
@@ -97,7 +97,7 @@
     "csrf-sync": "^4.2.1",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
-    "govuk-frontend": "^5.10.0",
+    "govuk-frontend": "^5.10.1",
     "helmet": "^8.1.0",
     "http-errors": "^2.0.0",
     "jquery": "^3.7.1",
@@ -126,11 +126,11 @@
     "@types/jquery": "^3.5.32",
     "@types/jsdom": "^21.1.7",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.15.17",
+    "@types/node": "^22.15.18",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.4.17",
-    "@types/qs": "^6.9.18",
+    "@types/qs": "^6.14.0",
     "@types/superagent": "^8.1.9",
     "@types/supertest": "^6.0.3",
     "@types/uuid": "^10.0.0",
@@ -159,7 +159,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-jinja-template": "^2.1.0",
     "supertest": "^7.1.1",
-    "ts-jest": "^29.3.2",
+    "ts-jest": "^29.3.4",
     "typescript": "^5.7.3"
   },
   "overrides": {

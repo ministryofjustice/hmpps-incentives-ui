@@ -92,7 +92,7 @@
     "bunyan-format": "^0.2.1",
     "compression": "^1.8.0",
     "connect-flash": "^0.1.1",
-    "connect-redis": "^8.0.3",
+    "connect-redis": "^8.1.0",
     "cookie-parser": "^1.4.7",
     "csrf-sync": "^4.2.1",
     "express": "^4.21.2",
@@ -126,7 +126,7 @@
     "@types/jquery": "^3.5.32",
     "@types/jsdom": "^21.1.7",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.15.18",
+    "@types/node": "^22.15.19",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.4.17",
@@ -160,7 +160,7 @@
     "prettier-plugin-jinja-template": "^2.1.0",
     "supertest": "^7.1.1",
     "ts-jest": "^29.3.4",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
   },
   "overrides": {
     "@jgoz/esbuild-plugin-typecheck": {

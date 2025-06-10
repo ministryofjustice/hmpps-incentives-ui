@@ -79,8 +79,8 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.821.0",
-    "@aws-sdk/client-sqs": "^3.821.0",
+    "@aws-sdk/client-s3": "^3.826.0",
+    "@aws-sdk/client-sqs": "^3.826.0",
     "@ministryofjustice/frontend": "^5.1.3",
     "@ministryofjustice/hmpps-auth-clients": "^0.0.1-alpha.4",
     "@ministryofjustice/hmpps-monitoring": "^0.0.1-beta.2",
@@ -116,17 +116,17 @@
     "@tsconfig/node22": "^22.0.2",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
-    "@types/compression": "^1.8.0",
+    "@types/compression": "^1.8.1",
     "@types/connect-flash": "0.0.40",
-    "@types/cookie-parser": "^1.4.8",
+    "@types/cookie-parser": "^1.4.9",
     "@types/cookie-session": "^2.0.49",
-    "@types/express-session": "^1.18.1",
-    "@types/http-errors": "^2.0.4",
+    "@types/express-session": "^1.18.2",
+    "@types/http-errors": "^2.0.5",
     "@types/jest": "^29.5.14",
     "@types/jquery": "^3.5.32",
     "@types/jsdom": "^21.1.7",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.15.29",
+    "@types/node": "^22.15.30",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.4.17",
@@ -139,7 +139,7 @@
     "chokidar": "^3.6.0",
     "concurrently": "^9.1.2",
     "cookie-session": "^2.1.0",
-    "cypress": "^14.4.0",
+    "cypress": "^14.4.1",
     "cypress-multi-reporters": "^2.0.5",
     "esbuild": "^0.25.5",
     "esbuild-plugin-clean": "^1.0.1",
@@ -160,7 +160,7 @@
     "prettier-plugin-jinja-template": "^2.1.0",
     "supertest": "^7.1.1",
     "ts-jest": "^29.3.4",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
   },
   "overrides": {
     "@jgoz/esbuild-plugin-typecheck": {

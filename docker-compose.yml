@@ -48,11 +48,10 @@ services:
     entrypoint: |
       /bin/sh -c "
         echo Provisioning bucket with minio
-        until $$(curl --output /dev/null --silent http://minio:9000); do
+        until mc alias set local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD; do
           echo 'Waiting for http://minio:9000'
           sleep 3
         done
-        mc config host add local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD
         mc mb --region eu-west-1 --ignore-existing local/incentives
         mc mirror --overwrite /tmp/s3Bucket local/incentives
         exit 0

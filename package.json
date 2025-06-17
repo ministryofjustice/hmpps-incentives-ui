@@ -12,7 +12,7 @@
   "repository": "git@github.com:ministryofjustice/hmpps-incentives-ui.git",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky",
+    "prepare": "hmpps-precommit-hooks-prepare",
     "watch-ts": "tsc -w",
     "build": "node esbuild/esbuild.config.js --build",
     "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
@@ -28,7 +28,10 @@
     "int-test-ui": "TZ=Europe/London cypress open --e2e",
     "clean": "rm -rf dist",
     "rebuild": "npm run clean && npm run setup && npm run build",
-    "setup": "npm ci && hmpps-npm-script-run-allowlist"
+    "setup": "npm ci && hmpps-npm-script-run-allowlist",
+    "precommit:secrets": "gitleaks git --pre-commit --redact --staged --verbose --config .gitleaks/config.toml",
+    "precommit:lint": "node_modules/.bin/lint-staged",
+    "precommit:verify": "npm run typecheck && npm test"
   },
   "engines": {
     "node": "^24"
@@ -115,6 +118,7 @@
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.2",
     "@ministryofjustice/hmpps-npm-script-allowlist": "^0.0.3",
+    "@ministryofjustice/hmpps-precommit-hooks": "^1.0.2",
     "@tsconfig/node24": "^24.0.3",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
@@ -149,7 +153,6 @@
     "esbuild-plugin-manifest": "^1.0.5",
     "esbuild-sass-plugin": "^3.3.1",
     "glob": "^13.0.0",
-    "husky": "^9.1.7",
     "jest": "^30.2.0",
     "jest-html-reporter": "^4.3.0",
     "jest-junit": "^16.0.0",

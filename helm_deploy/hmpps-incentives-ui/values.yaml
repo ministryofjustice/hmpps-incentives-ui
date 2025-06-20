@@ -43,7 +43,7 @@ generic-service:
     - secretRef:
         name: hmpps-incentives-ui
     - secretRef:
-        name: application-insights
+        name: hmpps-incentives-ui-application-insights
 
   namespace_secrets:
     elasticache-redis:

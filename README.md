@@ -54,7 +54,7 @@ This will automatically restart it if server code or front-end assets are modifi
 
 It’s prudent to periodically update npm dependencies; continuous integration will occasionally warn when it’s needed.
 Renovate (similar to dependabot) is set up to try to upgrade
-npm packages, base docker images, helm charts and CircleCI orbs
+npm packages, base docker images, helm charts and GH Actions workflows
 by raising pull requests.
 
 This will attempt update npm packages manually and perform unit tests:
@@ -65,7 +65,7 @@ npx npm-check-updates --upgrade --doctor
 
 ## Testing
 
-Continuous integration on CircleCI will always perform the full suite of tests on pull requests and branches pushed to github,
+Continuous integration on GitHub Actions will always perform the full suite of tests on pull requests and branches pushed to github,
 but they can be run locally too.
 
 ### Unit tests
@@ -148,8 +148,8 @@ See `/helm_deploy/`.
 ### Deployment
 
 When the main branch is updated (e.g. when a pull request is merged),
-a new version of the application is released to `dev` automatically by CircleCI.
-This release can be promoted to `preprod` and `prod` using the CircleCI interface.
+a new version of the application is released to `dev` automatically by GitHub Actions.
+This release can be promoted to `preprod` and `prod` using the GitHub Actions interface to approve the deployment.
 
 See `/helm_deploy/README.md` for manual deployment steps.
 

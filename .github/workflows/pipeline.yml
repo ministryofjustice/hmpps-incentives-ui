@@ -16,6 +16,11 @@ on:
         required: true
         default: false
         type: boolean
+      node_version_file:
+        description: "Passed to setup-node action to specify where to source the version of node from"
+        required: false
+        type: string
+        default: ".nvmrc"
 
 permissions:
   contents: read
@@ -41,10 +46,89 @@ jobs:
     secrets: inherit
   # generic node integration tests using wiremock - feel free to override with local tests if required
   node_integration_tests:
-    name: node integration tests
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_integration_tests_redis.yml@v2 # WORKFLOW_VERSION
+    runs-on: ubuntu-latest
     needs: [node_build]
-    secrets: inherit
+    services:
+      redis:
+        image: redis:7.0
+        ports:
+          - 6379:6379
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ inputs.node_version_file }}
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ${{ inputs.node_version_file }}
+      - name: download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: npm_build_artifacts
+      - name: restore cache
+        id: restore-cache
+        uses: actions/cache/restore@v4
+        env:
+          cache-name: node-modules
+        with:
+          path: |
+            ./node_modules
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Start MinIO
+        run: |
+          docker run -d --name minio \
+            -p 9000:9000 -p 9001:9001 \
+            -e MINIO_ROOT_USER=incentives \
+            -e MINIO_ROOT_PASSWORD=incentives \
+            -e MINIO_SITE_REGION=eu-west-1 \
+            minio/minio server /data --console-address ":9001"
+      - name: Wait for MinIO to be ready
+        run: |
+          for i in {1..10}; do
+            curl -s http://localhost:9000/minio/health/live && break
+            echo "Waiting for MinIO..."
+            sleep 3
+          done
+      - name: Configure MinIO S3 bucket
+        env:
+          AWS_ACCESS_KEY_ID: incentives
+          AWS_SECRET_ACCESS_KEY: incentives
+          AWS_DEFAULT_REGION: eu-west-1
+        run: |
+          aws --endpoint-url http://localhost:9000 s3 mb s3://incentives
+          aws --endpoint-url http://localhost:9000 s3 sync server/testData/s3Bucket s3://incentives/
+          aws --endpoint-url http://localhost:9000 s3 ls s3://incentives
+      - name: Get wiremock
+        shell: bash
+        run: |
+          curl -o wiremock.jar https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.9.1/wiremock-standalone-3.9.1.jar
+      - name: Prepare and run integration tests
+        id: integration-tests
+        shell: bash
+        run: |
+          nohup java -jar wiremock.jar --port 9091 &
+          nohup npm run start-feature &
+          sleep 5
+          npm run int-test
+        # continue-on-error: true
+        # replacing the above with if: always()
+      - name: upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm_integration_test_artifacts
+          path: |
+            integration_tests/videos/
+            integration_tests/screenshots/
+            coverage/
+            test_results/
+            ctrf/
+      - name: fail the action if the tests failed
+        if: ${{ steps.integration-tests.outcome == 'failure' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setFailed('Integration tests failed')
   helm_lint:
     strategy:
       matrix:

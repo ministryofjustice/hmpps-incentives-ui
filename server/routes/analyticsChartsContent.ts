@@ -76,7 +76,7 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
   },
   'population-by-religion': {
     title: 'Percentage and number of prisoners in the establishment by religion, faith and belief',
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Population by religion, faith and belief (Prison)',
   },
   'population-by-sexual-orientation': {
@@ -107,7 +107,7 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
   'incentive-levels-by-religion': {
     title: 'Percentage and number of prisoners on each incentive level by religion, faith and belief',
     guidance: guidanceIncentiveLevelsByPc,
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Incentive level by religion, faith and belief (Prison)',
   },
   'incentive-levels-by-sexual-orientation': {
@@ -164,7 +164,7 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
   'entries-by-religion': {
     title: 'Comparison of positive and negative behaviour entries by religion – last 28 days',
     guidance: guidanceEntriesByPc,
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Comparison of behaviour entries by religion, faith and belief (Prison)',
   },
   'entries-by-sexual-orientation': {
@@ -223,7 +223,7 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     title:
       'Percentage and number of prisoners receiving each behaviour entry type by religion, faith and belief – last 28 days',
     guidance: guidancePrisonersWithEntriesByPc,
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Behaviour entries by religion, faith and belief (Prison)',
   },
   'prisoners-with-entries-by-sexual-orientation': {
@@ -304,7 +304,7 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
   },
   'population-by-religion': {
     title: 'Percentage and number of prisoners by religion, faith and belief',
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Population by religion, faith and belief (Group)',
   },
   'population-by-sexual-orientation': {
@@ -335,7 +335,7 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
   'incentive-levels-by-religion': {
     title: 'Percentage and number of prisoners on each incentive level by religion, faith and belief',
     guidance: regionalGuidanceIncentiveLevelsByPc,
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Incentive level by religion, faith and belief (Group)',
   },
   'incentive-levels-by-sexual-orientation': {
@@ -392,7 +392,7 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
   'entries-by-religion': {
     title: 'Comparison of positive and negative behaviour entries by religion, faith and belief – last 28 days',
     guidance: regionalGuidanceEntriesByPc,
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Comparison of behaviour entries by religion, faith and belief (Group)',
   },
   'entries-by-sexual-orientation': {
@@ -451,7 +451,7 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
     title:
       'Percentage and number of prisoners receiving each behaviour entry type by religion, faith and belief – last 28 days',
     guidance: regionalGuidancePrisonersWithEntriesByPc,
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Behaviour entries by religion, faith and belief (Group)',
   },
   'prisoners-with-entries-by-sexual-orientation': {
@@ -532,7 +532,7 @@ export const NationalProtectedCharacteristicsChartsContent: Record<string, Analy
   },
   'population-by-religion': {
     title: 'Percentage and number of prisoners by religion, faith and belief',
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Population by religion, faith and belief (National)',
   },
   'population-by-sexual-orientation': {
@@ -563,7 +563,7 @@ export const NationalProtectedCharacteristicsChartsContent: Record<string, Analy
   'incentive-levels-by-religion': {
     title: 'Percentage and number of prisoners on each incentive level by religion, faith and belief',
     guidance: nationalGuidanceIncentiveLevelsByPc,
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Incentive level by religion, faith and belief (National)',
   },
   'incentive-levels-by-sexual-orientation': {
@@ -620,7 +620,7 @@ export const NationalProtectedCharacteristicsChartsContent: Record<string, Analy
   'entries-by-religion': {
     title: 'Comparison of positive and negative behaviour entries by religion, faith and belief – last 28 days',
     guidance: nationalGuidanceEntriesByPc,
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Comparison of behaviour entries by religion, faith and belief (National)',
   },
   'entries-by-sexual-orientation': {
@@ -679,7 +679,7 @@ export const NationalProtectedCharacteristicsChartsContent: Record<string, Analy
     title:
       'Percentage and number of prisoners receiving each behaviour entry type by religion, faith and belief – last 28 days',
     guidance: nationalGuidancePrisonersWithEntriesByPc,
-    labelColumn: 'Religion, Faith and Belief',
+    labelColumn: 'Religion, faith and belief',
     googleAnalyticsCategory: 'Behaviour entries by religion, faith and belief (National)',
   },
   'prisoners-with-entries-by-sexual-orientation': {

@@ -38,8 +38,8 @@ export const protectedCharacteristicRoutes = {
     id: ProtectedCharacteristic.Disability,
   },
   religion: {
-    label: 'Religion, faith and belief',
-    groupDropdownLabel: 'Select a religion, faith or belief',
+    label: 'Religion',
+    groupDropdownLabel: 'Select a religion',
     id: ProtectedCharacteristic.Religion,
   },
   'sexual-orientation': {

@@ -75,9 +75,9 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     labelColumnWidth: 'wide',
   },
   'population-by-religion': {
-    title: 'Percentage and number of prisoners in the establishment by religion, faith and belief',
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Population by religion, faith and belief (Prison)',
+    title: 'Percentage and number of prisoners in the establishment by religion',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Population by religion (Prison)',
   },
   'population-by-sexual-orientation': {
     title: 'Percentage and number of prisoners in the establishment by sexual orientation',
@@ -105,10 +105,10 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     labelColumnWidth: 'wide',
   },
   'incentive-levels-by-religion': {
-    title: 'Percentage and number of prisoners on each incentive level by religion, faith and belief',
+    title: 'Percentage and number of prisoners on each incentive level by religion',
     guidance: guidanceIncentiveLevelsByPc,
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Incentive level by religion, faith and belief (Prison)',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Incentive level by religion (Prison)',
   },
   'incentive-levels-by-sexual-orientation': {
     title: 'Percentage and number of prisoners on each incentive level by sexual orientation',
@@ -132,9 +132,9 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     googleAnalyticsCategory: 'Incentive level by ethnicity trends (Prison)',
   },
   'trends-incentive-levels-by-religion': {
-    title: 'Incentive levels by religion, faith and belief – last 12 months',
+    title: 'Incentive levels by religion – last 12 months',
     guidance: guidanceTrendsIncentiveLevelsByPc,
-    googleAnalyticsCategory: 'Incentive level by religion, faith and belief trends (Prison)',
+    googleAnalyticsCategory: 'Incentive level by religion trends (Prison)',
   },
   'trends-incentive-levels-by-sexual-orientation': {
     title: 'Incentive levels by sexual orientation – last 12 months',
@@ -164,8 +164,8 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
   'entries-by-religion': {
     title: 'Comparison of positive and negative behaviour entries by religion – last 28 days',
     guidance: guidanceEntriesByPc,
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Comparison of behaviour entries by religion, faith and belief (Prison)',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by religion (Prison)',
   },
   'entries-by-sexual-orientation': {
     title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 28 days',
@@ -189,9 +189,9 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     googleAnalyticsCategory: 'Behaviour entries by ethnicity trends (Prison)',
   },
   'trends-entries-by-religion': {
-    title: 'Comparison of positive and negative behaviour entries by religion, faith and belief – last 12 months',
+    title: 'Comparison of positive and negative behaviour entries by religion – last 12 months',
     guidance: guidanceTrendsEntriesByPc,
-    googleAnalyticsCategory: 'Behaviour entries by religion, faith and belief trends (Prison)',
+    googleAnalyticsCategory: 'Behaviour entries by religion trends (Prison)',
   },
   'trends-entries-by-sexual-orientation': {
     title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 12 months',
@@ -220,11 +220,10 @@ export const ProtectedCharacteristicsChartsContent: Record<string, AnalyticsChar
     labelColumnWidth: 'wide',
   },
   'prisoners-with-entries-by-religion': {
-    title:
-      'Percentage and number of prisoners receiving each behaviour entry type by religion, faith and belief – last 28 days',
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by religion – last 28 days',
     guidance: guidancePrisonersWithEntriesByPc,
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Behaviour entries by religion, faith and belief (Prison)',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Behaviour entries by religion (Prison)',
   },
   'prisoners-with-entries-by-sexual-orientation': {
     title:
@@ -303,9 +302,9 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
     labelColumnWidth: 'wide',
   },
   'population-by-religion': {
-    title: 'Percentage and number of prisoners by religion, faith and belief',
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Population by religion, faith and belief (Group)',
+    title: 'Percentage and number of prisoners by religion',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Population by religion (Group)',
   },
   'population-by-sexual-orientation': {
     title: 'Percentage and number of prisoners by sexual orientation',
@@ -333,10 +332,10 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
     labelColumnWidth: 'wide',
   },
   'incentive-levels-by-religion': {
-    title: 'Percentage and number of prisoners on each incentive level by religion, faith and belief',
+    title: 'Percentage and number of prisoners on each incentive level by religion',
     guidance: regionalGuidanceIncentiveLevelsByPc,
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Incentive level by religion, faith and belief (Group)',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Incentive level by religion (Group)',
   },
   'incentive-levels-by-sexual-orientation': {
     title: 'Percentage and number of prisoners on each incentive level by sexual orientation',
@@ -360,9 +359,9 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
     googleAnalyticsCategory: 'Incentive level by ethnicity trends (Group)',
   },
   'trends-incentive-levels-by-religion': {
-    title: 'Incentive levels by religion, faith and belief – last 12 months',
+    title: 'Incentive levels by religion – last 12 months',
     guidance: regionalGuidanceTrendsIncentiveLevelsByPc,
-    googleAnalyticsCategory: 'Incentive level by religion, faith and belief trends (Group)',
+    googleAnalyticsCategory: 'Incentive level by religion trends (Group)',
   },
   'trends-incentive-levels-by-sexual-orientation': {
     title: 'Incentive levels by sexual orientation – last 12 months',
@@ -390,10 +389,10 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
     labelColumnWidth: 'wide',
   },
   'entries-by-religion': {
-    title: 'Comparison of positive and negative behaviour entries by religion, faith and belief – last 28 days',
+    title: 'Comparison of positive and negative behaviour entries by religion – last 28 days',
     guidance: regionalGuidanceEntriesByPc,
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Comparison of behaviour entries by religion, faith and belief (Group)',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by religion (Group)',
   },
   'entries-by-sexual-orientation': {
     title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 28 days',
@@ -417,9 +416,9 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
     googleAnalyticsCategory: 'Behaviour entries by ethnicity trends (Group)',
   },
   'trends-entries-by-religion': {
-    title: 'Comparison of positive and negative behaviour entries by religion, faith and belief – last 12 months',
+    title: 'Comparison of positive and negative behaviour entries by religion – last 12 months',
     guidance: regionalGuidanceTrendsEntriesByPc,
-    googleAnalyticsCategory: 'Behaviour entries by religion, faith and belief trends (Group)',
+    googleAnalyticsCategory: 'Behaviour entries by religion trends (Group)',
   },
   'trends-entries-by-sexual-orientation': {
     title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 12 months',
@@ -448,11 +447,10 @@ export const RegionalProtectedCharacteristicsChartsContent: Record<string, Analy
     labelColumnWidth: 'wide',
   },
   'prisoners-with-entries-by-religion': {
-    title:
-      'Percentage and number of prisoners receiving each behaviour entry type by religion, faith and belief – last 28 days',
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by religion – last 28 days',
     guidance: regionalGuidancePrisonersWithEntriesByPc,
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Behaviour entries by religion, faith and belief (Group)',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Behaviour entries by religion (Group)',
   },
   'prisoners-with-entries-by-sexual-orientation': {
     title:
@@ -531,9 +529,9 @@ export const NationalProtectedCharacteristicsChartsContent: Record<string, Analy
     labelColumnWidth: 'wide',
   },
   'population-by-religion': {
-    title: 'Percentage and number of prisoners by religion, faith and belief',
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Population by religion, faith and belief (National)',
+    title: 'Percentage and number of prisoners by religion',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Population by religion (National)',
   },
   'population-by-sexual-orientation': {
     title: 'Percentage and number of prisoners by sexual orientation',
@@ -561,10 +559,10 @@ export const NationalProtectedCharacteristicsChartsContent: Record<string, Analy
     labelColumnWidth: 'wide',
   },
   'incentive-levels-by-religion': {
-    title: 'Percentage and number of prisoners on each incentive level by religion, faith and belief',
+    title: 'Percentage and number of prisoners on each incentive level by religion',
     guidance: nationalGuidanceIncentiveLevelsByPc,
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Incentive level by religion, faith and belief (National)',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Incentive level by religion (National)',
   },
   'incentive-levels-by-sexual-orientation': {
     title: 'Percentage and number of prisoners on each incentive level by sexual orientation',
@@ -588,9 +586,9 @@ export const NationalProtectedCharacteristicsChartsContent: Record<string, Analy
     googleAnalyticsCategory: 'Incentive level by ethnicity trends (National)',
   },
   'trends-incentive-levels-by-religion': {
-    title: 'Incentive levels by religion, faith and belief – last 12 months',
+    title: 'Incentive levels by religion – last 12 months',
     guidance: nationalGuidanceTrendsIncentiveLevelsByPc,
-    googleAnalyticsCategory: 'Incentive level by religion, faith and belief trends (National)',
+    googleAnalyticsCategory: 'Incentive level by religion trends (National)',
   },
   'trends-incentive-levels-by-sexual-orientation': {
     title: 'Incentive levels by sexual orientation – last 12 months',
@@ -618,10 +616,10 @@ export const NationalProtectedCharacteristicsChartsContent: Record<string, Analy
     labelColumnWidth: 'wide',
   },
   'entries-by-religion': {
-    title: 'Comparison of positive and negative behaviour entries by religion, faith and belief – last 28 days',
+    title: 'Comparison of positive and negative behaviour entries by religion – last 28 days',
     guidance: nationalGuidanceEntriesByPc,
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Comparison of behaviour entries by religion, faith and belief (National)',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Comparison of behaviour entries by religion (National)',
   },
   'entries-by-sexual-orientation': {
     title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 28 days',
@@ -645,9 +643,9 @@ export const NationalProtectedCharacteristicsChartsContent: Record<string, Analy
     googleAnalyticsCategory: 'Behaviour entries by ethnicity trends (National)',
   },
   'trends-entries-by-religion': {
-    title: 'Comparison of positive and negative behaviour entries by religion, faith and belief – last 12 months',
+    title: 'Comparison of positive and negative behaviour entries by religion – last 12 months',
     guidance: nationalGuidanceTrendsEntriesByPc,
-    googleAnalyticsCategory: 'Behaviour entries by religion, faith and belief trends (National)',
+    googleAnalyticsCategory: 'Behaviour entries by religion trends (National)',
   },
   'trends-entries-by-sexual-orientation': {
     title: 'Comparison of positive and negative behaviour entries by sexual orientation – last 12 months',
@@ -676,11 +674,10 @@ export const NationalProtectedCharacteristicsChartsContent: Record<string, Analy
     labelColumnWidth: 'wide',
   },
   'prisoners-with-entries-by-religion': {
-    title:
-      'Percentage and number of prisoners receiving each behaviour entry type by religion, faith and belief – last 28 days',
+    title: 'Percentage and number of prisoners receiving each behaviour entry type by religion – last 28 days',
     guidance: nationalGuidancePrisonersWithEntriesByPc,
-    labelColumn: 'Religion, faith and belief',
-    googleAnalyticsCategory: 'Behaviour entries by religion, faith and belief (National)',
+    labelColumn: 'Religion',
+    googleAnalyticsCategory: 'Behaviour entries by religion (National)',
   },
   'prisoners-with-entries-by-sexual-orientation': {
     title:

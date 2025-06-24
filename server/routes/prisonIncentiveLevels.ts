@@ -1,9 +1,8 @@
-import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
+import type { Router } from 'express'
 import { BadRequest, NotFound } from 'http-errors'
 import { type SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import logger from '../../logger'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import {
   ErrorCode,
   ErrorResponse,
@@ -18,9 +17,7 @@ import PrisonIncentiveLevelEditForm from './forms/prisonIncentiveLevelEditForm'
 import { penceAmountToInputString, inputStringToPenceAmount } from '../utils/utils'
 
 export default function routes(router: Router): Router {
-  const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-
-  router.use((req, res, next) => {
+  router.use((_req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Incentive level settings', href: '/prison-incentive-levels' })
     next()
   })
@@ -28,7 +25,7 @@ export default function routes(router: Router): Router {
   /*
    * List of active incentive levels in the prison
    */
-  get('/', async (req, res) => {
+  router.get('/', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
     const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
@@ -98,7 +95,7 @@ export default function routes(router: Router): Router {
   /*
    * Detail view of active incentive level in the prison with associated information
    */
-  get('/view/:levelCode', async (req, res) => {
+  router.get('/view/:levelCode', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
     const { levelCode } = req.params
@@ -124,7 +121,7 @@ export default function routes(router: Router): Router {
   router.all(
     '/remove/:levelCode',
     requireGetOrPost,
-    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    async (req, res, next) => {
       const form = new PrisonIncentiveLevelDeactivateForm(deactivateFormId)
       res.locals.forms = res.locals.forms || {}
       res.locals.forms[deactivateFormId] = form
@@ -133,8 +130,8 @@ export default function routes(router: Router): Router {
         next()
         return
       }
-      if (!req.body.formId || req.body.formId !== deactivateFormId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${deactivateFormId} is allowed`)
+      if (!req.body?.formId || req.body.formId !== deactivateFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body?.formId} when only ${deactivateFormId} is allowed`)
         next(new BadRequest())
         return
       }
@@ -193,8 +190,8 @@ export default function routes(router: Router): Router {
       }
 
       res.redirect('/prison-incentive-levels')
-    }),
-    asyncMiddleware(async (req, res) => {
+    },
+    async (req, res) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
 
       const { levelCode } = req.params
@@ -221,7 +218,7 @@ export default function routes(router: Router): Router {
         prisonIncentiveLevel,
         prisonName,
       })
-    }),
+    },
   )
 
   /*
@@ -231,7 +228,7 @@ export default function routes(router: Router): Router {
   router.all(
     '/edit/:levelCode',
     requireGetOrPost,
-    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    async (req, res, next) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
       const { levelCode } = req.params
       const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
@@ -249,8 +246,8 @@ export default function routes(router: Router): Router {
         next()
         return
       }
-      if (!req.body.formId || req.body.formId !== editFormId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${editFormId} is allowed`)
+      if (!req.body?.formId || req.body.formId !== editFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body?.formId} when only ${editFormId} is allowed`)
         next(new BadRequest())
         return
       }
@@ -299,8 +296,8 @@ export default function routes(router: Router): Router {
       }
 
       res.redirect(`/prison-incentive-levels/view/${levelCode}`)
-    }),
-    asyncMiddleware(async (req, res) => {
+    },
+    async (req, res) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
 
       const { levelCode } = req.params
@@ -341,7 +338,7 @@ export default function routes(router: Router): Router {
         prisonIncentiveLevel,
         prisonName,
       })
-    }),
+    },
   )
 
   /*
@@ -351,7 +348,7 @@ export default function routes(router: Router): Router {
   router.all(
     ['/add', '/add/:levelCode'],
     requireGetOrPost,
-    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    async (req, res, next) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
       const { id: prisonId, name: prisonName } = res.locals.user.activeCaseload
 
@@ -381,8 +378,8 @@ export default function routes(router: Router): Router {
         next()
         return
       }
-      if (!req.body.formId || req.body.formId !== addFormId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${addFormId} is allowed`)
+      if (!req.body?.formId || req.body.formId !== addFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body?.formId} when only ${addFormId} is allowed`)
         next(new BadRequest())
         return
       }
@@ -434,8 +431,8 @@ export default function routes(router: Router): Router {
         req.flash('warning', message)
         res.redirect('/prison-incentive-levels')
       }
-    }),
-    asyncMiddleware(async (req, res) => {
+    },
+    async (req, res) => {
       const { name: prisonName } = res.locals.user.activeCaseload
       const form: PrisonIncentiveLevelAddForm = res.locals.forms[addFormId]
       const availableUnusedIncentiveLevels = res.locals.availableUnusedIncentiveLevels as IncentiveLevel[]
@@ -460,7 +457,7 @@ export default function routes(router: Router): Router {
           incentiveLevel, // NB: may be undefined
         },
       )
-    }),
+    },
   )
 
   return router

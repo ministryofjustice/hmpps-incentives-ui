@@ -1,14 +1,11 @@
-import type { RequestHandler, Router } from 'express'
+import type { Router } from 'express'
 
 import { PrisonApi } from '../data/prisonApi'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 
 const oneDay = 86400 as const
 
 export default function routes(router: Router): Router {
-  const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-
-  get('/', async (req, res, next) => {
+  router.get('/' as string, async (req, res) => {
     const prisonApi = new PrisonApi(res.locals.user.token)
 
     const imageData = await prisonApi.getImageByPrisonerNumber(req.params.prisonerNumber)

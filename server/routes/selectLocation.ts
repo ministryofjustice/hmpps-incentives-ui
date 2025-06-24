@@ -1,14 +1,10 @@
-import type { RequestHandler, Router } from 'express'
+import type { Router } from 'express'
 
 import logger from '../../logger'
 import { Location, PrisonApi } from '../data/prisonApi'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 
 export default function routes(router: Router): Router {
-  const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-  const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
-
-  get('/', async (req, res) => {
+  router.get('/', async (_req, res) => {
     const prisonApi = new PrisonApi(res.locals.user.token)
     const locations = await prisonApi.getUserLocations()
 
@@ -24,8 +20,8 @@ export default function routes(router: Router): Router {
     })
   })
 
-  post('/', async (req, res) => {
-    const { locationPrefix } = req.body
+  router.post('/', async (req, res) => {
+    const { locationPrefix } = req.body ?? {}
 
     if (!locationPrefix) {
       logger.error(req.originalUrl, 'locationPrefix is missing')

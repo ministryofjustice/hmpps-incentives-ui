@@ -1,9 +1,8 @@
-import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
+import type { Router } from 'express'
 import { BadRequest } from 'http-errors'
 
 import config from '../config'
 import logger from '../../logger'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import { managePrisonIncentiveLevelsRole, manageIncentiveLevelsRole } from '../data/constants'
 import { PrisonApi } from '../data/prisonApi'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
@@ -17,9 +16,7 @@ import { requireGetOrPost } from './forms/forms'
 import AboutPageFeedbackForm from './forms/aboutPageFeedbackForm'
 
 export default function routes(router: Router): Router {
-  const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-
-  get('/', async (req, res) => {
+  router.get('/', async (_req, res) => {
     // a prison case load would have locations, e.g. wings or house blocks
     // an LSA's special case load (CADM_I) has no locations
     const prisonApi = new PrisonApi(res.locals.user.token)
@@ -40,7 +37,7 @@ export default function routes(router: Router): Router {
     })
   })
 
-  get('/about-national-policy', (req, res) => {
+  router.get('/about-national-policy', (_req, res) => {
     res.render('pages/about-national-policy.njk')
   })
 
@@ -49,7 +46,7 @@ export default function routes(router: Router): Router {
   router.all(
     '/about',
     requireGetOrPost,
-    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    async (req, res, next) => {
       const form = new AboutPageFeedbackForm(formId)
       res.locals.forms = res.locals.forms || {}
       res.locals.forms[formId] = form
@@ -58,8 +55,8 @@ export default function routes(router: Router): Router {
         next()
         return
       }
-      if (!req.body.formId || req.body.formId !== formId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${formId} is allowed`)
+      if (!req.body?.formId || req.body.formId !== formId) {
+        logger.error(`Form posted with incorrect formId=${req.body?.formId} when only ${formId} is allowed`)
         next(new BadRequest())
         return
       }
@@ -126,8 +123,8 @@ ${noComments}`
       }
 
       next()
-    }),
-    asyncMiddleware(async (req: Request, res: Response) => {
+    },
+    async (req, res) => {
       const activeCaseLoad = res.locals.user.activeCaseload.id
       const prisonRegions = await getPrisonRegions(activeCaseLoad)
       const prisonRegionTableRows = Object.entries(prisonRegions).map(([region, prisons]) => {
@@ -139,7 +136,7 @@ ${noComments}`
         messages: req.flash(),
         form: res.locals.forms[formId],
       })
-    }),
+    },
   )
 
   return router

@@ -1,9 +1,8 @@
-import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
+import type { Router } from 'express'
 import { BadRequest } from 'http-errors'
 import { type SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 
 import logger from '../../logger'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import { IncentivesApi, ErrorCode, ErrorResponse } from '../data/incentivesApi'
 import { PrisonApi, type Agency } from '../data/prisonApi'
 import { requireGetOrPost } from './forms/forms'
@@ -13,9 +12,7 @@ import IncentiveLevelReorderForm from './forms/incentiveLevelReorderForm'
 import IncentiveLevelStatusForm from './forms/incentiveLevelStatusForm'
 
 export default function routes(router: Router): Router {
-  const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-
-  router.use((req, res, next) => {
+  router.use((_req, res, next) => {
     res.locals.breadcrumbs.addItems({ text: 'Global incentive level admin', href: '/incentive-levels' })
     next()
   })
@@ -23,7 +20,7 @@ export default function routes(router: Router): Router {
   /*
    * List of all incentive levels that exist globally, whether in use or historic
    */
-  get('/', async (req, res) => {
+  router.get('/', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
     const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
@@ -37,7 +34,7 @@ export default function routes(router: Router): Router {
    * Detail view of a specific incentive level
    * NB: Only for super-admin use; not linked to
    */
-  get('/view/:levelCode', async (req, res) => {
+  router.get('/view/:levelCode', async (req, res) => {
     const incentivesApi = new IncentivesApi(res.locals.user.token)
 
     const { levelCode } = req.params
@@ -54,7 +51,7 @@ export default function routes(router: Router): Router {
   router.all(
     ['/status/:levelCode'],
     requireGetOrPost,
-    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    async (req, res, next) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
 
       const { levelCode } = req.params
@@ -67,8 +64,8 @@ export default function routes(router: Router): Router {
         next()
         return
       }
-      if (!req.body.formId || req.body.formId !== statusFormId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${statusFormId} is allowed`)
+      if (!req.body?.formId || req.body.formId !== statusFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body?.formId} when only ${statusFormId} is allowed`)
         next(new BadRequest())
         return
       }
@@ -106,8 +103,8 @@ export default function routes(router: Router): Router {
       }
 
       res.redirect('/incentive-levels')
-    }),
-    asyncMiddleware(async (req: Request, res: Response) => {
+    },
+    async (req, res) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
 
       const { levelCode } = req.params
@@ -126,7 +123,7 @@ export default function routes(router: Router): Router {
         form,
         incentiveLevel,
       })
-    }),
+    },
   )
 
   /*
@@ -137,7 +134,7 @@ export default function routes(router: Router): Router {
   router.all(
     ['/edit/:levelCode'],
     requireGetOrPost,
-    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    async (req, res, next) => {
       const form = new IncentiveLevelEditForm(editFormId)
       res.locals.forms = res.locals.forms || {}
       res.locals.forms[editFormId] = form
@@ -146,8 +143,8 @@ export default function routes(router: Router): Router {
         next()
         return
       }
-      if (!req.body.formId || req.body.formId !== editFormId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${editFormId} is allowed`)
+      if (!req.body?.formId || req.body.formId !== editFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body?.formId} when only ${editFormId} is allowed`)
         next(new BadRequest())
         return
       }
@@ -204,8 +201,8 @@ export default function routes(router: Router): Router {
       }
 
       res.redirect(`/incentive-levels/view/${levelCode}`)
-    }),
-    asyncMiddleware(async (req, res) => {
+    },
+    async (req, res) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
 
       const { levelCode } = req.params
@@ -233,7 +230,7 @@ export default function routes(router: Router): Router {
         form,
         incentiveLevel,
       })
-    }),
+    },
   )
 
   /*
@@ -243,7 +240,7 @@ export default function routes(router: Router): Router {
   router.all(
     ['/add'],
     requireGetOrPost,
-    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    async (req, res, next) => {
       const form = new IncentiveLevelCreateForm(createFormId)
       res.locals.forms = res.locals.forms || {}
       res.locals.forms[createFormId] = form
@@ -252,8 +249,8 @@ export default function routes(router: Router): Router {
         next()
         return
       }
-      if (!req.body.formId || req.body.formId !== createFormId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${createFormId} is allowed`)
+      if (!req.body?.formId || req.body.formId !== createFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body?.formId} when only ${createFormId} is allowed`)
         next(new BadRequest())
         return
       }
@@ -293,15 +290,15 @@ export default function routes(router: Router): Router {
         req.flash('warning', message)
         res.redirect('/incentive-levels')
       }
-    }),
-    asyncMiddleware(async (req, res) => {
+    },
+    async (req, res) => {
       const form: IncentiveLevelCreateForm = res.locals.forms[createFormId]
 
       res.render('pages/incentiveLevelCreateForm.njk', {
         messages: req.flash(),
         form,
       })
-    }),
+    },
   )
 
   /*
@@ -312,7 +309,7 @@ export default function routes(router: Router): Router {
   router.all(
     ['/reorder'],
     requireGetOrPost,
-    asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    async (req, res, next) => {
       const form = new IncentiveLevelReorderForm(reorderFormId)
       res.locals.forms = res.locals.forms || {}
       res.locals.forms[reorderFormId] = form
@@ -321,8 +318,8 @@ export default function routes(router: Router): Router {
         next()
         return
       }
-      if (!req.body.formId || req.body.formId !== reorderFormId) {
-        logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${reorderFormId} is allowed`)
+      if (!req.body?.formId || req.body.formId !== reorderFormId) {
+        logger.error(`Form posted with incorrect formId=${req.body?.formId} when only ${reorderFormId} is allowed`)
         next(new BadRequest())
         return
       }
@@ -365,8 +362,8 @@ export default function routes(router: Router): Router {
         req.flash('warning', message)
       }
       res.redirect('/incentive-levels/reorder')
-    }),
-    asyncMiddleware(async (req, res) => {
+    },
+    async (req, res) => {
       const incentivesApi = new IncentivesApi(res.locals.user.token)
       const incentiveLevels = await incentivesApi.getIncentiveLevels(true)
 
@@ -377,7 +374,7 @@ export default function routes(router: Router): Router {
         form,
         incentiveLevels,
       })
-    }),
+    },
   )
 
   return router

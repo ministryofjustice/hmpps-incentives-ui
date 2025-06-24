@@ -1,9 +1,8 @@
-import type { RequestHandler, Request, Response, Router } from 'express'
+import type { Request, Response, Router } from 'express'
 import { AuthenticationClient, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 
 import logger from '../../logger'
 import { formatName, putLastNameFirst } from '../utils/utils'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import { globalSearchRole, inactiveBookingsRole, outsidePrisonId, transferPrisonId } from '../data/constants'
 import { createRedisClient } from '../data/redisClient'
 import { PrisonApi } from '../data/prisonApi'
@@ -94,57 +93,52 @@ async function renderConfirmation(req: Request, res: Response): Promise<void> {
 }
 
 export default function routes(router: Router): Router {
-  const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-  const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
-
-  router.use(
-    asyncMiddleware(async (req, res, next) => {
-      const { prisonerNumber } = req.params
-      const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
-      const incentiveHistoryUrl = `/incentive-reviews/prisoner/${prisonerNumber}`
-
-      const systemToken = await hmppsAuthClient.getToken(res.locals.user.username)
-      const prisonApi = new PrisonApi(systemToken)
-
-      // load prisoner info; propagates 404 if not found
-      const prisoner = await prisonApi.getPrisonerDetails(prisonerNumber)
-      const { firstName, lastName } = prisoner
-
-      // require prisoner to be in user’s caseloads or have global search (for those in transfer) or inactive booking (for those who’ve been released)
-      let prisonerWithinCaseloads: boolean
-      if (prisoner.agencyId === transferPrisonId) {
-        prisonerWithinCaseloads = res.locals.user.roles.some(role => role === globalSearchRole)
-      } else if (prisoner.agencyId === outsidePrisonId) {
-        prisonerWithinCaseloads = res.locals.user.roles.some(role => role === inactiveBookingsRole)
-      } else {
-        prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.agencyId)
-      }
-      if (!prisonerWithinCaseloads) {
-        res.redirect('/')
-        return
-      }
-
-      res.locals.breadcrumbs.popLastItem()
-      res.locals.breadcrumbs.addItems(
-        {
-          text: putLastNameFirst(firstName, lastName),
-          href: profileUrl,
-        },
-        {
-          text: 'Incentive details',
-          href: incentiveHistoryUrl,
-        },
-      )
-
-      next()
-    }),
-  )
-
-  get('/', async (req, res) => renderForm(req, res))
-
-  post('/', async (req, res) => {
+  router.use(async (req, res, next) => {
     const { prisonerNumber } = req.params
-    const { newIepLevel, reason }: FormData = req.body || {}
+    const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`
+    const incentiveHistoryUrl = `/incentive-reviews/prisoner/${prisonerNumber}`
+
+    const systemToken = await hmppsAuthClient.getToken(res.locals.user.username)
+    const prisonApi = new PrisonApi(systemToken)
+
+    // load prisoner info; propagates 404 if not found
+    const prisoner = await prisonApi.getPrisonerDetails(prisonerNumber)
+    const { firstName, lastName } = prisoner
+
+    // require prisoner to be in user’s caseloads or have global search (for those in transfer) or inactive booking (for those who’ve been released)
+    let prisonerWithinCaseloads: boolean
+    if (prisoner.agencyId === transferPrisonId) {
+      prisonerWithinCaseloads = res.locals.user.roles.some(role => role === globalSearchRole)
+    } else if (prisoner.agencyId === outsidePrisonId) {
+      prisonerWithinCaseloads = res.locals.user.roles.some(role => role === inactiveBookingsRole)
+    } else {
+      prisonerWithinCaseloads = res.locals.user.caseloads.some(caseload => caseload.id === prisoner.agencyId)
+    }
+    if (!prisonerWithinCaseloads) {
+      res.redirect('/')
+      return
+    }
+
+    res.locals.breadcrumbs.popLastItem()
+    res.locals.breadcrumbs.addItems(
+      {
+        text: putLastNameFirst(firstName, lastName),
+        href: profileUrl,
+      },
+      {
+        text: 'Incentive details',
+        href: incentiveHistoryUrl,
+      },
+    )
+
+    next()
+  })
+
+  router.get('/', async (req, res) => renderForm(req, res))
+
+  router.post('/' as string, async (req, res) => {
+    const { prisonerNumber } = req.params
+    const { newIepLevel, reason }: FormData = req.body ?? {}
     const errors: ErrorSummaryItem[] = []
 
     if (!newIepLevel) {

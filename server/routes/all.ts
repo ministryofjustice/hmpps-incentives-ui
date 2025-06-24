@@ -48,7 +48,9 @@ export default function routes(userService: UserService): Router {
   )
 
   // analytics charts
-  router.use('/analytics/:pgdRegionCode([A-Z0-9]{2,5}|National)?', analyticsRouter(standardRouter(userService)))
+  const analyticsRouterInstance = analyticsRouter(standardRouter(userService))
+  router.use('/analytics', analyticsRouterInstance)
+  router.use('/analytics/{:pgdRegionCode}', analyticsRouterInstance)
 
   // misc
   router.use('/prisoner-images/:prisonerNumber.jpeg', prisonerImagesRoutes(imageRouter()))

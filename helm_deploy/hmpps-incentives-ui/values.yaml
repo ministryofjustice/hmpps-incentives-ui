@@ -6,7 +6,7 @@ generic-service:
   replicaCount: 4
 
   image:
-    repository: quay.io/hmpps/hmpps-incentives-ui
+    repository: ghcr.io/ministryofjustice/hmpps-incentives-ui
     tag: app_version    # override at deployment time
     port: 3000
 
@@ -43,7 +43,7 @@ generic-service:
     - secretRef:
         name: hmpps-incentives-ui
     - secretRef:
-        name: application-insights
+        name: hmpps-incentives-ui-application-insights
 
   namespace_secrets:
     elasticache-redis:

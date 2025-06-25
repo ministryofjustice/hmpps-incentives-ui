@@ -1,11 +1,10 @@
-import type { RequestHandler, Router } from 'express'
+import type { Router } from 'express'
 import { NotFound } from 'http-errors'
 import { AuthenticationClient, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 
 import config from '../config'
 import { pagination, type LegacyPagination } from '../utils/pagination'
 import { type SortableTableColumns, sortableTableHead } from '../utils/sortableTable'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import { createRedisClient } from '../data/redisClient'
 import {
   IncentivesApi,
@@ -40,9 +39,7 @@ const tableColumns: SortableTableColumns<string> = [
 ]
 
 export default function routes(router: Router): Router {
-  const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-
-  get('/', async (req, res) => {
+  router.get('/' as string, async (req, res) => {
     const { user } = res.locals
     const { locationPrefix } = req.params
     let { level: selectedLevelCode }: { level?: string } = req.query

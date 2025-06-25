@@ -1,9 +1,8 @@
-import type { NextFunction, Request, RequestHandler, Response, Router } from 'express'
+import type { Request, RequestHandler, Router } from 'express'
 import { BadRequest, NotFound } from 'http-errors'
 
 import config from '../config'
 import logger from '../../logger'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import S3Client from '../data/s3Client'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import AnalyticsService from '../services/analyticsService'
@@ -17,7 +16,7 @@ import type { ChartId } from './analyticsChartTypes'
 import { requireGetOrPost } from './forms/forms'
 import ChartFeedbackForm from './forms/chartFeedbackForm'
 import PrisonRegister from '../data/prisonRegister'
-import PgdRegionService, { National, type PgdRegionCode } from '../services/pgdRegionService'
+import PgdRegionService, { National } from '../services/pgdRegionService'
 import {
   StitchedTablesCache,
   MemoryStitchedTablesCache,
@@ -85,14 +84,11 @@ export const cache: StitchedTablesCache = config.featureFlags.useFileSystemCache
   : new MemoryStitchedTablesCache()
 
 export default function routes(router: Router): Router {
-  const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-  const post = (path: string, handler: RequestHandler) => router.post(path, asyncMiddleware(handler))
-
-  get('/', (req, res) => {
+  router.get('/', (_req, res) => {
     res.redirect('/analytics/incentive-levels')
   })
 
-  get('/select-pgd-region', async (req, res) => {
+  router.get('/select-pgd-region', async (_req, res) => {
     const options: { value: string; text: string }[] = [{ value: National, text: National }]
     options.push(
       ...PgdRegionService.getAllPgdRegions().map(pgdRegion => ({
@@ -108,8 +104,8 @@ export default function routes(router: Router): Router {
     })
   })
 
-  post('/select-pgd-region', async (req, res) => {
-    const { pgdRegionCode } = req.body
+  router.post('/select-pgd-region', async (req, res) => {
+    const { pgdRegionCode } = req.body ?? {}
 
     if (!pgdRegionCode) {
       logger.error(req.originalUrl, 'pgdRegionCode is missing')
@@ -121,7 +117,7 @@ export default function routes(router: Router): Router {
   })
 
   const routeWithFeedback = (path: string, chartIds: ReadonlyArray<ChartId>, handler: RequestHandler) =>
-    router.all(path, requireGetOrPost, asyncMiddleware(chartFeedbackHandler(chartIds)), asyncMiddleware(handler))
+    router.all(path, requireGetOrPost, chartFeedbackHandler(chartIds), handler)
 
   const behaviourEntryChartIds: ChartId[] = [
     'entries-by-location',
@@ -129,7 +125,7 @@ export default function routes(router: Router): Router {
     'trends-entries',
   ]
   routeWithFeedback('/behaviour-entries', behaviourEntryChartIds, async (req, res) => {
-    const { pgdRegionCode } = req.params as { pgdRegionCode: PgdRegionCode }
+    const { pgdRegionCode } = req.params as { pgdRegionCode: ConstructorParameters<typeof AnalyticsView>[0] }
     const activeCaseLoad = res.locals.user.activeCaseload.id
     const analyticsView = new AnalyticsView(pgdRegionCode, 'behaviour-entries', activeCaseLoad)
     if (!analyticsView.isValidPgdRegion) {
@@ -158,7 +154,7 @@ export default function routes(router: Router): Router {
 
   const incentiveLevelChartIds: ChartId[] = ['incentive-levels-by-location', 'trends-incentive-levels']
   routeWithFeedback('/incentive-levels', incentiveLevelChartIds, async (req, res) => {
-    const { pgdRegionCode } = req.params as { pgdRegionCode: PgdRegionCode }
+    const { pgdRegionCode } = req.params as { pgdRegionCode: ConstructorParameters<typeof AnalyticsView>[0] }
     const activeCaseLoad = res.locals.user.activeCaseload.id
     const analyticsView = new AnalyticsView(pgdRegionCode, 'incentive-levels', activeCaseLoad)
     if (!analyticsView.isValidPgdRegion) {
@@ -182,7 +178,7 @@ export default function routes(router: Router): Router {
     })
   })
 
-  get('/protected-characteristics', (req, res) => {
+  router.get('/protected-characteristics', (_req, res) => {
     res.redirect('/analytics/protected-characteristic?characteristic=age')
   })
 
@@ -221,7 +217,7 @@ export default function routes(router: Router): Router {
   routeWithFeedback('/protected-characteristic', protectedCharacteristicChartIds, async (req, res, next) => {
     const activeCaseLoad = res.locals.user.activeCaseload.id
 
-    const { pgdRegionCode } = req.params as { pgdRegionCode: PgdRegionCode }
+    const { pgdRegionCode } = req.params as { pgdRegionCode: ConstructorParameters<typeof AnalyticsView>[0] }
     const analyticsView = new AnalyticsView(pgdRegionCode, 'protected-characteristic', activeCaseLoad)
     if (!analyticsView.isValidPgdRegion) {
       res.redirect('/analytics/select-pgd-region')
@@ -312,8 +308,8 @@ export default function routes(router: Router): Router {
   return router
 }
 
-const chartFeedbackHandler = (chartIds: ReadonlyArray<ChartId>) =>
-  async function handler(req: Request, res: Response, next: NextFunction) {
+const chartFeedbackHandler = (chartIds: ReadonlyArray<ChartId>): RequestHandler =>
+  async function handler(req, res, next) {
     res.locals.chartIds = chartIds
     res.locals.forms = res.locals.forms || {}
     chartIds.forEach(chartId => {
@@ -328,8 +324,8 @@ const chartFeedbackHandler = (chartIds: ReadonlyArray<ChartId>) =>
     const activeCaseLoad = res.locals.user.activeCaseload.id
     const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`
 
-    if (!req.body.formId || !chartIds.includes(req.body.formId)) {
-      logger.error(`Form posted with incorrect formId=${req.body.formId} when only ${chartIds.join(' ')} are allowed`)
+    if (!req.body?.formId || !chartIds.includes(req.body.formId)) {
+      logger.error(`Form posted with incorrect formId=${req.body?.formId} when only ${chartIds.join(' ')} are allowed`)
       next(new BadRequest())
       return
     }

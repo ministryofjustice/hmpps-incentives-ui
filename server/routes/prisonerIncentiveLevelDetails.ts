@@ -1,9 +1,8 @@
-import type { RequestHandler, Router } from 'express'
+import type { Router } from 'express'
 import { AuthenticationClient, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 
 import format from '../utils/format'
 import { formatName, parseDateInput, putLastNameFirst } from '../utils/utils'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import {
   globalSearchRole,
   inactiveBookingsRole,
@@ -76,9 +75,7 @@ const hmppsAuthClient = new AuthenticationClient(
 )
 
 export default function routes(router: Router): Router {
-  const get = (path: string, handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
-
-  get('/', async (req, res) => {
+  router.get('/' as string, async (req, res) => {
     const { prisonerNumber } = req.params
     const { agencyId, incentiveLevel, fromDate: fromDateInput, toDate: toDateInput }: FormData = req.query
     const profileUrl = `${res.app.locals.dpsUrl}/prisoner/${prisonerNumber}`

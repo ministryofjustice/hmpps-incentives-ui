@@ -79,7 +79,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.835.0",
+    "@aws-sdk/client-s3": "^3.837.0",
     "@aws-sdk/client-sqs": "^3.835.0",
     "@ministryofjustice/frontend": "^5.1.4",
     "@ministryofjustice/hmpps-auth-clients": "^0.0.1",

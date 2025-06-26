@@ -34,7 +34,7 @@ describe('GET /prisoner-images/:prisonerNumber.jpeg', () => {
       .get(`/prisoner-images/${prisonerNumber}.jpeg`)
       .expect('Content-Type', /image\/jpeg/)
       .expect(res => {
-        expect(prisonApi.getImageByPrisonerNumber).toBeCalledWith(prisonerNumber)
+        expect(prisonApi.getImageByPrisonerNumber).toHaveBeenCalledWith(prisonerNumber)
 
         expect(res.statusCode).toBe(200)
         expect(res.headers['cache-control']).toEqual(`private, max-age=${oneDay}`)

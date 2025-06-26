@@ -34,8 +34,8 @@ function mockResponse(locals: Record<string, unknown> = {}): Response {
 function expectRequestHandlerToBeCalled(handler: RequestHandler, req: Request, res: Response): void {
   const next: jest.Mock<NextFunction> = jest.fn()
   handler(req, res, next)
-  expect(res.send).toBeCalledWith('OK')
-  expect(next).not.toBeCalled()
+  expect(res.send).toHaveBeenCalledWith('OK')
+  expect(next).not.toHaveBeenCalled()
 }
 
 /**
@@ -44,8 +44,8 @@ function expectRequestHandlerToBeCalled(handler: RequestHandler, req: Request, r
 function expectRequestHandlerTo404(handler: RequestHandler, req: Request, res: Response): void {
   const next: jest.Mock<NextFunction> = jest.fn()
   handler(req, res, next)
-  expect(res.send).not.toBeCalled()
-  expect(next).toBeCalled()
+  expect(res.send).not.toHaveBeenCalled()
+  expect(next).toHaveBeenCalled()
   expect(next.mock.calls[0][0].status).toEqual(404)
 }
 

@@ -89,7 +89,7 @@ describe('AnalyticsService', () => {
         date: new Date(2022, 2, 13),
         modified,
       })
-      expect(s3Client.getObject).toBeCalledWith('behaviour_entries/2022-03-13.json')
+      expect(s3Client.getObject).toHaveBeenCalledWith('behaviour_entries/2022-03-13.json')
     })
 
     it('returns latest table when there are several available', async () => {
@@ -111,7 +111,7 @@ describe('AnalyticsService', () => {
         date: new Date(2022, 2, 13),
         modified,
       })
-      expect(s3Client.getObject).toBeCalledWith('behaviour_entries/2022-03-13.json')
+      expect(s3Client.getObject).toHaveBeenCalledWith('behaviour_entries/2022-03-13.json')
     })
 
     it('throws an error when it cannot find a table', async () => {

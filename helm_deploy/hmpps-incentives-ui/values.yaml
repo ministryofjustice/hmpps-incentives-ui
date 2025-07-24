@@ -63,7 +63,9 @@ generic-service:
       - private_prisons
 
   scheduledDowntime:
-    timeZone: Europe/London
+    # NOTE: API starts at 6.49am UTC, stops at 21:58pm UTC
+    startup: '00 7 * * 1-5' # Start at 7.00am UTC Monday-Friday
+    shutdown: '50 21 * * 1-5' # Stop at 9.50pm UTC Monday-Friday
 
 generic-prometheus-alerts:
   targetApplication: hmpps-incentives-ui

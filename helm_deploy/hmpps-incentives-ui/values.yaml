@@ -39,13 +39,26 @@ generic-service:
     AUDIT_SQS_REGION: "eu-west-2"
     AUDIT_SERVICE_NAME: "UNASSIGNED"
 
-  envFrom:
-    - secretRef:
-        name: hmpps-incentives-ui
-    - secretRef:
-        name: hmpps-incentives-ui-application-insights
-
   namespace_secrets:
+    hmpps-incentives-ui:
+      FEEDBACK_URL: "FEEDBACK_URL"
+      FEEDBACK_URL_ANALYTICS: "FEEDBACK_URL_ANALYTICS"
+      FEEDBACK_URL_REVIEWS_TABLE: "FEEDBACK_URL_REVIEWS_TABLE"
+      FEEDBACK_URL_TABLE: "FEEDBACK_URL_TABLE"
+      GOOGLE_ANALYTICS_GA4_MEASUREMENT_ID: "GOOGLE_ANALYTICS_GA4_MEASUREMENT_ID"
+      HOTJAR_SITE_ID: "HOTJAR_SITE_ID"
+      ZENDESK_TOKEN: "ZENDESK_TOKEN"
+      ZENDESK_USERNAME: "ZENDESK_USERNAME"
+    hmpps-incentives-ui-application-insights:
+      APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
+    hmpps-incentives-ui-auth-code:
+      API_CLIENT_ID: "AUTH_CODE_CLIENT_ID"
+      API_CLIENT_SECRET: "AUTH_CODE_CLIENT_SECRET"
+    hmpps-incentives-ui-client-creds:
+      SYSTEM_CLIENT_ID: "CLIENT_CREDS_CLIENT_ID"
+      SYSTEM_CLIENT_SECRET: "CLIENT_CREDS_CLIENT_SECRET"
+    hmpps-incentives-ui-session-secret:
+      SESSION_SECRET: 'SESSION_SECRET'
     elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"

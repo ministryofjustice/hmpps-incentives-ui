@@ -33,7 +33,7 @@ export default {
       response: {
         status: 200,
         headers: {
-          'Content-Type': 'images/jpeg',
+          'Content-Type': 'image/jpeg',
         },
         base64Body: imageContents,
       },

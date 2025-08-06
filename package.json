@@ -106,7 +106,7 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
-    "redis": "^5.7.0",
+    "redis": "^5.8.0",
     "superagent": "^10.2.3",
     "url-value-parser": "^2.2.0"
   },
@@ -160,7 +160,7 @@
     "prettier-plugin-jinja-template": "^2.1.0",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.1",
-    "typescript": "~5.9.2"
+    "typescript": "~5.8.3"
   },
   "overrides": {
     "@jgoz/esbuild-plugin-typecheck": {

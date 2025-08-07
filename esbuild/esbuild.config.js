@@ -101,13 +101,13 @@ const main = () => {
     process.stderr.write('\u{1b}[36m→ Watching for changes…\u{1b}[0m\n')
 
     // Assets
-    chokidar.watch(['assets/**/*'], chokidarOptions).on(
+    chokidar.watch(['assets/.'], chokidarOptions).on(
       'all',
       debounce(() => buildAssets(buildConfig).catch(e => process.stderr.write(`${e}\n`))),
     )
 
     // App
-    chokidar.watch(['server/**/*'], { ...chokidarOptions, ignored: ['**/*.test.ts'] }).on(
+    chokidar.watch(['server/.'], { ...chokidarOptions, ignored: filePath => filePath.endsWith('.test.ts') }).on(
       'all',
       debounce(() => buildApp(buildConfig).catch(e => process.stderr.write(`${e}\n`))),
     )

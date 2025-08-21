@@ -24,7 +24,7 @@
   <div class="horizontal-information govuk-!-margin-bottom-3">
     <div class="horizontal-information__item">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Current incentive level</h3>
-      <p data-test="current-iep">{{ currentIncentiveLevel }}</p>
+      <p data-test="current-iep">{{ currentIncentiveLevel or 'Not reviewed' }}</p>
     </div>
     {% if nextReviewDate %}
       <div class="horizontal-information__item">

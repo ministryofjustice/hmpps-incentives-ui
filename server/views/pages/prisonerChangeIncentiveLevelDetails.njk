@@ -23,7 +23,7 @@
 
       <p data-test="current-incentive-level">
         <span class="govuk-heading-m govuk-!-margin-bottom-3">Current incentive level</span>
-        {{ currentIncentiveLevel }}
+        {{ currentIncentiveLevel or 'Not reviewed' }}
       </p>
 
       <form method="POST" novalidate>

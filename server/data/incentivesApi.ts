@@ -160,6 +160,26 @@ export type UpdateIncentiveLevelRequest = {
   comment: string
 }
 
+/**
+ * Constant used in the exceptional case where a prisoner has no reviews
+ *
+ * Prisoners should always have at least one incentive review - they automatically
+ * get one on admission - however in `dev`, because of some of the peculiar manual
+ * testing, some prisoners may not have any reviews. This constant is used in that
+ * case to ensure it is still possible to manually add an Incentive review.
+ */
+export const emptyIncentiveReviewHistory: {
+  iepLevel: null
+  nextReviewDate: null
+  iepDetails: []
+} = {
+  iepLevel: null,
+  nextReviewDate: null,
+  iepDetails: [],
+}
+
+export type EmptyIncentiveReviewHistory = typeof emptyIncentiveReviewHistory
+
 export class IncentivesApi extends RestClient {
   constructor(systemToken: string) {
     super('HMPPS Incentives API', config.apis.hmppsIncentivesApi, logger, {
@@ -167,13 +187,24 @@ export class IncentivesApi extends RestClient {
     })
   }
 
-  getIncentiveSummaryForPrisoner(prisonerNumber: string): Promise<IncentiveReviewHistory> {
+  getIncentiveSummaryForPrisoner(
+    prisonerNumber: string,
+  ): Promise<IncentiveReviewHistory | EmptyIncentiveReviewHistory> {
     return this.get<DatesAsStrings<IncentiveReviewHistory>>(
       {
         path: `/incentive-reviews/prisoner/${encodeURIComponent(prisonerNumber)}`,
       },
       asSystem(),
-    ).then(response => convertIncentiveReviewHistoryDates(response))
+    )
+      .then(response => convertIncentiveReviewHistoryDates(response))
+      .catch(error => {
+        if (error?.responseStatus === 404) {
+          logger.debug(`Prisoner ${prisonerNumber} has no incentive reviews: ${error}`)
+          return emptyIncentiveReviewHistory
+        }
+
+        throw error
+      })
   }
 
   /**

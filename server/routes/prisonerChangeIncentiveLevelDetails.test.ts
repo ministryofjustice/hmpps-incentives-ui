@@ -5,7 +5,7 @@ import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import { appWithAllRoutes } from './testutils/appSetup'
 import createUserToken from './testutils/createUserToken'
 import { PrisonApi } from '../data/prisonApi'
-import { IncentivesApi } from '../data/incentivesApi'
+import { emptyIncentiveReviewHistory, IncentivesApi } from '../data/incentivesApi'
 import { convertIncentiveReviewHistoryDates, convertIncentiveReviewItemDates } from '../data/incentivesApiUtils'
 import { NomisUserRolesApi } from '../data/nomisUserRolesApi'
 import { samplePrisonIncentiveLevels, sampleReviewHistory } from '../testData/incentivesApi'
@@ -79,6 +79,28 @@ describe('GET /incentive-reviews/prisoner/change-incentive-level', () => {
         expect(res.text).toContain('Reason for recording')
         expect(res.text).toContain('Save')
       })
+  })
+
+  describe('when the prisoner has no incentive reviews', () => {
+    beforeEach(() => {
+      incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(emptyIncentiveReviewHistory)
+    })
+
+    it('still renders the form and allow recording of an incentive review', () => {
+      return request(app)
+        .get(`/incentive-reviews/prisoner/${prisonerNumber}/change-incentive-level`)
+        .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Smith, John')
+          expect(res.text).toContain('Not reviewed')
+          expect(res.text).toContain('Record an incentive level')
+          expect(res.text).toContain('Standard')
+          expect(res.text).not.toContain('(current level)')
+          expect(res.text).toContain('Reason for recording')
+          expect(res.text).toContain('Save')
+        })
+    })
   })
 
   it('should return 404 if prisoner is not found', () => {

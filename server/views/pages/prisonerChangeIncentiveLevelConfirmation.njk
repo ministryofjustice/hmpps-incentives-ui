@@ -13,7 +13,7 @@
       {% set panelTitle %}
         {{ prisonerName | possessive }} incentive level is set to
         <br/>
-        <strong data-test="current-incentive-level">{{ currentIncentiveLevel }}</strong>
+        <strong data-test="current-incentive-level">{{ currentIncentiveLevel or 'Not reviewed' }}</strong>
       {% endset %}
 
       {% set panelBody -%}

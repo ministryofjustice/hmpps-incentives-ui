@@ -4,7 +4,7 @@ import request from 'supertest'
 import { maintainPrisonerIncentiveLevelRole } from '../data/constants'
 import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
 import { PrisonApi } from '../data/prisonApi'
-import { IncentivesApi } from '../data/incentivesApi'
+import { emptyIncentiveReviewHistory, IncentivesApi } from '../data/incentivesApi'
 import { OffenderSearchClient } from '../data/offenderSearch'
 import { getAgencyMockImplementation, staffDetails, agencyDetails } from '../testData/prisonApi'
 import { sampleReviewHistory, emptyIncentiveSummaryForBooking } from '../testData/incentivesApi'
@@ -56,6 +56,32 @@ describe('GET /incentive-reviews/prisoner/', () => {
         expect(prisonApi.getStaffDetails).toHaveBeenCalledWith('SYSTEM_USER')
         expect(incentivesApi.getIncentiveSummaryForPrisoner).toHaveBeenCalledWith(prisonerNumber)
       })
+  })
+
+  describe('when the prisoner has no incentive reviews', () => {
+    beforeEach(() => {
+      app = appWithAllRoutes({
+        mockUserService: new MockUserService(mockMoorlandUserWithRole),
+      })
+
+      incentivesApi.getIncentiveSummaryForPrisoner.mockResolvedValue(emptyIncentiveReviewHistory)
+    })
+
+    it('still renders the template and allow recording of an incentive review', () => {
+      return request(app)
+        .get(`/incentive-reviews/prisoner/${prisonerNumber}`)
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.request.url).toContain('/incentive-reviews/prisoner/A8083DY')
+          expect(res.text).toContain('Smith, John')
+          expect(res.text).toContain('Not reviewed')
+          expect(res.text).not.toContain('Next review due by')
+          expect(res.text).toContain('Incentive level history')
+          expect(res.text).toContain('has no incentive level history')
+          expect(res.text).toContain('Record incentive level')
+        })
+    })
   })
 
   it('should render the correct template with the correct data', () => {

@@ -30,7 +30,7 @@
     "rebuild": "npm run clean && npm run setup && npm run build",
     "setup": "npm ci && hmpps-npm-script-run-allowlist",
     "precommit:secrets": "gitleaks git --pre-commit --redact --staged --verbose --config .gitleaks/config.toml --gitleaks-ignore-path .gitleaks/.gitleaksignore",
-    "precommit:lint": "node_modules/.bin/lint-staged",
+    "precommit:lint": "lint-staged",
     "precommit:verify": "npm run typecheck && npm test"
   },
   "engines": {

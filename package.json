@@ -84,7 +84,7 @@
     "@ministryofjustice/frontend": "^7.1.0",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.0",
     "@ministryofjustice/hmpps-monitoring": "^1.0.0",
-    "@ministryofjustice/hmpps-rest-client": "^0.0.3",
+    "@ministryofjustice/hmpps-rest-client": "^1.0.0",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.8",
     "body-parser": "^2.2.0",

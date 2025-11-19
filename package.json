@@ -170,7 +170,7 @@
       "chokidar": "$chokidar"
     },
     "jsdom": {
-      "parse5": "~7.3.0"
+      "parse5": "~8.0.0"
     }
   }
 }

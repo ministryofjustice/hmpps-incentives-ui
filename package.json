@@ -168,6 +168,9 @@
     },
     "nunjucks": {
       "chokidar": "$chokidar"
+    },
+    "jsdom": {
+      "parse5": "~7.3.0"
     }
   }
 }

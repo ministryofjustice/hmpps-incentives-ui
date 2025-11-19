@@ -133,7 +133,7 @@
     id: form.formId + "-" + fieldId,
     name: fieldId,
     value: field.value,
-    suffix: { text: "added each month" },
+    suffix: { text: "added every 28 days" },
     inputmode: "numeric",
     spellcheck: false,
     errorMessage: { text: field.error } if field.error else undefined
@@ -141,6 +141,6 @@
 
   <p>VOs are added every 14 days from the date of conviction. Unused VOs can be accumulated up to a total of 26.</p>
 
-  <p>PVOs are added on the first day of each month. Unused PVOs expire at the end of each month.</p>
+  <p>PVOs are added every 28 days from the date of conviction. Unused PVOs expire.</p>
 
 {% endcall %}

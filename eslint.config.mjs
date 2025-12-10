@@ -7,4 +7,5 @@ export default hmppsConfig({
     // GA4
     gtag: 'readable',
   },
+  extraPathsAllowingDevDependencies: ['.allowed-scripts.mjs'],
 })

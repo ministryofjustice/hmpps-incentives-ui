@@ -33,7 +33,7 @@ ARG GIT_REF=unknown
 ARG GIT_BRANCH=unknown
 
 COPY package*.json ./
-RUN CYPRESS_INSTALL_BINARY=0 npm ci --no-audit
+RUN CYPRESS_INSTALL_BINARY=0 npm run setup
 ENV NODE_ENV='production'
 
 COPY . .

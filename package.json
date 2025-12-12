@@ -27,7 +27,7 @@
     "int-test": "TZ=Europe/London cypress run",
     "int-test-ui": "TZ=Europe/London cypress open --e2e",
     "clean": "rm -rf dist",
-    "rebuild": "npm run clean && npm install && npm run build",
+    "rebuild": "npm run clean && npm run setup && npm run build",
     "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {

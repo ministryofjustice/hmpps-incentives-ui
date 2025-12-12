@@ -3,9 +3,9 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2018",
+    "target": "es2022",
     "noEmit": true,
-    "lib": ["dom", "es2018"],
+    "lib": ["dom", "es2022"],
     "types": ["cypress", "express", "express-session"],
     "esModuleInterop": true,
     "skipLibCheck": true,

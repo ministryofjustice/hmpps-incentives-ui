@@ -82,7 +82,7 @@ services:
     ports:
       - '8080:8080'
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:3000/health"]
     environment:
       - SERVER_PORT=8080
       - SPRING_PROFILES_ACTIVE=nomis-hsqldb

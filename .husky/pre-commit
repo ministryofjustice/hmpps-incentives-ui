@@ -1,8 +1,4 @@
-#!/usr/bin/env sh
-
-export NODE_ENV=dev
-npx lint-staged
-npm run typecheck
+#!/bin/bash
 
 # Check test data doesn't contain booking IDs
 if grep -q book server/testData/s3Bucket/*/*; then
@@ -11,3 +7,8 @@ if grep -q book server/testData/s3Bucket/*/*; then
 # else
   # OK: Test data shouldn't contain booking IDs
 fi
+
+NODE_ENV=dev \
+npm run precommit:secrets \
+&& npm run precommit:lint \
+&& npm run precommit:verify

@@ -510,6 +510,7 @@ describe('Reviews table', () => {
   type PaginationScenario = {
     name: string
     givenUrl: string
+    currentPage: number
     expectedLevel: string
     expectedSort: (typeof sortOptions)[number]
     expectedOrder: (typeof orderOptions)[number]
@@ -519,63 +520,70 @@ describe('Reviews table', () => {
     {
       name: 'preserves level and uses default sorting; defaults to page 1',
       givenUrl: '?level=ENH',
+      currentPage: 1,
       expectedLevel: 'ENH',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
-      expectedPages: [2, 6, 7],
+      expectedPages: [1, 2, 6, 7],
     },
     {
       name: 'preserves level and uses default sorting; accepts page',
       givenUrl: '?level=ENH&page=1',
+      currentPage: 1,
       expectedLevel: 'ENH',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
-      expectedPages: [2, 6, 7],
+      expectedPages: [1, 2, 6, 7],
     },
     {
       name: 'preserves level and uses default sorting; accepts another page',
       givenUrl: '?page=3&level=STD',
+      currentPage: 3,
       expectedLevel: 'STD',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
-      expectedPages: [1, 2, 4, 6, 7],
+      expectedPages: [1, 2, 3, 4, 6, 7],
     },
     {
       name: 'uses basic level and sorting if not provided',
       givenUrl: '',
+      currentPage: 1,
       expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
-      expectedPages: [2, 6, 7],
+      expectedPages: [1, 2, 6, 7],
     },
     {
       name: 'uses basic level and sorting if not provided; accepts page',
       givenUrl: '?page=7',
+      currentPage: 7,
       expectedLevel: 'BAS',
       expectedSort: 'NEXT_REVIEW_DATE',
       expectedOrder: 'ASC',
-      expectedPages: [1, 2, 6],
+      expectedPages: [1, 2, 6, 7],
     },
     {
       name: 'preserves sort and uses basic level if not provided',
       givenUrl: '?page=7&sort=LAST_NAME',
+      currentPage: 7,
       expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'ASC',
-      expectedPages: [1, 2, 6],
+      expectedPages: [1, 2, 6, 7],
     },
     {
       name: 'preserves sort and order, but uses basic level if not provided',
       givenUrl: '?page=7&order=DESC&sort=LAST_NAME',
+      currentPage: 7,
       expectedLevel: 'BAS',
       expectedSort: 'LAST_NAME',
       expectedOrder: 'DESC',
-      expectedPages: [1, 2, 6],
+      expectedPages: [1, 2, 6, 7],
     },
   ]
   describe.each(paginationScenarios)(
     'includes pagination component which',
-    ({ name, givenUrl, expectedLevel, expectedSort, expectedOrder, expectedPages }) => {
+    ({ name, givenUrl, currentPage, expectedLevel, expectedSort, expectedOrder, expectedPages }) => {
       // NB: pagination preserves sort and level
 
       const paginationUrlPrefix = `?level=${expectedLevel}&amp;sort=${expectedSort}&amp;order=${expectedOrder}`
@@ -587,16 +595,17 @@ describe('Reviews table', () => {
           .get(`/incentive-summary/MDI-1${givenUrl}`)
           .expect(res => {
             const $body = $(res.text)
-            const paginationHtml = $body.find('.moj-pagination__list').html()
 
+            // Check pages links
+            const paginationHtml = $body.find('.govuk-pagination__list').html()
             const pageLink = (page: number) => `${paginationUrlPrefix}&amp;page=${page}`
-            for (let page = 1; page <= 10; page += 1) {
-              if (expectedPages.includes(page)) {
-                expect(paginationHtml).toContain(pageLink(page))
-              } else {
-                expect(paginationHtml).not.toContain(pageLink(page))
-              }
+            for (const page of expectedPages) {
+              expect(paginationHtml).toContain(pageLink(page))
             }
+
+            // Check current page
+            const currentPageHtml = $body.find('.govuk-pagination__list > .govuk-pagination__item--current').html()
+            expect(currentPageHtml).toContain(pageLink(currentPage))
           })
       })
     },

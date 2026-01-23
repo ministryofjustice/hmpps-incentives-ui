@@ -1,5 +1,5 @@
 import type { Express } from 'express'
-import jquery from 'jquery'
+import { jQueryFactory } from 'jquery/factory'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
 import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
@@ -40,6 +40,9 @@ afterAll(() => {
 
 let app: Express
 
+const { window } = new JSDOM()
+const $ = jQueryFactory(window)
+
 beforeEach(() => {
   app = appWithAllRoutes({})
   incentivesApi.getReviews.mockResolvedValue(reviewsResponse)
@@ -61,8 +64,6 @@ describe('Reviews table', () => {
   })
 
   it('should show number of overdue reviews', () => {
-    const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
     return request(app)
       .get('/incentive-summary/MDI-2')
       .expect('Content-Type', /html/)
@@ -265,8 +266,6 @@ describe('Reviews table', () => {
     ({ name, givenUrl, expectedLevel, expectedSort, expectedOrder }) => {
       // NB: tabs reset page and sort, but preserve level
 
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       it(name, () => {
         return request(app)
           .get(`/incentive-summary/MDI-1${givenUrl}`)
@@ -306,8 +305,6 @@ describe('Reviews table', () => {
   )
 
   it('lists basic review information', () => {
-    const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
     return request(app)
       .get('/incentive-summary/MDI-1')
       .expect(res => {
@@ -349,8 +346,6 @@ describe('Reviews table', () => {
   })
 
   it('shows an informative message instead of no rows', () => {
-    const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
     incentivesApi.getReviews.mockResolvedValue({
       ...getTestIncentivesReviews(),
       reviewCount: 0,
@@ -462,8 +457,6 @@ describe('Reviews table', () => {
       const oppositeOrder = expectedOrder === 'ASC' ? 'DESC' : 'ASC'
 
       it(name, () => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
         return request(app)
           .get(`/incentive-summary/MDI-1${givenUrl}`)
           .expect(res => {
@@ -589,8 +582,6 @@ describe('Reviews table', () => {
       const paginationUrlPrefix = `?level=${expectedLevel}&amp;sort=${expectedSort}&amp;order=${expectedOrder}`
 
       it(name, () => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
         return request(app)
           .get(`/incentive-summary/MDI-1${givenUrl}`)
           .expect(res => {

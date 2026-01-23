@@ -1,5 +1,5 @@
 import type { Express } from 'express'
-import jquery from 'jquery'
+import { jQueryFactory } from 'jquery/factory'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
 
@@ -22,6 +22,9 @@ jest.mock('../data/incentivesApi', () => {
 
 let app: Express
 let incentivesApi: jest.Mocked<IncentivesApi>
+
+const { window } = new JSDOM()
+const $ = jQueryFactory(window)
 
 beforeEach(() => {
   app = appWithAllRoutes({})
@@ -78,8 +81,6 @@ describe('Prison incentive level management', () => {
 
   describe('list of levels', () => {
     it('should list all incentive levels', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/prison-incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -97,8 +98,6 @@ describe('Prison incentive level management', () => {
     })
 
     it('should label the default level for new prisoners', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/prison-incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -119,7 +118,6 @@ describe('Prison incentive level management', () => {
     })
 
     it('should only show remove link for levels that are not required', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
       // pretend that only BAS & STD are required
       incentivesApi.getIncentiveLevels.mockResolvedValue(
         sampleIncentiveLevels
@@ -337,8 +335,6 @@ describe('Prison incentive level management', () => {
 
   describe('details of a level', () => {
     it('should show money and visit information', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/prison-incentive-levels/view/STD')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -364,7 +360,6 @@ describe('Prison incentive level management', () => {
     })
 
     it('should state when a level is not the default for new prisoners', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
       incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[0])
 
       return request(app)
@@ -642,8 +637,6 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show form prefilled with default level details', () => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
         return request(app)
           .get('/prison-incentive-levels/edit/STD')
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -668,7 +661,6 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show form prefilled with non-default level details', () => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
         incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[0])
 
         return request(app)
@@ -740,8 +732,6 @@ describe('Prison incentive level management', () => {
           'There must be a default level for new prisoners',
         ],
       ])('should show errors for mistakes in form: %s', (_scenario, form, errorMessage) => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
         return request(app)
           .post('/prison-incentive-levels/edit/STD')
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -998,8 +988,6 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show available levels when user gets to choose', () => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
         return request(app)
           .get('/prison-incentive-levels/add')
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -1102,8 +1090,6 @@ describe('Prison incentive level management', () => {
             'Privileged visit orders must be a number',
           ],
         ])('should show errors for mistakes in form: %s', (_scenario, form, errorMessage) => {
-          const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
           return request(app)
             .post(url)
             .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -1132,7 +1118,6 @@ describe('Prison incentive level management', () => {
       ])(
         'should show error message if first level added is not made the default for admission ($scenario)',
         ({ url }) => {
-          const $ = jquery(new JSDOM().window) as unknown as typeof jquery
           incentivesApi.getPrisonIncentiveLevels.mockResolvedValue([])
 
           const validForm: PrisonIncentiveLevelAddData = {

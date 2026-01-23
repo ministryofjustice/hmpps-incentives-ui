@@ -1,5 +1,5 @@
 import type { Express } from 'express'
-import jquery from 'jquery'
+import { jQueryFactory } from 'jquery/factory'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
 
@@ -24,6 +24,9 @@ jest.mock('../data/incentivesApi', () => {
 })
 
 let prisonApi: jest.Mocked<PrisonApi>
+
+const { window } = new JSDOM()
+const $ = jQueryFactory(window)
 
 beforeAll(() => {
   prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
@@ -87,8 +90,6 @@ describe('Incentive level management', () => {
 
   describe('list of levels', () => {
     it('should list all incentive levels', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -114,8 +115,6 @@ describe('Incentive level management', () => {
     })
 
     it('should label the status of levels', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -133,8 +132,6 @@ describe('Incentive level management', () => {
     })
 
     it('should only show change status link for non-required levels', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -155,8 +152,6 @@ describe('Incentive level management', () => {
       incentivesApi.getIncentiveLevels.mockResolvedValue(
         sampleIncentiveLevels.filter(incentiveLevel => incentiveLevel.required),
       )
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -226,8 +221,6 @@ describe('Incentive level management', () => {
     it.each(testCases)(
       'should show details of $scenario',
       ({ sampleIncentiveLevelIndex, expectedAvailability }: TestCase) => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
         const incentiveLevel = sampleIncentiveLevels[sampleIncentiveLevelIndex]
         incentivesApi.getIncentiveLevel.mockResolvedValue(incentiveLevel)
 
@@ -273,8 +266,6 @@ describe('Incentive level management', () => {
     })
 
     it('should show form to change an active level’s status', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/incentive-levels/status/EN2')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -292,8 +283,6 @@ describe('Incentive level management', () => {
     })
 
     it('should show form to change an inactive level’s status', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       incentivesApi.getIncentiveLevel.mockResolvedValue(sampleIncentiveLevels[5])
 
       return request(app)
@@ -396,8 +385,6 @@ describe('Incentive level management', () => {
     })
 
     it('should show specific error message if level is active in some prisons', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       incentivesApi.updateIncentiveLevel.mockRejectedValue(
         mockRestClientError<ErrorResponse>(400, {
           status: 400,
@@ -471,8 +458,6 @@ describe('Incentive level management', () => {
     it.each(prefillTestCases)(
       'should prefill form with details of $scenario',
       ({ sampleIncentiveLevelIndex, expectedAvailability }: PrefillTestCase) => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
         const incentiveLevel = sampleIncentiveLevels[sampleIncentiveLevelIndex]
         incentivesApi.getIncentiveLevel.mockResolvedValue(incentiveLevel)
 
@@ -613,8 +598,6 @@ describe('Incentive level management', () => {
       },
     ]
     it.each(failureTestCases)('should show errors when $scenario', ({ errorMessage, name, availability }) => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .post('/incentive-levels/edit/STD')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -653,8 +636,6 @@ describe('Incentive level management', () => {
     })
 
     it('should show specific error message if level is active in some prisons', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       incentivesApi.updateIncentiveLevel.mockRejectedValue(
         mockRestClientError<ErrorResponse>(400, {
           status: 400,
@@ -767,8 +748,6 @@ describe('Incentive level management', () => {
       },
     ]
     it.each(failureTestCases)('should show errors when $scenario', ({ errorMessage, name, code }) => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .post('/incentive-levels/add')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -807,8 +786,6 @@ describe('Incentive level management', () => {
     })
 
     it('should show specific error message if code was not unique', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       incentivesApi.createIncentiveLevel.mockRejectedValue(
         mockRestClientError<ErrorResponse>(400, {
           status: 400,
@@ -895,8 +872,6 @@ describe('Incentive level management', () => {
       },
     ]
     it.each(successTestCases)('should allow moving a level $scenario', ({ code, direction, expectedOrder }) => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .post('/incentive-levels/reorder')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -940,8 +915,6 @@ describe('Incentive level management', () => {
       },
     ]
     it.each(moveFailureTestCases)('should not allow moving a level $scenario', ({ errorMessage, code, direction }) => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .post('/incentive-levels/reorder')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -989,8 +962,6 @@ describe('Incentive level management', () => {
       },
     ]
     it.each(failureTestCases)('should show errors when $scenario', ({ errorMessage, code, direction }) => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .post('/incentive-levels/reorder')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)

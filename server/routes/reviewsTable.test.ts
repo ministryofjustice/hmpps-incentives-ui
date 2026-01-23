@@ -276,7 +276,7 @@ describe('Reviews table', () => {
             let selectedLevel: string | null = null
             const tabContents = $tabsUl
               .find('a')
-              .map((_, a) => {
+              .map((_: number, a: HTMLAnchorElement) => {
                 const { href } = a
                 const title = a.textContent.trim()
                 const level = /level=([^&]+)/.exec(href)[1]
@@ -463,7 +463,7 @@ describe('Reviews table', () => {
             const $body = $(res.text)
             const columns = $body
               .find('.app-reviews-table thead tr th')
-              .map((index, th: HTMLTableCellElement) => {
+              .map((index: number, th: HTMLTableCellElement) => {
                 const href = $(th).find('a').attr('href')
                 const ariaSortOrder = th.getAttribute('aria-sort')
                 if (index === 0) {

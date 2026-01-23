@@ -98,14 +98,14 @@ describe('Incentive level management', () => {
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
           expect($tableRows.length).toEqual(6)
           const levelNames = $tableRows
-            .map((_index, tr) => {
+            .map((_index: number, tr: HTMLTableRowElement) => {
               const levelNameCell = $(tr).find('td')[0]
               return levelNameCell.textContent.trim()
             })
             .toArray()
           expect(levelNames).toEqual(['Basic', 'Standard', 'Enhanced', 'Enhanced 2', 'Enhanced 3', 'Entry'])
           const levelCodes = $tableRows
-            .map((_index, tr) => {
+            .map((_index: number, tr: HTMLTableRowElement) => {
               const levelCodeCell = $(tr).find('td')[1]
               return levelCodeCell.textContent.trim()
             })
@@ -122,7 +122,7 @@ describe('Incentive level management', () => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
           const statuses = $tableRows
-            .map((_index, tr) => {
+            .map((_index: number, tr: HTMLTableRowElement) => {
               const statusCell = $(tr).find('td')[2]
               return statusCell.textContent.trim()
             })
@@ -139,7 +139,7 @@ describe('Incentive level management', () => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
           const canBeChanged = $tableRows
-            .map((_index, tr) => {
+            .map((_index: number, tr: HTMLTableRowElement) => {
               const changeStatusCell = $(tr).find('td')[3]
               return changeStatusCell.textContent.includes('Change status')
             })
@@ -159,7 +159,7 @@ describe('Incentive level management', () => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
           expect($tableRows.length).toEqual(3)
-          $tableRows.each((_index, tr) => {
+          $tableRows.each((_index: number, tr: HTMLTableRowElement) => {
             const cell = $(tr).find('td')[3]
             expect(cell).toBeUndefined()
           })
@@ -233,14 +233,16 @@ describe('Incentive level management', () => {
             const $body = $(res.text)
             const $rowDivs = $body.find('[data-qa="incentive-level-summary-list"] .govuk-summary-list__row')
             const rows = $rowDivs
-              .map((_index, div) => {
+              .map((_index: number, div: HTMLDivElement) => {
                 const $divRow = $(div)
                 const label = $divRow.find('dt').text().trim()
                 const value = $divRow.find('dd').text().trim()
                 return { label, value }
               })
               .toArray()
-            const summary = Object.fromEntries(rows.map(({ label, value }) => [label, value]))
+            const summary = Object.fromEntries(
+              rows.map(({ label, value }: { label: string; value: string }) => [label, value]),
+            )
             expect(summary).toStrictEqual({
               Code: incentiveLevel.code,
               Name: incentiveLevel.name,
@@ -275,7 +277,9 @@ describe('Incentive level management', () => {
 
           const $body = $(res.text)
           const $form = $body.find('form')
-          const formValues = Object.fromEntries($form.serializeArray().map(pair => [pair.name, pair.value]))
+          const formValues = Object.fromEntries(
+            $form.serializeArray().map((pair: { name: string; value: string }) => [pair.name, pair.value]),
+          )
           expect(formValues).toHaveProperty('status', 'active')
 
           expect(incentivesApi.updateIncentiveLevel).not.toHaveBeenCalled()
@@ -294,7 +298,9 @@ describe('Incentive level management', () => {
 
           const $body = $(res.text)
           const $form = $body.find('form')
-          const formValues = Object.fromEntries($form.serializeArray().map(pair => [pair.name, pair.value]))
+          const formValues = Object.fromEntries(
+            $form.serializeArray().map((pair: { name: string; value: string }) => [pair.name, pair.value]),
+          )
           expect(formValues).toHaveProperty('status', 'inactive')
 
           expect(incentivesApi.updateIncentiveLevel).not.toHaveBeenCalled()
@@ -467,7 +473,9 @@ describe('Incentive level management', () => {
           .expect(res => {
             const $body = $(res.text)
             const $form = $body.find('form')
-            const formValues = Object.fromEntries($form.serializeArray().map(pair => [pair.name, pair.value]))
+            const formValues = Object.fromEntries(
+              $form.serializeArray().map((pair: { name: string; value: string }) => [pair.name, pair.value]),
+            )
             expect(formValues).toHaveProperty('name', incentiveLevel.name)
             expect(formValues).toHaveProperty('availability', expectedAvailability)
           })

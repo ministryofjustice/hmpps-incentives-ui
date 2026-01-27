@@ -57,7 +57,7 @@
     "govuk-frontend": "^5.13.0",
     "helmet": "^8.1.0",
     "http-errors": "^2.0.1",
-    "jquery": "^3.7.1",
+    "jquery": "^4.0.0",
     "jwt-decode": "^4.0.0",
     "nocache": "^4.0.0",
     "nunjucks": "^3.2.4",
@@ -116,12 +116,6 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "@jgoz/esbuild-plugin-typecheck": {
-      "esbuild": "$esbuild"
-    },
-    "nunjucks": {
-      "chokidar": "$chokidar"
-    },
     "jsdom": {
       "parse5": "~7.3.0"
     }

@@ -1,5 +1,5 @@
 import type { Express } from 'express'
-import jquery from 'jquery'
+import { jQueryFactory } from 'jquery/factory'
 import { JSDOM } from 'jsdom'
 import request from 'supertest'
 
@@ -22,6 +22,9 @@ jest.mock('../data/incentivesApi', () => {
 
 let app: Express
 let incentivesApi: jest.Mocked<IncentivesApi>
+
+const { window } = new JSDOM()
+const $ = jQueryFactory(window)
 
 beforeEach(() => {
   app = appWithAllRoutes({})
@@ -78,8 +81,6 @@ describe('Prison incentive level management', () => {
 
   describe('list of levels', () => {
     it('should list all incentive levels', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/prison-incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -87,7 +88,7 @@ describe('Prison incentive level management', () => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
           const levelNames = $tableRows
-            .map((_index, tr) => {
+            .map((_index: number, tr: HTMLTableRowElement) => {
               const levelNameCell = $(tr).find('th')[0]
               return levelNameCell.textContent.trim()
             })
@@ -97,8 +98,6 @@ describe('Prison incentive level management', () => {
     })
 
     it('should label the default level for new prisoners', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/prison-incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -106,7 +105,7 @@ describe('Prison incentive level management', () => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
           const tags = $tableRows
-            .map((_index, tr) => {
+            .map((_index: number, tr: HTMLTableRowElement) => {
               const tagCell = $(tr).find('td')[0]
               return tagCell.textContent.trim()
             })
@@ -119,7 +118,6 @@ describe('Prison incentive level management', () => {
     })
 
     it('should only show remove link for levels that are not required', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
       // pretend that only BAS & STD are required
       incentivesApi.getIncentiveLevels.mockResolvedValue(
         sampleIncentiveLevels
@@ -136,7 +134,7 @@ describe('Prison incentive level management', () => {
           const $body = $(res.text)
           const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
           const linkTexts = $tableRows
-            .map((_index, tr) => {
+            .map((_index: number, tr: HTMLTableRowElement) => {
               const $cells = $(tr).find('td')
               expect($cells).toHaveLength(3)
               return $cells[2].textContent
@@ -337,8 +335,6 @@ describe('Prison incentive level management', () => {
 
   describe('details of a level', () => {
     it('should show money and visit information', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
       return request(app)
         .get('/prison-incentive-levels/view/STD')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -346,7 +342,7 @@ describe('Prison incentive level management', () => {
           const $body = $(res.text)
           const $tableRows = $body.find('tbody tr')
           const values = $tableRows
-            .map((_index, tr) => {
+            .map((_index: number, tr: HTMLTableRowElement) => {
               const valueCell = $(tr).find('td')[1]
               return valueCell.textContent.trim()
             })
@@ -364,7 +360,6 @@ describe('Prison incentive level management', () => {
     })
 
     it('should state when a level is not the default for new prisoners', () => {
-      const $ = jquery(new JSDOM().window) as unknown as typeof jquery
       incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[0])
 
       return request(app)
@@ -374,7 +369,7 @@ describe('Prison incentive level management', () => {
           const $body = $(res.text)
           const $tableRows = $body.find('tbody tr')
           const values = $tableRows
-            .map((_index, tr) => {
+            .map((_index: number, tr: HTMLTableRowElement) => {
               const valueCell = $(tr).find('td')[1]
               return valueCell.textContent.trim()
             })
@@ -642,8 +637,6 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show form prefilled with default level details', () => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
         return request(app)
           .get('/prison-incentive-levels/edit/STD')
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -661,14 +654,13 @@ describe('Prison incentive level management', () => {
 
             const fieldValues = $body
               .find('input.govuk-input')
-              .map((_index, input: HTMLInputElement) => input.value.trim())
+              .map((_index: number, input: HTMLInputElement) => input.value.trim())
               .toArray()
             expect(fieldValues).toEqual(['60.50', '19.80', '605.00', '198.00', '1', '2'])
           })
       })
 
       it('should show form prefilled with non-default level details', () => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
         incentivesApi.getPrisonIncentiveLevel.mockResolvedValue(samplePrisonIncentiveLevels[0])
 
         return request(app)
@@ -688,7 +680,7 @@ describe('Prison incentive level management', () => {
 
             const fieldValues = $body
               .find('input.govuk-input')
-              .map((_index, input: HTMLInputElement) => input.value.trim())
+              .map((_index: number, input: HTMLInputElement) => input.value.trim())
               .toArray()
             expect(fieldValues).toEqual(['27.50', '5.50', '275.00', '55.00', '1', '0'])
           })
@@ -740,8 +732,6 @@ describe('Prison incentive level management', () => {
           'There must be a default level for new prisoners',
         ],
       ])('should show errors for mistakes in form: %s', (_scenario, form, errorMessage) => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
         return request(app)
           .post('/prison-incentive-levels/edit/STD')
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -998,8 +988,6 @@ describe('Prison incentive level management', () => {
       })
 
       it('should show available levels when user gets to choose', () => {
-        const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
         return request(app)
           .get('/prison-incentive-levels/add')
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -1015,12 +1003,12 @@ describe('Prison incentive level management', () => {
 
             const levelCodes = $body
               .find('input.govuk-radios__input')
-              .map((_index, input: HTMLInputElement) => input.value.trim())
+              .map((_index: number, input: HTMLInputElement) => input.value.trim())
               .toArray()
             expect(levelCodes).toEqual(['EN2', 'EN3'])
             const levelNames = $body
               .find('label.govuk-radios__label')
-              .map((_index, input: HTMLLabelElement) => input.textContent.trim())
+              .map((_index: number, input: HTMLLabelElement) => input.textContent.trim())
               .toArray()
             expect(levelNames).toEqual(['Enhanced 2', 'Enhanced 3'])
           })
@@ -1102,8 +1090,6 @@ describe('Prison incentive level management', () => {
             'Privileged visit orders must be a number',
           ],
         ])('should show errors for mistakes in form: %s', (_scenario, form, errorMessage) => {
-          const $ = jquery(new JSDOM().window) as unknown as typeof jquery
-
           return request(app)
             .post(url)
             .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
@@ -1132,7 +1118,6 @@ describe('Prison incentive level management', () => {
       ])(
         'should show error message if first level added is not made the default for admission ($scenario)',
         ({ url }) => {
-          const $ = jquery(new JSDOM().window) as unknown as typeof jquery
           incentivesApi.getPrisonIncentiveLevels.mockResolvedValue([])
 
           const validForm: PrisonIncentiveLevelAddData = {

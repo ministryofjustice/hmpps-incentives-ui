@@ -1,6 +1,5 @@
 import type { Express } from 'express'
-import { jQueryFactory } from 'jquery/factory'
-import { JSDOM } from 'jsdom'
+import * as cheerio from 'cheerio'
 import request from 'supertest'
 
 import { appWithAllRoutes } from './testutils/appSetup'
@@ -22,9 +21,6 @@ jest.mock('../data/incentivesApi', () => {
 
 let app: Express
 let incentivesApi: jest.Mocked<IncentivesApi>
-
-const { window } = new JSDOM()
-const $ = jQueryFactory(window)
 
 beforeEach(() => {
   app = appWithAllRoutes({})
@@ -85,12 +81,12 @@ describe('Prison incentive level management', () => {
         .get('/prison-incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
-          const $body = $(res.text)
-          const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
+          const $ = cheerio.load(res.text)
+          const $tableRows = $('[data-qa="prison-incentive-levels-table"] tbody tr')
           const levelNames = $tableRows
-            .map((_index: number, tr: HTMLTableRowElement) => {
+            .map((_index, tr) => {
               const levelNameCell = $(tr).find('th')[0]
-              return levelNameCell.textContent.trim()
+              return $(levelNameCell).text().trim()
             })
             .toArray()
           expect(levelNames).toEqual(['Basic', 'Standard', 'Enhanced'])
@@ -102,12 +98,12 @@ describe('Prison incentive level management', () => {
         .get('/prison-incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
-          const $body = $(res.text)
-          const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
+          const $ = cheerio.load(res.text)
+          const $tableRows = $('[data-qa="prison-incentive-levels-table"] tbody tr')
           const tags = $tableRows
-            .map((_index: number, tr: HTMLTableRowElement) => {
+            .map((_index, tr) => {
               const tagCell = $(tr).find('td')[0]
-              return tagCell.textContent.trim()
+              return $(tagCell).text().trim()
             })
             .toArray()
           expect(tags).toHaveLength(3)
@@ -131,13 +127,13 @@ describe('Prison incentive level management', () => {
         .get('/prison-incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
-          const $body = $(res.text)
-          const $tableRows = $body.find('[data-qa="prison-incentive-levels-table"] tbody tr')
+          const $ = cheerio.load(res.text)
+          const $tableRows = $('[data-qa="prison-incentive-levels-table"] tbody tr')
           const linkTexts = $tableRows
-            .map((_index: number, tr: HTMLTableRowElement) => {
+            .map((_index, tr) => {
               const $cells = $(tr).find('td')
               expect($cells).toHaveLength(3)
-              return $cells[2].textContent
+              return $($cells[2]).text()
             })
             .toArray()
           expect(linkTexts).toHaveLength(3)
@@ -339,12 +335,12 @@ describe('Prison incentive level management', () => {
         .get('/prison-incentive-levels/view/STD')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
-          const $body = $(res.text)
-          const $tableRows = $body.find('tbody tr')
+          const $ = cheerio.load(res.text)
+          const $tableRows = $('tbody tr')
           const values = $tableRows
-            .map((_index: number, tr: HTMLTableRowElement) => {
+            .map((_index, tr) => {
               const valueCell = $(tr).find('td')[1]
-              return valueCell.textContent.trim()
+              return $(valueCell).text().trim()
             })
             .toArray()
           expect(values).toEqual([
@@ -366,12 +362,12 @@ describe('Prison incentive level management', () => {
         .get('/prison-incentive-levels/view/BAS')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
-          const $body = $(res.text)
-          const $tableRows = $body.find('tbody tr')
+          const $ = cheerio.load(res.text)
+          const $tableRows = $('tbody tr')
           const values = $tableRows
-            .map((_index: number, tr: HTMLTableRowElement) => {
+            .map((_index, tr) => {
               const valueCell = $(tr).find('td')[1]
-              return valueCell.textContent.trim()
+              return $(valueCell).text().trim()
             })
             .toArray()
           expect(values).toEqual([
@@ -641,20 +637,19 @@ describe('Prison incentive level management', () => {
           .get('/prison-incentive-levels/edit/STD')
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(res => {
-            const $body = $(res.text)
+            const $ = cheerio.load(res.text)
 
-            const title = $body.find('h1').text()
+            const title = $('h1').text()
             expect(title).toContain('Change settings for Standard')
 
-            const errorSummary = $body.find('.govuk-error-summary')
+            const errorSummary = $('.govuk-error-summary')
             expect(errorSummary.length).toEqual(0)
 
-            const defaultForAdmissionChecked = $body.find('input.govuk-checkboxes__input').is(':checked')
+            const defaultForAdmissionChecked = $('input.govuk-checkboxes__input').is(':checked')
             expect(defaultForAdmissionChecked).toBeTruthy()
 
-            const fieldValues = $body
-              .find('input.govuk-input')
-              .map((_index: number, input: HTMLInputElement) => input.value.trim())
+            const fieldValues = $('input.govuk-input')
+              .map((_index, input) => $(input).attr('value').trim())
               .toArray()
             expect(fieldValues).toEqual(['60.50', '19.80', '605.00', '198.00', '1', '2'])
           })
@@ -667,20 +662,19 @@ describe('Prison incentive level management', () => {
           .get('/prison-incentive-levels/edit/BAS')
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(res => {
-            const $body = $(res.text)
+            const $ = cheerio.load(res.text)
 
-            const title = $body.find('h1').text()
+            const title = $('h1').text()
             expect(title).toContain('Change settings for Basic')
 
-            const errorSummary = $body.find('.govuk-error-summary')
+            const errorSummary = $('.govuk-error-summary')
             expect(errorSummary.length).toEqual(0)
 
-            const defaultForAdmissionChecked = $body.find('input.govuk-checkboxes__input').is(':checked')
+            const defaultForAdmissionChecked = $('input.govuk-checkboxes__input').is(':checked')
             expect(defaultForAdmissionChecked).toBeFalsy()
 
-            const fieldValues = $body
-              .find('input.govuk-input')
-              .map((_index: number, input: HTMLInputElement) => input.value.trim())
+            const fieldValues = $('input.govuk-input')
+              .map((_index, input) => $(input).attr('value').trim())
               .toArray()
             expect(fieldValues).toEqual(['27.50', '5.50', '275.00', '55.00', '1', '0'])
           })
@@ -737,9 +731,9 @@ describe('Prison incentive level management', () => {
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .send({ formId: 'prisonIncentiveLevelEditForm', ...form })
           .expect(res => {
-            const $body = $(res.text)
+            const $ = cheerio.load(res.text)
 
-            const errorSummary = $body.find('.govuk-error-summary')
+            const errorSummary = $('.govuk-error-summary')
             expect(errorSummary.length).toEqual(1)
             expect(errorSummary.text()).toContain(errorMessage)
 
@@ -993,22 +987,20 @@ describe('Prison incentive level management', () => {
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(200)
           .expect(res => {
-            const $body = $(res.text)
+            const $ = cheerio.load(res.text)
 
-            const errorSummary = $body.find('.govuk-error-summary')
+            const errorSummary = $('.govuk-error-summary')
             expect(errorSummary.length).toEqual(0)
 
-            const defaultForAdmissionChecked = $body.find('input.govuk-checkboxes__input').is(':checked')
+            const defaultForAdmissionChecked = $('input.govuk-checkboxes__input').is(':checked')
             expect(defaultForAdmissionChecked).toBeFalsy()
 
-            const levelCodes = $body
-              .find('input.govuk-radios__input')
-              .map((_index: number, input: HTMLInputElement) => input.value.trim())
+            const levelCodes = $('input.govuk-radios__input')
+              .map((_index, input) => $(input).attr('value').trim())
               .toArray()
             expect(levelCodes).toEqual(['EN2', 'EN3'])
-            const levelNames = $body
-              .find('label.govuk-radios__label')
-              .map((_index: number, input: HTMLLabelElement) => input.textContent.trim())
+            const levelNames = $('label.govuk-radios__label')
+              .map((_index, input) => $(input).text().trim())
               .toArray()
             expect(levelNames).toEqual(['Enhanced 2', 'Enhanced 3'])
           })
@@ -1095,9 +1087,9 @@ describe('Prison incentive level management', () => {
             .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
             .send({ formId: 'prisonIncentiveLevelAddForm', ...form })
             .expect(res => {
-              const $body = $(res.text)
+              const $ = cheerio.load(res.text)
 
-              const errorSummary = $body.find('.govuk-error-summary')
+              const errorSummary = $('.govuk-error-summary')
               expect(errorSummary.length).toEqual(1)
               expect(errorSummary.text()).toContain(errorMessage)
 
@@ -1139,9 +1131,9 @@ describe('Prison incentive level management', () => {
             .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
             .send(validForm)
             .expect(res => {
-              const $body = $(res.text)
+              const $ = cheerio.load(res.text)
 
-              const errorSummary = $body.find('.govuk-error-summary')
+              const errorSummary = $('.govuk-error-summary')
               expect(errorSummary.length).toEqual(1)
               expect(errorSummary.text()).toContain(
                 'The first level you add must be the default level for new prisoners.',

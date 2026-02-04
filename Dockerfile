@@ -22,7 +22,7 @@ ARG BUILD_NUMBER=2022-01-07.1.ef03202
 ARG GIT_REF=unknown
 ARG GIT_BRANCH=unknown
 
-COPY package*.json ./
+COPY package*.json .allowed-scripts.mjs ./
 RUN CYPRESS_INSTALL_BINARY=0 npm run setup
 ENV NODE_ENV='production'
 

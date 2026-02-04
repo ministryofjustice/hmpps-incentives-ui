@@ -115,9 +115,6 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "jsdom": {
-      "parse5": "~7.3.0"
-    },
     "mocha": {
       "diff": ">=8.0.3"
     }

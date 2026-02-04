@@ -1,6 +1,5 @@
 import type { Express } from 'express'
-import { jQueryFactory } from 'jquery/factory'
-import { JSDOM } from 'jsdom'
+import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 
@@ -40,9 +39,6 @@ afterAll(() => {
 
 let app: Express
 
-const { window } = new JSDOM()
-const $ = jQueryFactory(window)
-
 beforeEach(() => {
   app = appWithAllRoutes({})
   incentivesApi.getReviews.mockResolvedValue(reviewsResponse)
@@ -70,9 +66,9 @@ describe('Reviews table', () => {
       .expect(res => {
         expect(res.text).toContain('Manage incentive reviews')
 
-        const $body = $(res.text)
+        const $ = cheerio.load(res.text)
         reviewsResponse.levels.forEach(({ levelCode, levelName, overdueCount }) => {
-          const overdueAtLevel = $body.find(`div[data-qa="overdue-at-level-${levelCode}"]`).text()
+          const overdueAtLevel = $(`div[data-qa="overdue-at-level-${levelCode}"]`).text()
           expect(overdueAtLevel).toContain(levelName)
           expect(overdueAtLevel).toContain(overdueCount.toString())
         })
@@ -270,15 +266,15 @@ describe('Reviews table', () => {
         return request(app)
           .get(`/incentive-summary/MDI-1${givenUrl}`)
           .expect(res => {
-            const $body = $(res.text)
-            const $tabsUl = $body.find('.govuk-tabs__list')
+            const $ = cheerio.load(res.text)
+            const $tabsUl = $('.govuk-tabs__list')
 
             let selectedLevel: string | null = null
             const tabContents = $tabsUl
               .find('a')
-              .map((_: number, a: HTMLAnchorElement) => {
-                const { href } = a
-                const title = a.textContent.trim()
+              .map((_, a) => {
+                const href = $(a).attr('href')
+                const title = $(a).text().trim()
                 const level = /level=([^&]+)/.exec(href)[1]
                 expect(level).toBeTruthy()
 
@@ -289,7 +285,7 @@ describe('Reviews table', () => {
 
                 return { href, title }
               })
-              .get()
+              .toArray()
 
             const expectedTabContents = reviewsResponse.levels.map(({ levelCode, levelName, reviewCount }) => {
               const href = `?level=${levelCode}&sort=${expectedSort}&order=${expectedOrder}`
@@ -308,9 +304,9 @@ describe('Reviews table', () => {
     return request(app)
       .get('/incentive-summary/MDI-1')
       .expect(res => {
-        const $body = $(res.text)
-        const tableRows = $body.find('.app-reviews-table tbody tr')
-        const firstRowCells: HTMLTableCellElement[] = tableRows.eq(0).find('td').get()
+        const $ = cheerio.load(res.text)
+        const tableRows = $('.app-reviews-table tbody tr')
+        const firstRowCells = tableRows.eq(0).find('td').toArray()
         const [
           photoCell,
           nameCell,
@@ -321,27 +317,27 @@ describe('Reviews table', () => {
           additionalInfoWithAcctOpen,
         ] = firstRowCells
 
-        expect(photoCell.innerHTML).toContain('Photo of G6123VU')
-        expect(nameCell.textContent).toContain('Saunders, John')
-        expect(nameCell.textContent).toContain('G6123VU')
-        expect(nextReviewDateCell.textContent).toContain('12 July 2022')
-        expect(nextReviewDateCell.textContent).toContain('89 days overdue')
-        expect(daysSinceLastReviewCell.textContent).toContain('37 days ago')
-        expect(positiveBehavioursCell.textContent).toContain('3 positive behaviour case notes')
-        expect(positiveBehavioursCell.innerHTML).toContain(
+        expect($(photoCell).html()).toContain('Photo of G6123VU')
+        expect($(nameCell).text()).toContain('Saunders, John')
+        expect($(nameCell).text()).toContain('G6123VU')
+        expect($(nextReviewDateCell).text()).toContain('12 July 2022')
+        expect($(nextReviewDateCell).text()).toContain('89 days overdue')
+        expect($(daysSinceLastReviewCell).text()).toContain('37 days ago')
+        expect($(positiveBehavioursCell).text()).toContain('3 positive behaviour case notes')
+        expect($(positiveBehavioursCell).html()).toContain(
           '/prisoner/G6123VU/case-notes?type=POS&amp;fromDate=09/07/2022',
         )
-        expect(negativeBehavioursCell.textContent).toContain('2 negative behaviour case notes')
-        expect(negativeBehavioursCell.innerHTML).toContain(
+        expect($(negativeBehavioursCell).text()).toContain('2 negative behaviour case notes')
+        expect($(negativeBehavioursCell).html()).toContain(
           '/prisoner/G6123VU/case-notes?type=NEG&amp;fromDate=09/07/2022',
         )
-        expect(additionalInfoWithAcctOpen.textContent).toContain('ACCT open')
+        expect($(additionalInfoWithAcctOpen).text()).toContain('ACCT open')
 
-        const secondRowCells: HTMLTableCellElement[] = tableRows.eq(1).find('td').get()
+        const secondRowCells = tableRows.eq(1).find('td').toArray()
         const daysSinceLastReviewWithoutRealReviewCell = secondRowCells[3]
         const additionalInfoWithNewToPrison = secondRowCells[6]
-        expect(daysSinceLastReviewWithoutRealReviewCell.textContent).toContain('Not reviewed')
-        expect(additionalInfoWithNewToPrison.textContent).toContain('New to prison')
+        expect($(daysSinceLastReviewWithoutRealReviewCell).text()).toContain('Not reviewed')
+        expect($(additionalInfoWithNewToPrison).text()).toContain('New to prison')
       })
   })
 
@@ -355,11 +351,11 @@ describe('Reviews table', () => {
     return request(app)
       .get('/incentive-summary/MDI-1')
       .expect(res => {
-        const $body = $(res.text)
-        const firstRowCells: HTMLTableCellElement[] = $body.find('.app-reviews-table tbody tr').first().find('td').get()
+        const $ = cheerio.load(res.text)
+        const firstRowCells = $('.app-reviews-table tbody tr').first().find('td').toArray()
         expect(firstRowCells.length).toEqual(1)
         const [messageCell] = firstRowCells
-        expect(messageCell.textContent).toContain('There are no prisoners at Houseblock 1 on Basic')
+        expect($(messageCell).text()).toContain('There are no prisoners at Houseblock 1 on Basic')
       })
   })
 
@@ -460,20 +456,19 @@ describe('Reviews table', () => {
         return request(app)
           .get(`/incentive-summary/MDI-1${givenUrl}`)
           .expect(res => {
-            const $body = $(res.text)
-            const columns = $body
-              .find('.app-reviews-table thead tr th')
-              .map((index: number, th: HTMLTableCellElement) => {
+            const $ = cheerio.load(res.text)
+            const columns = $('.app-reviews-table thead tr th')
+              .map((index, th) => {
                 const href = $(th).find('a').attr('href')
-                const ariaSortOrder = th.getAttribute('aria-sort')
+                const ariaSortOrder = $(th).attr('aria-sort')
                 if (index === 0) {
                   // first column is not sortable and has no link
                   expect(href).toBeUndefined()
-                  expect(ariaSortOrder).toBeNull()
+                  expect(ariaSortOrder).toBeUndefined()
                 }
                 return { href, ariaSortOrder }
               })
-              .get()
+              .toArray()
               .slice(1, -1) // `photo` and `info` columns aren't sortable
 
             for (const { href, ariaSortOrder } of columns) {
@@ -585,17 +580,17 @@ describe('Reviews table', () => {
         return request(app)
           .get(`/incentive-summary/MDI-1${givenUrl}`)
           .expect(res => {
-            const $body = $(res.text)
+            const $ = cheerio.load(res.text)
 
             // Check pages links
-            const paginationHtml = $body.find('.govuk-pagination__list').html()
+            const paginationHtml = $('.govuk-pagination__list').html()
             const pageLink = (page: number) => `${paginationUrlPrefix}&amp;page=${page}`
             for (const page of expectedPages) {
               expect(paginationHtml).toContain(pageLink(page))
             }
 
             // Check current page
-            const currentPageHtml = $body.find('.govuk-pagination__list > .govuk-pagination__item--current').html()
+            const currentPageHtml = $('.govuk-pagination__list > .govuk-pagination__item--current').html()
             expect(currentPageHtml).toContain(pageLink(currentPage))
           })
       })

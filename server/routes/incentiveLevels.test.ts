@@ -1,6 +1,5 @@
 import type { Express } from 'express'
-import { jQueryFactory } from 'jquery/factory'
-import { JSDOM } from 'jsdom'
+import * as cheerio from 'cheerio'
 import request from 'supertest'
 
 import { appWithAllRoutes } from './testutils/appSetup'
@@ -24,9 +23,6 @@ jest.mock('../data/incentivesApi', () => {
 })
 
 let prisonApi: jest.Mocked<PrisonApi>
-
-const { window } = new JSDOM()
-const $ = jQueryFactory(window)
 
 beforeAll(() => {
   prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
@@ -94,20 +90,20 @@ describe('Incentive level management', () => {
         .get('/incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
-          const $body = $(res.text)
-          const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
+          const $ = cheerio.load(res.text)
+          const $tableRows = $('[data-qa="incentive-levels-table"] tbody tr')
           expect($tableRows.length).toEqual(6)
           const levelNames = $tableRows
-            .map((_index: number, tr: HTMLTableRowElement) => {
+            .map((_index, tr) => {
               const levelNameCell = $(tr).find('td')[0]
-              return levelNameCell.textContent.trim()
+              return $(levelNameCell).text().trim()
             })
             .toArray()
           expect(levelNames).toEqual(['Basic', 'Standard', 'Enhanced', 'Enhanced 2', 'Enhanced 3', 'Entry'])
           const levelCodes = $tableRows
-            .map((_index: number, tr: HTMLTableRowElement) => {
+            .map((_index, tr) => {
               const levelCodeCell = $(tr).find('td')[1]
-              return levelCodeCell.textContent.trim()
+              return $(levelCodeCell).text().trim()
             })
             .toArray()
           expect(levelCodes).toEqual(['BAS', 'STD', 'ENH', 'EN2', 'EN3', 'ENT'])
@@ -119,12 +115,12 @@ describe('Incentive level management', () => {
         .get('/incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
-          const $body = $(res.text)
-          const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
+          const $ = cheerio.load(res.text)
+          const $tableRows = $('[data-qa="incentive-levels-table"] tbody tr')
           const statuses = $tableRows
-            .map((_index: number, tr: HTMLTableRowElement) => {
+            .map((_index, tr) => {
               const statusCell = $(tr).find('td')[2]
-              return statusCell.textContent.trim()
+              return $(statusCell).text().trim()
             })
             .toArray()
           expect(statuses).toEqual(['Active', 'Active', 'Active', 'Active', 'Active', 'Inactive'])
@@ -136,12 +132,12 @@ describe('Incentive level management', () => {
         .get('/incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
-          const $body = $(res.text)
-          const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
+          const $ = cheerio.load(res.text)
+          const $tableRows = $('[data-qa="incentive-levels-table"] tbody tr')
           const canBeChanged = $tableRows
-            .map((_index: number, tr: HTMLTableRowElement) => {
+            .map((_index, tr) => {
               const changeStatusCell = $(tr).find('td')[3]
-              return changeStatusCell.textContent.includes('Change status')
+              return $(changeStatusCell).text().includes('Change status')
             })
             .toArray()
           expect(canBeChanged).toEqual([false, false, false, true, true, true])
@@ -156,10 +152,10 @@ describe('Incentive level management', () => {
         .get('/incentive-levels')
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .expect(res => {
-          const $body = $(res.text)
-          const $tableRows = $body.find('[data-qa="incentive-levels-table"] tbody tr')
+          const $ = cheerio.load(res.text)
+          const $tableRows = $('[data-qa="incentive-levels-table"] tbody tr')
           expect($tableRows.length).toEqual(3)
-          $tableRows.each((_index: number, tr: HTMLTableRowElement) => {
+          $tableRows.each((_index, tr) => {
             const cell = $(tr).find('td')[3]
             expect(cell).toBeUndefined()
           })
@@ -230,10 +226,10 @@ describe('Incentive level management', () => {
           .expect(res => {
             expect(res.text).toContain(`/incentive-levels/edit/${incentiveLevel.code}`)
 
-            const $body = $(res.text)
-            const $rowDivs = $body.find('[data-qa="incentive-level-summary-list"] .govuk-summary-list__row')
+            const $ = cheerio.load(res.text)
+            const $rowDivs = $('[data-qa="incentive-level-summary-list"] .govuk-summary-list__row')
             const rows = $rowDivs
-              .map((_index: number, div: HTMLDivElement) => {
+              .map((_index, div) => {
                 const $divRow = $(div)
                 const label = $divRow.find('dt').text().trim()
                 const value = $divRow.find('dd').text().trim()
@@ -275,8 +271,8 @@ describe('Incentive level management', () => {
         .expect(res => {
           expect(res.text).toContain('data-qa="incentive-levels-status"')
 
-          const $body = $(res.text)
-          const $form = $body.find('form')
+          const $ = cheerio.load(res.text)
+          const $form = $('form')
           const formValues = Object.fromEntries(
             $form.serializeArray().map((pair: { name: string; value: string }) => [pair.name, pair.value]),
           )
@@ -296,8 +292,8 @@ describe('Incentive level management', () => {
         .expect(res => {
           expect(res.text).toContain('data-qa="incentive-levels-status"')
 
-          const $body = $(res.text)
-          const $form = $body.find('form')
+          const $ = cheerio.load(res.text)
+          const $form = $('form')
           const formValues = Object.fromEntries(
             $form.serializeArray().map((pair: { name: string; value: string }) => [pair.name, pair.value]),
           )
@@ -416,9 +412,9 @@ describe('Incentive level management', () => {
           expect(res.text).not.toContain('Incentive level status was not saved!')
           expect(res.text).not.toContain('Bad Request')
 
-          const $body = $(res.text)
+          const $ = cheerio.load(res.text)
 
-          const messagesBanner = $body.find('.moj-banner')
+          const messagesBanner = $('.moj-banner')
           expect(messagesBanner.length).toEqual(1)
           expect(messagesBanner.text()).toContain('Moorland')
           expect(messagesBanner.text()).toContain('Whitemoor')
@@ -471,8 +467,8 @@ describe('Incentive level management', () => {
           .get('/incentive-levels/edit/STD')
           .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
           .expect(res => {
-            const $body = $(res.text)
-            const $form = $body.find('form')
+            const $ = cheerio.load(res.text)
+            const $form = $('form')
             const formValues = Object.fromEntries(
               $form.serializeArray().map((pair: { name: string; value: string }) => [pair.name, pair.value]),
             )
@@ -611,9 +607,9 @@ describe('Incentive level management', () => {
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelEditForm', name, availability })
         .expect(res => {
-          const $body = $(res.text)
+          const $ = cheerio.load(res.text)
 
-          const errorSummary = $body.find('.govuk-error-summary')
+          const errorSummary = $('.govuk-error-summary')
           expect(errorSummary.length).toEqual(1)
           expect(errorSummary.text()).toContain(errorMessage)
 
@@ -670,9 +666,9 @@ describe('Incentive level management', () => {
           expect(res.text).not.toContain('Incentive level status was not saved!')
           expect(res.text).not.toContain('Bad Request')
 
-          const $body = $(res.text)
+          const $ = cheerio.load(res.text)
 
-          const messagesBanner = $body.find('.moj-banner')
+          const messagesBanner = $('.moj-banner')
           expect(messagesBanner.length).toEqual(1)
           expect(messagesBanner.text()).toContain('Moorland')
           expect(messagesBanner.text()).not.toContain('Whitemoor')
@@ -761,9 +757,9 @@ describe('Incentive level management', () => {
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelCreateForm', name, code })
         .expect(res => {
-          const $body = $(res.text)
+          const $ = cheerio.load(res.text)
 
-          const errorSummary = $body.find('.govuk-error-summary')
+          const errorSummary = $('.govuk-error-summary')
           expect(errorSummary.length).toEqual(1)
           expect(errorSummary.text()).toContain(errorMessage)
 
@@ -818,9 +814,9 @@ describe('Incentive level management', () => {
           expect(res.text).not.toContain('Incentive level was not created!')
           expect(res.text).not.toContain('Bad Request')
 
-          const $body = $(res.text)
+          const $ = cheerio.load(res.text)
 
-          const messagesBanner = $body.find('.moj-banner')
+          const messagesBanner = $('.moj-banner')
           expect(messagesBanner.length).toEqual(1)
           expect(messagesBanner.text()).toContain('Incentive level was not created because the code must be unique')
 
@@ -886,9 +882,9 @@ describe('Incentive level management', () => {
         .send({ formId: 'incentiveLevelReorderForm', code, direction })
         .redirects(1)
         .expect(res => {
-          const $body = $(res.text)
+          const $ = cheerio.load(res.text)
 
-          const messagesBanner = $body.find('.moj-banner')
+          const messagesBanner = $('.moj-banner')
           expect(messagesBanner.length).toEqual(1)
           expect(messagesBanner.text()).toContain('Incentive level order was changed')
 
@@ -929,9 +925,9 @@ describe('Incentive level management', () => {
         .send({ formId: 'incentiveLevelReorderForm', code, direction })
         .redirects(1)
         .expect(res => {
-          const $body = $(res.text)
+          const $ = cheerio.load(res.text)
 
-          const messagesBanner = $body.find('.moj-banner')
+          const messagesBanner = $('.moj-banner')
           expect(messagesBanner.length).toEqual(1)
           expect(messagesBanner.text()).toContain(errorMessage)
 
@@ -975,9 +971,9 @@ describe('Incentive level management', () => {
         .set('authorization', `Bearer ${tokenWithNecessaryRole}`)
         .send({ formId: 'incentiveLevelReorderForm', code, direction })
         .expect(res => {
-          const $body = $(res.text)
+          const $ = cheerio.load(res.text)
 
-          const errorSummary = $body.find('.govuk-error-summary')
+          const errorSummary = $('.govuk-error-summary')
           expect(errorSummary.length).toEqual(1)
           expect(errorSummary.text()).toContain(errorMessage)
 

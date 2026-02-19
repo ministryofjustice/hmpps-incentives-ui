@@ -44,7 +44,7 @@
     "@ministryofjustice/hmpps-monitoring": "^1.0.2",
     "@ministryofjustice/hmpps-rest-client": "^1.0.1",
     "agentkeepalive": "^4.6.0",
-    "applicationinsights": "^2.9.8",
+    "applicationinsights": "^3.13.0",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
     "compression": "^1.8.1",

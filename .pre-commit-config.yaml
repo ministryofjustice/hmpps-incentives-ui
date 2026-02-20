@@ -4,6 +4,7 @@
 # The devsecops-hooks baseline hook is temporarily disabled while we investigate issues with it but will eventually become compulsory.
 # Other hooks maybe added or removed as needed to suit individual project requirements.
 
+fail_fast: true
 repos:
   - repo: https://github.com/ministryofjustice/devsecops-hooks
     rev: v1.4.1

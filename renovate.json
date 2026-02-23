@@ -42,6 +42,11 @@
       "allowedVersions": "7"
     },
     {
+      "matchManagers": ["github-actions"],
+      "matchFileNames": ["**/.github/workflows/**/*.ya?ml"],
+      "separateMinorPatch": true
+    },
+    {
       "matchDatasources": ["orb"],
       "matchPackageNames": ["cimg/node"],
       "matchUpdateTypes": ["major"],

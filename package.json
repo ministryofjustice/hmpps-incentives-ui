@@ -88,7 +88,7 @@
     "@types/qs": "^6.14.0",
     "@types/superagent": "^8.1.9",
     "@types/supertest": "^6.0.3",
-    "@types/uuid": "^10.0.0",
+    "@types/uuid": "^11.0.0",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "cheerio": "1.2.0",

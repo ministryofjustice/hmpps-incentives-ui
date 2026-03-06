@@ -2,7 +2,6 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
     "target": "es2022",
     "noEmit": true,
     "lib": ["dom", "es2022"],
@@ -13,5 +12,5 @@
     "typeRoots": ["../server/@types", "../node_modules/@types", "../node_modules"]
   },
   "exclude": [],
-  "include": ["../server/@types/index.d.ts", "**/*.ts"],
+  "include": ["../server/@types/index.d.ts", "**/*.ts"]
 }

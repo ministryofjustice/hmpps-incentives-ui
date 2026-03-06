@@ -4,8 +4,6 @@
   "compileOnSave": true,
   "compilerOptions": {
     "strict": false,
-    "module": "CommonJS",
-    "moduleResolution": "Node",
     "isolatedModules": true,
     "outDir": "./dist",
     "sourceMap": true,

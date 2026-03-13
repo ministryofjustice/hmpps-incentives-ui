@@ -1,11 +1,21 @@
 import type { Router } from 'express'
 
+import { AuthenticationClient, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import logger from '../../logger'
 import { LocationsInsidePrisonApi, TopLevelLocation } from '../data/locationsInsidePrisonApi'
+import config from '../config'
+import { createRedisClient } from '../data/redisClient'
+
+const hmppsAuthClient = new AuthenticationClient(
+  config.apis.hmppsAuth,
+  logger,
+  new RedisTokenStore(createRedisClient('routes/selectLocation.ts')),
+)
 
 export default function routes(router: Router): Router {
   router.get('/', async (_req, res) => {
-    const locationsApi = new LocationsInsidePrisonApi(res.locals.user.token)
+    const systemToken = await hmppsAuthClient.getToken(res.locals.user.username)
+    const locationsApi = new LocationsInsidePrisonApi(systemToken)
     const prisonId = res.locals.user.activeCaseload.id
     const locations = await locationsApi.getTopLevelPrisonLocations(prisonId)
 
@@ -29,8 +39,8 @@ export default function routes(router: Router): Router {
       res.redirect('/select-location')
       return
     }
-
-    const locationsApi = new LocationsInsidePrisonApi(res.locals.user.token)
+    const systemToken = await hmppsAuthClient.getToken(res.locals.user.username)
+    const locationsApi = new LocationsInsidePrisonApi(systemToken)
     const prisonId = res.locals.user.activeCaseload.id
     const allLocations = await locationsApi.getTopLevelPrisonLocations(prisonId)
     const selectedLocation = allLocations.find(

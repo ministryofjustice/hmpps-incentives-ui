@@ -23,6 +23,7 @@ jest.mock('@aws-sdk/client-s3', () => {
     ListObjectsV2Command,
   }
 })
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 jest.mock('../data/zendeskClient')
 
 let originalZendeskConfig: { url: string; username: string; token: string }

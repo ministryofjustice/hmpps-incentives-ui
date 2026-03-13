@@ -5,6 +5,7 @@ import { appWithAllRoutes } from './testutils/appSetup'
 import getTestLocation from '../testData/locationsInsidePrisonApi'
 import { LocationsInsidePrisonApi } from '../data/locationsInsidePrisonApi'
 
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 jest.mock('../data/locationsInsidePrisonApi')
 
 let app: Express

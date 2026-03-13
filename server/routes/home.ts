@@ -1,6 +1,7 @@
 import type { Router } from 'express'
 import { BadRequest } from 'http-errors'
 
+import { AuthenticationClient, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
 import { managePrisonIncentiveLevelsRole, manageIncentiveLevelsRole } from '../data/constants'
@@ -14,11 +15,19 @@ import { cache } from './analyticsRouter'
 import { requireGetOrPost } from './forms/forms'
 import AboutPageFeedbackForm from './forms/aboutPageFeedbackForm'
 import { LocationsInsidePrisonApi } from '../data/locationsInsidePrisonApi'
+import { createRedisClient } from '../data/redisClient'
+
+const hmppsAuthClient = new AuthenticationClient(
+  config.apis.hmppsAuth,
+  logger,
+  new RedisTokenStore(createRedisClient('routes/home.ts')),
+)
 
 export default function routes(router: Router): Router {
   router.get('/', async (_req, res) => {
     // a prison case load would have locations, e.g. wings or house blocks
-    const locationsApi = new LocationsInsidePrisonApi(res.locals.user.token)
+    const systemToken = await hmppsAuthClient.getToken(res.locals.user.username)
+    const locationsApi = new LocationsInsidePrisonApi(systemToken)
     const locations = await locationsApi.getTopLevelPrisonLocations(res.locals.user.activeCaseload.id)
     const canViewLocationBasedTiles = locations.length > 0
 

@@ -41,7 +41,6 @@ export default (on: Cypress.PluginEvents) => {
 
     stubPrisonApiPing: prisonApi.stubPing,
     stubPrisonApiImages: prisonApi.stubGetImage,
-    stubPrisonTopLevelLocations: locationsInsidePrisonApi.stubPrisonTopLevelLocations,
     stubGetPrisonerDetails: prisonApi.stubGetPrisonerDetails,
     stubGetPrisonerFullDetailsTrue: prisonApi.stubGetPrisonerFullDetailsTrue,
     stubGetPrisonerFullDetailsFalse: prisonApi.stubGetPrisonerFullDetailsFalse,
@@ -50,6 +49,9 @@ export default (on: Cypress.PluginEvents) => {
 
     stubGetPrisoner: offenderSearchApi.stubGetPrisoner,
     stubOffenderSearchApiPing: offenderSearchApi.stubPing,
+
+    stubPrisonTopLevelLocations: locationsInsidePrisonApi.stubPrisonTopLevelLocations,
+    stubLocationsInsidePrisonApiPing: locationsInsidePrisonApi.stubPing,
 
     stubCreateZendeskTicket: zendeskApi.stubCreateTicket,
   })

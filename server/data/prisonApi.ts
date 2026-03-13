@@ -70,20 +70,6 @@ export class PrisonApi extends RestClient {
     })
   }
 
-  getUserLocations(): Promise<Array<Location>> {
-    return this.get<Array<Location>>(
-      {
-        path: '/api/users/me/locations',
-        query: { 'include-non-residential-locations': 'true' },
-      },
-      asSystem(),
-    ).then(locations => {
-      return locations.filter(location => {
-        return location.currentOccupancy > 0
-      })
-    })
-  }
-
   getAgency(agencyId: string, activeOnly = true): Promise<Agency> {
     return this.get<Agency>(
       {

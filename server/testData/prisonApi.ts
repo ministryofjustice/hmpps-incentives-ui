@@ -1,4 +1,4 @@
-import type { Agency, Location } from '../data/prisonApi'
+import type { Agency } from '../data/prisonApi'
 import { Offender, Staff } from '../data/prisonApi'
 
 export const sampleAgencies: Record<string, Agency> = {
@@ -74,28 +74,4 @@ export function getAgencyMockImplementation(agencyId: string): Promise<Agency> {
       reject({ status: 404, message: 'Not Found' })
     }
   })
-}
-
-export function getTestLocation({
-  agencyId = 'MDI',
-  locationId = 2,
-  locationPrefix = 'MDI-2',
-  userDescription = 'Houseblock 2',
-}: {
-  agencyId?: string
-  locationId?: number
-  locationPrefix?: string
-  userDescription?: string
-  subLocations: true
-}): Location {
-  return {
-    agencyId,
-    locationPrefix,
-    userDescription,
-    locationId,
-    locationType: 'WING',
-    description: '2',
-    currentOccupancy: 199,
-    operationalCapacity: 200,
-  }
 }

@@ -4,14 +4,14 @@ import request from 'supertest'
 import config from '../config'
 import { appWithAllRoutes, MockUserService } from './testutils/appSetup'
 import { makeMockUser } from './testutils/mockUsers'
-import { getTestLocation } from '../testData/prisonApi'
+import getTestLocation from '../testData/locationsInsidePrisonApi'
 import { mockSdkS3ClientResponse } from '../testData/s3Bucket'
 import type { AboutPageFeedbackData } from './forms/aboutPageFeedbackForm'
-import { PrisonApi } from '../data/prisonApi'
+import { LocationsInsidePrisonApi } from '../data/locationsInsidePrisonApi'
 import ZendeskClient from '../data/zendeskClient'
 import { cache } from './analyticsRouter'
 
-jest.mock('../data/prisonApi')
+jest.mock('../data/locationsInsidePrisonApi')
 
 const s3 = {
   send: jest.fn(),
@@ -44,18 +44,16 @@ afterAll(() => {
 })
 
 let app: Express
-let prisonApi: jest.Mocked<PrisonApi>
+let locationsInsidePrisonApi: jest.Mocked<LocationsInsidePrisonApi>
 
 beforeEach(() => {
   jest.clearAllMocks()
 
-  prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getUserLocations.mockResolvedValue([
+  locationsInsidePrisonApi = LocationsInsidePrisonApi.prototype as jest.Mocked<LocationsInsidePrisonApi>
+  locationsInsidePrisonApi.getTopLevelPrisonLocations.mockResolvedValue([
     getTestLocation({
-      agencyId: 'MDI',
-      locationPrefix: 'MDI-1',
-      userDescription: 'Houseblock 1',
-      subLocations: true,
+      fullLocationPath: '1',
+      localName: 'Houseblock 1',
     }),
   ])
 
@@ -90,7 +88,7 @@ describe('Home page', () => {
     // an LSA's special case load (CADM_I) has no locations so cannot see location-specific tiles
 
     beforeEach(() => {
-      prisonApi.getUserLocations.mockResolvedValue([])
+      locationsInsidePrisonApi.getTopLevelPrisonLocations.mockResolvedValue([])
     })
 
     it.each(incentiveReviewTileIds)('does not show incentive review management tile: %s', tileId => {
@@ -155,7 +153,7 @@ describe('Home page', () => {
       app = appWithAllRoutes({
         mockUserService: new MockUserService(makeMockUser({ roles: ['MAINTAIN_INCENTIVE_LEVELS'] })),
       })
-      prisonApi.getUserLocations.mockResolvedValue([])
+      locationsInsidePrisonApi.getTopLevelPrisonLocations.mockResolvedValue([])
 
       return request(app)
         .get('/')
@@ -184,7 +182,7 @@ describe('Home page', () => {
       app = appWithAllRoutes({
         mockUserService: new MockUserService(makeMockUser({ roles: ['MAINTAIN_PRISON_IEP_LEVELS'] })),
       })
-      prisonApi.getUserLocations.mockResolvedValue([])
+      locationsInsidePrisonApi.getTopLevelPrisonLocations.mockResolvedValue([])
 
       return request(app)
         .get('/')

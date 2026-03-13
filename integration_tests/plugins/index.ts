@@ -9,6 +9,7 @@ import nomisUserRolesApi from '../mockApis/nomisUserRolesApi'
 import offenderSearchApi from '../mockApis/offenderSearchApi'
 import zendeskApi from '../mockApis/zendeskApi'
 import frontendComponents from '../mockApis/frontendComponents'
+import locationsInsidePrisonApi from '../mockApis/locationsInsidePrisonApi'
 
 export default (on: Cypress.PluginEvents) => {
   on('task', {
@@ -40,7 +41,7 @@ export default (on: Cypress.PluginEvents) => {
 
     stubPrisonApiPing: prisonApi.stubPing,
     stubPrisonApiImages: prisonApi.stubGetImage,
-    stubPrisonApiLocations: prisonApi.stubGetUserLocations,
+    stubPrisonTopLevelLocations: locationsInsidePrisonApi.stubPrisonTopLevelLocations,
     stubGetPrisonerDetails: prisonApi.stubGetPrisonerDetails,
     stubGetPrisonerFullDetailsTrue: prisonApi.stubGetPrisonerFullDetailsTrue,
     stubGetPrisonerFullDetailsFalse: prisonApi.stubGetPrisonerFullDetailsFalse,

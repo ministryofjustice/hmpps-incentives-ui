@@ -1,16 +1,17 @@
 import type { Router } from 'express'
 
 import logger from '../../logger'
-import { Location, PrisonApi } from '../data/prisonApi'
+import { LocationsInsidePrisonApi, TopLevelLocation } from '../data/locationsInsidePrisonApi'
 
 export default function routes(router: Router): Router {
   router.get('/', async (_req, res) => {
-    const prisonApi = new PrisonApi(res.locals.user.token)
-    const locations = await prisonApi.getUserLocations()
+    const locationsApi = new LocationsInsidePrisonApi(res.locals.user.token)
+    const prisonId = res.locals.user.activeCaseload.id
+    const locations = await locationsApi.getTopLevelPrisonLocations(prisonId)
 
-    const options = locations.map((location: Location) => ({
-      value: location.locationPrefix,
-      text: location.userDescription || location.description,
+    const options = locations.map((location: TopLevelLocation) => ({
+      value: `${prisonId}-${location.fullLocationPath}`,
+      text: location.localName || location.fullLocationPath,
     }))
 
     res.render('pages/changeLocation.njk', {
@@ -29,17 +30,20 @@ export default function routes(router: Router): Router {
       return
     }
 
-    const prisonApi = new PrisonApi(res.locals.user.token)
-    const allLocations: Array<Location> = await prisonApi.getUserLocations()
-    const selectedLocation = allLocations.find(location => location.locationPrefix === locationPrefix)
+    const locationsApi = new LocationsInsidePrisonApi(res.locals.user.token)
+    const prisonId = res.locals.user.activeCaseload.id
+    const allLocations = await locationsApi.getTopLevelPrisonLocations(prisonId)
+    const selectedLocation = allLocations.find(
+      location => `${prisonId}-${location.fullLocationPath}` === locationPrefix,
+    )
 
     if (!selectedLocation) {
       logger.error(req.originalUrl, 'location not part of active case load')
       res.redirect('/select-location')
       return
     }
-    const subLocationChar = selectedLocation.subLocations ? '-' : ''
-    res.redirect(`/incentive-summary/${selectedLocation.locationPrefix}${subLocationChar}`)
+    const subLocationChar = selectedLocation.locationType === 'WING' ? '-' : ''
+    res.redirect(`/incentive-summary/${prisonId}-${selectedLocation.fullLocationPath}${subLocationChar}`)
   })
 
   return router

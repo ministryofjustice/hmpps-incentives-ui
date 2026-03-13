@@ -10,7 +10,7 @@ context('Home page', () => {
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubNomisUserRolesApiUserCaseloads')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
   })
 
   it('should open card when clicked anywhere inside', () => {

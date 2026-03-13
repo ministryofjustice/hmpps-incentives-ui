@@ -10,7 +10,7 @@ context('Prison group selection', () => {
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)

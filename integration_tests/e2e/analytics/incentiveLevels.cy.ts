@@ -17,7 +17,7 @@ context('Analytics section > Incentive levels page', () => {
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
     cy.task('stubCreateZendeskTicket')
 
     cy.signIn()
@@ -95,7 +95,7 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
@@ -180,7 +180,7 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)

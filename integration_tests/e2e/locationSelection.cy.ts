@@ -11,7 +11,7 @@ context('Location selection', () => {
     cy.task('stubManageUser')
     cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubPrisonApiImages')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)

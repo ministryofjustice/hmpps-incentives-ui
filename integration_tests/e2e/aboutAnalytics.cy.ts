@@ -10,7 +10,7 @@ context('About Analytics page', () => {
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubNomisUserRolesApiUserCaseloads')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
     cy.task('stubCreateZendeskTicket')
 
     cy.signIn()

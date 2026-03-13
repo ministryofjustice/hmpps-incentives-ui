@@ -33,7 +33,7 @@ context('Prisoner change incentive level details', () => {
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubNomisUserRolesApiUserCaseloads')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
     cy.task('stubPrisonIncentiveLevels')
 
     const roles = ['ROLE_MAINTAIN_IEP']

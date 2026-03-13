@@ -2,29 +2,26 @@ import type { Express } from 'express'
 import request from 'supertest'
 
 import { appWithAllRoutes } from './testutils/appSetup'
-import { PrisonApi } from '../data/prisonApi'
-import { getTestLocation } from '../testData/prisonApi'
+import getTestLocation from '../testData/locationsInsidePrisonApi'
+import { LocationsInsidePrisonApi } from '../data/locationsInsidePrisonApi'
 
-jest.mock('../data/prisonApi')
+jest.mock('../data/locationsInsidePrisonApi')
 
 let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({})
 
-  const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getUserLocations.mockResolvedValue([
+  const locationsInsidePrisonApi = LocationsInsidePrisonApi.prototype as jest.Mocked<LocationsInsidePrisonApi>
+  locationsInsidePrisonApi.getTopLevelPrisonLocations.mockResolvedValue([
     getTestLocation({
-      agencyId: 'MDI',
-      locationPrefix: 'MDI-2',
-      userDescription: 'Houseblock 2',
-      subLocations: true,
+      fullLocationPath: '2',
+      localName: 'Houseblock 2',
     }),
     getTestLocation({
-      agencyId: 'MDI',
-      locationPrefix: 'MDI-42',
-      userDescription: 'Houseblock 42',
-      subLocations: true,
+      fullLocationPath: '42',
+      localName: 'Houseblock 42',
+      locationType: 'AREA',
     }),
   ])
 })

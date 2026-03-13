@@ -4,7 +4,6 @@ import { BadRequest } from 'http-errors'
 import config from '../config'
 import logger from '../../logger'
 import { managePrisonIncentiveLevelsRole, manageIncentiveLevelsRole } from '../data/constants'
-import { PrisonApi } from '../data/prisonApi'
 import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import S3Client from '../data/s3Client'
 import AnalyticsService from '../services/analyticsService'
@@ -14,13 +13,13 @@ import { National } from '../services/pgdRegionService'
 import { cache } from './analyticsRouter'
 import { requireGetOrPost } from './forms/forms'
 import AboutPageFeedbackForm from './forms/aboutPageFeedbackForm'
+import { LocationsInsidePrisonApi } from '../data/locationsInsidePrisonApi'
 
 export default function routes(router: Router): Router {
   router.get('/', async (_req, res) => {
     // a prison case load would have locations, e.g. wings or house blocks
-    // an LSA's special case load (CADM_I) has no locations
-    const prisonApi = new PrisonApi(res.locals.user.token)
-    const locations = await prisonApi.getUserLocations()
+    const locationsApi = new LocationsInsidePrisonApi(res.locals.user.token)
+    const locations = await locationsApi.getTopLevelPrisonLocations(res.locals.user.activeCaseload.id)
     const canViewLocationBasedTiles = locations.length > 0
 
     const userRoles = res.locals.user.roles ?? []

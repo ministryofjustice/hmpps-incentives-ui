@@ -9,7 +9,7 @@ context('Getting a prisoner image', () => {
     beforeEach(() => {
       cy.task('stubNomisUserRolesGetCaseloads')
       cy.task('stubManageUser')
-      cy.task('stubPrisonApiLocations')
+      cy.task('stubPrisonTopLevelLocations')
       cy.task('stubPrisonApiImages')
 
       cy.signIn()

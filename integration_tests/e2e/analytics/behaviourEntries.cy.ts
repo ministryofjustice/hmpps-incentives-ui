@@ -18,7 +18,7 @@ context('Analytics section > Behaviour entries page', () => {
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
     cy.task('stubCreateZendeskTicket')
 
     cy.signIn()
@@ -122,7 +122,7 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)
@@ -226,7 +226,7 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
 
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)

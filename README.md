@@ -7,6 +7,7 @@ It is backed by [hmpps-incentives-api](https://github.com/ministryofjustice/hmpp
 [![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/hmpps-incentives-ui/badge?style=flat)](https://github-community.service.justice.gov.uk/repository-standards/hmpps-incentives-ui)
 [![Docker Repository on ghcr](https://img.shields.io/badge/ghcr.io-repository-2496ED.svg?logo=docker)](https://github.com/ministryofjustice/hmpps-incentives-ui/pkgs/container/hmpps-incentives-ui)
 
+Service overview can be found [here](OVERVIEW.md)
 ## Running locally
 
 The UI application needs a suite of services to work:

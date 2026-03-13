@@ -13,7 +13,7 @@ context('Manage incentives (select a location)', () => {
     cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubPrisonIncentiveLevels')
     cy.task('stubPrisonApiImages')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
     cy.task('stubGetIncentivesLevelBasic')
 
     cy.signIn()
@@ -49,7 +49,7 @@ context('Manage incentive reviews', () => {
     cy.task('stubManageUser')
     cy.task('stubNomisUserRolesApiUserCaseloads')
     cy.task('stubPrisonIncentiveLevels')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
     cy.task('stubGetIncentivesLevelBasic')
     cy.signIn()
     const homePage = Page.verifyOnPage(HomePage)

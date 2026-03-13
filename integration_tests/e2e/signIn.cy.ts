@@ -9,7 +9,7 @@ context('Sign in', () => {
     cy.task('stubFallbackHeaderAndFooter')
     cy.task('stubManageUser')
     cy.task('stubNomisUserRolesApiUserCaseloads')
-    cy.task('stubPrisonApiLocations')
+    cy.task('stubPrisonTopLevelLocations')
   })
 
   it('Unauthenticated user directed to auth', () => {

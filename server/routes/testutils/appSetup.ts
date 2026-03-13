@@ -10,18 +10,18 @@ import breadcrumbs from '../../middleware/breadcrumbs'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import UserService from '../../services/userService'
-import { type Location, PrisonApi } from '../../data/prisonApi'
-import { getTestLocation } from '../../testData/prisonApi'
+import { type TopLevelLocation, LocationsInsidePrisonApi } from '../../data/locationsInsidePrisonApi'
+import getTestLocation from '../../testData/locationsInsidePrisonApi'
 import { mockUser } from './mockUsers'
 import setUpHealthChecks from '../../middleware/setUpHealthChecks'
 
-jest.mock('../../data/prisonApi')
+jest.mock('../../data/locationsInsidePrisonApi')
 
-const testLocation: Location = getTestLocation({
-  agencyId: 'MDI',
-  locationPrefix: 'MDI-2',
-  userDescription: 'Houseblock 2',
-  subLocations: true,
+const testLocation: TopLevelLocation = getTestLocation({
+  locationId: randomUUID(),
+  fullLocationPath: '2',
+  localName: 'Houseblock 2',
+  locationType: 'WING',
 })
 
 export class MockUserService extends UserService {
@@ -63,8 +63,8 @@ function appSetup(
 ): Express {
   const app = express()
 
-  const prisonApi = PrisonApi.prototype as jest.Mocked<PrisonApi>
-  prisonApi.getUserLocations.mockResolvedValue([testLocation])
+  const locationsInsidePrisonApi = LocationsInsidePrisonApi.prototype as jest.Mocked<LocationsInsidePrisonApi>
+  locationsInsidePrisonApi.getTopLevelPrisonLocations.mockResolvedValue([testLocation])
 
   nunjucksSetup(app)
 

@@ -1,0 +1,49 @@
+graph TD
+    subgraph Client
+        Browser[Web Browser]
+    end
+
+    subgraph "HMPPS Incentives UI (Node.js/Express)"
+        App[Express Application]
+        AuthMid[Authentication Middleware]
+        Route[Routes / Controllers]
+        Service[Services e.g. AnalyticsService]
+        DataLayer[Data Layer / API Clients]
+        Precacher[Analytics Precacher]
+    end
+
+    subgraph "Internal Components"
+        Redis[(Redis Session/Cache)]
+        S3[(AWS S3 Analytics Data)]
+    end
+
+    subgraph "HMPPS Platform Services"
+        Auth[HMPPS Auth]
+        IncentivesAPI[Incentives API]
+        PrisonAPI[Prison API]
+        OffenderSearch[Offender Search API]
+        ManageUsers[Manage Users API]
+        LocationsAPI[Locations Inside Prison API]
+        AuditSQS[HMPPS Audit SQS]
+    end
+
+    Browser <--> App
+    App --> AuthMid
+    AuthMid --> Auth
+    App --> Route
+    Route --> Service
+    Service --> DataLayer
+    Route --> DataLayer
+
+    DataLayer --> IncentivesAPI
+    DataLayer --> PrisonAPI
+    DataLayer --> OffenderSearch
+    DataLayer --> ManageUsers
+    DataLayer --> LocationsAPI
+    DataLayer --> AuditSQS
+
+    App --> Redis
+    Service --> S3
+    Service <--> Redis
+    Precacher --> S3
+    Precacher --> Redis

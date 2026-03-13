@@ -40,45 +40,6 @@ export default {
     })
   },
 
-  stubGetUserLocations: (): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/prisonApi/api/users/me/locations\\?include-non-residential-locations=true',
-      },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: [
-          {
-            locationId: 2,
-            locationType: 'WING',
-            description: '2',
-            agencyId: 'MDI',
-            currentOccupancy: 199,
-            locationPrefix: 'MDI-2',
-            operationalCapacity: 200,
-            userDescription: 'Houseblock 2',
-            subLocations: true,
-          },
-          {
-            locationId: 42,
-            locationType: 'WING',
-            description: '42',
-            agencyId: 'MDI',
-            currentOccupancy: 199,
-            locationPrefix: 'MDI-42',
-            operationalCapacity: 200,
-            userDescription: 'Houseblock 42',
-            subLocations: true,
-          },
-        ],
-      },
-    })
-  },
-
   stubGetPrisonerDetails: (): SuperAgentRequest => {
     return stubFor({
       request: {

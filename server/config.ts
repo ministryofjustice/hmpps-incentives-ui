@@ -114,6 +114,19 @@ export default {
       },
       agent: new AgentConfig(Number(get('HMPPS_PRISON_API_TIMEOUT_RESPONSE', 10000))),
     },
+    locationsInsidePrisonApi: {
+      url: get('HMPPS_LOCATIONS_INSIDE_PRISON_API_URL', 'http://localhost:8085', requiredInProduction),
+      healthPath: '/health/ping',
+      externalUrl: get(
+        'HMPPS_LOCATIONS_INSIDE_PRISON_API_EXTERNAL_URL',
+        get('HMPPS_LOCATIONS_INSIDE_PRISON_API_URL', 'http://localhost:8085'),
+      ),
+      timeout: {
+        response: Number(get('HMPPS_LOCATIONS_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('HMPPS_LOCATIONS_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('HMPPS_LOCATIONS_API_TIMEOUT_RESPONSE', 10000))),
+    },
     offenderSearchApi: {
       url: get('OFFENDER_SEARCH_API_URL', 'http://localhost:8083', requiredInProduction),
       healthPath: '/health/ping',

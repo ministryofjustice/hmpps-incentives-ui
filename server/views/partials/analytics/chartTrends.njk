@@ -76,12 +76,12 @@
                   {% elseif gridlineY > trendsOverlayHeight - 1 %}
                     {% set gridlineY = trendsOverlayHeight - 0.5 %}
                   {% endif %}
-                  <line stroke="#b1b4b6 {#- GDS mid-grey -#}" stroke-width="1" stroke-dasharray="2" x1="0" x2="720" y1="{{ gridlineY }}" y2="{{ gridlineY }}" />
+                  <line stroke="#cecece {#- GDS black tint-80 (was mid-grey) -#}" stroke-width="1" stroke-dasharray="2" x1="0" x2="720" y1="{{ gridlineY }}" y2="{{ gridlineY }}" />
                 {% endfor %}
 
                 {% if not report.plotPercentage %}
                   {% set columnWidth = 720 / report.rows.length %}
-                  <path stroke="#b1b4b6 {#- GDS mid-grey -#}" stroke-width="3" fill="none" d="
+                  <path stroke="#cecece {#- GDS black tint-80 (was mid-grey) -#}" stroke-width="3" fill="none" d="
                     {%- for row in report.rows -%}
                       {%- if loop.first %} M{% else %} L{% endif -%}
                       {{- (loop.index0 + 0.5) * columnWidth -}},

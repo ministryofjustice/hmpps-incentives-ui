@@ -30,7 +30,7 @@ $chart-cell-pading: govuk-spacing(2);
   @media print {
     a {
       text-decoration: none;
-      color: $govuk-print-text-colour;
+      color: govuk-functional-colour('print-text');
 
       &:after {
         display: none;

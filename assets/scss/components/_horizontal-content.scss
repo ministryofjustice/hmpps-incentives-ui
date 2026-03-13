@@ -6,8 +6,8 @@
 
   &--with-border {
     padding: govuk-spacing(3) 0;
-    border-top: 1px solid $govuk-border-colour;
-    border-bottom: 1px solid $govuk-border-colour;
+    border-top: 1px solid govuk-functional-colour('border');
+    border-bottom: 1px solid govuk-functional-colour('border');
   }
 
   &__item {

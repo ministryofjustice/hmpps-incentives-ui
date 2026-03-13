@@ -15,7 +15,7 @@ $chart-cell-pading: govuk-spacing(2);
   border-collapse: collapse;
   border-spacing: 0;
   @include govuk-font($size: 16);
-  @include govuk-text-colour;
+  color: govuk-functional-colour("text");
 
   th, td {
     padding: $chart-cell-pading $chart-cell-pading $chart-cell-pading 0;

@@ -2,18 +2,6 @@ import { asSystem, RestClient, type SanitisedError } from '@ministryofjustice/hm
 import config from '../config'
 import logger from '../../logger'
 
-export interface Location {
-  locationId: number
-  locationType: string
-  description: string
-  agencyId: string
-  currentOccupancy: number
-  operationalCapacity?: number
-  locationPrefix: string
-  userDescription?: string
-  subLocations?: boolean
-}
-
 export interface Agency {
   agencyId: string
   description: string
@@ -53,7 +41,7 @@ export class PrisonApi extends RestClient {
     })
   }
 
-  getImageByPrisonerNumber(prisonerNumber: string): Promise<Buffer | null> {
+  async getImageByPrisonerNumber(prisonerNumber: string): Promise<Buffer | null> {
     return this.get<Buffer>(
       {
         path: `/api/bookings/offenderNo/${encodeURIComponent(prisonerNumber)}/image/data`,

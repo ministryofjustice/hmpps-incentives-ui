@@ -15,6 +15,7 @@ import type { IncentiveLevelReorderData } from './forms/incentiveLevelReorderFor
 import type { IncentiveLevelStatusData } from './forms/incentiveLevelStatusForm'
 
 jest.mock('@ministryofjustice/hmpps-auth-clients')
+jest.mock('../data/prisonApi')
 jest.mock('../data/incentivesApi', () => {
   type module = typeof import('../data/incentivesApi')
   const realModule = jest.requireActual<module>('../data/incentivesApi')

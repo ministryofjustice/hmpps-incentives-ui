@@ -11,6 +11,7 @@ import { LocationsInsidePrisonApi } from '../data/locationsInsidePrisonApi'
 import ZendeskClient from '../data/zendeskClient'
 import { cache } from './analyticsRouter'
 
+jest.mock('@ministryofjustice/hmpps-auth-clients')
 jest.mock('../data/locationsInsidePrisonApi')
 
 const s3 = {

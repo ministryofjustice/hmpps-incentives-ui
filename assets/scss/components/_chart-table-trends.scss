@@ -22,7 +22,7 @@ $trends-overlay-height: 300px; // NB: must match `trendsOverlayHeight` in nunjuc
 
   tbody {
     tr:nth-child(odd) {
-      background: $govuk-canvas-background-colour;
+      background: govuk-functional-colour('template-background');
     }
 
     th {

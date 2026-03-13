@@ -1,4 +1,4 @@
 .app-chart-disclaimer {
-  background: $govuk-canvas-background-colour;
+  background: govuk-functional-colour('template-background');
   @include govuk-responsive-padding(5);
 }

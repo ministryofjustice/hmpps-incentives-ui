@@ -127,7 +127,7 @@ td.app-chart-table__axis-values {
   position: absolute;
   top: 0;
   padding: 0 $chart-cell-pading;
-  @include govuk-font($size: 14);
+  @include govuk-font($size: 16);
 }
 
 .app-chart-table__axis-value--min {

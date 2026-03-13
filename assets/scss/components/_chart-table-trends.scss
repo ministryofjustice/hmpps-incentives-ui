@@ -74,7 +74,7 @@ $trends-overlay-height: 300px; // NB: must match `trendsOverlayHeight` in nunjuc
   text-align: right;
 
   span {
-    @include govuk-font($size: 14);
+    @include govuk-font($size: 16);
   }
 }
 
@@ -93,7 +93,7 @@ $trends-overlay-height: 300px; // NB: must match `trendsOverlayHeight` in nunjuc
     position: absolute;
     top: -1.5em;
     right: $chart-cell-pading;
-    @include govuk-font($size: 14);
+    @include govuk-font($size: 16);
   }
 
   // horizontal gridlines and totals line

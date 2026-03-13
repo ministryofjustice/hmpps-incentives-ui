@@ -7,7 +7,7 @@
 }
 
 .app-chart-colour--turquoise {
-  background: govuk-colour("turquoise");
+  background: govuk-colour("teal", $variant: "primary");
 }
 
 .app-chart-colour--yellow {
@@ -15,7 +15,7 @@
 }
 
 .app-chart-colour--pink {
-  background: govuk-colour("pink");
+  background: govuk-colour("magenta", $variant: "primary");
 }
 
 .app-chart-colour--mid-grey {

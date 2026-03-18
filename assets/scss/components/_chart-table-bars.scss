@@ -89,8 +89,8 @@
 td.app-chart-table__percentage-cell {
   position: relative;
   padding-right: 0;
-  border-left: 1px solid $govuk-border-colour;
-  border-right: 1px solid $govuk-border-colour;
+  border-left: 1px solid govuk-functional-colour('border');
+  border-right: 1px solid govuk-functional-colour('border');
 }
 
 // bars forming the chart; stackable
@@ -111,14 +111,14 @@ td.app-chart-table__percentage-cell {
   top: 0;
   left: 50%;
   height: 100%;
-  border-left: 1px solid $govuk-border-colour;
+  border-left: 1px solid govuk-functional-colour('border');
 }
 
 // container for horizontal axis values
 td.app-chart-table__axis-values {
   position: relative;
-  border-left: 1px solid $govuk-border-colour;
-  border-right: 1px solid $govuk-border-colour;
+  border-left: 1px solid govuk-functional-colour('border');
+  border-right: 1px solid govuk-functional-colour('border');
 }
 
 // values in horizontal axis
@@ -127,7 +127,7 @@ td.app-chart-table__axis-values {
   position: absolute;
   top: 0;
   padding: 0 $chart-cell-pading;
-  @include govuk-font($size: 14);
+  @include govuk-font($size: 16);
 }
 
 .app-chart-table__axis-value--min {

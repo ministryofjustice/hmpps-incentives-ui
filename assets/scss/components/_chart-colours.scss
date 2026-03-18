@@ -1,13 +1,13 @@
 .app-chart-colour--light-blue {
-  background: govuk-colour("light-blue");
+  background: govuk-colour("blue", $variant: "tint-25");
 }
 
 .app-chart-colour--dark-blue {
-  background: govuk-colour("dark-blue");
+  background: govuk-colour("blue", $variant: "shade-50");
 }
 
 .app-chart-colour--turquoise {
-  background: govuk-colour("turquoise");
+  background: govuk-colour("teal", $variant: "primary");
 }
 
 .app-chart-colour--yellow {
@@ -15,11 +15,11 @@
 }
 
 .app-chart-colour--pink {
-  background: govuk-colour("pink");
+  background: govuk-colour("magenta", $variant: "primary");
 }
 
 .app-chart-colour--mid-grey {
-  background: govuk-colour("mid-grey");
+  background: govuk-colour("black", $variant: "tint-80");
 }
 
 .app-chart-colour--orange {
@@ -27,7 +27,7 @@
 }
 
 .app-chart-colour--light-green {
-  background: govuk-colour("light-green"); // not expected to be used: presence in chart indicates unforeseen column set
+  background: govuk-colour("green", $variant: "tint-25"); // not expected to be used: presence in chart indicates unforeseen column set
 }
 
 .app-chart-colour--red {

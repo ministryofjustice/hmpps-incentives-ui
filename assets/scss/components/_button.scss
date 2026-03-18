@@ -5,8 +5,8 @@
   height: 40px;
   padding: 10px;
   background: #fff;
-  border: 1px solid govuk-colour('dark-grey');
-  box-shadow: 0 5px govuk-colour('mid-grey');
+  border: 1px solid govuk-colour("black", $variant: "tint-25");
+  box-shadow: 0 5px govuk-colour("black", $variant: "tint-80");
 
   img {
     margin-right: 10px;

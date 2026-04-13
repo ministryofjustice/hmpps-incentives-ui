@@ -5,8 +5,6 @@
     "noEmit": true,
     "lib": ["dom", "es2022"],
     "types": ["cypress", "express", "express-session"],
-    "esModuleInterop": true,
-    "skipLibCheck": true,
     "sourceMap": false,
     "typeRoots": ["../server/@types", "../node_modules/@types", "../node_modules"]
   },

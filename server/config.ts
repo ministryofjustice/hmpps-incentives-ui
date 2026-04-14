@@ -191,6 +191,7 @@ export default {
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   dpsUrl: get('DPS_URL', 'http://localhost:3000', requiredInProduction),
+  newDpsUrl: get('NEW_DPS_URL', 'http://localhost:3000', requiredInProduction),
   supportUrl: get('SUPPORT_URL', 'http://localhost:3000', requiredInProduction),
   googleAnalytics: {
     // Google Analytics 4 (GA4) measurement ID. Starts with `G-`.

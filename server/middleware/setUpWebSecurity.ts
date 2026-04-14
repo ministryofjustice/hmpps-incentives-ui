@@ -18,6 +18,7 @@ export default function setUpWebSecurity(): Router {
 
   const authHost = new URL(config.apis.hmppsAuth.externalUrl).hostname
   const dpsHost = new URL(config.dpsUrl).hostname
+  const newDpsHost = new URL(config.newDpsUrl).hostname
   const frontendComponentsHost = new URL(config.apis.frontendComponents.url).hostname
 
   router.use(
@@ -50,7 +51,7 @@ export default function setUpWebSecurity(): Router {
             '*.google.com',
             '*.google.co.uk',
           ],
-          formAction: ["'self'", authHost, dpsHost],
+          formAction: ["'self'", authHost, dpsHost, newDpsHost],
           connectSrc: [
             "'self'",
             '*.google-analytics.com',

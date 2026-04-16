@@ -35,8 +35,8 @@
     "node": "^24"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1026.0",
-    "@aws-sdk/client-sqs": "^3.1026.0",
+    "@aws-sdk/client-s3": "^3.1028.0",
+    "@aws-sdk/client-sqs": "^3.1028.0",
     "@ministryofjustice/frontend": "^9.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.2",
     "@ministryofjustice/hmpps-monitoring": "^1.0.2",

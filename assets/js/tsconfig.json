@@ -4,9 +4,11 @@
   "compilerOptions": {
     "target": "es2020",
     "lib": ["dom", "dom.iterable", "es2020"],
-    "sourceMap": true,
-    "typeRoots": ["../../node_modules/@ministryofjustice/frontend-types"]
+    "types": [
+      "@ministryofjustice/frontend-types",
+      "jquery"
+    ]
   },
   "exclude": [],
-  "include": ["**/*.js", "**/*.ts"]
+  "include": ["**/*.ts"]
 }

@@ -14,9 +14,9 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "typeRoots": [
+      "./server/@types",
       "./node_modules/@types",
-      "./node_modules",
-      "./server/@types"
+      "./node_modules"
     ],
     "types": ["node", "jest"],
     "rootDir": "."

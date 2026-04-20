@@ -13,7 +13,13 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
-    "typeRoots": ["./server/@types", "./node_modules/@types"]
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules",
+      "./server/@types"
+    ],
+    "types": ["node", "jest"],
+    "rootDir": "."
   },
   "exclude": [
     "node_modules",

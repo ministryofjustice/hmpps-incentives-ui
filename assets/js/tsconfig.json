@@ -1,5 +1,6 @@
 {
   "$schema": "https://www.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "es2020",
     "noEmit": true,

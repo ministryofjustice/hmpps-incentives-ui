@@ -7,13 +7,19 @@
     "isolatedModules": true,
     "outDir": "./dist",
     "sourceMap": true,
-    "noEmit": false,
+    "noEmit": true,
     "allowJs": true,
     "checkJs": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
-    "typeRoots": ["./server/@types", "./node_modules/@types"]
+    "typeRoots": [
+      "./server/@types",
+      "./node_modules/@types",
+      "./node_modules"
+    ],
+    "types": ["node", "jest"],
+    "rootDir": "."
   },
   "exclude": [
     "node_modules",

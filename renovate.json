@@ -44,7 +44,8 @@
     {
       "matchManagers": ["github-actions"],
       "matchFileNames": ["**/.github/workflows/**/*.ya?ml"],
-      "separateMinorPatch": true
+      "matchUpdateTypes": ["minor", "patch"],
+      "enabled": false
     },
     {
       "matchDatasources": ["orb"],
@@ -60,5 +61,6 @@
   ],
   "vulnerabilityAlerts": {
     "stabilityDays": 0
-  }
+  },
+  "platformCommit": "enabled"
 }

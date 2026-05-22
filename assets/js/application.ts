@@ -4,7 +4,7 @@ import * as mojFrontend from '@ministryofjustice/frontend'
 govukFrontend.initAll()
 mojFrontend.initAll()
 
-function gaSendEvent() {
+function gaSendEvent(this: HTMLElement) {
   const elem = $(this)
 
   const gaCategory = elem.data('ga-category')

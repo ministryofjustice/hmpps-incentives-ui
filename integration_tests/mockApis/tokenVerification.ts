@@ -1,19 +1,8 @@
 import type { SuperAgentRequest } from 'superagent'
-import { stubFor } from './wiremock'
+import { stubFor, stubPing } from './wiremock'
 
 export default {
-  stubTokenVerificationPing: (status = 200): SuperAgentRequest =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPath: '/verification/health/ping',
-      },
-      response: {
-        status,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: { status: 'UP' },
-      },
-    }),
+  stubTokenVerificationPing: (httpStatus = 200): SuperAgentRequest => stubPing('/verification', httpStatus),
 
   stubVerifyToken: (active = true): SuperAgentRequest =>
     stubFor({

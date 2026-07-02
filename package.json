@@ -40,7 +40,7 @@
     "@ministryofjustice/frontend": "^9.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^2.0.0",
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
-    "@ministryofjustice/hmpps-rest-client": "^2.1.0",
+    "@ministryofjustice/hmpps-rest-client": "^2.2.0",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.8",
     "bunyan": "^1.8.15",
@@ -114,7 +114,7 @@
   },
   "overrides": {
     "@cypress/request": {
-      "qs": "~6.15.2"
+      "qs": "~6.15.3"
     },
     "minimatch@^3.1.5": {
       "brace-expansion": "^1.1.15"

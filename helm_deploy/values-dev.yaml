@@ -9,8 +9,6 @@ generic-service:
   ingress:
     host: incentives-ui-dev.hmpps.service.justice.gov.uk
 
-  allowlist: null
-
   env:
     ENVIRONMENT: dev
     S3_REGION: eu-west-2

@@ -1,13 +1,4 @@
-/* eslint-disable import/first,import/order */
-/*
- * Do appinsights first as it does some magic instrumentation work, i.e. it affects other 'require's
- * In particular, applicationinsights automatically collects bunyan logs
- */
-import 'applicationinsights'
-import { initialiseAppInsights, buildAppInsightsClient } from './server/utils/azureAppInsights'
-
-initialiseAppInsights()
-buildAppInsightsClient()
+import './server/utils/azureAppInsights'
 
 import { setImmediate, setInterval } from 'timers'
 

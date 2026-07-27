@@ -1,9 +1,9 @@
-import { createClient } from 'redis'
+import { createClient, type RedisClientType } from 'redis'
 
 import config from '../config'
 import logger from '../../logger'
 
-export type RedisClient = ReturnType<typeof createClient>
+export type RedisClient = RedisClientType
 
 const url = config.redis.tls_enabled
   ? `rediss://${config.redis.host}:${config.redis.port}`

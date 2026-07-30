@@ -116,13 +116,11 @@
     "@cypress/request": {
       "qs": "~6.15.3"
     },
-    "minimatch@^3.1.5": {
-      "brace-expansion": "^1.1.15"
-    },
     "mocha": {
       "diff": ">=9.0.0",
       "serialize-javascript": "^7.0.7"
     },
-    "@opentelemetry/core": "^2.10.0"
+    "@opentelemetry/core": "^2.10.0",
+    "brace-expansion": "^5.0.8"
   }
 }

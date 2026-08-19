@@ -30,6 +30,7 @@ generic-service:
   env:
     ENVIRONMENT: ""
     NODE_ENV: "production"
+    LOG_LEVEL: "info"
     REDIS_TLS_ENABLED: "true"
     TOKEN_VERIFICATION_ENABLED: "true"
     BUNYAN_NO_COLOR: "1"

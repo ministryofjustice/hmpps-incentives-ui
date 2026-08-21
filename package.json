@@ -35,8 +35,8 @@
     "node": "^24"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1107.0",
-    "@aws-sdk/client-sqs": "^3.1107.0",
+    "@aws-sdk/client-s3": "^3.1110.0",
+    "@aws-sdk/client-sqs": "^3.1110.0",
     "@ministryofjustice/frontend": "^10.0.1",
     "@ministryofjustice/hmpps-auth-clients": "^3.0.0",
     "@ministryofjustice/hmpps-azure-telemetry": "^1.0.2",
@@ -61,7 +61,7 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
-    "redis": "^6.2.0",
+    "redis": "^6.2.1",
     "superagent": "^10.3.0",
     "url-value-parser": "^2.2.0"
   },
@@ -70,7 +70,7 @@
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
     "@ministryofjustice/frontend-types": "2.0.1",
     "@ministryofjustice/hmpps-npm-script-allowlist": "^0.0.6",
-    "@ministryofjustice/hmpps-precommit-hooks": "^3.0.1",
+    "@ministryofjustice/hmpps-precommit-hooks": "^3.0.2",
     "@tsconfig/node24": "^24.0.4",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",

@@ -19,8 +19,7 @@ const getSignInUrl = (): Promise<string> =>
   getMatchingRequests({
     method: 'GET',
     urlPath: '/auth/oauth/authorize',
-  }).then(data => {
-    const { requests } = data.body
+  }).then(requests => {
     const stateValue = requests[requests.length - 1].queryParams.state.values[0]
     return `/sign-in/callback?code=codexxxx&state=${stateValue}`
   })

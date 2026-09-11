@@ -3,6 +3,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% set pageTitle = applicationName + " – Incentive level settings" %}
 
@@ -22,6 +23,11 @@
         Select View settings to edit spend and transfer limits and visit allowances for each level.
         You can also set the default level for new prisoners.
       </p>
+
+      {{ govukWarningText({
+        text: "If you create a new incentive level, contact the Activity Hub to set up pay rates. Otherwise, prisoners may not be paid correctly. ",
+        iconFallbackText: "Warning"
+      }) }}
 
       {% set rows = [] %}
 

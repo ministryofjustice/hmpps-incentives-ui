@@ -98,7 +98,7 @@ jobs:
             -e MINIO_ROOT_USER=incentives \
             -e MINIO_ROOT_PASSWORD=incentives \
             -e MINIO_SITE_REGION=eu-west-1 \
-            minio/minio server /data --console-address ":9001"
+            quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z server /data --console-address ":9001"
       - name: Wait for MinIO to be ready
         run: |
           for i in {1..10}; do

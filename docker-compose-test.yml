@@ -39,7 +39,7 @@ services:
       - /data
 
   minio-init:
-    image: quay.io/minio/mc:RELEASE.2025-08-13T08-35-41Z
+    image: public.ecr.aws/aws-cli/aws-cli:2.36.50
     networks:
       - hmpps
     container_name: inc-ui-minio-init
@@ -47,17 +47,20 @@ services:
       minio:
         condition: service_healthy
     environment:
-      - MINIO_ROOT_USER=incentives
-      - MINIO_ROOT_PASSWORD=incentives
-      - MINIO_SITE_REGION=eu-west-1
+      - AWS_ACCESS_KEY_ID=incentives
+      - AWS_SECRET_ACCESS_KEY=incentives
+      - AWS_DEFAULT_REGION=eu-west-1
     volumes:
       - $PWD/server/testData/s3Bucket:/tmp/s3Bucket:ro
     entrypoint: |
       /bin/sh -c "
-        echo Provisioning bucket with minio
-        mc mb --region eu-west-1 --ignore-existing local/incentives
-        mc mirror --overwrite /tmp/s3Bucket local/incentives
-        exit 0
+        echo Provisioning S3 bucket...
+
+        # Create S3 bucket
+        aws --endpoint-url http://minio:9000 s3 mb s3://incentives
+
+        # Copy test data
+        aws --endpoint-url http://minio:9000 s3 sync /tmp/s3Bucket s3://incentives/
       "
 
   wiremock:

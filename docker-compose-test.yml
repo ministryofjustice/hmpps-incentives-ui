@@ -51,7 +51,7 @@ services:
       - MINIO_ROOT_PASSWORD=incentives
       - MINIO_SITE_REGION=eu-west-1
     volumes:
-      - $PWD/server/testData/s3Bucket:/tmp/s3Bucket
+      - $PWD/server/testData/s3Bucket:/tmp/s3Bucket:ro
     entrypoint: |
       /bin/sh -c "
         echo Provisioning bucket with minio

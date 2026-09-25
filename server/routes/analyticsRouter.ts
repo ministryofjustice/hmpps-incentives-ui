@@ -1,4 +1,4 @@
-import type { Request, Router } from 'express'
+import type { Router } from 'express'
 import { NotFound } from 'http-errors'
 
 import config from '../config'
@@ -43,15 +43,6 @@ export const protectedCharacteristicRoutes = {
     id: ProtectedCharacteristic.SexualOrientation,
   },
 } as const
-
-/**
- * Shared template variables needed throughout analytics section
- */
-function templateContext(req: Request): Record<string, unknown> {
-  return {
-    messages: req.flash(),
-  }
-}
 
 /**
  * Makes an empty report object indicating errors occurred
@@ -132,7 +123,6 @@ export default function routes(router: Router): Router {
     const [behaviourEntries, prisonersWithEntries, trends] = await Promise.all(charts)
 
     res.render('pages/analytics/behaviourEntries', {
-      ...templateContext(req),
       analyticsView,
       behaviourEntries,
       prisonersWithEntries,
@@ -158,7 +148,6 @@ export default function routes(router: Router): Router {
     const [prisonersOnLevels, trends] = await Promise.all(charts)
 
     res.render('pages/analytics/incentiveLevels', {
-      ...templateContext(req),
       analyticsView,
       prisonersOnLevels,
       trends,
@@ -243,7 +232,6 @@ export default function routes(router: Router): Router {
     ] = await Promise.all(charts)
 
     res.render('pages/analytics/protectedCharacteristicTemplate', {
-      ...templateContext(req),
       analyticsView,
       protectedCharacteristic,
       characteristicName,

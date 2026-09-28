@@ -1,4 +1,5 @@
-export const chartIds = [
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const chartIds = [
   // behaviour entries page
   'entries-by-location',
   'prisoners-with-entries-by-location',

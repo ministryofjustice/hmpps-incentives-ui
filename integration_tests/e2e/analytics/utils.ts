@@ -17,12 +17,12 @@ export function getTextFromTable(chainable: PageElement<HTMLTableRowElement>): C
   })
 }
 
-export function testDetailsOpenedGaEvents<PageClass extends AnalyticsPage>(
+export function testChartsGuidanceGaEvents<PageClass extends AnalyticsPage>(
   pageClass: new () => PageClass,
-  detailsGetterMethod: 'getChartGuidance',
   charts: Partial<Record<ChartId, string>>,
 ) {
   const page = Page.verifyOnPage(pageClass)
+  const detailsGetterMethod = 'getChartGuidance'
 
   cy.trackGoogleAnalyticsCalls().then(googleAnalyticsTracker => {
     for (const [chartId, gaCategory] of Object.entries(charts)) {

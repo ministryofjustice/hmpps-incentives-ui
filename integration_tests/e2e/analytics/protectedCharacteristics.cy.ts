@@ -1,4 +1,4 @@
-import { getTextFromTable, testDetailsOpenedGaEvents } from './utils'
+import { getTextFromTable, testChartsGuidanceGaEvents } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import type AnalyticsPage from '../../pages/analytics'
@@ -173,7 +173,7 @@ context('Analytics section > Protected characteristics page', () => {
       'trends-entries-by-age': 'How you can use this chart > Behaviour entries by age trends (Prison)',
       'prisoners-with-entries-by-age': 'How you can use this chart > Behaviour entries by age (Prison)',
     }
-    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartGuidance', charts)
+    testChartsGuidanceGaEvents(AnalyticsProtectedCharacteristics, charts)
   })
 })
 
@@ -324,7 +324,7 @@ context('Pgd Region selection > National > Analytics section > Protected charact
       'trends-entries-by-age': 'How you can use this chart > Behaviour entries by age trends (National)',
       'prisoners-with-entries-by-age': 'How you can use this chart > Behaviour entries by age (National)',
     }
-    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartGuidance', charts)
+    testChartsGuidanceGaEvents(AnalyticsProtectedCharacteristics, charts)
   })
 })
 
@@ -449,6 +449,6 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
       'trends-entries-by-age': 'How you can use this chart > Behaviour entries by age trends (Group)',
       'prisoners-with-entries-by-age': 'How you can use this chart > Behaviour entries by age (Group)',
     }
-    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartGuidance', charts)
+    testChartsGuidanceGaEvents(AnalyticsProtectedCharacteristics, charts)
   })
 })

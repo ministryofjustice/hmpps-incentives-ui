@@ -1,4 +1,4 @@
-import { getTextFromTable, testDetailsOpenedGaEvents } from './utils'
+import { getTextFromTable, testChartsGuidanceGaEvents } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsBehaviourEntries from '../../pages/analytics/behaviourEntries'
@@ -79,7 +79,7 @@ context('Analytics section > Behaviour entries page', () => {
       'trends-entries': 'How you can use this chart > Behaviour entry trends (Prison)',
     }
 
-    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartGuidance', charts)
+    testChartsGuidanceGaEvents(AnalyticsBehaviourEntries, charts)
   })
 })
 
@@ -172,7 +172,7 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
       'trends-entries': 'How you can use this chart > Behaviour entry trends (National)',
     }
 
-    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartGuidance', charts)
+    testChartsGuidanceGaEvents(AnalyticsBehaviourEntries, charts)
   })
 })
 
@@ -251,6 +251,6 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
       'trends-entries': 'How you can use this chart > Behaviour entry trends (Group)',
     }
 
-    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartGuidance', charts)
+    testChartsGuidanceGaEvents(AnalyticsBehaviourEntries, charts)
   })
 })

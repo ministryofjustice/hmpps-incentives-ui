@@ -1,4 +1,4 @@
-import { getTextFromTable, testDetailsOpenedGaEvents } from './utils'
+import { getTextFromTable, testChartsGuidanceGaEvents } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
@@ -61,7 +61,7 @@ context('Analytics section > Incentive levels page', () => {
       'trends-incentive-levels': 'How you can use this chart > Incentive level trends (Prison)',
     }
 
-    testDetailsOpenedGaEvents(AnalyticsIncentiveLevels, 'getChartGuidance', charts)
+    testChartsGuidanceGaEvents(AnalyticsIncentiveLevels, charts)
   })
 })
 
@@ -137,7 +137,7 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
       'trends-incentive-levels': 'How you can use this chart > Incentive level trends (National)',
     }
 
-    testDetailsOpenedGaEvents(AnalyticsIncentiveLevels, 'getChartGuidance', charts)
+    testChartsGuidanceGaEvents(AnalyticsIncentiveLevels, charts)
   })
 })
 
@@ -199,6 +199,6 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
       'trends-incentive-levels': 'How you can use this chart > Incentive level trends (Group)',
     }
 
-    testDetailsOpenedGaEvents(AnalyticsIncentiveLevels, 'getChartGuidance', charts)
+    testChartsGuidanceGaEvents(AnalyticsIncentiveLevels, charts)
   })
 })

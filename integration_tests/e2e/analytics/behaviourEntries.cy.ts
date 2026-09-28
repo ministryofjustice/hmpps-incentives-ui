@@ -1,9 +1,4 @@
-import {
-  getTextFromTable,
-  testDetailsOpenedGaEvents,
-  testInvalidFeedbackSubmission,
-  testValidFeedbackSubmission,
-} from './utils'
+import { getTextFromTable, testDetailsOpenedGaEvents } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsBehaviourEntries from '../../pages/analytics/behaviourEntries'
@@ -19,7 +14,6 @@ context('Analytics section > Behaviour entries page', () => {
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonTopLevelLocations')
-    cy.task('stubCreateZendeskTicket')
 
     cy.signIn()
 
@@ -86,32 +80,6 @@ context('Analytics section > Behaviour entries page', () => {
     }
 
     testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartGuidance', charts)
-  })
-
-  it('chart feedback box for analytics is tracked', () => {
-    const charts: Partial<Record<ChartId, string>> = {
-      'entries-by-location': 'Is this chart useful > Behaviour entries by wing (Prison)',
-      'prisoners-with-entries-by-location': 'Is this chart useful > Prisoners with behaviour entries by wing (Prison)',
-      'trends-entries': 'Is this chart useful > Behaviour entry trends (Prison)',
-    }
-
-    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartFeedback', charts)
-  })
-
-  it('users can submit feedback on charts', () => {
-    testValidFeedbackSubmission(AnalyticsBehaviourEntries, [
-      'entries-by-location',
-      'prisoners-with-entries-by-location',
-      'trends-entries',
-    ])
-  })
-
-  it('users will see errors if they submit invalid feedback on chart', () => {
-    testInvalidFeedbackSubmission(AnalyticsBehaviourEntries, [
-      'entries-by-location',
-      'prisoners-with-entries-by-location',
-      'trends-entries',
-    ])
   })
 })
 
@@ -206,17 +174,6 @@ context('Pgd Region selection > National > Analytics section > Behaviour entries
 
     testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartGuidance', charts)
   })
-
-  it('chart feedback box for analytics is tracked', () => {
-    const charts: Partial<Record<ChartId, string>> = {
-      'entries-by-location': 'Is this chart useful > Behaviour entries by prison group (National)',
-      'prisoners-with-entries-by-location':
-        'Is this chart useful > Prisoners with behaviour entries by prison group (National)',
-      'trends-entries': 'Is this chart useful > Behaviour entry trends (National)',
-    }
-
-    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartFeedback', charts)
-  })
 })
 
 context('Pgd Region selection > LTHS > Analytics section > Behaviour entries page', () => {
@@ -295,16 +252,5 @@ context('Pgd Region selection > LTHS > Analytics section > Behaviour entries pag
     }
 
     testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartGuidance', charts)
-  })
-
-  it('chart feedback box for analytics is tracked', () => {
-    const charts: Partial<Record<ChartId, string>> = {
-      'entries-by-location': 'Is this chart useful > Behaviour entries by establishment (Group)',
-      'prisoners-with-entries-by-location':
-        'Is this chart useful > Prisoners with behaviour entries by establishment (Group)',
-      'trends-entries': 'Is this chart useful > Behaviour entry trends (Group)',
-    }
-
-    testDetailsOpenedGaEvents(AnalyticsBehaviourEntries, 'getChartFeedback', charts)
   })
 })

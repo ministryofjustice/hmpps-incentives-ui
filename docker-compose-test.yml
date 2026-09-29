@@ -14,12 +14,12 @@ services:
       - '6379:6379'
 
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    image: alpine/minio:RELEASE.2025-10-15T17-29-55Z
     networks:
       - hmpps
     container_name: inc-ui-minio
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "wget", "http://localhost:9000/minio/health/live"]
       interval: 1s
       timeout: 3s
       retries: 15
@@ -36,7 +36,7 @@ services:
       - :9000
       - --console-address
       - :9001
-      - /data
+      - /home/minio/data
 
   minio-init:
     image: public.ecr.aws/aws-cli/aws-cli:2.37.0

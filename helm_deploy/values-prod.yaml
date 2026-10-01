@@ -1,6 +1,4 @@
 generic-service:
-  serviceAccountName: hmpps-incentives-prod-analytical-platform
-
   ingress:
     host: incentives-ui.hmpps.service.justice.gov.uk
 

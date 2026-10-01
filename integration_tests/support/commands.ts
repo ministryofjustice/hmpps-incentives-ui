@@ -72,3 +72,8 @@ Cypress.Commands.add('trackGoogleAnalyticsCalls', (): Cypress.Chainable<GoogleAn
   })
   return cy.wrap(tracker)
 })
+
+Cypress.Commands.add('verifyAuditEvents', (pageUrl: string, events: object[]) => {
+  // the page view and access attempt are sent independently, so may arrive in either order
+  return cy.task('getSentAuditEvents', { expectedCount: events.length, pageUrl }).should('have.deep.members', events)
+})

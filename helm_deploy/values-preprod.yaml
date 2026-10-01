@@ -4,8 +4,6 @@ generic-service:
   scheduledDowntime:
     enabled: true
 
-  serviceAccountName: hmpps-incentives-preprod-analytical-platform
-
   ingress:
     host: incentives-ui-preprod.hmpps.service.justice.gov.uk
 

@@ -1,3 +1,5 @@
+import type { PageViewEventDetails } from '@ministryofjustice/hmpps-audit-client'
+
 import type { UserDetails } from '../../services/userService'
 
 export default {}
@@ -24,6 +26,7 @@ export declare global {
     }
 
     interface Locals {
+      auditEvent?: PageViewEventDetails
       user: Express.User
     }
   }

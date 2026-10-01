@@ -20,6 +20,11 @@ declare namespace Cypress {
      * Set up stubs needed for recording prisoner incentive level
      */
     navigateToChangePrisonerIncentiveLevelDetails(): Chainable<PrisonerChangeIncentiveLevelDetailsPage>
+
+    /**
+     * Asserts on the audit events sent to HMPPS Audit so far for a page, in any order
+     */
+    verifyAuditEvents(pageUrl: string, events: object[]): Chainable<unknown>
   }
 
   /**

@@ -3,6 +3,9 @@ generic-service:
   nameOverride: hmpps-incentives-ui
   productId: DPS020
 
+  # carries both the Analytical Platform S3 read access for analytics and the HMPPS Audit queue policy
+  serviceAccountName: "hmpps-incentives-ui"
+
   replicaCount: 4
 
   image:
@@ -36,9 +39,9 @@ generic-service:
     BUNYAN_NO_COLOR: "1"
     PHASE_NAME: ""
     FEATURE_ADD_TEST_ERROR_ENDPOINT: ""
-    AUDIT_ENABLED: "false"
+    AUDIT_ENABLED: "true"
     AUDIT_SQS_REGION: "eu-west-2"
-    AUDIT_SERVICE_NAME: "UNASSIGNED"
+    AUDIT_SERVICE_NAME: "hmpps-incentives-ui"
 
   namespace_secrets:
     hmpps-incentives-ui:
@@ -65,9 +68,9 @@ generic-service:
       REDIS_AUTH_TOKEN: "auth_token"
     analytical-platform-s3-bucket-output:
       S3_BUCKET_NAME: "bucket_name"
-    # sqs-hmpps-audit-secret:
-    #   AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
-    #   AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
+    sqs-hmpps-audit-secret:
+      AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
+      AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
 
   allowlist:
     # Other IP allowlist groups are here:

@@ -3,8 +3,6 @@ generic-service:
   nameOverride: hmpps-incentives-ui
   productId: DPS020
 
-  # carries both the Analytical Platform S3 read access for analytics and the HMPPS Audit queue policy
-  serviceAccountName: "hmpps-incentives-ui"
 
   replicaCount: 4
 

@@ -22,12 +22,11 @@ export function testChartsGuidanceGaEvents<PageClass extends AnalyticsPage>(
   charts: Partial<Record<ChartId, string>>,
 ) {
   const page = Page.verifyOnPage(pageClass)
-  const detailsGetterMethod = 'getChartGuidance'
 
   cy.trackGoogleAnalyticsCalls().then(googleAnalyticsTracker => {
-    for (const [chartId, gaCategory] of Object.entries(charts)) {
-      page[detailsGetterMethod]
-        .call(page, chartId)
+    Object.entries(charts).forEach(([chartId, gaCategory]: [ChartId, string]) => {
+      page
+        .getChartGuidance(chartId)
         .click()
         .then(() =>
           googleAnalyticsTracker.shouldHaveLastSent('event', 'incentives_event', {
@@ -36,6 +35,6 @@ export function testChartsGuidanceGaEvents<PageClass extends AnalyticsPage>(
             label: 'MDI',
           }),
         )
-    }
+    })
   })
 }

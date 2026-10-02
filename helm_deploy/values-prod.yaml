@@ -24,7 +24,6 @@ generic-service:
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
     ANALYTICS_DATA_STALE_AFTER_DAYS: "3"
     FEATURE_FS_CACHE: "true"
-    FEATURE_PRECACHE_TABLES: "true"
 
   resources:
     limits:

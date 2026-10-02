@@ -190,7 +190,6 @@ export default {
   featureFlags: {
     addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),
     useFileSystemCache: flag('FEATURE_FS_CACHE', false),
-    precacheTables: flag('FEATURE_PRECACHE_TABLES', false),
   },
   analyticsDataStaleAferDays: Number(get('ANALYTICS_DATA_STALE_AFTER_DAYS', 0)),
   phaseName: get('PHASE_NAME', ''),

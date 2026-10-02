@@ -22,8 +22,6 @@
         chartId=chartId,
         googleAnalyticsCategory=analyticsView.incentiveLevelsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[chartId],
-        csrfToken=csrfToken,
         report=prisonersOnLevels,
         labelColumnWidth="extra-wide" if extraWideLabel else "wide"
       ) }}
@@ -51,8 +49,6 @@
         chartId=chartId,
         googleAnalyticsCategory=analyticsView.incentiveLevelsChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[chartId],
-        csrfToken=csrfToken,
         report=trends,
         populationLabel=populationLabel
       ) }}

@@ -16,9 +16,9 @@ export default function setUpHealthChecks(): Router {
 
   const middleware = monitoringMiddleware({
     applicationInfo,
-    healthComponents: apiConfig
-      .filter(([name, _options]) => name !== 'zendesk')
-      .map(([name, options]) => endpointHealthComponent(logger, name, options as EndpointHealthComponentOptions)),
+    healthComponents: apiConfig.map(([name, options]) =>
+      endpointHealthComponent(logger, name, options as EndpointHealthComponentOptions),
+    ),
   })
 
   router.get('/health', middleware.health)

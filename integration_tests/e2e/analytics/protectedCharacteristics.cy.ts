@@ -1,9 +1,4 @@
-import {
-  getTextFromTable,
-  testDetailsOpenedGaEvents,
-  testInvalidFeedbackSubmission,
-  testValidFeedbackSubmission,
-} from './utils'
+import { getTextFromTable, testChartsGuidanceGaEvents } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import type AnalyticsPage from '../../pages/analytics'
@@ -40,7 +35,6 @@ context('Analytics section > Protected characteristics page', () => {
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonTopLevelLocations')
-    cy.task('stubCreateZendeskTicket')
 
     cy.signIn()
 
@@ -179,42 +173,7 @@ context('Analytics section > Protected characteristics page', () => {
       'trends-entries-by-age': 'How you can use this chart > Behaviour entries by age trends (Prison)',
       'prisoners-with-entries-by-age': 'How you can use this chart > Behaviour entries by age (Prison)',
     }
-    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartGuidance', charts)
-  })
-
-  it('chart feedback box for analytics is tracked', () => {
-    const charts: Partial<Record<ChartId, string>> = {
-      'population-by-age': 'Is this chart useful > Population by age (Prison)',
-      'incentive-levels-by-age': 'Is this chart useful > Incentive level by age (Prison)',
-      'trends-incentive-levels-by-age': 'Is this chart useful > Incentive level by age trends (Prison)',
-      'entries-by-age': 'Is this chart useful > Comparison of behaviour entries by age (Prison)',
-      'trends-entries-by-age': 'Is this chart useful > Behaviour entries by age trends (Prison)',
-      'prisoners-with-entries-by-age': 'Is this chart useful > Behaviour entries by age (Prison)',
-    }
-
-    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartFeedback', charts)
-  })
-
-  it('users can submit feedback on charts', () => {
-    testValidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
-      'population-by-age',
-      'incentive-levels-by-age',
-      'trends-incentive-levels-by-age',
-      'entries-by-age',
-      'trends-entries-by-age',
-      'prisoners-with-entries-by-age',
-    ])
-  })
-
-  it('users will see errors if they submit invalid feedback on chart', () => {
-    testInvalidFeedbackSubmission(AnalyticsProtectedCharacteristics, [
-      'population-by-age',
-      'incentive-levels-by-age',
-      'trends-incentive-levels-by-age',
-      'entries-by-age',
-      'trends-entries-by-age',
-      'prisoners-with-entries-by-age',
-    ])
+    testChartsGuidanceGaEvents(AnalyticsProtectedCharacteristics, charts)
   })
 })
 
@@ -365,20 +324,7 @@ context('Pgd Region selection > National > Analytics section > Protected charact
       'trends-entries-by-age': 'How you can use this chart > Behaviour entries by age trends (National)',
       'prisoners-with-entries-by-age': 'How you can use this chart > Behaviour entries by age (National)',
     }
-    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartGuidance', charts)
-  })
-
-  it('chart feedback box for analytics is tracked', () => {
-    const charts: Partial<Record<ChartId, string>> = {
-      'population-by-age': 'Is this chart useful > Population by age (National)',
-      'incentive-levels-by-age': 'Is this chart useful > Incentive level by age (National)',
-      'trends-incentive-levels-by-age': 'Is this chart useful > Incentive level by age trends (National)',
-      'entries-by-age': 'Is this chart useful > Comparison of behaviour entries by age (National)',
-      'trends-entries-by-age': 'Is this chart useful > Behaviour entries by age trends (National)',
-      'prisoners-with-entries-by-age': 'Is this chart useful > Behaviour entries by age (National)',
-    }
-
-    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartFeedback', charts)
+    testChartsGuidanceGaEvents(AnalyticsProtectedCharacteristics, charts)
   })
 })
 
@@ -503,19 +449,6 @@ context('Pgd Region selection > LTHS > Analytics section > Protected characteris
       'trends-entries-by-age': 'How you can use this chart > Behaviour entries by age trends (Group)',
       'prisoners-with-entries-by-age': 'How you can use this chart > Behaviour entries by age (Group)',
     }
-    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartGuidance', charts)
-  })
-
-  it('chart feedback box for analytics is tracked', () => {
-    const charts: Partial<Record<ChartId, string>> = {
-      'population-by-age': 'Is this chart useful > Population by age (Group)',
-      'incentive-levels-by-age': 'Is this chart useful > Incentive level by age (Group)',
-      'trends-incentive-levels-by-age': 'Is this chart useful > Incentive level by age trends (Group)',
-      'entries-by-age': 'Is this chart useful > Comparison of behaviour entries by age (Group)',
-      'trends-entries-by-age': 'Is this chart useful > Behaviour entries by age trends (Group)',
-      'prisoners-with-entries-by-age': 'Is this chart useful > Behaviour entries by age (Group)',
-    }
-
-    testDetailsOpenedGaEvents(AnalyticsProtectedCharacteristics, 'getChartFeedback', charts)
+    testChartsGuidanceGaEvents(AnalyticsProtectedCharacteristics, charts)
   })
 })

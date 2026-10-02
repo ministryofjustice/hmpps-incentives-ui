@@ -1,19 +1,15 @@
 import type { Router } from 'express'
-import { BadRequest } from 'http-errors'
 
 import { AuthenticationClient, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
 import { managePrisonIncentiveLevelsRole, manageIncentiveLevelsRole } from '../data/constants'
-import ZendeskClient, { CreateTicketRequest } from '../data/zendeskClient'
 import S3Client from '../data/s3Client'
 import AnalyticsService from '../services/analyticsService'
 import { type CaseEntriesTable, TableType } from '../services/analyticsServiceTypes'
 import AnalyticsView from '../services/analyticsView'
 import { National } from '../services/pgdRegionService'
 import { cache } from './analyticsRouter'
-import { requireGetOrPost } from './forms/forms'
-import AboutPageFeedbackForm from './forms/aboutPageFeedbackForm'
 import { LocationsInsidePrisonApi } from '../data/locationsInsidePrisonApi'
 import { createRedisClient } from '../data/redisClient'
 
@@ -49,103 +45,17 @@ export default function routes(router: Router): Router {
     res.render('pages/about-national-policy.njk')
   })
 
-  const formId = 'about-page-feedback' as const
+  router.get('/about', async (req, res) => {
+    const activeCaseLoad = res.locals.user.activeCaseload.id
+    const prisonRegions = await getPrisonRegions(activeCaseLoad)
+    const prisonRegionTableRows = Object.entries(prisonRegions).map(([region, prisons]) => {
+      return [{ text: region }, { html: prisons.join('<br />') }]
+    })
 
-  router.all(
-    '/about',
-    requireGetOrPost,
-    async (req, res, next) => {
-      const form = new AboutPageFeedbackForm(formId)
-      res.locals.forms = res.locals.forms || {}
-      res.locals.forms[formId] = form
-
-      if (req.method !== 'POST') {
-        next()
-        return
-      }
-      if (!req.body?.formId || req.body.formId !== formId) {
-        logger.error(`Form posted with incorrect formId=${req.body?.formId} when only ${formId} is allowed`)
-        next(new BadRequest())
-        return
-      }
-
-      form.submit(req.body)
-      if (form.hasErrors) {
-        logger.warn(`Form ${form.formId} submitted with errors`)
-        next()
-        return
-      }
-
-      const activeCaseLoad = res.locals.user.activeCaseload.id
-      const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`
-
-      const informationUseful = form.getField('informationUseful').value
-      const yesComments = form.getField('yesComments').value
-      const noComments = form.getField('noComments').value
-      const tags = ['hmpps-incentives', 'about-page-feedback', `useful-${informationUseful}`]
-      let comment = `
-About page (${url})
-Prison: ${activeCaseLoad}
-
-Is this information useful? ${informationUseful}
-`
-      if (yesComments) {
-        comment += `
-Comments:
-${yesComments}`
-      } else if (noComments) {
-        comment += `
-Comments:
-${noComments}`
-      }
-
-      logger.info(`Submitting feedback to Zendesk: About page was useful=${informationUseful}`)
-
-      const ticket: CreateTicketRequest = {
-        subject: 'Feedback on about page',
-        comment: { body: comment.trim() },
-        type: 'task',
-        tags,
-        custom_fields: [
-          // Service
-          { id: 23757677, value: 'hmpps_incentives' },
-          // Environment
-          { id: 32342378, value: config.environment },
-          // URL
-          { id: 23730083, value: url },
-          // Prison
-          { id: 23984153, value: activeCaseLoad },
-        ],
-      }
-      const { username, token } = config.apis.zendesk
-      if (username && token) {
-        const zendesk = new ZendeskClient(config.apis.zendesk, username, token)
-        try {
-          await zendesk.createTicket(ticket)
-          req.flash('success', 'Your feedback has been submitted.')
-        } catch (error) {
-          logger.error('Failed to create Zendesk ticket', error)
-        }
-      } else {
-        logger.error('No Zendesk credetials. Cannot create ticket.')
-      }
-
-      next()
-    },
-    async (req, res) => {
-      const activeCaseLoad = res.locals.user.activeCaseload.id
-      const prisonRegions = await getPrisonRegions(activeCaseLoad)
-      const prisonRegionTableRows = Object.entries(prisonRegions).map(([region, prisons]) => {
-        return [{ text: region }, { html: prisons.join('<br />') }]
-      })
-
-      res.render('pages/about-analytics.njk', {
-        prisonRegionTableRows,
-        messages: req.flash(),
-        form: res.locals.forms[formId],
-      })
-    },
-  )
+    res.render('pages/about-analytics.njk', {
+      prisonRegionTableRows,
+    })
+  })
 
   return router
 }

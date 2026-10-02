@@ -23,8 +23,6 @@
         chartId=chartId,
         googleAnalyticsCategory=analyticsView.behaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[chartId],
-        csrfToken=csrfToken,
         report=behaviourEntries,
         labelColumnWidth="extra-wide" if extraWideLabel else "wide"
       ) }}
@@ -44,8 +42,6 @@
         chartId=chartId,
         googleAnalyticsCategory=analyticsView.behaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[chartId],
-        csrfToken=csrfToken,
         report=prisonersWithEntries,
         labelColumnWidth="extra-wide" if extraWideLabel else "wide"
       ) }}
@@ -73,8 +69,6 @@
         chartId=chartId,
         googleAnalyticsCategory=analyticsView.behaviourEntriesChartsContent[chartId].googleAnalyticsCategory,
         activeCaseload=user.activeCaseload.id,
-        form=forms[chartId],
-        csrfToken=csrfToken,
         report=trends,
         populationLabel=populationLabel
       ) }}

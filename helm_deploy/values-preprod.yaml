@@ -26,7 +26,6 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://frontend-components-preprod.hmpps.service.justice.gov.uk"
     PHASE_NAME: "PRE-PRODUCTION"
-    FEATURE_FS_CACHE: "true"
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-incentives-preprod

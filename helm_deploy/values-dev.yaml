@@ -27,7 +27,6 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://frontend-components-dev.hmpps.service.justice.gov.uk"
     PHASE_NAME: "DEV"
-    FEATURE_FS_CACHE: "true"
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-incentives-dev

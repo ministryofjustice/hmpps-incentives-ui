@@ -23,7 +23,6 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
     ANALYTICS_DATA_STALE_AFTER_DAYS: "3"
-    FEATURE_FS_CACHE: "true"
 
   resources:
     limits:

@@ -1,4 +1,4 @@
-import type { Response } from 'superagent'
+import type { Response, SuperAgentRequest } from 'superagent'
 
 import createUserToken from '../../server/routes/testutils/createUserToken'
 import { stubFor, getMatchingRequests } from './wiremock'
@@ -115,7 +115,15 @@ const token = (roles: string[] = []) =>
     },
   })
 
+/** the HMPPS Audit SQS queue; the audit client posts SendMessage to the root path */
+const stubAuditSqs = (): SuperAgentRequest =>
+  stubFor({
+    request: { method: 'POST', url: '/' },
+    response: { status: 200, headers: { 'Content-Type': 'text/xml' }, body: '{}' },
+  })
+
 export default {
+  stubAuditSqs,
   getSignInUrl,
   stubAuthPing: ping,
   stubAuthManageDetails: manageDetails,
@@ -127,6 +135,6 @@ export default {
     } = {
       roles: [],
     },
-  ): Promise<[Response, Response, Response, Response, Response]> =>
-    Promise.all([favicon(), redirect(), signOut(), token(roles), tokenVerification.stubVerifyToken()]),
+  ): Promise<[Response, Response, Response, Response, Response, Response]> =>
+    Promise.all([favicon(), redirect(), signOut(), token(roles), tokenVerification.stubVerifyToken(), stubAuditSqs()]),
 }

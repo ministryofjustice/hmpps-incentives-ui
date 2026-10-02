@@ -1,4 +1,5 @@
 import { AgentConfig } from '@ministryofjustice/hmpps-rest-client'
+import type { AuditClientConfig } from '@ministryofjustice/hmpps-audit-client'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -37,7 +38,7 @@ const applicationInfo: ApplicationInfo = {
   branchName: get('GIT_BRANCH', 'xxxxxxxxxxxxxxxxxxx', requiredInProduction),
 }
 
-const auditConfig = () => {
+const auditConfig = (): AuditClientConfig => {
   const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
   return {
     enabled: auditEnabled,

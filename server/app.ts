@@ -1,3 +1,4 @@
+import type { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import express from 'express'
 import { NotFound } from 'http-errors'
 
@@ -14,10 +15,11 @@ import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpHealthChecks from './middleware/setUpHealthChecks'
 import setUpWebRequestParsing from './middleware/setUpRequestParsing'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
+import auditPageView from './middleware/auditPageView'
 import breadcrumbs from './middleware/breadcrumbs'
 import frontendComponents from './middleware/frontendComponents'
 
-export default function createApp(userService: UserService): express.Application {
+export default function createApp(userService: UserService, auditService: AuditService): express.Application {
   const app = express()
 
   app.set('json spaces', 2)
@@ -31,6 +33,8 @@ export default function createApp(userService: UserService): express.Application
   app.use(setUpStaticResources())
   nunjucksSetup(app)
   app.use(setUpAuthentication())
+  // before authorisation, so that refused requests are still audited as access attempts
+  app.get('*any', auditPageView(auditService))
   app.use(authorisationMiddleware())
   app.use(breadcrumbs())
   app.use(frontendComponents())

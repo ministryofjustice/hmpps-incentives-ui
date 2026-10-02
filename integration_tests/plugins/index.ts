@@ -1,4 +1,4 @@
-import { resetStubs } from '../mockApis/wiremock'
+import { getSentAuditEvents, resetStubs } from '../mockApis/wiremock'
 
 import auth from '../mockApis/auth'
 import tokenVerification from '../mockApis/tokenVerification'
@@ -13,6 +13,7 @@ import locationsInsidePrisonApi from '../mockApis/locationsInsidePrisonApi'
 export default (on: Cypress.PluginEvents) => {
   on('task', {
     resetStubs,
+    getSentAuditEvents,
 
     ...auth,
     ...manageUsersApi,

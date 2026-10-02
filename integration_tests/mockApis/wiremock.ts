@@ -66,3 +66,44 @@ export const getMatchingRequests = (body: FindRequestCriteria): Promise<FoundReq
 
 export const resetStubs = (): Promise<Response[]> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
+
+/**
+ * Audit events sent to the stubbed HMPPS Audit SQS endpoint, optionally only those for one page.
+ *
+ * Events are identified by their SQS SendMessage payload rather than by position, so that
+ * unrelated requests cannot shift the results.
+ *
+ * The app sends them fire-and-forget – and the access attempt only once the response has
+ * closed – so this waits for `expectedCount` of them to arrive before returning.
+ */
+export const getSentAuditEvents = async ({
+  expectedCount = 0,
+  pageUrl,
+}: { expectedCount?: number; pageUrl?: string } = {}): Promise<Record<string, unknown>[]> => {
+  const readSentEvents = async (): Promise<Record<string, unknown>[]> => {
+    const requests = await getMatchingRequests({ method: 'POST', urlPath: '/' })
+    return requests
+      .filter(({ body }) => body?.includes('MessageBody'))
+      .map(({ body }) => {
+        const event = JSON.parse(JSON.parse(body).MessageBody)
+        // vary per run, so cannot be asserted on
+        delete event.correlationId
+        delete event.when
+        return event
+      })
+      .filter(event => !pageUrl || JSON.parse(event.details).pageUrl === pageUrl)
+  }
+
+  const waitForEvents = async (attemptsLeft: number): Promise<Record<string, unknown>[]> => {
+    const events = await readSentEvents()
+    if (events.length >= expectedCount || attemptsLeft <= 0) {
+      return events
+    }
+    await new Promise(resolve => {
+      setTimeout(resolve, 50)
+    })
+    return waitForEvents(attemptsLeft - 1)
+  }
+
+  return waitForEvents(100)
+}

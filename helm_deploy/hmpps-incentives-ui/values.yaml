@@ -3,6 +3,7 @@ generic-service:
   nameOverride: hmpps-incentives-ui
   productId: DPS020
 
+
   replicaCount: 4
 
   image:
@@ -35,9 +36,9 @@ generic-service:
     TOKEN_VERIFICATION_ENABLED: "true"
     BUNYAN_NO_COLOR: "1"
     PHASE_NAME: ""
-    AUDIT_ENABLED: "false"
+    AUDIT_ENABLED: "true"
     AUDIT_SQS_REGION: "eu-west-2"
-    AUDIT_SERVICE_NAME: "UNASSIGNED"
+    AUDIT_SERVICE_NAME: "hmpps-incentives-ui"
 
   namespace_secrets:
     hmpps-incentives-ui:
@@ -57,9 +58,9 @@ generic-service:
       REDIS_AUTH_TOKEN: "auth_token"
     analytical-platform-s3-bucket-output:
       S3_BUCKET_NAME: "bucket_name"
-    # sqs-hmpps-audit-secret:
-    #   AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
-    #   AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
+    sqs-hmpps-audit-secret:
+      AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
+      AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
 
   allowlist:
     # Other IP allowlist groups are here:

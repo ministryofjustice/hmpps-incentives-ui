@@ -13,11 +13,7 @@ import {
 } from '../services/analyticsServiceTypes'
 import PrisonRegister from '../data/prisonRegister'
 import PgdRegionService, { National } from '../services/pgdRegionService'
-import {
-  StitchedTablesCache,
-  MemoryStitchedTablesCache,
-  FileStitchedTablesCache,
-} from '../services/stitchedTablesCache'
+import { StitchedTablesCache, FileStitchedTablesCache } from '../services/stitchedTablesCache'
 import AnalyticsView from '../services/analyticsView'
 
 export const protectedCharacteristicRoutes = {
@@ -66,9 +62,7 @@ async function transformAnalyticsError<R>(reportPromise: Promise<R>): Promise<R>
   }
 }
 
-export const cache: StitchedTablesCache = config.featureFlags.useFileSystemCache
-  ? new FileStitchedTablesCache()
-  : new MemoryStitchedTablesCache()
+export const cache: StitchedTablesCache = new FileStitchedTablesCache()
 
 export default function routes(router: Router): Router {
   router.get('/', (_req, res) => {

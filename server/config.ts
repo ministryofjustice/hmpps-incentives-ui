@@ -187,11 +187,7 @@ export default {
     // Google Analytics 4 (GA4) measurement ID. Starts with `G-`.
     ga4MeasurementId: get('GOOGLE_ANALYTICS_GA4_MEASUREMENT_ID', ''),
   },
-  featureFlags: {
-    addTestErrorEndpoint: flag('FEATURE_ADD_TEST_ERROR_ENDPOINT', false),
-    useFileSystemCache: flag('FEATURE_FS_CACHE', false),
-    precacheTables: flag('FEATURE_PRECACHE_TABLES', false),
-  },
+  featureFlags: {},
   analyticsDataStaleAferDays: Number(get('ANALYTICS_DATA_STALE_AFTER_DAYS', 0)),
   phaseName: get('PHASE_NAME', ''),
 }

@@ -2,9 +2,6 @@ import type { Express } from 'express'
 import request from 'supertest'
 
 import PrisonRegister from '../data/prisonRegister'
-import config from '../config'
-import ZendeskClient from '../data/zendeskClient'
-import type { ChartId } from './analyticsChartTypes'
 import { cache, protectedCharacteristicRoutes } from './analyticsRouter'
 import { appWithAllRoutes } from './testutils/appSetup'
 import { MockTable, mockSdkS3ClientResponse } from '../testData/s3Bucket'
@@ -24,25 +21,6 @@ jest.mock('@aws-sdk/client-s3', () => {
   }
 })
 jest.mock('@ministryofjustice/hmpps-auth-clients')
-jest.mock('../data/zendeskClient')
-
-let originalZendeskConfig: { url: string; username: string; token: string }
-
-let mockedZendeskClientClass: jest.Mock<ZendeskClient>
-
-beforeAll(() => {
-  const { url, username, token } = config.apis.zendesk
-  originalZendeskConfig = { url, username, token }
-  config.apis.zendesk.url = 'http://zendesk.local'
-  config.apis.zendesk.username = 'anonymous@justice.gov.uk'
-  config.apis.zendesk.token = '123456789012345678901234567890'
-
-  mockedZendeskClientClass = ZendeskClient as jest.Mock<ZendeskClient>
-})
-
-afterAll(() => {
-  config.apis.zendesk = { ...config.apis.zendesk, ...originalZendeskConfig }
-})
 
 let app: Express
 
@@ -143,7 +121,6 @@ type AnalyticsPage = {
   url: string
   expectedHeading: string
   linksFromCharts?: string[]
-  chartIds: ChartId[]
 }
 
 const analyticsPages: AnalyticsPage[] = [
@@ -151,7 +128,6 @@ const analyticsPages: AnalyticsPage[] = [
     name: 'National Behaviour entries',
     url: '/analytics/National/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by prison group – last 28 days',
-    chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
     linksFromCharts: [
       '/analytics/LTHS/behaviour-entries',
       '/analytics/WLS/behaviour-entries',
@@ -162,7 +138,6 @@ const analyticsPages: AnalyticsPage[] = [
     name: 'PGD region Behaviour entries',
     url: '/analytics/LTHS/behaviour-entries',
     expectedHeading: 'Comparison of positive and negative behaviour entries by establishment – last 28 days',
-    chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
     name: 'Prison (MDI) Behaviour entries',
@@ -179,13 +154,11 @@ const analyticsPages: AnalyticsPage[] = [
       '/incentive-summary/MDI-8',
       '/incentive-summary/MDI-SEG',
     ],
-    chartIds: ['entries-by-location', 'prisoners-with-entries-by-location', 'trends-entries'],
   },
   {
     name: 'National Incentive levels',
     url: '/analytics/National/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by prison group',
-    chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
     linksFromCharts: [
       '/analytics/LTHS/incentive-levels',
       '/analytics/WLS/incentive-levels',
@@ -196,7 +169,6 @@ const analyticsPages: AnalyticsPage[] = [
     name: 'PGD region Incentive levels',
     url: '/analytics/LTHS/incentive-levels',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by establishment',
-    chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
     name: 'Prison (MDI) Incentive levels',
@@ -213,50 +185,25 @@ const analyticsPages: AnalyticsPage[] = [
       '/incentive-summary/MDI-8',
       '/incentive-summary/MDI-SEG',
     ],
-    chartIds: ['incentive-levels-by-location', 'trends-incentive-levels'],
   },
   {
     name: 'National Protected characteristics',
     url: '/analytics/National/protected-characteristic?characteristic=disability',
     expectedHeading: 'Percentage and number of prisoners by recorded disability',
-    chartIds: [
-      'population-by-disability',
-      'incentive-levels-by-disability',
-      'trends-incentive-levels-by-disability',
-      'entries-by-disability',
-      'trends-entries-by-disability',
-      'prisoners-with-entries-by-disability',
-    ],
   },
   {
     name: 'PGD region Protected characteristics',
     url: '/analytics/LTHS/protected-characteristic?characteristic=disability',
     expectedHeading: 'Percentage and number of prisoners by recorded disability',
-    chartIds: [
-      'population-by-disability',
-      'incentive-levels-by-disability',
-      'trends-incentive-levels-by-disability',
-      'entries-by-disability',
-      'trends-entries-by-disability',
-      'prisoners-with-entries-by-disability',
-    ],
   },
   {
     name: 'Prison (MDI) Protected characteristics',
     url: '/analytics/protected-characteristic?characteristic=disability',
     expectedHeading: 'Percentage and number of prisoners on each incentive level by recorded disability',
-    chartIds: [
-      'population-by-disability',
-      'incentive-levels-by-disability',
-      'trends-incentive-levels-by-disability',
-      'entries-by-disability',
-      'trends-entries-by-disability',
-      'prisoners-with-entries-by-disability',
-    ],
   },
 ]
 
-describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHeading, chartIds, linksFromCharts }) => {
+describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHeading, linksFromCharts }) => {
   beforeEach(() => {
     mockSdkS3ClientResponse(s3.send)
     cache.clear()
@@ -313,113 +260,6 @@ describe.each(analyticsPages)('Analytics data pages', ({ name, url, expectedHead
       .get(url)
       .expect(res => {
         expect(res.text).toContain('Information on how we collect, group and analyse data')
-      })
-  })
-
-  describe.each(chartIds)('charts have feedback forms', chartId => {
-    beforeAll(() => {
-      mockSdkS3ClientResponse(s3.send)
-    })
-
-    it(`${name} page can post simple feedback on ${chartId} chart`, () => {
-      return request(app)
-        .post(url)
-        .send({ formId: chartId, chartUseful: 'yes' })
-        .expect(200)
-        .expect(res => {
-          expect(res.text).toContain(expectedHeading)
-          expect(mockedZendeskClientClass).toHaveBeenCalled()
-          const mockedZendeskClient = mockedZendeskClientClass.mock.instances[0] as jest.Mocked<ZendeskClient>
-          expect(mockedZendeskClient.createTicket).toHaveBeenCalledWith({
-            subject: `Feedback on chart ${chartId}`,
-            comment: { body: expect.any(String) },
-            type: 'task',
-            tags: ['hmpps-incentives', 'chart-feedback', `chart-${chartId}`, 'useful-yes'],
-            custom_fields: [
-              // Service
-              { id: 23757677, value: 'hmpps_incentives' },
-              // Environment
-              { id: 32342378, value: config.environment },
-              // URL
-              { id: 23730083, value: expect.stringContaining(url) },
-              // Prison
-              { id: 23984153, value: 'MDI' },
-            ],
-          })
-          const createTicketRequest = mockedZendeskClient.createTicket.mock.calls[0][0]
-          expect(createTicketRequest.comment.body).toContain('Is this chart useful? yes')
-          expect(createTicketRequest.comment.body).toContain('Prison: MDI')
-          expect(createTicketRequest.comment.body).not.toContain('Comments:')
-        })
-    })
-
-    it(`${name} page can post more complex feedback on ${chartId} chart`, () => {
-      return request(app)
-        .post(url)
-        .send({
-          formId: chartId,
-          chartUseful: 'no',
-          mainNoReason: 'do-not-understand',
-          noComments: 'How do I use this?',
-        })
-        .expect(200)
-        .expect(res => {
-          expect(res.text).toContain(expectedHeading)
-          expect(res.text).toContain('Your feedback has been submitted')
-          const mockedZendeskClient = mockedZendeskClientClass.mock.instances[0] as jest.Mocked<ZendeskClient>
-          expect(mockedZendeskClient.createTicket).toHaveBeenCalledWith({
-            subject: expect.any(String),
-            comment: { body: expect.any(String) },
-            type: 'task',
-            tags: [
-              'hmpps-incentives',
-              'chart-feedback',
-              `chart-${chartId}`,
-              'useful-no',
-              'not-useful-do-not-understand',
-            ],
-            custom_fields: expect.anything(),
-          })
-          expect(mockedZendeskClientClass).toHaveBeenCalled()
-          const createTicketRequest = mockedZendeskClient.createTicket.mock.calls[0][0]
-          expect(createTicketRequest.comment.body).toContain('Is this chart useful? no')
-          expect(createTicketRequest.comment.body).toContain('Prison: MDI')
-          expect(createTicketRequest.comment.body).toContain('Main reason: do-not-understand')
-          expect(createTicketRequest.comment.body).toContain('Comments:')
-          expect(createTicketRequest.comment.body).toContain('How do I use this?')
-        })
-    })
-
-    it(`${name} page will not post invalid feedback on ${chartId} chart`, () => {
-      return request(app)
-        .post(url)
-        .send({
-          formId: chartId,
-          chartUseful: 'no',
-          noComments: 'Do I have to choose only one reason?',
-        })
-        .expect(200)
-        .expect(res => {
-          expect(res.text).toContain(expectedHeading)
-          expect(res.text).not.toContain('Your feedback has been submitted')
-          expect(res.text).toContain('There is a problem') // error summary
-          expect(res.text).toContain(`#${chartId}-mainNoReason`) // link to field
-          expect(res.text).toContain('Select a reason for your answer') // error message
-          expect(res.text).toContain(`id="${chartId}-mainNoReason"`) // field with error
-          expect(res.text).toContain('Do I have to choose only one reason?') // comment not forgotten
-          expect(mockedZendeskClientClass).not.toHaveBeenCalled()
-        })
-    })
-  })
-
-  it(`${name} page will not accept a post without a formId parameter`, () => {
-    return request(app)
-      .post(url)
-      .send({ chartUseful: 'yes' })
-      .expect(400)
-      .expect(res => {
-        expect(res.text).toContain('Sorry, there is a problem with the service')
-        expect(mockedZendeskClientClass).not.toHaveBeenCalled()
       })
   })
 })

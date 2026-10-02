@@ -167,16 +167,6 @@ export default {
       agent: new AgentConfig(Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000))),
       enabled: flag('TOKEN_VERIFICATION_ENABLED', false),
     },
-    zendesk: {
-      url: get('ZENDESK_URL', 'https://ministryofjustice.zendesk.com', notRequiredInProduction),
-      timeout: {
-        response: Number(get('ZENDESK_TIMEOUT_RESPONSE', 5000)),
-        deadline: Number(get('ZENDESK_TIMEOUT_DEADLINE', 5000)),
-      },
-      agent: new AgentConfig(Number(get('ZENDESK_TIMEOUT_RESPONSE', 5000))),
-      username: get('ZENDESK_USERNAME', '', requiredInProduction),
-      token: get('ZENDESK_TOKEN', '', requiredInProduction),
-    },
     frontendComponents: {
       url: get('COMPONENT_API_URL', 'http://localhost:8082', requiredInProduction),
       healthPath: '/ping',

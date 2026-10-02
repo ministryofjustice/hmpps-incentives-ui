@@ -1,9 +1,4 @@
-import {
-  getTextFromTable,
-  testDetailsOpenedGaEvents,
-  testInvalidFeedbackSubmission,
-  testValidFeedbackSubmission,
-} from './utils'
+import { getTextFromTable, testChartsGuidanceGaEvents } from './utils'
 import Page from '../../pages/page'
 import HomePage from '../../pages/home'
 import AnalyticsIncentiveLevels from '../../pages/analytics/incentiveLevels'
@@ -18,7 +13,6 @@ context('Analytics section > Incentive levels page', () => {
     cy.task('stubNomisUserRolesGetCaseloads')
     cy.task('stubManageUser')
     cy.task('stubPrisonTopLevelLocations')
-    cy.task('stubCreateZendeskTicket')
 
     cy.signIn()
 
@@ -67,24 +61,7 @@ context('Analytics section > Incentive levels page', () => {
       'trends-incentive-levels': 'How you can use this chart > Incentive level trends (Prison)',
     }
 
-    testDetailsOpenedGaEvents(AnalyticsIncentiveLevels, 'getChartGuidance', charts)
-  })
-
-  it('chart feedback box for analytics is tracked', () => {
-    const charts: Partial<Record<ChartId, string>> = {
-      'incentive-levels-by-location': 'Is this chart useful > Incentive level by wing (Prison)',
-      'trends-incentive-levels': 'Is this chart useful > Incentive level trends (Prison)',
-    }
-
-    testDetailsOpenedGaEvents(AnalyticsIncentiveLevels, 'getChartFeedback', charts)
-  })
-
-  it('users can submit feedback on chart', () => {
-    testValidFeedbackSubmission(AnalyticsIncentiveLevels, ['incentive-levels-by-location', 'trends-incentive-levels'])
-  })
-
-  it('users will see errors if they submit invalid feedback on chart', () => {
-    testInvalidFeedbackSubmission(AnalyticsIncentiveLevels, ['incentive-levels-by-location', 'trends-incentive-levels'])
+    testChartsGuidanceGaEvents(AnalyticsIncentiveLevels, charts)
   })
 })
 
@@ -160,16 +137,7 @@ context('Pgd Region selection > National > Analytics section > Incentive levels 
       'trends-incentive-levels': 'How you can use this chart > Incentive level trends (National)',
     }
 
-    testDetailsOpenedGaEvents(AnalyticsIncentiveLevels, 'getChartGuidance', charts)
-  })
-
-  it('chart feedback box for analytics is tracked', () => {
-    const charts: Partial<Record<ChartId, string>> = {
-      'incentive-levels-by-location': 'Is this chart useful > Incentive level by prison group (National)',
-      'trends-incentive-levels': 'Is this chart useful > Incentive level trends (National)',
-    }
-
-    testDetailsOpenedGaEvents(AnalyticsIncentiveLevels, 'getChartFeedback', charts)
+    testChartsGuidanceGaEvents(AnalyticsIncentiveLevels, charts)
   })
 })
 
@@ -231,15 +199,6 @@ context('Pgd Region selection > LTHS > Analytics section > Incentive levels page
       'trends-incentive-levels': 'How you can use this chart > Incentive level trends (Group)',
     }
 
-    testDetailsOpenedGaEvents(AnalyticsIncentiveLevels, 'getChartGuidance', charts)
-  })
-
-  it('chart feedback box for analytics is tracked', () => {
-    const charts: Partial<Record<ChartId, string>> = {
-      'incentive-levels-by-location': 'Is this chart useful > Incentive level by establishment (Group)',
-      'trends-incentive-levels': 'Is this chart useful > Incentive level trends (Group)',
-    }
-
-    testDetailsOpenedGaEvents(AnalyticsIncentiveLevels, 'getChartFeedback', charts)
+    testChartsGuidanceGaEvents(AnalyticsIncentiveLevels, charts)
   })
 })

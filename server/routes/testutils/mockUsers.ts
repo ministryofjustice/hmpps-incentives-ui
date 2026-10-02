@@ -34,6 +34,7 @@ export function makeMockUser({
   const authorities = roles.map(role => (role.startsWith('ROLE_') ? role : `ROLE_${role}`))
   return {
     ...mockUserDetails,
+    userUuid: '11111111-1111-1111-1111-111111111111',
     token: createUserToken(authorities),
     roles: authorities,
   }

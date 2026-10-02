@@ -14,6 +14,7 @@ export declare global {
     interface User extends Partial<UserDetails> {
       username: string
       token: string
+      userUuid?: string
       roles?: string[]
     }
 

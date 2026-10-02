@@ -2,6 +2,7 @@ import { csrfSync } from 'csrf-sync'
 import { Router } from 'express'
 
 import setUpCurrentUser from '../middleware/setUpCurrentUser'
+import userTelemetry from '../middleware/userTelemetry'
 import type UserService from '../services/userService'
 
 const testMode = process.env.NODE_ENV === 'test'
@@ -10,6 +11,7 @@ export default function standardRouter(userService: UserService): Router {
   const router = Router({ mergeParams: true })
 
   router.use(setUpCurrentUser(userService))
+  router.use(userTelemetry())
 
   // CSRF protection
   if (!testMode) {

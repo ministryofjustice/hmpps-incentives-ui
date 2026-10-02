@@ -43,9 +43,6 @@ function appWithAuditing({
 
   app.get('/', (req, res) => res.render('pages/home.njk'))
   app.get('/prisoner-images/:imageId.jpeg', (req, res) => res.send('image'))
-  app.get('/throw-test-error', () => {
-    throw new Error('test error')
-  })
   app.get('/incentive-reviews/prisoner/:prisonerNumber', (req, res) => res.render('pages/prisoner.njk'))
   app.get('/incentive-summary/:locationPrefix', (req, res) => res.render('pages/summary.njk'))
   app.get('/forbidden', (req, res) => res.status(403).render('pages/forbidden.njk'))
@@ -123,11 +120,8 @@ describe('auditPageView', () => {
     expect(loggedEvents()).toEqual([{ subject: notApplicable, what: 'PAGE_VIEW_ACCESS_ATTEMPT' }])
   })
 
-  it.each([
-    ['a prisoner photo', '/prisoner-images/A1234BC.jpeg'],
-    ['the test error page', '/throw-test-error'],
-  ])('does not audit %s', async (_name, url) => {
-    await request(appWithAuditing()).get(url)
+  it('does not audit a prisoner photo', async () => {
+    await request(appWithAuditing()).get('/prisoner-images/A1234BC.jpeg')
 
     expect(auditService.logAuditEvent).not.toHaveBeenCalled()
   })

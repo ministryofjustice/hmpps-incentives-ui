@@ -4,10 +4,10 @@ import type { Request, RequestHandler } from 'express'
 import logger from '../../logger'
 
 /**
- * Requests that are not page views: prisoner photos and the test error page.
+ * Requests that are not page views: prisoner photos.
  * Health checks, static resources and sign-in are handled earlier in app.ts so never reach here.
  */
-const notPageViews = [/^\/prisoner-images\/[^/]+\.jpeg(?:\?.*)?$/, /^\/throw-test-error(?:[/?].*)?$/]
+const notPageViews = [/^\/prisoner-images\/[^/]+\.jpeg(?:\?.*)?$/]
 
 /** Prisoner numbers appear in the path of prisoner-specific pages */
 const prisonerNumberInPath = /\/prisoner\/([A-Z][0-9]{4}[A-Z]{2})\b/

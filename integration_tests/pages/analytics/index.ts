@@ -22,20 +22,8 @@ export default abstract class AnalyticsPage extends Page {
     return cy.get('.govuk-details[data-qa=guidance]')
   }
 
-  get chartFeedbackBoxes(): PageElement<HTMLDetailsElement> {
-    return cy.get('.govuk-details[data-qa=chart-feedback]')
-  }
-
   getChartGuidance(chartId: ChartId): PageElement<HTMLDetailsElement> {
     return this.chartGuidanceBoxes.filter(`#guidance-${chartId}`).find('.govuk-details__summary')
-  }
-
-  getChartFeedback(chartId: ChartId): PageElement<HTMLDetailsElement> {
-    return this.chartFeedbackBoxes.filter(`#chart-feedback-${chartId}`).find('.govuk-details__summary')
-  }
-
-  getChartFeedbackForm(chartId: ChartId): PageElement<HTMLFormElement> {
-    return cy.get(`#form-${chartId}`)
   }
 
   getChartTable(chartId: ChartId): PageElement<HTMLTableRowElement> {

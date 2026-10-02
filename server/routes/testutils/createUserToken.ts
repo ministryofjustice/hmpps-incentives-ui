@@ -7,6 +7,8 @@ export default function createUserToken(roles: string[]) {
   const authorities = roles.map(role => (role.startsWith('ROLE_') ? role : `ROLE_${role}`))
   const payload: AuthToken = {
     user_name: 'user1',
+    user_id: 'id1',
+    user_uuid: '11111111-1111-1111-1111-111111111111',
     scope: ['read', 'write'],
     auth_source: 'nomis',
     authorities,

@@ -7,7 +7,6 @@ import incentivesApi from '../mockApis/incentivesApi'
 import manageUsersApi from '../mockApis/manageUsersApi'
 import nomisUserRolesApi from '../mockApis/nomisUserRolesApi'
 import offenderSearchApi from '../mockApis/offenderSearchApi'
-import zendeskApi from '../mockApis/zendeskApi'
 import frontendComponents from '../mockApis/frontendComponents'
 import locationsInsidePrisonApi from '../mockApis/locationsInsidePrisonApi'
 
@@ -53,7 +52,5 @@ export default (on: Cypress.PluginEvents) => {
 
     stubPrisonTopLevelLocations: locationsInsidePrisonApi.stubPrisonTopLevelLocations,
     stubLocationsInsidePrisonApiPing: locationsInsidePrisonApi.stubPing,
-
-    stubCreateZendeskTicket: zendeskApi.stubCreateTicket,
   })
 }

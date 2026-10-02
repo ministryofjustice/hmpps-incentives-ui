@@ -8,6 +8,8 @@ export interface AuthToken extends JwtPayload {
   auth_source?: string
   grant_type?: string
   user_name?: string
+  user_id?: string
+  user_uuid?: string
   authorities?: string[]
   scope?: string[]
 }

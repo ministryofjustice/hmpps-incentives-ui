@@ -1,5 +1,4 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
-{% from "./formFeedback.njk" import formFeedback %}
 
 {% macro chartBase(
   title,
@@ -7,8 +6,6 @@
   chartId,
   googleAnalyticsCategory,
   activeCaseload,
-  form,
-  csrfToken,
   report,
   afterHeaderHtml=''
 ) %}
@@ -42,19 +39,6 @@
             }
           }) }}
         {% endif %}
-
-        {{ govukDetails({
-          summaryText: "Is this chart useful?",
-          html: formFeedback(form=form, csrfToken=csrfToken),
-          id: "chart-feedback-" + chartId,
-          classes: "govuk-!-display-none-print",
-          open: form.hasErrors,
-          attributes: {
-            "data-qa": "chart-feedback",
-            "data-ga-category": "Is this chart useful > " + googleAnalyticsCategory,
-            "data-ga-label": activeCaseload | default("")
-          }
-        }) }}
       </div>
     </div>
 

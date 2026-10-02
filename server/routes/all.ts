@@ -4,7 +4,6 @@ import authorisationMiddleware from '../middleware/authorisationMiddleware'
 import type UserService from '../services/userService'
 import homeRoutes from './home'
 import analyticsRouter from './analyticsRouter'
-import throwTestErrorRouter from './throwTestErrorRouter'
 import imageRouter from './imageRouter'
 import incentiveLevelRoutes from './incentiveLevels'
 import prisonerIncentiveLevels from './prisonerIncentiveLevelDetails'
@@ -54,7 +53,6 @@ export default function routes(userService: UserService): Router {
 
   // misc
   router.use('/prisoner-images/:prisonerNumber.jpeg', prisonerImagesRoutes(imageRouter()))
-  router.use('/throw-test-error', throwTestErrorRouter(standardRouter(userService)))
   router.use('/', homeRoutes(standardRouter(userService)))
 
   return router

@@ -36,7 +36,7 @@
     "npm": "^12"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1138.0",
+    "@aws-sdk/client-s3": "^3.1141.0",
     "@ministryofjustice/frontend": "^10.0.1",
     "@ministryofjustice/hmpps-audit-client": "2.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^3.0.0",
@@ -83,7 +83,7 @@
     "@types/jest": "^30.0.0",
     "@types/jquery": "^4.0.1",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^24.13.6",
+    "@types/node": "^24.19.0",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
@@ -104,11 +104,11 @@
     "jest-html-reporter": "^4.4.2",
     "jest-junit": "^17.0.0",
     "jsonwebtoken": "^9.0.3",
-    "lint-staged": "^17.5.1",
+    "lint-staged": "^17.6.0",
     "mocha-junit-reporter": "^2.2.1",
     "nock": "^14.0.17",
     "supertest": "^7.3.0",
-    "ts-jest": "^29.4.12",
+    "ts-jest": "^29.4.14",
     "typescript": "^6.0.3"
   },
   "overrides": {

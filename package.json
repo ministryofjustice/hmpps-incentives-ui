@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1143.0",
-    "@ministryofjustice/frontend": "^10.0.1",
+    "@ministryofjustice/frontend": "^11.1.0",
     "@ministryofjustice/hmpps-audit-client": "2.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^3.0.0",
     "@ministryofjustice/hmpps-azure-telemetry": "^1.1.0",

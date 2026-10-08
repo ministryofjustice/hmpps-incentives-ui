@@ -39,7 +39,7 @@ services:
       - /home/minio/data
 
   minio-init:
-    image: public.ecr.aws/aws-cli/aws-cli:2.37.10
+    image: public.ecr.aws/aws-cli/aws-cli:2.37.11
     networks:
       - hmpps
     container_name: inc-ui-minio-init

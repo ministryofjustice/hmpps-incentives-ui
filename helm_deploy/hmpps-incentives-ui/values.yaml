@@ -1,4 +1,9 @@
 ---
+staleAnalyticsData:
+  alertsEnabled: false
+  staleAfterDays: 3
+  alertSeverity: hmpps-incentives-dev
+
 generic-service:
   nameOverride: hmpps-incentives-ui
   productId: DPS020

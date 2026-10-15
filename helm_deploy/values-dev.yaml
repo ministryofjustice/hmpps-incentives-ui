@@ -1,3 +1,7 @@
+---
+staleAnalyticsData:
+  alertSeverity: hmpps-incentives-dev
+
 generic-service:
   replicaCount: 2
 

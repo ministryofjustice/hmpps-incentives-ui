@@ -28,5 +28,4 @@ generic-service:
     PHASE_NAME: "PRE-PRODUCTION"
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps-incentives-preprod
   businessHoursOnly: true

@@ -29,5 +29,4 @@ generic-service:
     PHASE_NAME: "DEV"
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps-incentives-dev
   businessHoursOnly: true

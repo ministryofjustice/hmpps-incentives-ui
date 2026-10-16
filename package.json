@@ -93,7 +93,7 @@
     "audit-ci": "^7.1.0",
     "cheerio": "1.2.0",
     "cookie-session": "^2.1.1",
-    "cypress": "^15.21.1",
+    "cypress": "^16.1.1",
     "cypress-multi-reporters": "^2.0.5",
     "del": "8.0.1",
     "esbuild": "^0.28.2",
@@ -121,7 +121,7 @@
   },
   "allowScripts": {
     "@parcel/watcher@2.6.0": true,
-    "cypress@15.21.1": true,
+    "cypress@16.1.1": true,
     "dtrace-provider@0.8.8": false,
     "esbuild@0.28.2": true,
     "fsevents@2.3.3": true,

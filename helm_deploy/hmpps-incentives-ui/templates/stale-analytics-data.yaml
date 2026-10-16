@@ -1,4 +1,4 @@
-{{- if index .Values "generic-service" "env" "ANALYTICS_DATA_STALE_AFTER_DAYS" -}}
+{{- if .Values.staleAnalyticsData.alertsEnabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -18,8 +18,8 @@ spec:
         - alert: stale-analytics-data
           expr: sum(incentives_stale_analytics_data{namespace="{{ .Release.Namespace }}"}) by (table_type) > 0
           annotations:
-            message: Analytics source data for table {{ "{{ $labels.table_type }}" }} is more than {{ index .Values "generic-service" "env" "ANALYTICS_DATA_STALE_AFTER_DAYS" }} days old
+            message: Analytics source data for table {{ "{{ $labels.table_type }}" }} is more than {{ .Values.staleAnalyticsData.staleAfterDays }} days old
             runbook_url: https://dsdmoj.atlassian.net/wiki/spaces/IT/pages/4086267986/Live+Service+Support
           labels:
-            severity: {{ index .Values "generic-prometheus-alerts" "alertSeverity" }}
+            severity: {{ .Values.staleAnalyticsData.alertSeverity }}
 {{- end }}

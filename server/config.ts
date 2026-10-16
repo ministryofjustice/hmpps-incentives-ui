@@ -189,6 +189,5 @@ export default {
     ga4MeasurementId: get('GOOGLE_ANALYTICS_GA4_MEASUREMENT_ID', ''),
   },
   featureFlags: {},
-  analyticsDataStaleAferDays: Number(get('ANALYTICS_DATA_STALE_AFTER_DAYS', 0)),
   phaseName: get('PHASE_NAME', ''),
 }

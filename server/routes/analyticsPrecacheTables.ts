@@ -33,18 +33,31 @@ async function precacheTablesForRegion(region: typeof National | PgdRegionCode |
 
 async function precachePrisonTables() {
   logger.info('Pre-caching analytics tables…')
-  await precacheTablesForRegion(null)
+  try {
+    await precacheTablesForRegion(null)
+  } catch {
+    logger.warn('Failed to pre-cache prison tables')
+  }
+
   setImmediate(precacheRegionTables)
 }
 
 async function precacheRegionTables() {
   // NB: specific region has no effect on what data is loaded and stitched
-  await precacheTablesForRegion(PgdRegionService.getPgdRegionByCode('WLS').code as PgdRegionCode)
+  try {
+    await precacheTablesForRegion(PgdRegionService.getPgdRegionByCode('WLS').code as PgdRegionCode)
+  } catch {
+    logger.warn('Failed to pre-cache region tables')
+  }
   setImmediate(precacheNationalTables)
 }
 
 async function precacheNationalTables() {
-  await precacheTablesForRegion(National)
+  try {
+    await precacheTablesForRegion(National)
+  } catch {
+    logger.warn('Failed to pre-cache national tables')
+  }
   logger.info('Done pre-caching analytics tables')
 }
 

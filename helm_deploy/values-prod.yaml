@@ -1,3 +1,8 @@
+---
+staleAnalyticsData:
+  alertsEnabled: true
+  alertSeverity: hmpps-incentives-prod
+
 generic-service:
   serviceAccountName: hmpps-incentives-prod-analytical-platform
 
@@ -22,11 +27,7 @@ generic-service:
     OFFENDER_SEARCH_API_URL: "https://prisoner-search.prison.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
     COMPONENT_API_URL: "https://frontend-components.hmpps.service.justice.gov.uk"
-    ANALYTICS_DATA_STALE_AFTER_DAYS: "3"
 
   resources:
     limits:
       memory: 2048Mi
-
-generic-prometheus-alerts:
-  alertSeverity: hmpps-incentives-prod

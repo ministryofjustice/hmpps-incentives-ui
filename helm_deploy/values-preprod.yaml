@@ -1,3 +1,7 @@
+---
+staleAnalyticsData:
+  alertSeverity: hmpps-incentives-preprod
+
 generic-service:
   replicaCount: 2
 
@@ -28,5 +32,4 @@ generic-service:
     PHASE_NAME: "PRE-PRODUCTION"
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps-incentives-preprod
   businessHoursOnly: true

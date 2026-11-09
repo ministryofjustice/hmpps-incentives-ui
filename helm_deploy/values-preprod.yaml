@@ -1,7 +1,4 @@
 ---
-staleAnalyticsData:
-  alertSeverity: hmpps-incentives-preprod
-
 generic-service:
   replicaCount: 2
 

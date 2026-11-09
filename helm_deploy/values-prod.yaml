@@ -1,7 +1,6 @@
 ---
 staleAnalyticsData:
   alertsEnabled: true
-  alertSeverity: hmpps-incentives-prod
 
 generic-service:
   serviceAccountName: hmpps-incentives-prod-analytical-platform

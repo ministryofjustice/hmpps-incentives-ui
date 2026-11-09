@@ -1,4 +1,10 @@
 {{- if .Values.staleAnalyticsData.alertsEnabled -}}
+{{- /* Same routing labels as the generic-prometheus-alerts chart, so the HMPPS alert relay bot sends this alert to the channels set for this component on the Developer Portal */ -}}
+{{- $environment := default "none" (.Values.global).environment -}}
+{{- $alertSeverity := "hmpps_alerts_nonprod" -}}
+{{- if has (lower $environment) (list "prod" "production") -}}
+{{- $alertSeverity = "hmpps_alerts_prod" -}}
+{{- end }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -21,5 +27,8 @@ spec:
             message: Analytics source data for table {{ "{{ $labels.table_type }}" }} is more than {{ .Values.staleAnalyticsData.staleAfterDays }} days old
             runbook_url: https://dsdmoj.atlassian.net/wiki/spaces/IT/pages/4086267986/Live+Service+Support
           labels:
-            severity: {{ .Values.staleAnalyticsData.alertSeverity }}
+            severity: {{ $alertSeverity }}
+            application: hmpps-incentives-ui
+            businessUnit: hmpps
+            environment: {{ $environment }}
 {{- end }}

@@ -112,10 +112,6 @@
     "typescript": "^6.0.3"
   },
   "overrides": {
-    "mocha": {
-      "diff": ">=9.0.0",
-      "serialize-javascript": "^7.1.2"
-    },
     "@opentelemetry/core": "^2.12.0",
     "brace-expansion": "^5.0.12"
   },

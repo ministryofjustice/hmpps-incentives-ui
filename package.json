@@ -36,11 +36,11 @@
     "npm": "^12"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1158.0",
+    "@aws-sdk/client-s3": "^3.1162.0",
     "@ministryofjustice/frontend": "^11.1.0",
-    "@ministryofjustice/hmpps-audit-client": "2.0.0",
+    "@ministryofjustice/hmpps-audit-client": "^2.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^3.0.0",
-    "@ministryofjustice/hmpps-azure-telemetry": "^1.2.0",
+    "@ministryofjustice/hmpps-azure-telemetry": "^1.3.0",
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
     "@ministryofjustice/hmpps-rest-client": "^2.2.0",
     "agentkeepalive": "^4.6.0",
@@ -62,14 +62,14 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
-    "redis": "^6.3.0",
+    "redis": "^6.3.1",
     "superagent": "^10.4.1",
     "url-value-parser": "^2.2.0"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^5.0.0",
-    "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
-    "@ministryofjustice/frontend-types": "2.0.3",
+    "@ministryofjustice/eslint-config-hmpps": "^1.0.4",
+    "@ministryofjustice/frontend-types": "^2.0.3",
     "@ministryofjustice/hmpps-precommit-hooks": "^3.0.2",
     "@tsconfig/node24": "^24.0.5",
     "@types/bunyan": "^1.8.11",
@@ -91,17 +91,17 @@
     "@types/superagent": "^8.1.11",
     "@types/supertest": "^7.2.1",
     "audit-ci": "^7.1.0",
-    "cheerio": "1.2.0",
+    "cheerio": "^1.2.0",
     "cookie-session": "^2.1.1",
-    "cypress": "^16.2.0",
-    "cypress-multi-reporters": "^2.0.5",
-    "del": "9.0.1",
+    "cypress": "^16.2.1",
+    "cypress-multi-reporters": "^2.1.0",
+    "del": "^9.0.1",
     "esbuild": "^0.28.2",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",
     "esbuild-sass-plugin": "^3.7.0",
     "jest": "^30.5.2",
-    "jest-html-reporter": "^4.4.2",
+    "jest-html-reporter": "^4.4.3",
     "jest-junit": "^17.0.0",
     "jsonwebtoken": "^9.0.3",
     "lint-staged": "^17.6.0",
@@ -112,16 +112,12 @@
     "typescript": "^6.0.3"
   },
   "overrides": {
-    "mocha": {
-      "diff": ">=9.0.0",
-      "serialize-javascript": "^7.1.2"
-    },
     "@opentelemetry/core": "^2.12.0",
     "brace-expansion": "^5.0.12"
   },
   "allowScripts": {
     "@parcel/watcher@2.6.0": true,
-    "cypress@16.2.0": true,
+    "cypress@16.2.1": true,
     "dtrace-provider@0.8.8": false,
     "esbuild@0.28.2": true,
     "fsevents@2.3.3": true,

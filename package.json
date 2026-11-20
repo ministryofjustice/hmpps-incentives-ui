@@ -36,7 +36,7 @@
     "npm": "^12"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1165.0",
+    "@aws-sdk/client-s3": "^3.1168.0",
     "@ministryofjustice/frontend": "^11.1.0",
     "@ministryofjustice/hmpps-audit-client": "^2.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^3.0.0",
@@ -71,7 +71,7 @@
     "@ministryofjustice/eslint-config-hmpps": "^1.0.4",
     "@ministryofjustice/frontend-types": "^2.0.3",
     "@ministryofjustice/hmpps-precommit-hooks": "^3.0.2",
-    "@tsconfig/node26": "^26.0",
+    "@tsconfig/node26": "^26.0.2",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
     "@types/compression": "^1.8.1",
@@ -83,7 +83,7 @@
     "@types/jest": "^30.0.0",
     "@types/jquery": "^4.0.1",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^26",
+    "@types/node": "^26.6.6",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
@@ -113,7 +113,7 @@
   },
   "overrides": {
     "@opentelemetry/core": "^2.12.1",
-    "brace-expansion": "^5.0.12"
+    "brace-expansion": "^5.0.13"
   },
   "allowScripts": {
     "@parcel/watcher@2.6.0": true,
